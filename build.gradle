@@ -43,8 +43,11 @@ version = projectVersion
 apply plugin: "kotlin"
 
 defaultTasks 'run'
-targetCompatibility = 1.8
-sourceCompatibility = 1.8
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 // =====================================================================================================================
 // DEPENDENCIES
