@@ -130,9 +130,9 @@ jar {
 // =====================================================================================================================
 
 // travis will set this property, as it is not able to do this (lacks hdiutil binary)
-print "[INFO] GADSU_SKIP_MAC_BUNDLE="
-println System.properties.getProperty("GADSU_SKIP_MAC_BUNDLE")
-if (System.properties.getProperty("GADSU_SKIP_MAC_BUNDLE") != "true") {
+print "[INFO] gadsu.skipMacBundle="
+println System.properties.getProperty("gadsu.skipMacBundle")
+if (System.properties.getProperty("gadsu.skipMacBundle") != "true") {
     // NOPE!
     //apply plugin: 'application'
     //mainClassName = myMainClassName
