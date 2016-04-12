@@ -16,15 +16,15 @@ object LogConfigurator {
 
     fun configure() {
         val context = LoggerFactory.getILoggerFactory() as LoggerContext
-        val status = context.getStatusManager()
-        status.add(InfoStatus("Setting up MyShiatsu PROD configuration.", context))
+        val status = context.statusManager
+        status.add(InfoStatus("Setting up Gadsu log configuration.", context))
 
         val logger = context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
         logger.detachAndStopAllAppenders()
-        logger.setLevel(Level.ALL)
-        context.getLogger("org.apache").setLevel(Level.WARN)
-        context.getLogger("org.hibernate").setLevel(Level.WARN)
-        context.getLogger("org.jboss").setLevel(Level.WARN)
+        logger.level = Level.ALL
+        context.getLogger("org.apache").level = Level.WARN
+        context.getLogger("org.hibernate").level = Level.WARN
+        context.getLogger("org.jboss").level = Level.WARN
 
         // TODO introduce some development switch to change log config
 //        if (Develop.ENABLED) {
@@ -39,41 +39,41 @@ object LogConfigurator {
 
     private fun consoleAppender(context: LoggerContext): Appender<ILoggingEvent> {
         val appender = ConsoleAppender<ILoggingEvent>()
-        appender.setContext(context)
-        appender.setName("MyShiatsu-ConsoleAppender")
-        appender.setEncoder(defaultPatternLayout(context))
+        appender.context = context
+        appender.name = "MyShiatsu-ConsoleAppender"
+        appender.encoder = defaultPatternLayout(context)
         appender.start()
         return appender
     }
 
     private fun fileAppender(context: LoggerContext): Appender<ILoggingEvent> {
         val appender = RollingFileAppender<ILoggingEvent>()
-        appender.setFile("myshiatsu.log")
+        appender.file = "myshiatsu.log"
 
         // http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
         // http://www.programcreek.com/java-api-examples/index.php?api=ch.qos.logback.core.rolling.TimeBasedRollingPolicy
         val policy = TimeBasedRollingPolicy<ILoggingEvent>()
-        policy.setContext(context)
+        policy.context = context
         policy.setParent(appender)
-        policy.setFileNamePattern("myshiatsu-%d{yyyy_MM_dd}.log")
-        policy.setMaxHistory(14) // two weeks
+        policy.fileNamePattern = "myshiatsu-%d{yyyy_MM_dd}.log"
+        policy.maxHistory = 14 // two weeks
         policy.start()
 
-        appender.setRollingPolicy(policy)
+        appender.rollingPolicy = policy
         //        appender.setAppend(true)
         //        appender.setTriggeringPolicy()
-        appender.setContext(context)
-        appender.setName("MyShiatsu-FileAppender")
-        appender.setEncoder(defaultPatternLayout(context))
+        appender.context = context
+        appender.name = "MyShiatsu-FileAppender"
+        appender.encoder = defaultPatternLayout(context)
         appender.start()
         return appender
     }
 
     private fun defaultPatternLayout(context: LoggerContext): PatternLayoutEncoder {
         val layout = PatternLayoutEncoder()
-        layout.setContext(context)
+        layout.context = context
         // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n")
-        layout.setPattern("%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n")
+        layout.pattern = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
         layout.start()
         return layout
     }

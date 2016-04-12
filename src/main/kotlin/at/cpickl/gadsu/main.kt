@@ -3,16 +3,9 @@ package at.cpickl.gadsu
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
-import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import com.google.inject.AbstractModule
 import com.google.inject.Guice
-import com.google.inject.TypeLiteral
-import com.google.inject.matcher.Matchers
-import com.google.inject.spi.InjectionListener
-import com.google.inject.spi.TypeEncounter
-import com.google.inject.spi.TypeListener
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.swing.JFrame
@@ -68,31 +61,6 @@ class GadsuGuiceStarter @Inject constructor(
 
 }
 
-
-class GadsuModule : AbstractModule() {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-    override fun configure() {
-        log.debug("configure()")
-
-        val eventBus = EventBus({ exception, context ->
-            log.error("Uncaught exception in event bus! context=$context", exception)
-        })
-        bind(EventBus::class.java).toInstance(eventBus)
-
-        // remove necessity to call "bus.register(this)" all the time
-        // https://spin.atomicobject.com/2012/01/13/the-guava-eventbus-on-guice/
-        bindListener(Matchers.any(), object : TypeListener {
-            override fun <I> hear(literal: TypeLiteral<I>, encounter: TypeEncounter<I>) {
-                encounter.register(InjectionListener { i -> eventBus.register(i) })
-            }
-        })
-
-        bind(AllMightyEventCatcher::class.java).asEagerSingleton()
-
-        install(ViewModule())
-    }
-}
 
 class AllMightyEventCatcher {
     private val log = LoggerFactory.getLogger(javaClass)
