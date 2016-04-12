@@ -15,3 +15,4 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 * splash screen
 * read metainf.properties
 * configure https://codecov.io/
+* change to gradlew

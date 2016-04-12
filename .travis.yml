@@ -6,7 +6,8 @@ language: java
 jdk:
   - oraclejdk8
 
-
+#before_install:
+# - chmod +x gradlew
 
 # avoid re-downloading dependencies all the time
 # https://docs.travis-ci.com/user/languages/java/#Caching
@@ -17,11 +18,12 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_script:
+    - export GADSU_SKIP_MAC_BUNDLE=true
 
-script:
-  - ./gradle assemble -Dgadsu.skipMacBundle=true
-  - ./gradle check -Dgadsu.skipMacBundle=true
-
-# wont get picked up as no wrapper available for this project (yet)
+# wont get picked up?!? :(
+#script:
+#  - ./gradle assemble -Dgadsu.skipMacBundle=true
+#  - ./gradle check -Dgadsu.skipMacBundle=true
 #- ./gradlew assemble -Dgadsu.skipMacBundle=true
 #- ./gradlew check -Dgadsu.skipMacBundle=true
