@@ -141,7 +141,9 @@ if (System.properties.getProperty("gadsu.skipMacBundle") != "true") {
     // https://github.com/crotwell/gradle-macappbundle
     // https://github.com/crotwell/gradle-macappbundle/wiki/Intro
     apply plugin: 'edu.sc.seis.macAppBundle'
-    // gradle createApp or gradle createDmg
+    // $ gradle createApp
+    // $ gradle createDmg
+
     macAppBundle {
         appName = myAppName
         dmgName = myAppName + "-" + projectVersion
