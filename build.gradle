@@ -129,41 +129,44 @@ jar {
 // PACKAGING MAC
 // =====================================================================================================================
 
-// NOPE!
-//apply plugin: 'application'
-//mainClassName = myMainClassName
-// applicationDefaultJvmArgs = ["-Dfoo=bar"]
+// travis will set this property, as it is not able to do this (lacks hdiutil binary)
+if (!System.properties.hasProperty("gadsu.skipMacBundle")) {
+    // NOPE!
+    //apply plugin: 'application'
+    //mainClassName = myMainClassName
+    // applicationDefaultJvmArgs = ["-Dfoo=bar"]
 
-// https://github.com/crotwell/gradle-macappbundle
-// https://github.com/crotwell/gradle-macappbundle/wiki/Intro
-apply plugin: 'edu.sc.seis.macAppBundle'
-// gradle createApp or gradle createDmg
-macAppBundle {
-    appName = myAppName
-    dmgName = myAppName + "-" + projectVersion
+    // https://github.com/crotwell/gradle-macappbundle
+    // https://github.com/crotwell/gradle-macappbundle/wiki/Intro
+    apply plugin: 'edu.sc.seis.macAppBundle'
+    // gradle createApp or gradle createDmg
+    macAppBundle {
+        appName = myAppName
+        dmgName = myAppName + "-" + projectVersion
 
-    mainClassName = myMainClassName
-    icon = "src/main/buildMac/logo.icns"
-    jvmVersion = "1.8+"
+        mainClassName = myMainClassName
+        icon = "src/main/buildMac/logo.icns"
+        jvmVersion = "1.8+"
 
-    javaProperties.put("apple.laf.useScreenMenuBar", "true")
-    javaProperties.put("gadsu.isMacApp", "true")
+        javaProperties.put("apple.laf.useScreenMenuBar", "true")
+        javaProperties.put("gadsu.isMacApp", "true")
 
-    // http://alvinalexander.com/apple/mac/java-mac-native-look/Putting_your_application_na.shtml
-    // NOPE javaProperties.put("com.apple.mrj.application.apple.menu.about.name", myAppName)
+        // http://alvinalexander.com/apple/mac/java-mac-native-look/Putting_your_application_na.shtml
+        // NOPE javaProperties.put("com.apple.mrj.application.apple.menu.about.name", myAppName)
 
-    javaExtras.put("-splash:\$APP_ROOT/Contents/Resources/splashscreen.jpg", null)
+        javaExtras.put("-splash:\$APP_ROOT/Contents/Resources/splashscreen.jpg", null)
 
-    // list of all options:
-    // https://github.com/crotwell/gradle-macappbundle/blob/master/src/main/groovy/edu/sc/seis/macAppBundle/MacAppBundlePluginExtension.groovy
+        // list of all options:
+        // https://github.com/crotwell/gradle-macappbundle/blob/master/src/main/groovy/edu/sc/seis/macAppBundle/MacAppBundlePluginExtension.groovy
+    }
+
+    task copySplashscreenForMacApp(type: Copy) {
+    //    println "Copying splash screen for mac app ..."
+        from 'src/main/resources/gadsu/splashscreen.jpg'
+        into 'build/macApp/' + myAppName + '.app/Contents/Resources'
+    }
+    createApp.dependsOn copySplashscreenForMacApp
 }
-
-task copySplashscreenForMacApp(type: Copy) {
-//    println "Copying splash screen for mac app ..."
-    from 'src/main/resources/gadsu/splashscreen.jpg'
-    into 'build/macApp/' + myAppName + '.app/Contents/Resources'
-}
-createApp.dependsOn copySplashscreenForMacApp
 
 // =====================================================================================================================
 // TEST

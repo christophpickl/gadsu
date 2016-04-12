@@ -21,10 +21,12 @@ class AboutController @Inject constructor(
         private val window: AboutWindow
 ) {
 
+    @Suppress("Unused")
     @Subscribe fun onAbout(event: ShowAboutDialogEvent) {
         window.setVisible(true)
     }
 
+    @Suppress("Unused")
     @Subscribe fun onQuit(event: QuitUserEvent) {
         window.setVisible(false)
         window.dispose()
