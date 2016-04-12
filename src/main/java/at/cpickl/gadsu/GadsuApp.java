@@ -1,0 +1,16 @@
+package at.cpickl.gadsu;
+
+/**
+ * Not easy (impossible?) to define a static void main entry point in Kotlin, so do it in Java ;)
+ */
+public class GadsuApp {
+
+    static {
+        LogConfigurator.INSTANCE.configure();
+    }
+
+    public static void main(String[] args) {
+        new GadsuStarter().start(args);
+    }
+
+}
