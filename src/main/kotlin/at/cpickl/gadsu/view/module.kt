@@ -12,6 +12,9 @@ class ViewModule : AbstractModule() {
         bind(MainWindow::class.java).to(SwingMainWindow::class.java).`in`(Scopes.SINGLETON)
         bind(MainWindowController::class.java).asEagerSingleton()
 
+        val isMacApp = System.getProperty("gadsu.isMacApp", "").equals("true")
+        bind(MacHandler::class.java).toInstance(ReflectiveMacHandler(isMacApp))
+
         install(AboutModule())
     }
 

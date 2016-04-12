@@ -27,7 +27,8 @@ class GadsuStarter {
 
 class GadsuGuiceStarter @Inject constructor(
         private val window: MainWindow,
-        private val bus: EventBus
+        private val bus: EventBus,
+        private val mac: MacHandler
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -48,12 +49,12 @@ class GadsuGuiceStarter @Inject constructor(
     }
 
     private fun registerMacStuff() {
-        if (!MacHandler.isMacApp()) {
+        if (!mac.isEnabled()) {
             log.debug("registerMacStuff() not enabled")
             return
         }
+
         log.debug("registerMacStuff() ... enabling mac specific handlers")
-        val mac = MacHandler()
         mac.registerAbout { bus.post(ShowAboutDialogEvent()) }
         mac.registerQuit { bus.post(QuitUserEvent()) }
         // MINOR in future we will need prefs as well: mac.registerPreferences { ... }

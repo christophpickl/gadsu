@@ -9,13 +9,12 @@ import javax.swing.JMenuItem
 
 
 class GadsuMenuBar @Inject constructor(
-        private val bus: EventBus) : JMenuBar() {
+        private val bus: EventBus,
+        private val mac: MacHandler) : JMenuBar() {
 
     init {
-        val isMacApp = MacHandler.isMacApp()
-
         val menuApp = JMenu("Gadsu")
-        if (!isMacApp) {
+        if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
             // add entry preferences
             menuApp.addSeparator()

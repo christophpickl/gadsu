@@ -7,11 +7,15 @@ import java.lang.reflect.Proxy
 
 
 // https://developer.apple.com/legacy/library/samplecode/OSXAdapter/Listings/src_OSXAdapter_java.html
-class MacHandler {
+interface MacHandler {
+    fun isEnabled(): Boolean
 
-    companion object {
-        fun isMacApp() = System.getProperty("gadsu.isMacApp", "").equals("true")
-    }
+    fun registerAbout(onAbout: () -> Unit)
+    fun registerPreferences(onPreferences: () -> Unit)
+    fun registerQuit(onQuit: () -> Unit)
+}
+
+class ReflectiveMacHandler(private val enabled: Boolean) : MacHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -26,19 +30,21 @@ class MacHandler {
         macApp = staticFactoryMethod.invoke(null)
     }
 
-    fun registerAbout(onAbout: () -> Unit) {
+    override fun isEnabled() = enabled
+
+    override fun registerAbout(onAbout: () -> Unit) {
         log.debug("registerAbout()")
         val aboutHandler = proxyFor(aboutHandlerClass, "handleAbout", { args -> onAbout.invoke() })
         macAppMethod("setAboutHandler", aboutHandlerClass, aboutHandler)
     }
 
-    fun registerPreferences(onPreferences: () -> Unit) {
+    override fun registerPreferences(onPreferences: () -> Unit) {
         log.debug("registerPreferences()")
         val preferencesHandler = proxyFor(preferencesHandlerClass, "handlePreferences", { args -> onPreferences.invoke() })
         macAppMethod("setPreferencesHandler", preferencesHandlerClass, preferencesHandler)
     }
 
-    fun registerQuit(onQuit: () -> Unit) {
+    override fun registerQuit(onQuit: () -> Unit) {
         log.debug("registerQuit()")
         // fun handleQuitRequestWith(var1:QuitEvent, var2:QuitResponse)
         val quitHandler = proxyFor(quitHandlerClass, "handleQuitRequestWith", { args ->
