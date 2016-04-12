@@ -5,8 +5,11 @@ language: java
 jdk:
   - oraclejdk8
 
-
 # avoid re-downloading dependencies all the time
 cache:
   directories:
   - $HOME/.gradle/caches/
+
+script:
+- ./gradlew assemble -Dgadsu.skipMacBundle=true
+- ./gradlew check -Dgadsu.skipMacBundle=true

@@ -18,7 +18,7 @@ class MainWindowController @Inject constructor(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onQuit(event: QuitUserEvent) {
+    @Subscribe fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
         log.info("onQuit(event)")
         window.close()
     }
