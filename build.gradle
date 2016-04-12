@@ -129,12 +129,10 @@ jar {
 // PACKAGING MAC
 // =====================================================================================================================
 
-// travis will set this property, as it is not able to do this (lacks hdiutil binary)
-print "[INFO] gadsu.skipMacBundle="
-println System.properties.getProperty("gadsu.skipMacBundle")
-if (System.properties.getProperty("gadsu.skipMacBundle") == "true") {
-    println "mac bundle disabled"
-} else {
+// travis lacks hdiutil binary ...
+//print "[INFO] gadsu.enableMacBundle="
+//println System.properties.getProperty("gadsu.enableMacBundle")
+if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
     println "enabling mac bundle"
     // NOPE!
     //apply plugin: 'application'
