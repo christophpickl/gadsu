@@ -19,8 +19,9 @@ cache:
 
 
 script:
-- gradle assemble -Dgadsu.skipMacBundle=true
-- gradle check -Dgadsu.skipMacBundle=true
+  - ./gradle assemble -Dgadsu.skipMacBundle=true
+  - ./gradle check -Dgadsu.skipMacBundle=true
+
 # wont get picked up as no wrapper available for this project (yet)
 #- ./gradlew assemble -Dgadsu.skipMacBundle=true
 #- ./gradlew check -Dgadsu.skipMacBundle=true
