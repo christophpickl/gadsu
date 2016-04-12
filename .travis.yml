@@ -1,29 +1,22 @@
 
-
 sudo: false
 
 # this will also include kotlin ;)
 language: java
 
-
 # we need to explicitly change to java 8
 jdk:
   - oraclejdk8
 
-#before_install:
-# - chmod +x gradlew
+before_install:
+  - chmod +x gradlew
 
-
-before_script:
-  - export gadsu.skipMacBundle=true
-
-# wont get picked up?!? :(
+#before_script:
+#  - export gadsu.skipMacBundle=true
 
 script:
-  - gradle assemble -Dgadsu.skipMacBundle=true
-#  - ./gradle check -Dgadsu.skipMacBundle=true
-#- ./gradlew assemble -Dgadsu.skipMacBundle=true
-#- ./gradlew check -Dgadsu.skipMacBundle=true
+  - ./gradlew assemble -Dgadsu.skipMacBundle=true
+  - ./gradlew check -Dgadsu.skipMacBundle=true
 
 
 
