@@ -13,50 +13,32 @@ import ch.qos.logback.core.status.InfoStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+abstract class BaseLogConfigurator {
 
-object LogConfigurator {
-
-    fun configure() {
-        val context = LoggerFactory.getILoggerFactory() as LoggerContext
-        val status = context.statusManager
-        status.add(InfoStatus("Setting up Gadsu log configuration.", context))
-
-        val logger = context.getLogger(Logger.ROOT_LOGGER_NAME)
-        logger.detachAndStopAllAppenders()
-        logger.level = Level.ALL
-        context.getLogger("org.apache").level = Level.WARN
-        context.getLogger("org.hibernate").level = Level.WARN
-        context.getLogger("org.jboss").level = Level.WARN
-
-        // TODO introduce some development switch to change log config
-        if (Development.ENABLED) {
-            println("Develop LOG enabled.")
-            logger.addAppender(consoleAppender(context))
-        } else {
-            // TODO also add console appender, but with level WARN for all
-            logger.addAppender(fileAppender(context))
-        }
+    protected val context: LoggerContext
+    init {
+        context = LoggerFactory.getILoggerFactory() as LoggerContext
     }
 
-    private fun consoleAppender(context: LoggerContext): Appender<ILoggingEvent> {
+    protected fun consoleAppender(name: String): Appender<ILoggingEvent> {
         val appender = ConsoleAppender<ILoggingEvent>()
         appender.context = context
-        appender.name = "MyShiatsu-ConsoleAppender"
-        appender.encoder = defaultPatternLayout(context)
+        appender.name = name
+        appender.encoder = patternLayout()
         appender.start()
         return appender
     }
 
-    private fun fileAppender(context: LoggerContext): Appender<ILoggingEvent> {
+    protected fun fileAppender(name: String, filename: String, filenamePattern: String): Appender<ILoggingEvent> {
         val appender = RollingFileAppender<ILoggingEvent>()
-        appender.file = "myshiatsu.log"
+        appender.file = filename
 
         // http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
         // http://www.programcreek.com/java-api-examples/index.php?api=ch.qos.logback.core.rolling.TimeBasedRollingPolicy
         val policy = TimeBasedRollingPolicy<ILoggingEvent>()
         policy.context = context
         policy.setParent(appender)
-        policy.fileNamePattern = "myshiatsu-%d{yyyy_MM_dd}.log"
+        policy.fileNamePattern = filenamePattern
         policy.maxHistory = 14 // two weeks
         policy.start()
 
@@ -64,19 +46,53 @@ object LogConfigurator {
         //        appender.setAppend(true)
         //        appender.setTriggeringPolicy()
         appender.context = context
-        appender.name = "MyShiatsu-FileAppender"
-        appender.encoder = defaultPatternLayout(context)
+        appender.name = name
+        appender.encoder = patternLayout()
         appender.start()
         return appender
     }
 
-    private fun defaultPatternLayout(context: LoggerContext): PatternLayoutEncoder {
+    // or: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    protected fun patternLayout(pattern: String = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"): PatternLayoutEncoder {
         val layout = PatternLayoutEncoder()
         layout.context = context
-        // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n")
-        layout.pattern = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
+        layout.pattern = pattern
         layout.start()
         return layout
+    }
+
+    fun configureLog() {
+        val status = context.statusManager
+        status.add(InfoStatus("Setting up log configuration.", context))
+
+        val logger = context.getLogger(Logger.ROOT_LOGGER_NAME)
+        logger.detachAndStopAllAppenders()
+
+        configureInternal(logger)
+    }
+
+    abstract protected fun configureInternal(logger: ch.qos.logback.classic.Logger)
+
+    protected fun changeLevel(packageName: String, level: ch.qos.logback.classic.Level) {
+        context.getLogger(packageName).level = level
+    }
+}
+
+object LogConfigurator : BaseLogConfigurator() {
+
+    override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
+        logger.level = Level.ALL
+        changeLevel("org.apache", Level.WARN)
+        changeLevel("org.hibernate", Level.WARN)
+        changeLevel("org.jboss", Level.WARN)
+
+        if (Development.ENABLED) {
+            println("Develop LOG enabled.")
+            logger.addAppender(consoleAppender("Gadsu-ConsoleAppender"))
+        } else {
+            // TODO also add console appender, but with level WARN for all
+            logger.addAppender(fileAppender("Gadsu-FileAppender", "gadsu.log", "gadsu-%d{yyyy_MM_dd}.log"))
+        }
     }
 
 }

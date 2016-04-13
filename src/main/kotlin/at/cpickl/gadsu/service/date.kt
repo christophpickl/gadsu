@@ -7,6 +7,7 @@ import org.joda.time.format.DateTimeFormatter
 class DateFormats {
     companion object {
         val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+        val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
     }
 }
 

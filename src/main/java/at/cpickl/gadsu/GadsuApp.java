@@ -8,7 +8,7 @@ import at.cpickl.gadsu.service.LogConfigurator;
 public class GadsuApp {
 
     static {
-        LogConfigurator.INSTANCE.configure();
+        LogConfigurator.INSTANCE.configureLog();
     }
 
     public static void main(String[] args) {

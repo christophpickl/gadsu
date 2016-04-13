@@ -77,3 +77,5 @@ class Development {
         val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
     }
 }
+
+open class GadsuException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
