@@ -1,5 +1,7 @@
 package at.cpickl.gadsu;
 
+import at.cpickl.gadsu.service.LogConfigurator;
+
 /**
  * Not easy (impossible?) to define a static void main entry point in Kotlin, so do it in Java ;)
  */

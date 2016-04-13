@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
@@ -35,5 +36,7 @@ class GadsuModule : AbstractModule() {
 
         install(ServiceModule())
         install(ViewModule())
+
+        install(ClientModule())
     }
 }

@@ -16,7 +16,7 @@ class GadsuStarter {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start(args: Array<String>) {
-        log.debug("start(args)")
+        log.info("start(args={})", args)
 
         val guice = Guice.createInjector(GadsuModule())
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
@@ -70,4 +70,10 @@ class AllMightyEventCatcher {
         log.trace("Event has been dispatched on EventBus: {}", event)
     }
 
+}
+
+class Development {
+    companion object {
+        val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
+    }
 }

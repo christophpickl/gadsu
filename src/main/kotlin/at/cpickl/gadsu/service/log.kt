@@ -1,5 +1,6 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.Development
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -9,6 +10,7 @@ import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.status.InfoStatus
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
@@ -19,7 +21,7 @@ object LogConfigurator {
         val status = context.statusManager
         status.add(InfoStatus("Setting up Gadsu log configuration.", context))
 
-        val logger = context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+        val logger = context.getLogger(Logger.ROOT_LOGGER_NAME)
         logger.detachAndStopAllAppenders()
         logger.level = Level.ALL
         context.getLogger("org.apache").level = Level.WARN
@@ -27,14 +29,13 @@ object LogConfigurator {
         context.getLogger("org.jboss").level = Level.WARN
 
         // TODO introduce some development switch to change log config
-//        if (Develop.ENABLED) {
+        if (Development.ENABLED) {
             println("Develop LOG enabled.")
             logger.addAppender(consoleAppender(context))
-//        } else {
-            // in future:
-            // * also add console appender, but with level WARN for all
-//            logger.addAppender(fileAppender(context))
-//        }
+        } else {
+            // TODO also add console appender, but with level WARN for all
+            logger.addAppender(fileAppender(context))
+        }
     }
 
     private fun consoleAppender(context: LoggerContext): Appender<ILoggingEvent> {
