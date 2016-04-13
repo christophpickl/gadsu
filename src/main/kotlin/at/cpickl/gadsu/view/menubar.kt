@@ -13,7 +13,8 @@ class GadsuMenuBar @Inject constructor(
         private val mac: MacHandler) : JMenuBar() {
 
     init {
-        val menuApp = JMenu("Gadsu")
+        val menuApp = JMenu("Datei")
+
         if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
             // add entry preferences
@@ -21,7 +22,6 @@ class GadsuMenuBar @Inject constructor(
             menuApp.addItem("Beenden", QuitUserEvent())
 
         }
-        menuApp.addItem("Dummy", "unhandled")
         add(menuApp)
     }
 

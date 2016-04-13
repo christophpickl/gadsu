@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.client.ClientView
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
@@ -8,9 +9,7 @@ import com.google.common.eventbus.Subscribe
 import com.google.inject.Guice
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import javax.swing.JFrame
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
 
 class GadsuStarter {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -28,7 +27,8 @@ class GadsuStarter {
 class GadsuGuiceStarter @Inject constructor(
         private val window: MainWindow,
         private val bus: EventBus,
-        private val mac: MacHandler
+        private val mac: MacHandler,
+        private val clientView: ClientView
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -37,13 +37,7 @@ class GadsuGuiceStarter @Inject constructor(
 
         registerMacStuff()
         SwingUtilities.invokeLater {
-            JFrame.setDefaultLookAndFeelDecorated(true)
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-                //                UIManager.setLookAndFeel(new SubstanceRavenLookAndFeel());
-            } catch (e: Exception) {
-                log.error("Could not set native look&feel!", e)
-            }
+            window.changeContent(clientView)
             window.start()
         }
     }
