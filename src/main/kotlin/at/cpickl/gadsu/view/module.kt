@@ -13,7 +13,8 @@ class ViewModule : AbstractModule() {
         bind(MainWindowController::class.java).asEagerSingleton()
 
         val isMacApp = System.getProperty("gadsu.isMacApp", "").equals("true")
-        bind(MacHandler::class.java).toInstance(ReflectiveMacHandler(isMacApp))
+        log.debug("isMacApp={}", isMacApp)
+        bind(MacHandler::class.java).toInstance(if (isMacApp) ReflectiveMacHandler() else DisabledMacHandler() )
 
         install(AboutModule())
     }

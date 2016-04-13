@@ -15,7 +15,20 @@ interface MacHandler {
     fun registerQuit(onQuit: () -> Unit)
 }
 
-class ReflectiveMacHandler(private val enabled: Boolean) : MacHandler {
+class DisabledMacHandler : MacHandler {
+    override fun isEnabled() = false
+    override fun registerAbout(onAbout: () -> Unit) {
+        throw UnsupportedOperationException()
+    }
+    override fun registerPreferences(onPreferences: () -> Unit) {
+        throw UnsupportedOperationException()
+    }
+    override fun registerQuit(onQuit: () -> Unit) {
+        throw UnsupportedOperationException()
+    }
+}
+
+class ReflectiveMacHandler : MacHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -30,7 +43,7 @@ class ReflectiveMacHandler(private val enabled: Boolean) : MacHandler {
         macApp = staticFactoryMethod.invoke(null)
     }
 
-    override fun isEnabled() = enabled
+    override fun isEnabled() = true
 
     override fun registerAbout(onAbout: () -> Unit) {
         log.debug("registerAbout()")
