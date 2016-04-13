@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.service
 
-import com.google.inject.AbstractModule
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
-
-class ServiceModule : AbstractModule() {
-    override fun configure() {
-        bind(Clock::class.java).to(RealClock::class.java)
+class DateFormats {
+    companion object {
+        val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
     }
 }
 

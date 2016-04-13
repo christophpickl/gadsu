@@ -16,6 +16,8 @@ class ViewModule : AbstractModule() {
         log.debug("isMacApp={}", isMacApp)
         bind(MacHandler::class.java).toInstance(if (isMacApp) ReflectiveMacHandler() else DisabledMacHandler() )
 
+        bind(SwingFactory::class.java)
+
         install(AboutModule())
     }
 

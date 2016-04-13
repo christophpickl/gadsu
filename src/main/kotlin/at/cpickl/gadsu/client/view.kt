@@ -6,16 +6,16 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 class ClientViewController @Inject constructor(
-        private val mainWindow: MainWindow
+        private val mainWindow: MainWindow,
+        private val view: ClientView
 ) {
-    private val view: ClientView = ClientView()
     init {
         // MINOR maybe this should go to the startup logic instead
         mainWindow.changeContent(view)
     }
 }
 
-class ClientView : JPanel() {
+class ClientView: JPanel() {
     init {
         add(JLabel("client"))
     }

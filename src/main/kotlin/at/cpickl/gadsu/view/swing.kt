@@ -1,12 +1,18 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.service.Clock
+import com.google.inject.Inject
 import org.slf4j.LoggerFactory
-import java.awt.Component
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JFrame
 import javax.swing.WindowConstants
 
+class SwingFactory @Inject constructor(
+        val clock: Clock
+) {
+    // via extension methods
+}
 
 open class MyWindow(private val myTitle: String) : JFrame() {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -25,15 +31,21 @@ open class MyWindow(private val myTitle: String) : JFrame() {
         })
     }
 
-    protected fun packAndShow(locationRelativeTo: Component? = null) {
-        pack()
-        setLocationRelativeTo(locationRelativeTo)
-        setVisible(true)
-    }
+//    protected fun packAndShow(locationRelativeTo: Component? = null) {
+//        pack()
+//        setLocationRelativeTo(locationRelativeTo)
+//        setVisible(true)
+//    }
 
     protected fun hideAndClose() {
         setVisible(false)
         dispose()
     }
 
+}
+
+fun JFrame.packCenterAndShow() {
+    pack()
+    setLocationRelativeTo(null)
+    setVisible(true)
 }
