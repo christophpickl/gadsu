@@ -1,6 +1,6 @@
 package at.cpickl.gadsu
 
-import at.cpickl.gadsu.client.ClientView
+import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
@@ -58,20 +58,23 @@ class GadsuGuiceStarter @Inject constructor(
         log.debug("start()")
 
         database.initDatabase()
-        registerMacStuff()
+        registerMacHandler()
+
         SwingUtilities.invokeLater {
-            window.changeContent(clientView)
+            bus.post(AppStartupEvent())
+
+            window.changeContent(clientView.asComponent())
             window.start()
         }
     }
 
-    private fun registerMacStuff() {
+    private fun registerMacHandler() {
         if (!mac.isEnabled()) {
-            log.debug("registerMacStuff() not enabled")
+            log.debug("registerMacHandler() not enabled")
             return
         }
 
-        log.debug("registerMacStuff() ... enabling mac specific handlers")
+        log.debug("Enabling mac specific handlers.")
         mac.registerAbout { bus.post(ShowAboutDialogEvent()) }
         mac.registerQuit { bus.post(QuitUserEvent()) }
         // MINOR in future we will need prefs as well: mac.registerPreferences { ... }
@@ -86,6 +89,13 @@ class AllMightyEventCatcher {
     @Subscribe fun onEvent(event: Any) {
         log.trace("Event has been dispatched on EventBus: {}", event)
     }
+
+    // EITHER - OR
+
+//    @Subscribe fun onDeadEvent(event: DeadEvent) {
+//        // TODO and again a global exception handler is required
+//        throw GadsuException("Event (${event.event}) was not handled by anyone! (source: ${event.source})")
+//    }
 
 }
 

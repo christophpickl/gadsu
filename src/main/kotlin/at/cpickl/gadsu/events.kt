@@ -1,8 +1,18 @@
 package at.cpickl.gadsu
 
-abstract class Event {}
+abstract class Event
 
-abstract class UserEvent : Event() {}
+/**
+ * Dispatched internally by the application.
+ */
+abstract class AppEvent : Event()
 
-class QuitUserEvent : UserEvent() {}
+/**
+ * Always triggered by the user (running on the UI dispatch thread).
+ */
+abstract class UserEvent : Event()
+
+class AppStartupEvent : AppEvent()
+
+class QuitUserEvent : UserEvent()
 

@@ -30,7 +30,9 @@ class ClientSpringJdbcRepository @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAll(): List<Client> {
-        return jdbc.query("SELECT * FROM client", Client.ROW_MAPPER)
+        val clients = jdbc.query("SELECT * FROM client", Client.ROW_MAPPER)
+        clients.sort()
+        return clients
     }
 
     override fun insert(client: Client): Client {

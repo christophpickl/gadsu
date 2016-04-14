@@ -7,10 +7,10 @@ import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.Component
 import java.awt.Dimension
 import javax.inject.Inject
 import javax.swing.BorderFactory
-import javax.swing.JComponent
 import javax.swing.JPanel
 
 
@@ -30,21 +30,23 @@ interface MainWindow {
     fun start()
     fun close()
 
-    fun changeContent(content: JComponent)
+    fun changeContent(content: Component)
 }
 
 class SwingMainWindow @Inject constructor(
         private val bus: EventBus,
         private val gadsuMenuBar: GadsuMenuBar
-) : MainWindow, MyWindow("Gadsu") {
+        ) : MainWindow, MyWindow("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val container: JPanel = JPanel()
+    private val container = JPanel()
 
     init {
-        jMenuBar = gadsuMenuBar
-        addCloseListener { bus.post(QuitUserEvent()) }
         if (Development.ENABLED) container.background = Color.CYAN
+
+        jMenuBar = gadsuMenuBar
+        size = Dimension(600, 400)
+        addCloseListener { bus.post(QuitUserEvent()) }
 
         container.layout = BorderLayout()
         container.border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -54,7 +56,6 @@ class SwingMainWindow @Inject constructor(
     }
 
     override fun start() {
-        size = Dimension(600, 400)
         setLocationRelativeTo(null)
         setVisible(true)
     }
@@ -63,7 +64,7 @@ class SwingMainWindow @Inject constructor(
         hideAndClose()
     }
 
-    override fun changeContent(content: JComponent) {
+    override fun changeContent(content: Component) {
         log.trace("changeContent(content={})", content)
         container.removeAll()
         container.add(content, BorderLayout.CENTER)

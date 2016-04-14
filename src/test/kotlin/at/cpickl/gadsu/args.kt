@@ -9,6 +9,10 @@ import org.testng.annotations.Test
 
     private val testDatabaseUrl = "testDatabaseUrl"
 
+    fun help_sunshine() {
+        assertThat(parseArgs(arrayOf("--help")).help, notNullValue())
+    }
+
     fun databaseUrl_sunshine() {
         assertThat(parseArgs(arrayOf("--databaseUrl", testDatabaseUrl)), equalTo(Args(null, testDatabaseUrl)))
     }
@@ -21,10 +25,6 @@ import org.testng.annotations.Test
     @Test(expectedExceptions = arrayOf(ArgsException::class))
     fun invalidParamFails() {
         parseArgs(arrayOf("--foo"))
-    }
-
-    fun help_sunshine() {
-        assertThat(parseArgs(arrayOf("--help")).help, notNullValue())
     }
 
 }

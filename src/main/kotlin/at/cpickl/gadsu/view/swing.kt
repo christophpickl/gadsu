@@ -27,7 +27,7 @@ open class MyWindow(private val myTitle: String) : JFrame() {
     protected fun addCloseListener(body: () -> Unit) {
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(event: WindowEvent) {
-                log.trace("windowClosing() captured, dispatching QuitUserEvent")
+                log.trace("windowClosing(event)")
                 body()
             }
         })

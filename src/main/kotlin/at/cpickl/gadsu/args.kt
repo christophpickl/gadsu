@@ -17,19 +17,26 @@ interface ArgsParser {
     fun parse(cliArgs: Array<String>): Args
 }
 
+data class Args(val help: (() -> Unit)?, val databaseUrl: String?)
+
 class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
 
-// http://commons.apache.org/proper/commons-cli/introduction.html
+
+/**
+ * See: http://commons.apache.org/proper/commons-cli/introduction.html
+ */
 private class CommonsCliArgsParser : ArgsParser {
     companion object {
         private val DATABASE_URL_SHORT = "d"
         private val DATABASE_URL_LONG = "databaseUrl"
+        private val HELP_SHORT = "?"
+        private val HELP_LONG = "help"
     }
     override fun parse(cliArgs: Array<String>): Args {
 
         val options = Options()
         options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: 'jdbc:hsqldb:file:/some/path').")
-        options.addOption("?", "help", false, "Print this usage help.")
+        options.addOption(HELP_SHORT, HELP_LONG, false, "Print this usage help.")
 
         val parser = DefaultParser()
         val commands: CommandLine
@@ -43,7 +50,7 @@ private class CommonsCliArgsParser : ArgsParser {
             throw ArgsException("Parsing CLI arguments failed: ${e.message}! ($cliArgs)", e, helpFunction)
         }
 
-        if (commands.hasOption("?")) {
+        if (commands.hasOption(HELP_SHORT)) {
             return Args(helpFunction, null)
         }
 
@@ -54,5 +61,3 @@ private class CommonsCliArgsParser : ArgsParser {
     }
 
 }
-
-data class Args(val help: (() -> Unit)?, val databaseUrl: String?)

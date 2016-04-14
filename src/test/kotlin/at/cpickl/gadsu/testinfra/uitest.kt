@@ -13,6 +13,7 @@ abstract class UiTest : UISpecTestCase() {
         init {
             // TODO test logging does not work in junit tests :(
             TestLogger().configureLog()
+            System.setProperty("uispec4j.test.library", "junit") // MINOR seems as we can switch to testng anyway ;)
         }
     }
     private val log = LoggerFactory.getLogger(javaClass)
@@ -24,7 +25,7 @@ abstract class UiTest : UISpecTestCase() {
         log.debug("setUp()")
         super.setUp()
 
-        setAdapter(MainClassAdapter(GadsuApp::class.java, "someother-url"))
+        setAdapter(MainClassAdapter(GadsuApp::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
         window = retrieveWindow()
 
         clientDriver = ClientDriver(this)
