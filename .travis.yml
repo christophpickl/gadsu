@@ -37,4 +37,4 @@ cache:
     - $HOME/.gradle/wrapper/
 
 after_success:
-  - ./gradlew jacocoTestReport coveralls
+  - "./gradlew test testUi jacocoTestReport coveralls"

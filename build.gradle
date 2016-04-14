@@ -24,6 +24,7 @@ buildscript {
 
 plugins {
     id 'jacoco'
+    // see: https://github.com/kt3k/coveralls-gradle-plugin
     id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
@@ -222,11 +223,11 @@ test {
         events "skipped", "failed", "standardError"
         exceptionFormat "full" // default is "short"
     }
-//    jacoco {
-//        append = true
+    jacoco {
+        append = true
 //        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
 //        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
-//    }
+    }
 //    beforeTest { descriptor ->
 //        logger.lifecycle("RUN: " + descriptor)
 //    }
@@ -249,7 +250,7 @@ task testIt(type: Test) {
 // check.dependsOn testUi
 
 task testUi(type: Test) {
-    testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = false
     // systemProperty 'uispec4j.test.library', 'testng'
 
     reports.html.destination = file("${reporting.baseDir}/testUi")
@@ -260,15 +261,17 @@ task testUi(type: Test) {
         includeGroups 'uiTest'
         // suites 'src/main/resources/testng.xml'
     }
-//    jacoco {
-//        append = true
+    jacoco {
+        append = true
+        destinationFile = file("$buildDir/jacoco/test.exec") // same as unit tests :)
 //        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
 //        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
-//    }
+    }
 }
 
 
 //apply plugin: "jacoco"
+
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
