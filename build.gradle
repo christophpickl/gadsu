@@ -2,9 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.text.SimpleDateFormat
 
-// =====================================================================================================================
-// REPOS
-// =====================================================================================================================
 
 buildscript {
     ext.kotlin_version = '1.0.1-2'
@@ -25,6 +22,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
 
 repositories {
     jcenter()
@@ -267,12 +268,7 @@ task testUi(type: Test) {
 }
 
 
-plugins {
-    id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
-}
-
-apply plugin: "jacoco"
+//apply plugin: "jacoco"
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
