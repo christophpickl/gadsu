@@ -19,7 +19,7 @@ abstract class HsqldbTest {
 
     @BeforeClass
     fun initDb() {
-        val builder = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";")//.addScripts(sqlScripts())
+        val builder = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";")
         sqlScripts().forEach { builder.addScript("/gadsu/persistence/" + it) }
         database = builder.build()
         unsafeJdbc = JdbcTemplate(database)

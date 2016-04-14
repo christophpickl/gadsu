@@ -10,27 +10,45 @@ import com.google.inject.matcher.Matchers
 import com.google.inject.spi.InjectionListener
 import com.google.inject.spi.TypeEncounter
 import com.google.inject.spi.TypeListener
+import org.hsqldb.jdbc.JDBCDataSource
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import java.io.File
 
 
-class GadsuModule : AbstractModule() {
+class GadsuModule(private val args: Args) : AbstractModule() {
+    companion object {
+        private val DEFAULT_DB_URL: String
+        init {
+            // or: "jdbc:hsqldb:mem:mymemdb"
+            DEFAULT_DB_URL = "jdbc:hsqldb:file:" + File(GADSU_DIRECTORY, "database").absolutePath
+        }
+    }
     private val log = LoggerFactory.getLogger(javaClass)
+
+
 
     override fun configure() {
         log.debug("configure()")
 
-        configureDataSource()
+        configureDataSource(args.databaseUrl ?: DEFAULT_DB_URL)
+
+        bind(DatabaseManager::class.java).asEagerSingleton()
+        bind(DevelopmentController::class.java).asEagerSingleton()
+
         configureEventBus()
         installSubModules()
     }
 
-    private fun configureDataSource() {
-        val hsqldb = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";").addScripts("gadsu/persistence/create_client.sql").build()
-//        bind(DataSource::class.java).toInstance(hsqldb)
-        bind(JdbcTemplate::class.java).toInstance(JdbcTemplate(hsqldb))
+    private fun configureDataSource(databaseUrl: String) {
+        log.info("configureDataSource(databaseUrl='{}')", databaseUrl)
+
+        val dataSource = JDBCDataSource()
+        dataSource.url = databaseUrl
+        dataSource.user = "SA"
+
+        bind(JDBCDataSource::class.java).toInstance(dataSource)
+        bind(JdbcTemplate::class.java).toInstance(JdbcTemplate(dataSource))
     }
 
     private fun configureEventBus() {

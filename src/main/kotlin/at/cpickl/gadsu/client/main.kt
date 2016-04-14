@@ -26,3 +26,5 @@ class ClientSelectedEvent(val client: Client) : UserEvent() {
             .toString()
     }
 }
+
+class CreateNewClientEvent : UserEvent()

@@ -2,9 +2,9 @@ package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.testinfra.DUMMY_UUID
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.LogTestListener
+import at.cpickl.gadsu.testinfra.TEST_UUID
 import at.cpickl.gadsu.testinfra.skip
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -32,12 +32,12 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun insert() {
-        `when`(idGenerator.generate()).thenReturn(DUMMY_UUID)
+        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
 
         val actualSaved = testee().insert(unsavedClient)
 
 //        assertThat(actualSaved, theSameAs(newClient.withId(generatedId)).excludePath("Client.Created"))
-        assertThat(actualSaved, equalTo(unsavedClient.withId(DUMMY_UUID)))
+        assertThat(actualSaved, equalTo(unsavedClient.withId(TEST_UUID)))
 
         val result = jdbc().query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, hasSize(1))
@@ -46,13 +46,13 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     @Test(expectedExceptions = arrayOf(PersistenceException::class))
     fun insert_idSet_fails() {
-        testee().insert(unsavedClient.withId(DUMMY_UUID))
+        testee().insert(unsavedClient.withId(TEST_UUID))
     }
 
     @Test(dependsOnMethods = arrayOf("insert"))
     fun findAll() {
         skip("nope")
-        `when`(idGenerator.generate()).thenReturn(DUMMY_UUID)
+        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
 
         val testee = testee()
         assertThat(testee.findAll(), hasSize(0)) // sanity check

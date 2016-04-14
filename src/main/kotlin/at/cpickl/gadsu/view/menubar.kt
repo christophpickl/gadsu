@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.Development
+import at.cpickl.gadsu.DevelopmentInsertClientEvent
 import at.cpickl.gadsu.QuitUserEvent
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
@@ -23,6 +25,12 @@ class GadsuMenuBar @Inject constructor(
 
         }
         add(menuApp)
+
+        if (Development.ENABLED) {
+            val menuDevelopment = JMenu("Development")
+            menuDevelopment.addItem("Insert Client", DevelopmentInsertClientEvent())
+            add(menuDevelopment)
+        }
     }
 
     fun JMenu.addItem(label: String, event: Any) {

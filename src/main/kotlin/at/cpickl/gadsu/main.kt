@@ -8,8 +8,11 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Guice
 import org.slf4j.LoggerFactory
+import java.io.File
 import javax.inject.Inject
 import javax.swing.SwingUtilities
+
+val GADSU_DIRECTORY = File(System.getProperty("user.home"), ".gadsu")
 
 class GadsuStarter {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -17,7 +20,7 @@ class GadsuStarter {
     fun start(args: Array<String>) {
         log.info("start(args={})", args)
 
-        val guice = Guice.createInjector(GadsuModule())
+        val guice = Guice.createInjector(GadsuModule(parseArgs(args)))
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
         app.start()
     }
@@ -28,13 +31,15 @@ class GadsuGuiceStarter @Inject constructor(
         private val window: MainWindow,
         private val bus: EventBus,
         private val mac: MacHandler,
-        private val clientView: ClientView
+        private val clientView: ClientView,
+        private val database: DatabaseManager
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start() {
         log.debug("start()")
 
+        database.initDatabase()
         registerMacStuff()
         SwingUtilities.invokeLater {
             window.changeContent(clientView)
@@ -69,6 +74,11 @@ class AllMightyEventCatcher {
 class Development {
     companion object {
         val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
+        init {
+            if (ENABLED) {
+                println("Development mode is enabled via '-Dgadsu.development=true'")
+            }
+        }
     }
 }
 

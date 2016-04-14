@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.service.Clock
+import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.event.WindowAdapter
@@ -9,6 +10,7 @@ import javax.swing.JFrame
 import javax.swing.WindowConstants
 
 class SwingFactory @Inject constructor(
+        val eventBus: EventBus,
         val clock: Clock
 ) {
     // via extension methods

@@ -15,16 +15,17 @@ import org.slf4j.LoggerFactory
 
 abstract class BaseLogConfigurator {
 
+    protected val defaultPattern = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
     protected val context: LoggerContext
     init {
         context = LoggerFactory.getILoggerFactory() as LoggerContext
     }
 
-    protected fun consoleAppender(name: String): Appender<ILoggingEvent> {
+    protected fun consoleAppender(name: String, pattern: String = defaultPattern): Appender<ILoggingEvent> {
         val appender = ConsoleAppender<ILoggingEvent>()
         appender.context = context
         appender.name = name
-        appender.encoder = patternLayout()
+        appender.encoder = patternLayout(pattern)
         appender.start()
         return appender
     }
@@ -53,7 +54,7 @@ abstract class BaseLogConfigurator {
     }
 
     // or: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    protected fun patternLayout(pattern: String = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"): PatternLayoutEncoder {
+    protected fun patternLayout(pattern: String = defaultPattern): PatternLayoutEncoder {
         val layout = PatternLayoutEncoder()
         layout.context = context
         layout.pattern = pattern
@@ -87,8 +88,7 @@ object LogConfigurator : BaseLogConfigurator() {
         changeLevel("org.jboss", Level.WARN)
 
         if (Development.ENABLED) {
-            println("Develop LOG enabled.")
-            logger.addAppender(consoleAppender("Gadsu-ConsoleAppender"))
+            logger.addAppender(consoleAppender("Gadsu-Dev-ConsoleAppender", "%-27(%d{HH:mm:ss} [%thread]) [%-5level] %logger{30} - %msg%n"))
         } else {
             // TODO also add console appender, but with level WARN for all
             logger.addAppender(fileAppender("Gadsu-FileAppender", "gadsu.log", "gadsu-%d{yyyy_MM_dd}.log"))

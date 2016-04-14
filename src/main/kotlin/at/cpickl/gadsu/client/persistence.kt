@@ -34,12 +34,13 @@ class ClientSpringJdbcRepository @Inject constructor(
     }
 
     override fun insert(client: Client): Client {
-        log.debug("save(client={})", client)
+        log.debug("insert(client={})", client)
         if (client.id != null) {
             throw PersistenceException("Client must not have set the ID! ($client)")
         }
         val newId = idGenerator.generate()
-        jdbc.execute("CALL insert_client('$newId', '${client.firstName}', '${client.lastName}', TIMESTAMP '${DateFormats.SQL_TIMESTAMP.print(client.created)}');")
+        // FIXME if this fails, no error dialog will be shown!
+        jdbc.execute("CALL insert_client('$newId', '${client.firstName}', '${client.lastName}', ${DateFormats.SQL_TIMESTAMP.print(client.created)});")
         return client.withId(newId)
     }
 
@@ -47,7 +48,7 @@ class ClientSpringJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val Client.Companion.ROW_MAPPER: RowMapper<Client>
-    get() = RowMapper<Client> { rs, rowNum ->
+    get() = RowMapper { rs, rowNum ->
         Client(
                 rs.getString("id"),
                 rs.getString("firstName"),

@@ -1,7 +1,10 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.Development
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.SimpleListModel
+import at.cpickl.gadsu.view.components.newEventButton
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.joda.time.DateTime
@@ -9,7 +12,20 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import javax.swing.*
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.ListCellRenderer
+import javax.swing.ListSelectionModel
+
+
+object ClientViewNames {
+    val List = "Client.List"
+}
+val ViewNames.Client: ClientViewNames
+    get() = ClientViewNames
+
 
 class ClientViewController {
     // what goes in here?!
@@ -35,19 +51,22 @@ class ClientView @Inject constructor(
     }
 }
 
+
 class ClientMasterView @Inject constructor(
-        eventBus: EventBus
+        eventBus: EventBus,
+        swing: SwingFactory
 ) : GridPanel() {
     init {
         if (Development.ENABLED) background = Color.RED
 
-        val model = SimpleListModel<Client>(arrayListOf(Client("", "first", "last", DateTime.now())))
+        val model = SimpleListModel(arrayListOf(Client("", "first", "last", DateTime.now())))
         val list = JList<Client>(model)
+        list.name = ViewNames.Client.List
 
         list.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
                 if (list.selectedIndex == -1) {
-                    // MINOR what to do?
+                    // MINOR what to do if selection changes to none? what actually triggers this? deletion of client?!
                 } else {
                     eventBus.post(ClientSelectedEvent(list.selectedValue))
                 }
@@ -72,9 +91,11 @@ class ClientMasterView @Inject constructor(
         c.fill = GridBagConstraints.HORIZONTAL
         c.weighty = 0.0
         c.gridy++
-        add(JLabel("Some Button"))
+
+        add(swing.newEventButton("Neuen Klienten anlegen", { CreateNewClientEvent() }))
     }
 }
+
 
 open class GridPanel : JPanel() {
     protected val c = GridBagConstraints()
