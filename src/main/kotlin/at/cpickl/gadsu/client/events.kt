@@ -9,6 +9,8 @@ class CreateNewClientEvent : UserEvent()
 
 class ClientCreatedEvent(val client: Client) : AppEvent()
 
+class ClientUpdatedEvent(val client: Client) : AppEvent()
+
 class SaveClientEvent : UserEvent()
 
 class ClientSelectedEvent(val client: Client) : UserEvent() {

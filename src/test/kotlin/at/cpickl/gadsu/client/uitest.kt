@@ -84,4 +84,17 @@ class ClientUiTest : UiTest() {
         assertThat(not(driver.saveButton.isEnabled))
         assertThat(not(driver.cancelButton.isEnabled))
     }
+
+    fun updateClient_shouldUpdateInListAsWell() {
+        val driver = clientDriver()
+
+        driver.inputLastName.setText("initial last name", false)
+        driver.saveButton.click()
+
+        driver.inputLastName.setText(client.lastName, false)
+        driver.saveButton.click()
+
+        assertThat(driver.list.selectionEquals("${client.lastName}"))
+        assertThat(driver.list.contentEquals("${client.lastName}"))
+    }
 }

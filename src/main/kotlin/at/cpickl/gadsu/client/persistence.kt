@@ -1,9 +1,8 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.PersistenceException
-import at.cpickl.gadsu.SQL_TIMESTAMP
-import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.toSqlTimestamp
 import com.google.inject.Inject
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -20,17 +19,21 @@ interface ClientRepository {
      */
     fun insert(client: Client): Client
 
+    fun update(client: Client)
+
 }
 
 class ClientSpringJdbcRepository @Inject constructor(
         private val jdbc: JdbcTemplate,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
-
+    companion object {
+        val TABLE = "client"
+    }
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAll(): List<Client> {
-        val clients = jdbc.query("SELECT * FROM client", Client.ROW_MAPPER)
+        val clients = jdbc.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
         clients.sort()
         return clients
     }
@@ -42,8 +45,18 @@ class ClientSpringJdbcRepository @Inject constructor(
         }
         val newId = idGenerator.generate()
         // FIXME if this fails, no error dialog will be shown!
-        jdbc.execute("CALL insert_client('$newId', '${client.firstName}', '${client.lastName}', ${DateFormats.SQL_TIMESTAMP.print(client.created)});")
+        jdbc.update("INSERT INTO $TABLE (id, firstName, lastName, created) VALUES (?, ?, ?, ?)",
+                newId, client.firstName, client.lastName, client.created.toSqlTimestamp())
         return client.withId(newId)
+    }
+
+    override fun update(client: Client) {
+        log.debug("update(client={})", client)
+        val affectedRows = jdbc.update("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
+                client.firstName, client.lastName, client.id)
+        if (affectedRows != 1) {
+            throw PersistenceException("Exepcted exactly one row to be updated, but was: $affectedRows")
+        }
     }
 
 }

@@ -10,7 +10,7 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 ## High
 
-* run UI tests on travis
+* check unsaved changes if navigating away (to other client, or to some other view like treatments or anything)
 * proper exception handling (needs some global concept)
 
 ## Med
