@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class DevelopmentInsertClientEvent : UserEvent()
 
+@Suppress("UNUSED_PARAMETER")
 class DevelopmentController @Inject constructor(
         private val clientRepo: ClientRepository,
         private val clock: Clock,

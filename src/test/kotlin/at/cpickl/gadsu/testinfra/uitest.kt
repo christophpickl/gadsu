@@ -3,17 +3,22 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.GadsuApp
 import at.cpickl.gadsu.client.ClientDriver
 import org.slf4j.LoggerFactory
+import org.testng.annotations.AfterMethod
+import org.testng.annotations.BeforeMethod
+import org.testng.annotations.Test
 import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 
+
+@Test(groups = arrayOf("uiTest"))
 abstract class UiTest : UISpecTestCase() {
     companion object {
         init {
-            // TODO test logging does not work in junit tests :(
+            // TODO test logging does not work in tests for main app :(
             TestLogger().configureLog()
-            System.setProperty("uispec4j.test.library", "junit") // MINOR seems as we can switch to testng anyway ;)
+            System.setProperty("uispec4j.test.library", "testng")
         }
     }
     private val log = LoggerFactory.getLogger(javaClass)
@@ -21,6 +26,8 @@ abstract class UiTest : UISpecTestCase() {
 
     private var clientDriver: ClientDriver? = null
 
+    // do setup and teardown for every test method (not class!) to ensure a fresh state
+    @BeforeMethod
     override fun setUp() {
         log.debug("setUp()")
         super.setUp()
@@ -29,6 +36,12 @@ abstract class UiTest : UISpecTestCase() {
         window = retrieveWindow()
 
         clientDriver = ClientDriver(this)
+    }
+
+    @AfterMethod
+    override fun tearDown() {
+        log.debug("tearDown()")
+        super.tearDown()
     }
 
     protected fun clientDriver() = clientDriver!!

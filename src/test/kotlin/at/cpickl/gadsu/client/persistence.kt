@@ -3,21 +3,16 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.LogTestListener
 import at.cpickl.gadsu.testinfra.TEST_UUID
-import at.cpickl.gadsu.testinfra.skip
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Listeners
 import org.testng.annotations.Test
 
-
-// MINOR improve solution: http://testng.org/doc/documentation-main.html#testng-listeners
-@Test @Listeners(LogTestListener::class)
+@Test(groups = arrayOf("hsqldb"))
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
@@ -51,7 +46,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     @Test(dependsOnMethods = arrayOf("insert"))
     fun findAll() {
-        skip("nope")
         `when`(idGenerator.generate()).thenReturn(TEST_UUID)
 
         val testee = testee()

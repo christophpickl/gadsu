@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
 
 
+@Test
 class TestLogger : BaseLogConfigurator() {
 
     // MINOR springramework still logs (using JDK logging most likely)... reroute it!
@@ -20,12 +21,15 @@ class TestLogger : BaseLogConfigurator() {
         logger.addAppender(consoleAppender("Gadsu-ConsoleAppender"))
     }
 
-    @Test @BeforeSuite
+    @BeforeSuite
     fun initLogging() {
         configureLog()
     }
 
 }
+
+// MINOR improve solution: http://testng.org/doc/documentation-main.html#testng-listeners
+//@Test @Listeners(LogTestListener::class)
 
 class LogTestListener :  ITestNGListener, ITestListener {
 

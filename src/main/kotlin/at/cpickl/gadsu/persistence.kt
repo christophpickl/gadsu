@@ -69,6 +69,7 @@ class DatabaseManager @Inject constructor(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @Subscribe fun onQuit(event: QuitUserEvent) {
         log.info("Closing database connection.")
         dataSource.connection.close()

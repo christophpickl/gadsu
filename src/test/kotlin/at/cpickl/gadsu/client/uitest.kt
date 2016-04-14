@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.client.view.*
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
+import org.testng.annotations.Test
 
 
 class ClientDriver(private val test: UiTest) {
@@ -18,11 +19,12 @@ class ClientDriver(private val test: UiTest) {
 
 }
 
-class SaveClientTest : UiTest() {
+@Test(groups = arrayOf("uiTest"))
+class SaveClientUiTest : UiTest() {
 
     private val client = Client.unsavedValidInstance()
 
-    fun testSaveClient() {
+    fun saveClient_sunshine() {
         val driver = clientDriver()
 
         assertEquals(driver.list.size, 0) // sanity check
@@ -41,17 +43,11 @@ class SaveClientTest : UiTest() {
         assertThat(driver.list.contentEquals("${client.firstName} ${client.lastName}"))
     }
 
-}
-
-class CancelSaveClientTest : UiTest() {
-
-    private val client = Client.unsavedValidInstance()
-
-    fun testCancelInsertClient() {
+    fun cancelInsertClient_shouldClearAllFields() {
         val driver = clientDriver()
 
-        assertEquals(driver.list.size, 0) // sanity check
-        // sanity check
+        // sanity checks
+        assertEquals(driver.list.size, 0)
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
 
