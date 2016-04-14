@@ -11,6 +11,3 @@ echo "GIT tag"
 echo "change version number again"
 echo "GIT commit"
 echo "GIT push"
-
-# [![Travis CI Status](https://travis-ci.org/christophpickl/gadsu.svg?branch=master)](https://travis-ci.org/christophpickl/gadsu)
-# [![Coverage Status](https://coveralls.io/repos/github/christophpickl/gadsu/badge.svg?branch=master)](https://coveralls.io/github/christophpickl/gadsu?branch=master)
