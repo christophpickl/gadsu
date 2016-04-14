@@ -10,12 +10,17 @@ jdk:
 
 before_install:
   - "chmod +x gradlew"
+# enable headless mode for travis: http://ecmendenhall.github.io/blog/blog/2013/05/28/two-travis-ci-solutions/
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
 
 #before_script:
 #  - export gadsu.skipMacBundle=true
 
 script:
-  - "./gradlew test testUi -Dgadsu.skipMacBundle=true"
+  - "./gradlew test"
+  - "./gradlew testUi"
 #  - "./gradlew assemble -Dgadsu.skipMacBundle=true"
 
 notifications:
