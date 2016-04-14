@@ -24,6 +24,5 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 * splash screen
 * read metainf.properties
 * proper PROD logging (dev switch)
-* configure https://coveralls.io (or https://codecov.io ?)
-    * see: http://jeroenmols.com/blog/2015/11/13/traviscoveralls/
+
 

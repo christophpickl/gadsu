@@ -19,8 +19,7 @@ before_install:
 #  - export gadsu.skipMacBundle=true
 
 script:
-  - "./gradlew test"
-  - "./gradlew testUi"
+  - "./gradlew test testUi coveralls"
 #  - "./gradlew assemble -Dgadsu.skipMacBundle=true"
 
 notifications:
@@ -37,5 +36,3 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-after_success:
-  coveralls

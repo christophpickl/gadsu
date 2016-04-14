@@ -15,11 +15,16 @@ buildscript {
         }
     }
     dependencies {
+        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.1"
+
         // lookup the most recent version here: http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-gradle-plugin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.1"
+
+        // coverage: http://jeroenmols.com/blog/2015/11/13/traviscoveralls/
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
+
 
 repositories {
     jcenter()
@@ -216,7 +221,11 @@ test {
         events "skipped", "failed", "standardError"
         exceptionFormat "full" // default is "short"
     }
-
+    jacoco {
+        append = true
+        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
+    }
 //    beforeTest { descriptor ->
 //        logger.lifecycle("RUN: " + descriptor)
 //    }
@@ -236,6 +245,8 @@ task testIt(type: Test) {
 }
 */
 
+// check.dependsOn testUi
+
 task testUi(type: Test) {
     testLogging.showStandardStreams = true
     // systemProperty 'uispec4j.test.library', 'testng'
@@ -248,4 +259,40 @@ task testUi(type: Test) {
         includeGroups 'uiTest'
         // suites 'src/main/resources/testng.xml'
     }
+    jacoco {
+        append = true
+        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
+    }
+}
+
+// see: https://discuss.kotlinlang.org/t/gradle-code-coverage-report/390
+
+
+//jacoco {
+//    applyTo run
+//}
+
+//task applicationCodeCoverageReport(type:JacocoReport){
+//    executionData run
+//    sourceSets sourceSets.main
+//}
+//jacocoTestReport {
+//    reports {
+//        xml.enabled true
+//        csv.enabled false
+//        html.destination "${buildDir}/reports/coverage"
+//    }
+//}
+
+
+apply plugin: "jacoco"
+apply plugin: 'com.github.kt3k.coveralls'
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'check'
+    onlyIf { System.env.'CI' }
 }
