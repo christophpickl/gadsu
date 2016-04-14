@@ -5,7 +5,9 @@ import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.addChangeListener
 import at.cpickl.gadsu.view.components.newEventButton
+import com.google.common.collect.ComparisonChain
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Component
@@ -32,20 +34,27 @@ class SwingClientDetailView @Inject constructor(
         swing: SwingFactory
 ) : GridPanel(), ClientDetailView {
     companion object {
-        private val BTN_SAVE_LABEL_INSERT = "Neu Anlegen"
+        private val BTN_SAVE_LABEL_INSERT = "Neu anlegen"
         private val BTN_SAVE_LABEL_UPDATE = "Speichern"
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
     private val btnSave = swing.newEventButton(BTN_SAVE_LABEL_INSERT, ViewNames.Client.SaveButton, { SaveClientEvent() })
+    private val btnCancel = JButton("Abbrechen")
 
     private val inpFirstName = JTextField()
     private val inpLastName = JTextField()
     private var currentClient: Client = Client.INSERT_PROTOTYPE
 
+    /** Used to change enable/disable state on changes. */
+    private val allButtons = arrayOf(btnSave, btnCancel)
+    /** Used to detect any changes. */
+    private val allInputs = arrayOf(inpFirstName, inpLastName)
+
     init {
         inpFirstName.name = ViewNames.Client.InputFirstName
         inpLastName.name = ViewNames.Client.InputLastName
+        allInputs.forEach { it.addChangeListener { updateChangeStateIndicator() } }
 
         c.anchor = GridBagConstraints.FIRST_LINE_START
         c.weightx = 0.0
@@ -70,9 +79,9 @@ class SwingClientDetailView @Inject constructor(
         c.gridy++
         c.gridwidth = 2
 
+        // MINOR changing button label changes size and leads to nasty UI glitch :(
+        // btnSave.size = Dimension(btnSave.size.width + 20, btnSave.size.height)
         val buttonPanel = JPanel(FlowLayout(FlowLayout.LEFT))
-
-        val btnCancel = JButton("Abbrechen")
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
             changeClient(currentClient)
@@ -81,6 +90,23 @@ class SwingClientDetailView @Inject constructor(
         buttonPanel.add(btnSave)
         buttonPanel.add(btnCancel)
         add(buttonPanel)
+
+        updateChangeStateIndicator() // set buttons disabled at startup
+    }
+
+    private fun updateChangeStateIndicator() {
+        val modified = isModified()
+        allButtons.forEach {
+            it.isEnabled = modified
+        }
+    }
+
+    // MINOR should be public in future to check for unsaved changes
+    private fun isModified(): Boolean {
+        return ComparisonChain.start()
+                .compare(currentClient.firstName, inpFirstName.text)
+                .compare(currentClient.lastName, inpLastName.text)
+                .result() != 0
     }
 
     override fun changeClient(client: Client) {

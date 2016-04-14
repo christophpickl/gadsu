@@ -57,6 +57,12 @@ class PersistenceModule(private val args: Args) : AbstractModule() {
 class DatabaseManager @Inject constructor(
         private val dataSource: JDBCDataSource
 ) {
+    init {
+        Runtime.getRuntime().addShutdownHook(Thread(Runnable {
+            log.info("Database shutdown hook is running.")
+            closeConnection()
+        }, "DatabaseShutdownHookThread"))
+    }
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun initDatabase() {
@@ -71,6 +77,10 @@ class DatabaseManager @Inject constructor(
 
     @Suppress("UNUSED_PARAMETER")
     @Subscribe fun onQuit(event: QuitUserEvent) {
+        closeConnection()
+    }
+
+    private fun closeConnection() {
         log.info("Closing database connection.")
         dataSource.connection.close()
     }
