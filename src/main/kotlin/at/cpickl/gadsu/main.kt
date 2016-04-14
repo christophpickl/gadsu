@@ -17,12 +17,30 @@ val GADSU_DIRECTORY = File(System.getProperty("user.home"), ".gadsu")
 class GadsuStarter {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun start(args: Array<String>) {
-        log.info("start(args={})", args)
+    fun start(cliArgs: Array<String>) {
+        log.info("start(args={})", cliArgs)
 
-        val guice = Guice.createInjector(GadsuModule(parseArgs(args)))
+        val args = parseArgsOrHelp(cliArgs) ?: return
+
+        val guice = Guice.createInjector(GadsuModule(args))
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
         app.start()
+    }
+
+    private fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
+        val args: Args
+        try {
+            args = parseArgs(cliArgs)
+        } catch (e: ArgsException) {
+            e.help()
+            return null
+        }
+
+        if (args.help != null) {
+            (args.help)()
+            return null
+        }
+        return args
     }
 
 }

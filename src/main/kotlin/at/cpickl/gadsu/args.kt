@@ -1,30 +1,58 @@
 package at.cpickl.gadsu
 
-import joptsimple.OptionParser
+import org.apache.commons.cli.*
 
-fun parseArgs(args: Array<String>): Args {
-    return JOptArgsParser().parse(args)
+fun main(args: Array<String>) {
+    parseArgs(arrayOf("--help")).help!!()
 }
 
-interface ArgsPaser {
-    fun parse(args: Array<String>): Args
+/**
+ * @throws ArgsException if CLI args are somehow wrong.
+ */
+fun parseArgs(cliArgs: Array<String>): Args {
+    return CommonsCliArgsParser().parse(cliArgs)
 }
 
-private class JOptArgsParser : ArgsPaser {
+interface ArgsParser {
+    fun parse(cliArgs: Array<String>): Args
+}
 
-    override fun parse(args: Array<String>): Args {
-        // http://pholser.github.io/jopt-simple/examples.html
-        val options = OptionParser("databaseUrl:").parse(*args)
+class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
 
-        var databaseUrl: String? = null
-        if (options.has("databaseUrl")) {
-            databaseUrl = options.valueOf("databaseUrl") as String
+// http://commons.apache.org/proper/commons-cli/introduction.html
+private class CommonsCliArgsParser : ArgsParser {
+    companion object {
+        private val DATABASE_URL_SHORT = "d"
+        private val DATABASE_URL_LONG = "databaseUrl"
+    }
+    override fun parse(cliArgs: Array<String>): Args {
+
+        val options = Options()
+        options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: 'jdbc:hsqldb:file:/some/path').")
+        options.addOption("?", "help", false, "Print this usage help.")
+
+        val parser = DefaultParser()
+        val commands: CommandLine
+        val help = HelpFormatter()
+        help.width = 150
+        val helpFunction = { help.printHelp("gadsu", options) }
+
+        try {
+            commands = parser.parse(options, cliArgs)
+        } catch (e: ParseException) {
+            throw ArgsException("Parsing CLI arguments failed: ${e.message}! ($cliArgs)", e, helpFunction)
         }
 
-        return Args(databaseUrl)
+        if (commands.hasOption("?")) {
+            return Args(helpFunction, null)
+        }
 
+        return Args(
+                null,
+                if(commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null
+        )
     }
 
 }
 
-class Args(val databaseUrl: String?)
+data class Args(val help: (() -> Unit)?, val databaseUrl: String?)

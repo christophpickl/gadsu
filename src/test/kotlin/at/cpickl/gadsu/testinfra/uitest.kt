@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.GadsuApp
 import at.cpickl.gadsu.client.ClientDriver
+import org.slf4j.LoggerFactory
 import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
@@ -14,11 +15,13 @@ abstract class UiTest : UISpecTestCase() {
             TestLogger().configureLog()
         }
     }
+    private val log = LoggerFactory.getLogger(javaClass)
     private var window: Window? = null
 
     private var clientDriver: ClientDriver? = null
 
     override fun setUp() {
+        log.debug("setUp()")
         super.setUp()
 
         setAdapter(MainClassAdapter(GadsuApp::class.java, "someother-url"))
