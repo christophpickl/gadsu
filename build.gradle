@@ -21,7 +21,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // coverage: http://jeroenmols.com/blog/2015/11/13/traviscoveralls/
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+//        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
 
@@ -221,11 +221,11 @@ test {
         events "skipped", "failed", "standardError"
         exceptionFormat "full" // default is "short"
     }
-    jacoco {
-        append = true
-        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
-        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
-    }
+//    jacoco {
+//        append = true
+//        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
+//        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
+//    }
 //    beforeTest { descriptor ->
 //        logger.lifecycle("RUN: " + descriptor)
 //    }
@@ -259,40 +259,23 @@ task testUi(type: Test) {
         includeGroups 'uiTest'
         // suites 'src/main/resources/testng.xml'
     }
-    jacoco {
-        append = true
-        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
-        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
-    }
+//    jacoco {
+//        append = true
+//        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
+//        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
+//    }
 }
 
-// see: https://discuss.kotlinlang.org/t/gradle-code-coverage-report/390
 
-
-//jacoco {
-//    applyTo run
-//}
-
-//task applicationCodeCoverageReport(type:JacocoReport){
-//    executionData run
-//    sourceSets sourceSets.main
-//}
-//jacocoTestReport {
-//    reports {
-//        xml.enabled true
-//        csv.enabled false
-//        html.destination "${buildDir}/reports/coverage"
-//    }
-//}
-
+plugins {
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
 
 apply plugin: "jacoco"
-apply plugin: 'com.github.kt3k.coveralls'
-coveralls {
-    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
-}
-
-tasks.coveralls {
-    dependsOn 'check'
-    onlyIf { System.env.'CI' }
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }
