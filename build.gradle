@@ -2,9 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.text.SimpleDateFormat
 
-// =====================================================================================================================
-// REPOS
-// =====================================================================================================================
 
 buildscript {
     ext.kotlin_version = '1.0.1-2'
@@ -21,10 +18,15 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // coverage: http://jeroenmols.com/blog/2015/11/13/traviscoveralls/
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+//        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
 
+plugins {
+    id 'jacoco'
+    // see: https://github.com/kt3k/coveralls-gradle-plugin
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
 
 repositories {
     jcenter()
@@ -223,8 +225,8 @@ test {
     }
     jacoco {
         append = true
-        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
-        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
+//        destinationFile = file("$buildDir/jacoco/jacocoTest-unit.exec")
+//        classDumpFile = file("$buildDir/jacoco/classpathdumps-unit")
     }
 //    beforeTest { descriptor ->
 //        logger.lifecycle("RUN: " + descriptor)
@@ -248,7 +250,7 @@ task testIt(type: Test) {
 // check.dependsOn testUi
 
 task testUi(type: Test) {
-    testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = false
     // systemProperty 'uispec4j.test.library', 'testng'
 
     reports.html.destination = file("${reporting.baseDir}/testUi")
@@ -261,38 +263,18 @@ task testUi(type: Test) {
     }
     jacoco {
         append = true
-        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
-        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
+        destinationFile = file("$buildDir/jacoco/test.exec") // same as unit tests :)
+//        destinationFile = file("$buildDir/jacoco/jacocoTest-ui.exec")
+//        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
     }
 }
 
-// see: https://discuss.kotlinlang.org/t/gradle-code-coverage-report/390
 
+//apply plugin: "jacoco"
 
-//jacoco {
-//    applyTo run
-//}
-
-//task applicationCodeCoverageReport(type:JacocoReport){
-//    executionData run
-//    sourceSets sourceSets.main
-//}
-//jacocoTestReport {
-//    reports {
-//        xml.enabled true
-//        csv.enabled false
-//        html.destination "${buildDir}/reports/coverage"
-//    }
-//}
-
-
-apply plugin: "jacoco"
-apply plugin: 'com.github.kt3k.coveralls'
-coveralls {
-    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
-}
-
-tasks.coveralls {
-    dependsOn 'check'
-    onlyIf { System.env.'CI' }
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }

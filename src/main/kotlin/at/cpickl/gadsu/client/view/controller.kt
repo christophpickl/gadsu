@@ -1,7 +1,13 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.CreateNewClientEvent
+import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.service.Clock
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
@@ -36,8 +42,8 @@ class ClientViewController @Inject constructor(
         log.trace("onSaveClientEvent(event)")
         val client = view.detailView.readClient()
         if (client.yetPersisted) {
-            // FIXME update client logic
-            println("not yet implemented")
+            clientRepo.update(client)
+            bus.post(ClientUpdatedEvent(client))
         } else {
             val savedClient = clientRepo.insert(client.withCreated(clock.now()))
             bus.post(ClientCreatedEvent(savedClient))
@@ -50,6 +56,12 @@ class ClientViewController @Inject constructor(
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
         view.detailView.changeClient(event.client)
+    }
+
+    @Subscribe fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
+        log.trace("onClientUpdatedEvent(event)")
+        view.masterView.changeClient(event.client)
+//        view.masterView.selectClient(event.client) ... nope, not needed
     }
 
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {

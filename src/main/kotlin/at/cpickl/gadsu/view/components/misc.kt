@@ -10,6 +10,9 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JButton
 import javax.swing.JPanel
+import javax.swing.JTextField
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 class EventButton(label: String, pName: String, eventBuilder: () -> UserEvent, private val eventBus: EventBus) : JButton(label) {
     init {
@@ -39,4 +42,19 @@ open class GridPanel : JPanel() {
         return null
     }
 
+}
+
+fun JTextField.addChangeListener(listener: () -> Unit) {
+    document.addDocumentListener(object : DocumentListener {
+        override fun changedUpdate(e: DocumentEvent) {
+            listener()
+        }
+        override fun insertUpdate(e: DocumentEvent) {
+            listener()
+        }
+        override fun removeUpdate(e: DocumentEvent) {
+            listener()
+        }
+
+    })
 }

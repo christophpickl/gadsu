@@ -10,11 +10,12 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 ## High
 
-* run UI tests on travis
-* add shutdown hook and check if database was closed properly
+* check unsaved changes if navigating away (to other client, or to some other view like treatments or anything)
+* proper exception handling (needs some global concept)
 
 ## Med
 
+* finish release.sh
 * migrate DB version
 * Development menubar entry (reset data)
 * enable auto formatting in intellij

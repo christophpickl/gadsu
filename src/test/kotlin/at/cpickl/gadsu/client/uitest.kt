@@ -1,6 +1,12 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.*
+import at.cpickl.gadsu.client.view.CancelButton
+import at.cpickl.gadsu.client.view.Client
+import at.cpickl.gadsu.client.view.CreateButton
+import at.cpickl.gadsu.client.view.InputFirstName
+import at.cpickl.gadsu.client.view.InputLastName
+import at.cpickl.gadsu.client.view.List
+import at.cpickl.gadsu.client.view.SaveButton
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
 import org.testng.annotations.Test
@@ -20,7 +26,7 @@ class ClientDriver(private val test: UiTest) {
 }
 
 @Test(groups = arrayOf("uiTest"))
-class SaveClientUiTest : UiTest() {
+class ClientUiTest : UiTest() {
 
     private val client = Client.unsavedValidInstance()
 
@@ -30,7 +36,7 @@ class SaveClientUiTest : UiTest() {
         assertEquals(driver.list.size, 0) // sanity check
 
         // not necessary, by default in insert mode ... driver.createButton.click()
-        assertThat(driver.saveButton.textEquals("Neu Anlegen"))
+        assertThat(driver.saveButton.textEquals("Neu anlegen"))
 
         driver.inputFirstName.setText(client.firstName, false)
         driver.inputLastName.setText(client.lastName, false)
@@ -58,5 +64,37 @@ class SaveClientUiTest : UiTest() {
 
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
+    }
+
+    // same applies for already saved client
+    // and also when hit the cancel button
+    fun buttonsDisabledIfThereAreNoChangesForEmptyClient() {
+        val driver = clientDriver()
+
+        assertThat(not(driver.saveButton.isEnabled))
+        assertThat(not(driver.cancelButton.isEnabled))
+
+        driver.inputFirstName.setText("change", false)
+
+        assertThat(driver.saveButton.isEnabled)
+        assertThat(driver.cancelButton.isEnabled)
+
+        driver.inputFirstName.clear()
+
+        assertThat(not(driver.saveButton.isEnabled))
+        assertThat(not(driver.cancelButton.isEnabled))
+    }
+
+    fun updateClient_shouldUpdateInListAsWell() {
+        val driver = clientDriver()
+
+        driver.inputLastName.setText("initial last name", false)
+        driver.saveButton.click()
+
+        driver.inputLastName.setText(client.lastName, false)
+        driver.saveButton.click()
+
+        assertThat(driver.list.selectionEquals("${client.lastName}"))
+        assertThat(driver.list.contentEquals("${client.lastName}"))
     }
 }

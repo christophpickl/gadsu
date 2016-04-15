@@ -19,7 +19,12 @@ data class Client(
         get() = id != null
 
     val fullName: String
-        get() = firstName + " " + lastName
+        get() {
+            if (firstName.isNotEmpty() && lastName.isNotEmpty()) {
+                return firstName + " " + lastName
+            }
+            return firstName + lastName
+        }
 
     fun withId(newId: String) = Client(newId, firstName, lastName, created)
     // TODO transform to builder instead!

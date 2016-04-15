@@ -5,10 +5,10 @@ import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.springframework.jdbc.core.JdbcTemplate
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -17,46 +17,78 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
     private var idGenerator: IdGenerator = mock(IdGenerator::class.java)
+    private var testee = ClientSpringJdbcRepository(JdbcTemplate(), idGenerator)
 
     override fun sqlScripts() = arrayOf("create_client.sql")
     override fun resetTables() = arrayOf("client")
 
     @BeforeMethod
-    fun initMocks() {
+    fun setUp() {
         idGenerator = mock(IdGenerator::class.java)
+        testee = ClientSpringJdbcRepository(jdbc(), idGenerator)
     }
 
     fun insert() {
-        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
+        whenGenerateIdReturnTestUuid()
 
-        val actualSaved = testee().insert(unsavedClient)
+        val actualSaved = testee.insert(unsavedClient)
 
 //        assertThat(actualSaved, theSameAs(newClient.withId(generatedId)).excludePath("Client.Created"))
         assertThat(actualSaved, equalTo(unsavedClient.withId(TEST_UUID)))
 
         val result = jdbc().query("SELECT * FROM client", Client.ROW_MAPPER)
-        assertThat(result, hasSize(1))
-        assertThat(result[0], equalTo(actualSaved))
+        assertThat(result, contains(actualSaved))
     }
 
+    // TODO be more precise (introduce custom exception type, or check exception message, or even introduce expect() test infra ;)
     @Test(expectedExceptions = arrayOf(PersistenceException::class))
     fun insert_idSet_fails() {
-        testee().insert(unsavedClient.withId(TEST_UUID))
+        testee.insert(unsavedClient.withId(TEST_UUID))
     }
 
     @Test(dependsOnMethods = arrayOf("insert"))
     fun findAll() {
-        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
+        whenGenerateIdReturnTestUuid()
 
-        val testee = testee()
-        assertThat(testee.findAll(), hasSize(0)) // sanity check
+        assertThat(testee.findAll(), empty()) // sanity check
         val actualSavedClient = testee.insert(unsavedClient)
 
-        val found = testee.findAll()
-        assertThat(found, hasSize(1))
-        assertThat(found[0], equalTo(actualSavedClient))
+        assertSingleFindAll(actualSavedClient)
     }
 
-    private fun testee() = ClientSpringJdbcRepository(jdbc(), idGenerator)
+    @Test(dependsOnMethods = arrayOf("insert"))
+    fun update_sunshine() {
+        whenGenerateIdReturnTestUuid()
+
+        val savedClient = testee.insert(unsavedClient)
+        val changedClient = savedClient.withLastName("something else")
+        testee.update(changedClient)
+
+        assertSingleFindAll(changedClient)
+    }
+
+    @Test(expectedExceptions = arrayOf(PersistenceException::class))
+    fun update_notExisting_shouldFail() {
+        testee.update(Client.savedValidInstance())
+    }
+
+    @Test(dependsOnMethods = arrayOf("insert"))
+    fun update_changingCreated_shouldNotChangeAnything() {
+        whenGenerateIdReturnTestUuid()
+
+        val savedClient = testee.insert(unsavedClient)
+        testee.update(savedClient.withCreated(savedClient.created.plusHours(1)))
+
+        assertSingleFindAll(savedClient)
+    }
+
+    private fun whenGenerateIdReturnTestUuid() {
+        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
+    }
+
+    private fun assertSingleFindAll(expected: Client) {
+        val found = testee.findAll()
+        assertThat(found, contains(expected))
+    }
 
 }
