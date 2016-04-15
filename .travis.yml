@@ -2,7 +2,7 @@
 sudo: false
 
 # this will also include kotlin ;)
-language: java
+language: kotlin
 
 # we need to explicitly change to java 8
 jdk:
