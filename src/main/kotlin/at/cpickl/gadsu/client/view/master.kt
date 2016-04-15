@@ -27,7 +27,10 @@ interface ClientMasterView {
 
     fun initClients(clients: List<Client>)
     fun insertClient(index: Int, client: Client)
-    fun selectClient(client: Client)
+    /**
+     * @param client null to deselect any selected entry
+     */
+    fun selectClient(client: Client?)
     fun changeClient(client: Client)
     fun deleteClient(client: Client)
 
@@ -93,9 +96,13 @@ class SwingClientMasterView @Inject constructor(
         model.add(index, client)
     }
 
-    override fun selectClient(client: Client) {
+    override fun selectClient(client: Client?) {
         log.trace("selectClient(client={})", client)
-        list.setSelectedValue(client, true)
+        if (client == null) {
+            list.clearSelection()
+        } else {
+            list.setSelectedValue(client, true)
+        }
     }
 
     override fun changeClient(client: Client) {

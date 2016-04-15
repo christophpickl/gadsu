@@ -92,16 +92,25 @@ class ClientUiTest : UiTest() {
         assertThat(driver.list.contains(client.lastName))
     }
 
-//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
-//        skip("Popup list bug: https://github.com/UISpec4J/UISpec4J/issues/30")
         val driver = clientDriver()
 
         driver.saveClient(client)
         driver.deleteClient(client)
 
         assertThat(not(driver.list.contains(client.fullName)))
-        // MINOR assertThat ... detail view is reset to empty form, as when right click on client in master list, it will get selected automatically and therefor the detail view displays this (deleted) user
+    }
+
+//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+    fun createNewClientRequest_shouldDeselectEntryInMasterList() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+        assertThat(driver.list.selectionEquals(client.fullName))
+
+        driver.createButton.click()
+        assertThat(driver.list.selectionIsEmpty())
     }
 
 }

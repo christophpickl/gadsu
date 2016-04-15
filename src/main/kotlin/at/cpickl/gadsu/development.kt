@@ -2,12 +2,16 @@ package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientDeletedEvent
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.swing.JMenu
+import javax.swing.JMenuItem
 
 
 class Development {
@@ -18,11 +22,23 @@ class Development {
                 println("Development mode is enabled via '-Dgadsu.development=true'")
             }
         }
+
+        fun fiddleAroundWithMenuBar(menu: GadsuMenuBar, bus: EventBus) {
+            if (!Development.ENABLED) {
+                return
+            }
+            val menuDevelopment = JMenu("Development")
+            menu.add(menuDevelopment)
+
+            val item = JMenuItem("Reset Data")
+            item.addActionListener { e -> bus.post(DevelopmentResetDataClientEvent()) }
+            menuDevelopment.add(item)
+        }
     }
 }
 
 
-class DevelopmentInsertClientEvent : UserEvent()
+class DevelopmentResetDataClientEvent : UserEvent()
 
 @Suppress("UNUSED_PARAMETER")
 class DevelopmentController @Inject constructor(
@@ -32,10 +48,19 @@ class DevelopmentController @Inject constructor(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onInsertClient(event: DevelopmentInsertClientEvent) {
-        log.debug("onInsertClient(event)")
-        val insertedClient = clientRepo.insert(Client(null, "devFoo", "devBar", clock.now()))
-        bus.post(ClientCreatedEvent(insertedClient))
+    @Subscribe fun onDevelopmentResetDataClientEvent(event: DevelopmentResetDataClientEvent) {
+        log.debug("onDevelopmentResetDataClientEvent(event)")
+
+        clientRepo.findAll().forEach {
+            clientRepo.delete(it)
+            bus.post(ClientDeletedEvent(it))
+        }
+        arrayOf(newClient("Max", "Mustermann"), newClient("Anna", "Nym")).forEach {
+            val savedClient = clientRepo.insert(it)
+            bus.post(ClientCreatedEvent(savedClient))
+        }
     }
+
+    private fun newClient(firstName: String, lastName: String) = Client(null, firstName, lastName, clock.now())
 
 }

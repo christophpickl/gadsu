@@ -40,6 +40,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         log.trace("onCreateNewClientEvent(event)")
         // TODO check for unsaved changes
+        view.masterView.selectClient(null)
         view.detailView.currentClient = Client.INSERT_PROTOTYPE
     }
 

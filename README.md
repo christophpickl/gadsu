@@ -24,7 +24,7 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 ## v1.0
 
 * Basic client management (create, update, delete)
-
+* Application Packaging for Mac and Windows
 
 # TODO
 
