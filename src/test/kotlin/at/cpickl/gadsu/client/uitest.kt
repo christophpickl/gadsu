@@ -1,42 +1,50 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.CancelButton
-import at.cpickl.gadsu.client.view.Client
-import at.cpickl.gadsu.client.view.CreateButton
-import at.cpickl.gadsu.client.view.InputFirstName
-import at.cpickl.gadsu.client.view.InputLastName
-import at.cpickl.gadsu.client.view.List
-import at.cpickl.gadsu.client.view.SaveButton
+import at.cpickl.gadsu.client.view.*
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+import org.uispec4j.Window
+import java.lang.reflect.Method
 
 
-class ClientDriver(private val test: UiTest) {
+class ClientDriver(private val test: UiTest, private val window: Window) {
 
     // MINOR or: val list: ListBox get() = test.mainWindow.getListBox(ViewNames.Client.List) ?
-    val list = test.mainWindow.getListBox(ViewNames.Client.List)
-    val createButton = test.mainWindow.getButton(ViewNames.Client.CreateButton)
+    val list = window.getListBox(ViewNames.Client.List)
+    val createButton = window.getButton(ViewNames.Client.CreateButton)
 
-    val inputFirstName = test.mainWindow.getInputTextBox(ViewNames.Client.InputFirstName)
-    val inputLastName = test.mainWindow.getInputTextBox(ViewNames.Client.InputLastName)
-    val saveButton = test.mainWindow.getButton(ViewNames.Client.SaveButton)
-    val cancelButton = test.mainWindow.getButton(ViewNames.Client.CancelButton)
+    val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)
+    val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)
+    val saveButton = window.getButton(ViewNames.Client.SaveButton)
+    val cancelButton = window.getButton(ViewNames.Client.CancelButton)
 
 }
 
 @Test(groups = arrayOf("uiTest"))
 class ClientUiTest : UiTest() {
 
-    private val client = Client.unsavedValidInstance()
+    private var client = Client.unsavedValidInstance()
+
+    @BeforeMethod
+    fun resetState(method: Method) {
+        val driver = clientDriver()
+
+        if (driver.cancelButton.awtComponent.isEnabled) {
+            // TODO watch out for confirmation
+            driver.cancelButton.click()
+        }
+        driver.createButton.click()
+
+        // ensure each test is using a unique client instance
+        client = Client.unsavedValidInstance().copy(firstName = javaClass.simpleName, lastName = method.name)
+    }
 
     fun saveClient_sunshine() {
         val driver = clientDriver()
 
-        assertEquals(driver.list.size, 0) // sanity check
-
-        // not necessary, by default in insert mode ... driver.createButton.click()
-        assertThat(driver.saveButton.textEquals("Neu anlegen"))
+        assertThat(driver.saveButton.textEquals("Neu anlegen")) // sanity check
 
         driver.inputFirstName.setText(client.firstName, false)
         driver.inputLastName.setText(client.lastName, false)
@@ -44,16 +52,13 @@ class ClientUiTest : UiTest() {
         driver.saveButton.click()
         assertThat(driver.saveButton.textEquals("Speichern"))
 
-        assertEquals(driver.list.size, 1)
         assertThat(driver.list.selectionEquals("${client.firstName} ${client.lastName}"))
-        assertThat(driver.list.contentEquals("${client.firstName} ${client.lastName}"))
+        assertThat(driver.list.contains("${client.firstName} ${client.lastName}"))
     }
 
     fun cancelInsertClient_shouldClearAllFields() {
         val driver = clientDriver()
 
-        // sanity checks
-        assertEquals(driver.list.size, 0)
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
 
@@ -74,7 +79,7 @@ class ClientUiTest : UiTest() {
         assertThat(not(driver.saveButton.isEnabled))
         assertThat(not(driver.cancelButton.isEnabled))
 
-        driver.inputFirstName.setText("change", false)
+        driver.inputFirstName.setText("changed", false)
 
         assertThat(driver.saveButton.isEnabled)
         assertThat(driver.cancelButton.isEnabled)
@@ -88,13 +93,14 @@ class ClientUiTest : UiTest() {
     fun updateClient_shouldUpdateInListAsWell() {
         val driver = clientDriver()
 
-        driver.inputLastName.setText("initial last name", false)
+        driver.inputLastName.setText("initial last name will be updated", false)
         driver.saveButton.click()
 
         driver.inputLastName.setText(client.lastName, false)
         driver.saveButton.click()
 
         assertThat(driver.list.selectionEquals("${client.lastName}"))
-        assertThat(driver.list.contentEquals("${client.lastName}"))
+        assertThat(driver.list.contains("${client.lastName}"))
     }
+
 }

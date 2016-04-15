@@ -3,8 +3,8 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.GadsuApp
 import at.cpickl.gadsu.client.ClientDriver
 import org.slf4j.LoggerFactory
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.BeforeMethod
+import org.testng.annotations.AfterClass
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
@@ -26,21 +26,21 @@ abstract class UiTest : UISpecTestCase() {
 
     private var clientDriver: ClientDriver? = null
 
-    // do setup and teardown for every test method (not class!) to ensure a fresh state
-    @BeforeMethod
-    override fun setUp() {
-        log.debug("setUp()")
+    // MINOR could not get BeforeMethod setup for uispec4j to work :(
+    @BeforeClass
+    fun initUi() {
+        log.debug("initUi()")
         super.setUp()
 
         setAdapter(MainClassAdapter(GadsuApp::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
         window = retrieveWindow()
 
-        clientDriver = ClientDriver(this)
+        clientDriver = ClientDriver(this, mainWindow)
     }
 
-    @AfterMethod
-    override fun tearDown() {
-        log.debug("tearDown()")
+    @AfterClass
+    fun destroyUi() {
+        log.debug("destroyUi()")
         super.tearDown()
     }
 
@@ -48,12 +48,12 @@ abstract class UiTest : UISpecTestCase() {
 
     private fun retrieveWindow():Window {
         // increase timeout, as it seems as app startup needs more time than default timeout
-        val old = UISpec4J.getWindowInterceptionTimeLimit()
+        val oldTimeout = UISpec4J.getWindowInterceptionTimeLimit()
         try {
             UISpec4J.setWindowInterceptionTimeLimit(1000 * 20)
             return getMainWindow()
         } finally {
-            UISpec4J.setWindowInterceptionTimeLimit(old)
+            UISpec4J.setWindowInterceptionTimeLimit(oldTimeout)
         }
     }
 

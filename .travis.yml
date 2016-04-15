@@ -38,3 +38,7 @@ cache:
 
 after_success:
   - "./gradlew test testUi jacocoTestReport coveralls"
+
+after_failure:
+  - "cat /home/travis/build/christophpickl/gadsu/build/reports/test/index.html"
+  - "cat /home/travis/build/christophpickl/gadsu/build/reports/testUi/index.html"

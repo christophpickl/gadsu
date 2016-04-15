@@ -13,7 +13,7 @@ import javax.swing.DefaultListModel
 
 @Test class ClientViewControllerTest {
 
-    private val prototype = Client.savedValidInstance().withLastName("BBB")
+    private val prototype = Client.savedValidInstance().copy(lastName = "BBB")
     private var model = DefaultListModel<Client>()
 
     @BeforeMethod
@@ -26,32 +26,32 @@ import javax.swing.DefaultListModel
     }
 
     fun calculateIndex_oneBeingLess_returns1() {
-        model.addElement(prototype.withLastName("AAA"))
+        model.addElement(prototype.copy(lastName = "AAA"))
         assertThat(calculateIndex(prototype), equalTo(1))
     }
 
     fun calculateIndex_oneBeingBigger_returns0() {
-        model.addElement(prototype.withLastName("CCC"))
+        model.addElement(prototype.copy(lastName = "CCC"))
         assertThat(calculateIndex(prototype), equalTo(0))
     }
 
     fun calculateIndex_inBetween_returns1() {
-        model.addElement(prototype.withLastName("AAA"))
-        model.addElement(prototype.withLastName("CCC"))
+        model.addElement(prototype.copy(lastName = "AAA"))
+        model.addElement(prototype.copy(lastName = "CCC"))
         assertThat(calculateIndex(prototype), equalTo(1))
     }
 
     fun calculateIndex_twoLessOneBigger_returns2() {
-        model.addElement(prototype.withLastName("AAA1"))
-        model.addElement(prototype.withLastName("AAA2"))
-        model.addElement(prototype.withLastName("CCC"))
+        model.addElement(prototype.copy(lastName = "AAA1"))
+        model.addElement(prototype.copy(lastName = "AAA2"))
+        model.addElement(prototype.copy(lastName = "CCC"))
         assertThat(calculateIndex(prototype), equalTo(2))
     }
 
     fun calculateIndex_oneLessTwoBigger_returns1() {
-        model.addElement(prototype.withLastName("AAA"))
-        model.addElement(prototype.withLastName("CCC1"))
-        model.addElement(prototype.withLastName("CCC2"))
+        model.addElement(prototype.copy(lastName = "AAA"))
+        model.addElement(prototype.copy(lastName = "CCC1"))
+        model.addElement(prototype.copy(lastName = "CCC2"))
         assertThat(calculateIndex(prototype), equalTo(1))
     }
 

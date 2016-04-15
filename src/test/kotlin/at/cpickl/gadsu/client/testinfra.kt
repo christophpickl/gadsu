@@ -8,4 +8,4 @@ import at.cpickl.gadsu.testinfra.TEST_UUID
 fun Client.Companion.unsavedValidInstance() = Client(null, "testFirstName", "testLastName", TEST_DATE)
 
 @Suppress("UNUSED")
-fun Client.Companion.savedValidInstance() = unsavedValidInstance().withId(TEST_UUID)
+fun Client.Companion.savedValidInstance() = unsavedValidInstance().copy(id = TEST_UUID)

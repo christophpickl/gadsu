@@ -26,12 +26,6 @@ data class Client(
             return firstName + lastName
         }
 
-    fun withId(newId: String) = Client(newId, firstName, lastName, created)
-    // TODO transform to builder instead!
-    fun withLastName(newLastName: String) = Client(id, firstName, newLastName, created)
-
-    fun withCreated(newCreated: DateTime) = Client(id, firstName, lastName, newCreated)
-
     override fun compareTo(other: Client): Int {
         return ComparisonChain.start()
                 .compare(this.lastName, other.lastName)
@@ -40,3 +34,50 @@ data class Client(
     }
 
 }
+
+/*
+
+use copy instead
+
+class ClientBuilder(client: Client? = null) {
+    private var id: String? = null
+    private var firstName: String? = null
+    private var lastName: String? = null
+    private var created: DateTime? = null
+
+    init {
+        if (client != null) {
+            id = client.id
+            firstName = client.firstName
+            lastName = client.lastName
+            created = client.created
+        }
+    }
+
+    fun Client.builder() = ClientBuilder(this)
+
+    fun id(value: String?): ClientBuilder {
+        id = value
+        return this
+    }
+
+    fun firstName(value: String): ClientBuilder {
+        firstName = value
+        return this
+    }
+
+    fun lastName(value: String): ClientBuilder {
+        lastName = value
+        return this
+    }
+
+    fun created(value: DateTime): ClientBuilder {
+        created = value
+        return this
+    }
+
+    fun build() = Client(id, firstName!!, lastName!!, created!!)
+
+}
+
+ */

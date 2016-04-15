@@ -34,7 +34,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         val actualSaved = testee.insert(unsavedClient)
 
 //        assertThat(actualSaved, theSameAs(newClient.withId(generatedId)).excludePath("Client.Created"))
-        assertThat(actualSaved, equalTo(unsavedClient.withId(TEST_UUID)))
+        assertThat(actualSaved, equalTo(unsavedClient.copy(id = TEST_UUID)))
 
         val result = jdbc().query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, contains(actualSaved))
@@ -43,7 +43,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // TODO be more precise (introduce custom exception type, or check exception message, or even introduce expect() test infra ;)
     @Test(expectedExceptions = arrayOf(PersistenceException::class))
     fun insert_idSet_fails() {
-        testee.insert(unsavedClient.withId(TEST_UUID))
+        testee.insert(unsavedClient.copy(id = TEST_UUID))
     }
 
     @Test(dependsOnMethods = arrayOf("insert"))
@@ -61,7 +61,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         whenGenerateIdReturnTestUuid()
 
         val savedClient = testee.insert(unsavedClient)
-        val changedClient = savedClient.withLastName("something else")
+        val changedClient = savedClient.copy(lastName = "something else")
         testee.update(changedClient)
 
         assertSingleFindAll(changedClient)
@@ -77,7 +77,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         whenGenerateIdReturnTestUuid()
 
         val savedClient = testee.insert(unsavedClient)
-        testee.update(savedClient.withCreated(savedClient.created.plusHours(1)))
+        testee.update(savedClient.copy(created = savedClient.created.plusHours(1)))
 
         assertSingleFindAll(savedClient)
     }

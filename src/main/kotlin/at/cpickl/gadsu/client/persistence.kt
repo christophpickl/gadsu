@@ -47,7 +47,7 @@ class ClientSpringJdbcRepository @Inject constructor(
         // FIXME if this fails, no error dialog will be shown!
         jdbc.update("INSERT INTO $TABLE (id, firstName, lastName, created) VALUES (?, ?, ?, ?)",
                 newId, client.firstName, client.lastName, client.created.toSqlTimestamp())
-        return client.withId(newId)
+        return client.copy(id = newId)
     }
 
     override fun update(client: Client) {

@@ -1,13 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCreatedEvent
-import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.client.ClientUpdatedEvent
-import at.cpickl.gadsu.client.CreateNewClientEvent
-import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.service.Clock
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
@@ -45,7 +39,7 @@ class ClientViewController @Inject constructor(
             clientRepo.update(client)
             bus.post(ClientUpdatedEvent(client))
         } else {
-            val savedClient = clientRepo.insert(client.withCreated(clock.now()))
+            val savedClient = clientRepo.insert(client.copy(created = clock.now()))
             bus.post(ClientCreatedEvent(savedClient))
         }
     }
