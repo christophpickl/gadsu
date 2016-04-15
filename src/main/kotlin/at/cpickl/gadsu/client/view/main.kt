@@ -7,6 +7,7 @@ import com.google.inject.Inject
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
+import java.awt.Insets
 
 
 object ClientViewNames {
@@ -42,6 +43,7 @@ class SwingClientView @Inject constructor(
 
         c.weightx = 0.7
         c.gridx++
+        c.insets = Insets(0, 10, 0, 0)
         add(detailView.asComponent())
     }
 

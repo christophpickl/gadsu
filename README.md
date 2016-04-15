@@ -15,6 +15,7 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 * Enhance client data
 * Enhance treatment data
+* Preferences window
 
 ## v1.1
 
@@ -30,24 +31,20 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 ## High
 
-* check unsaved changes if navigating away (to other client, or to some other view like treatments or anything)
 * proper exception handling (needs some global concept)
+* migrate DB version
 
 ## Med
 
-* finish release.sh
-* migrate DB version
-* Development menubar entry (reset data)
+* logo
+* splash screen
 * enable auto formatting in intellij
-* tooltips
-* mnemonic and shortcut for menubar
-* read manifest.properties (version number in about dialog)
-* create native EXE for windows
 
 ## Low
 
-* splash screen
-* read metainf.properties
+* create native EXE for windows
+* tooltips
+* mnemonic and shortcut for menubar
 * proper PROD logging (dev switch)
 
 

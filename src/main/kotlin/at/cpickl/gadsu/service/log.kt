@@ -82,7 +82,7 @@ abstract class BaseLogConfigurator {
 object LogConfigurator : BaseLogConfigurator() {
 
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
-        logger.level = Level.ALL
+        logger.level = Level.INFO
         changeLevel("org.apache", Level.WARN)
         changeLevel("org.springframework", Level.WARN)
 

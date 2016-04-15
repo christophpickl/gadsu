@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.service
 
+import com.google.inject.Provider
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -9,7 +10,8 @@ import java.util.Properties
 /**
  * Load additionally info at runtime (data provided by build process).
  */
-class MetaInfLoader {
+class MetaInfLoader : Provider<MetaInf> {
+
     companion object {
         private val PROPERTIES_CLASSPATH = "/gadsu/metainf.properties"
         private val PROPKEY_VERSION = "application.version"
@@ -21,8 +23,7 @@ class MetaInfLoader {
     private val log = LoggerFactory.getLogger(javaClass)
     private var cachedValue: MetaInf? = null
 
-
-    fun load(): MetaInf {
+    override fun get(): MetaInf {
         if (cachedValue != null) {
             return cachedValue!!
         }

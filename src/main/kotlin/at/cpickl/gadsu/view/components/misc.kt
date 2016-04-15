@@ -10,6 +10,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Point
@@ -34,10 +35,8 @@ fun SwingFactory.newEventButton(label: String, name: String, eventBuilder: () ->
 
 
 open class GridPanel : JPanel() {
-    protected val c = GridBagConstraints()
+    val c = GridBagConstraints()
     init {
-        if (Development.ENABLED) background = Color.GREEN
-
         val gridBagLayout = GridBagLayout()
         layout = gridBagLayout
         gridBagLayout.setConstraints(this, c)
@@ -136,4 +135,10 @@ class Dialogs @Inject constructor(
         return buttonLabels[selected]
     }
 
+}
+
+fun JButton.changeSize(size: Dimension) {
+    preferredSize = size
+    minimumSize = size
+    maximumSize = size
 }
