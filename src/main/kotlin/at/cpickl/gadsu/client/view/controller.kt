@@ -84,7 +84,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
         log.trace("onDeleteClientEvent(event)")
         val selected = dialogs.show(
-                title = "Best\u00e4tigung",
+                title = "Klient l\u00f6schen",
                 message = "Willst du den Klienten '${event.client.fullName}' wirklich l\u00f6schen?",
                 type = DialogType.QUESTION,
                 buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")

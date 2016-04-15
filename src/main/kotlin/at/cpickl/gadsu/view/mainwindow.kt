@@ -13,6 +13,7 @@ import java.awt.Component
 import java.awt.Dimension
 import javax.inject.Inject
 import javax.swing.BorderFactory
+import javax.swing.JFrame
 import javax.swing.JPanel
 
 
@@ -39,7 +40,7 @@ interface MainWindow {
     fun start()
     fun close()
     fun changeContent(content: Component)
-    fun asComponent(): Component
+    fun asComponent(): JFrame
 }
 
 class SwingMainWindow @Inject constructor(

@@ -39,6 +39,7 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 * logo
 * splash screen
 * enable auto formatting in intellij
+* on press enter in input field: save
 
 ## Low
 

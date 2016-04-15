@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.swing.DefaultListModel
 import javax.swing.JLabel
 import javax.swing.JList
@@ -93,7 +94,7 @@ class SwingClientMasterView @Inject constructor(
         c.fill = GridBagConstraints.HORIZONTAL
         c.weighty = 0.0
         c.gridy++
-
+        c.insets = Insets(5, 0, 0, 0)
         add(swing.newEventButton("Neuen Klienten anlegen", ViewNames.Client.CreateButton, { CreateNewClientEvent() }))
     }
 

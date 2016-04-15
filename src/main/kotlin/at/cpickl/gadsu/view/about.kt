@@ -69,7 +69,7 @@ class AboutWindow @Inject constructor(
         panel.c.gridy++
 
         val text = JLabel("<html><div style='text-align: center;'>Version ${metaInf.applicationVersion}<br>" +
-                "(${DateFormats.DATE_TIME.print(metaInf.built)}</html>)")
+                "(${DateFormats.DATE_TIME.print(metaInf.built)})</html>")
         text.font = text.font.deriveFont(11.0F)
         panel.add(text)
 

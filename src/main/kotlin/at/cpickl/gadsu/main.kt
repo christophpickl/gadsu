@@ -20,12 +20,6 @@ class GadsuStarter {
     fun start(args: Args) {
         log.info("start(args={})", args)
 
-        log.error("ERROR")
-        log.warn("WARN")
-        log.info("INFO")
-        log.debug("DEBUG")
-        log.trace("TRACE")
-
         val guice = Guice.createInjector(GadsuModule(args))
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
         app.start()
