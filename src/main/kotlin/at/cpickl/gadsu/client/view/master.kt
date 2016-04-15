@@ -17,7 +17,13 @@ import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.DefaultListModel
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.JScrollPane
+import javax.swing.ListCellRenderer
+import javax.swing.ListModel
+import javax.swing.ListSelectionModel
 
 @Suppress("UNUSED") val ClientViewNames.List: String get() = "Client.List"
 @Suppress("UNUSED") val ClientViewNames.CreateButton: String get() = "Client.CreateButton"
@@ -47,6 +53,7 @@ class SwingClientMasterView @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val list = JList<Client>(model)
+    private var previousSelected: Client? = null
 
     init {
         if (Development.ENABLED) background = Color.RED
@@ -57,7 +64,13 @@ class SwingClientMasterView @Inject constructor(
                 if (list.selectedIndex == -1) {
                     // MINOR what to do if selection changes to none? what actually triggers this? deletion of client?!
                 } else {
-                    bus.post(ClientSelectedEvent(list.selectedValue))
+                    log.trace("List selection changed from ({}) to ({})", previousSelected, list.selectedValue)
+                    if (!list.selectedValue.equals(previousSelected)) {
+                        bus.post(ClientSelectedEvent(list.selectedValue, previousSelected))
+                        previousSelected = list.selectedValue
+                    } else {
+                        log.trace("Suppressing selection event as the very same entry was selected again (changes detected).")
+                    }
                 }
             }
         }
@@ -99,6 +112,7 @@ class SwingClientMasterView @Inject constructor(
     override fun selectClient(client: Client?) {
         log.trace("selectClient(client={})", client)
         if (client == null) {
+            previousSelected = null
             list.clearSelection()
         } else {
             list.setSelectedValue(client, true)

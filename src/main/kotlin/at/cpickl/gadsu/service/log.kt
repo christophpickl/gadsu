@@ -84,6 +84,7 @@ object LogConfigurator : BaseLogConfigurator() {
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
         logger.level = Level.ALL
         changeLevel("org.apache", Level.WARN)
+        changeLevel("org.springframework", Level.WARN)
 
         if (Development.ENABLED) {
             logger.addAppender(consoleAppender("Gadsu-Dev-ConsoleAppender", "%-27(%d{HH:mm:ss} [%thread]) [%-5level] %logger{30} - %msg%n"))

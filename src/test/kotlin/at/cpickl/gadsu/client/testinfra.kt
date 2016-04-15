@@ -9,6 +9,7 @@ import at.cpickl.gadsu.client.view.List
 import at.cpickl.gadsu.client.view.SaveButton
 import at.cpickl.gadsu.testinfra.TEST_DATE
 import at.cpickl.gadsu.testinfra.TEST_UUID
+import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.view.ViewNames
 import org.slf4j.LoggerFactory
@@ -24,7 +25,7 @@ fun Client.Companion.unsavedValidInstance() = Client(null, "testFirstName", "tes
 fun Client.Companion.savedValidInstance() = unsavedValidInstance().copy(id = TEST_UUID)
 
 
-class ClientDriver(private val window: Window) {
+class ClientDriver(private val test: UiTest, private val window: Window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -61,6 +62,10 @@ class ClientDriver(private val window: Window) {
             }
         }
         throw AssertionError("Not found list entry with label: '$findLabel'!")
+    }
+
+    fun assertListContains(client: Client) {
+        test.assertThat(list.contains(client.fullName))
     }
 
 }

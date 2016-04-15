@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
+import org.uispec4j.Button
 import org.uispec4j.MenuItem
 import org.uispec4j.Trigger
 import org.uispec4j.UISpec4J
@@ -38,7 +39,7 @@ abstract class UiTest : UISpecTestCase() {
         setAdapter(MainClassAdapter(GadsuApp::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
         window = retrieveWindow()
 
-        clientDriver = ClientDriver(window!!)
+        clientDriver = ClientDriver(this, window!!)
     }
 
     @AfterClass
@@ -63,8 +64,16 @@ abstract class UiTest : UISpecTestCase() {
 }
 
 fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String) {
+    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
+}
+
+fun Button.clickAndDisposeDialog(buttonLabelToClick: String) {
+    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
+}
+
+private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger) {
     WindowInterceptor
-            .init(triggerClick())
+            .init(trigger)
             .process(object : WindowHandler() {
                 override fun process(dialog: Window): Trigger {
                     return dialog.getButton(buttonLabelToClick).triggerClick();

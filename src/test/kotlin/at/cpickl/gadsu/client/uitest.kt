@@ -1,9 +1,14 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.testinfra.UiTest
+import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+import org.uispec4j.Trigger
+import org.uispec4j.Window
+import org.uispec4j.interception.WindowHandler
+import org.uispec4j.interception.WindowInterceptor
 import java.lang.reflect.Method
 
 
@@ -42,7 +47,7 @@ class ClientUiTest : UiTest() {
         assertThat(driver.saveButton.textEquals("Speichern"))
 
         assertThat(driver.list.selectionEquals("${client.firstName} ${client.lastName}"))
-        assertThat(driver.list.contains("${client.firstName} ${client.lastName}"))
+        driver.assertListContains(client)
     }
 
     fun cancelInsertClient_shouldClearAllFields() {
@@ -102,7 +107,7 @@ class ClientUiTest : UiTest() {
         assertThat(not(driver.list.contains(client.fullName)))
     }
 
-//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
         val driver = clientDriver()
 
@@ -111,6 +116,58 @@ class ClientUiTest : UiTest() {
 
         driver.createButton.click()
         assertThat(driver.list.selectionIsEmpty())
+    }
+
+    fun checkUnsavedChanges_createButton_newClient() {
+        val driver = clientDriver()
+
+        driver.inputFirstName.setText("foo", false)
+        driver.createButton.clickAndDisposeDialog("Abbrechen")
+    }
+
+    fun checkUnsavedChanges_createButton_newClient_save() {
+        val driver = clientDriver()
+
+        driver.inputFirstName.setText(client.firstName, false)
+        driver.inputLastName.setText(client.lastName, false)
+        driver.createButton.clickAndDisposeDialog("Speichern")
+
+        driver.assertListContains(client)
+    }
+
+    fun checkUnsavedChanges_createButton_existingClient() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+        driver.inputFirstName.setText("something else", false)
+
+        driver.createButton.clickAndDisposeDialog("Abbrechen")
+    }
+
+    fun checkUnsavedChanges_selectDifferentInList_forNewClient() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+
+        driver.createButton.click()
+        driver.inputFirstName.setText("foo", false)
+
+        WindowInterceptor
+                .init({ driver.list.select(client.fullName) })
+                .process(object : WindowHandler() {
+                    override fun process(dialog: Window): Trigger {
+                        return dialog.getButton("Abbrechen").triggerClick();
+                    }
+                })
+                .run()
+
+    }
+
+    fun checkUnsavedChanges_selectDifferentInList_existingClient() {
+        val driver = clientDriver()
+
+        driver.inputFirstName.setText("foo", false)
+        driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
 }

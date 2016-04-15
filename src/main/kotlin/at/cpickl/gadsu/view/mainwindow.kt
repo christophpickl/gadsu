@@ -2,6 +2,8 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.client.view.ChangeBehaviour
+import at.cpickl.gadsu.client.view.ClientViewController
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -15,12 +17,19 @@ import javax.swing.JPanel
 
 
 class MainWindowController @Inject constructor(
-        private val window: MainWindow
+        private val window: MainWindow,
+        private val clientController: ClientViewController
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
-        log.info("onQuit(event)")
+    @Subscribe fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
+        log.info("onQuitUserEvent(event)")
+
+        if (clientController.checkChanges() == ChangeBehaviour.ABORT) {
+            log.debug("Quit aborted by changes detected by the client controller.")
+            return
+        }
+
         window.close()
     }
 }

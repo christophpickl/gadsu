@@ -24,11 +24,12 @@ import javax.swing.JTextField
 @Suppress("UNUSED") val ClientViewNames.InputLastName: String get() = "Client.InputLastName"
 
 interface ClientDetailView {
-    fun asComponent(): Component
+    var currentClient: Client
 
     fun readClient(): Client
-
-    var currentClient: Client
+    fun isModified(): Boolean
+    fun updateModifiedStateIndicator()
+    fun asComponent(): Component
 
 }
 class SwingClientDetailView @Inject constructor(
@@ -64,7 +65,7 @@ class SwingClientDetailView @Inject constructor(
     init {
         inpFirstName.name = ViewNames.Client.InputFirstName
         inpLastName.name = ViewNames.Client.InputLastName
-        allInputs.forEach { it.addChangeListener { updateChangeStateIndicator() } }
+        allInputs.forEach { it.addChangeListener { updateModifiedStateIndicator() } }
 
         c.anchor = GridBagConstraints.FIRST_LINE_START
         c.weightx = 0.0
@@ -101,18 +102,18 @@ class SwingClientDetailView @Inject constructor(
         buttonPanel.add(btnCancel)
         add(buttonPanel)
 
-        updateChangeStateIndicator() // set buttons disabled at startup
+        updateModifiedStateIndicator() // set buttons disabled at startup
     }
 
-    private fun updateChangeStateIndicator() {
+    override fun updateModifiedStateIndicator() {
+        log.trace("updateModifiedStateIndicator()")
         val modified = isModified()
         allButtons.forEach {
             it.isEnabled = modified
         }
     }
 
-    // MINOR should be public in future to check for unsaved changes
-    private fun isModified(): Boolean {
+    override fun isModified(): Boolean {
         return ComparisonChain.start()
                 .compare(currentClient.firstName, inpFirstName.text)
                 .compare(currentClient.lastName, inpLastName.text)

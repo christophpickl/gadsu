@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientDeletedEvent
@@ -39,7 +40,10 @@ class ClientViewController @Inject constructor(
 
     @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         log.trace("onCreateNewClientEvent(event)")
-        // TODO check for unsaved changes
+
+        if (checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
         view.masterView.selectClient(null)
         view.detailView.currentClient = Client.INSERT_PROTOTYPE
     }
@@ -47,13 +51,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onSaveClientEvent(event: SaveClientEvent) {
         log.trace("onSaveClientEvent(event)")
         val client = view.detailView.readClient()
-        if (client.yetPersisted) {
-            clientRepo.update(client)
-            bus.post(ClientUpdatedEvent(client))
-        } else {
-            val savedClient = clientRepo.insert(client.copy(created = clock.now()))
-            bus.post(ClientCreatedEvent(savedClient))
-        }
+        saveClient(client)
     }
 
     @Subscribe fun onClientCreatedEvent(event: ClientCreatedEvent) {
@@ -68,10 +66,18 @@ class ClientViewController @Inject constructor(
         log.trace("onClientUpdatedEvent(event)")
         view.masterView.changeClient(event.client)
 //        view.masterView.selectClient(event.client) ... nope, not needed
+
+        view.detailView.currentClient = event.client
+        view.detailView.updateModifiedStateIndicator()
     }
 
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
         log.trace("onClientSelectedEvent(event)")
+
+        if (checkChanges() == ChangeBehaviour.ABORT) {
+            view.masterView.selectClient(event.previousSelected) // reset selection
+            return
+        }
         view.detailView.currentClient = event.client
     }
 
@@ -99,6 +105,41 @@ class ClientViewController @Inject constructor(
         }
     }
 
+    fun checkChanges(): ChangeBehaviour {
+        if (!view.detailView.isModified()) {
+            return ChangeBehaviour.CONTINUE
+        }
+        log.debug("Changes detected.")
+
+        val result = dialogs.show("Ungespeicherte \u00c4nderungen", "Es existieren ungespeicherte \u00c4nderungen. Wie w\u00fcnscht du mit diesen umzugehen?",
+                arrayOf("Speichern", "\u00c4nderungen verwerfen", "Abbrechen"), type = DialogType.WARN)
+
+        when (result) {
+            "Speichern" -> {
+                saveClient(view.detailView.readClient())
+                // it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
+                return ChangeBehaviour.ABORT
+            }
+            "\u00c4nderungen verwerfen" -> {
+                return ChangeBehaviour.CONTINUE
+            }
+            "Abbrechen", null -> {
+                return ChangeBehaviour.ABORT
+            }
+            else -> throw GadsuException("Unhandled dialog option: '$result'")
+        }
+    }
+
+    private fun saveClient(client: Client) {
+        if (client.yetPersisted) {
+            clientRepo.update(client)
+            bus.post(ClientUpdatedEvent(client))
+        } else {
+            val savedClient = clientRepo.insert(client.copy(created = clock.now()))
+            bus.post(ClientCreatedEvent(savedClient))
+        }
+    }
+
     @VisibleForTesting fun calculateIndex(model: ListModel<Client>, client: Client): Int {
         var index = 0
         for (i in 0.rangeTo(model.size - 1)) {
@@ -112,4 +153,9 @@ class ClientViewController @Inject constructor(
         return index
     }
 
+}
+
+enum class ChangeBehaviour {
+    CONTINUE,
+    ABORT
 }

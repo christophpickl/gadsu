@@ -38,7 +38,7 @@ class ClientDeletedEvent(val client: Client) : AppEvent()
 /**
  * Master list selected.
  */
-class ClientSelectedEvent(val client: Client) : UserEvent() {
+class ClientSelectedEvent(val client: Client, val previousSelected: Client?) : UserEvent() {
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)
                 .add("client", client)
