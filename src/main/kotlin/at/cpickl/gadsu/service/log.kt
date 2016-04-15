@@ -7,25 +7,32 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+import ch.qos.logback.core.spi.FilterReply
 import ch.qos.logback.core.status.InfoStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 abstract class BaseLogConfigurator {
 
-    protected val defaultPattern = "%-32(%d{HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
+    protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
     protected val context: LoggerContext
     init {
         context = LoggerFactory.getILoggerFactory() as LoggerContext
     }
 
-    protected fun consoleAppender(name: String, pattern: String = defaultPattern): Appender<ILoggingEvent> {
+    protected fun consoleAppender(name: String,
+                                  pattern: String = defaultPattern,
+                                  withAppender: ((ConsoleAppender<ILoggingEvent>) -> Unit)? = null): Appender<ILoggingEvent> {
         val appender = ConsoleAppender<ILoggingEvent>()
         appender.context = context
         appender.name = name
         appender.encoder = patternLayout(pattern)
+        if (withAppender != null) {
+            withAppender(appender)
+        }
         appender.start()
         return appender
     }
@@ -79,19 +86,40 @@ abstract class BaseLogConfigurator {
     }
 }
 
-object LogConfigurator : BaseLogConfigurator() {
+class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator() {
 
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
-        logger.level = Level.INFO
+        logger.level = if (debugEnabled || Development.ENABLED) Level.ALL else Level.DEBUG
+
         changeLevel("org.apache", Level.WARN)
         changeLevel("org.springframework", Level.WARN)
 
         if (Development.ENABLED) {
             logger.addAppender(consoleAppender("Gadsu-Dev-ConsoleAppender", "%-27(%d{HH:mm:ss} [%thread]) [%-5level] %logger{30} - %msg%n"))
         } else {
-            // TODO also add console appender, but with level WARN for all
+            if (debugEnabled) {
+                logger.addAppender(consoleAppender("Gadsu-ConsoleAppender"))
+            } else {
+                logger.addAppender(consoleAppender("Gadsu-ConsoleAppender", withAppender = { appender ->
+                    appender.addFilter(ThresholdFilter(Level.WARN))
+                }))
+
+            }
             logger.addAppender(fileAppender("Gadsu-FileAppender", "gadsu.log", "gadsu-%d{yyyy_MM_dd}.log"))
         }
+    }
+
+}
+
+private class ThresholdFilter(private val level: Level) : Filter<ILoggingEvent>() {
+    init {
+        start()
+    }
+    override fun decide(event: ILoggingEvent): FilterReply {
+        if (event.level.isGreaterOrEqual(level)) {
+            return FilterReply.ACCEPT
+        }
+        return FilterReply.DENY
     }
 
 }

@@ -14,7 +14,11 @@ import org.testng.annotations.Test
     }
 
     fun databaseUrl_sunshine() {
-        assertThat(parseArgs(arrayOf("--databaseUrl", testDatabaseUrl)), equalTo(Args(null, testDatabaseUrl)))
+        assertThat(parseArgs(arrayOf("--databaseUrl", testDatabaseUrl)), equalTo(Args(null, testDatabaseUrl, false)))
+    }
+
+    fun debug_sunshine() {
+        assertThat(parseArgs(arrayOf("--debug")), equalTo(Args(null, null, true)))
     }
 
     @Test(expectedExceptions = arrayOf(ArgsException::class))

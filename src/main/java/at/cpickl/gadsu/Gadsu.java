@@ -14,11 +14,16 @@ public class Gadsu {
 
     private static final Logger LOG = LoggerFactory.getLogger(Gadsu.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] cliArgs) {
+        Args args = ArgsKt.parseArgsOrHelp(cliArgs);
+        if (args == null) {
+            return;
+        }
+
         if (System.getProperty("gadsu.disableLog", "").equals("true")) {
             System.out.println("Gadsu log configuration disabled. (most likely because tests come with own log config)");
         } else {
-            LogConfigurator.INSTANCE.configureLog();
+            new LogConfigurator(args.getDebug()).configureLog();
         }
 
         JFrame.setDefaultLookAndFeelDecorated(true);
