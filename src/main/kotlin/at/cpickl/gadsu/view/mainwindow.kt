@@ -29,8 +29,8 @@ class MainWindowController @Inject constructor(
 interface MainWindow {
     fun start()
     fun close()
-
     fun changeContent(content: Component)
+    fun asComponent(): Component
 }
 
 class SwingMainWindow @Inject constructor(
@@ -69,5 +69,7 @@ class SwingMainWindow @Inject constructor(
         container.removeAll()
         container.add(content, BorderLayout.CENTER)
     }
+
+    override fun asComponent() = this
 
 }

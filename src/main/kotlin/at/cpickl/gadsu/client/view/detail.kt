@@ -24,10 +24,11 @@ import javax.swing.JTextField
 @Suppress("UNUSED") val ClientViewNames.InputLastName: String get() = "Client.InputLastName"
 
 interface ClientDetailView {
-    fun changeClient(client: Client)
     fun asComponent(): Component
 
     fun readClient(): Client
+
+    var currentClient: Client
 
 }
 class SwingClientDetailView @Inject constructor(
@@ -39,12 +40,21 @@ class SwingClientDetailView @Inject constructor(
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
+    private var _currentClient: Client = Client.INSERT_PROTOTYPE
+    override var currentClient: Client
+        get() = _currentClient
+        set(value) {
+            log.trace("set currentClient(value={})", value)
+            btnSave.text = if (value.yetPersisted) BTN_SAVE_LABEL_UPDATE else BTN_SAVE_LABEL_INSERT
+            _currentClient = value
+            updateFields()
+        }
+
     private val btnSave = swing.newEventButton(BTN_SAVE_LABEL_INSERT, ViewNames.Client.SaveButton, { SaveClientEvent() })
     private val btnCancel = JButton("Abbrechen")
 
     private val inpFirstName = JTextField()
     private val inpLastName = JTextField()
-    private var currentClient: Client = Client.INSERT_PROTOTYPE
 
     /** Used to change enable/disable state on changes. */
     private val allButtons = arrayOf(btnSave, btnCancel)
@@ -84,7 +94,7 @@ class SwingClientDetailView @Inject constructor(
         val buttonPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
-            changeClient(currentClient)
+            currentClient = _currentClient
         }
 
         buttonPanel.add(btnSave)
@@ -107,13 +117,6 @@ class SwingClientDetailView @Inject constructor(
                 .compare(currentClient.firstName, inpFirstName.text)
                 .compare(currentClient.lastName, inpLastName.text)
                 .result() != 0
-    }
-
-    override fun changeClient(client: Client) {
-        log.trace("changeClient(client={})", client)
-        btnSave.text = if (client.yetPersisted) BTN_SAVE_LABEL_UPDATE else BTN_SAVE_LABEL_INSERT
-        currentClient = client
-        updateFields()
     }
 
     override fun readClient(): Client {

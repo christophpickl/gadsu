@@ -3,6 +3,8 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.view.components.DialogType
+import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -16,7 +18,8 @@ class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
-        private val clientRepo: ClientRepository
+        private val clientRepo: ClientRepository,
+        private val dialogs: Dialogs
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -29,7 +32,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         log.trace("onCreateNewClientEvent(event)")
         // TODO check for unsaved changes
-        view.detailView.changeClient(Client.INSERT_PROTOTYPE)
+        view.detailView.currentClient = Client.INSERT_PROTOTYPE
     }
 
     @Subscribe fun onSaveClientEvent(event: SaveClientEvent) {
@@ -49,7 +52,7 @@ class ClientViewController @Inject constructor(
         val index = calculateIndex(view.masterView.model, event.client)
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
-        view.detailView.changeClient(event.client)
+        view.detailView.currentClient = event.client
     }
 
     @Subscribe fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
@@ -60,7 +63,32 @@ class ClientViewController @Inject constructor(
 
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
         log.trace("onClientSelectedEvent(event)")
-        view.detailView.changeClient(event.client)
+        view.detailView.currentClient = event.client
+    }
+
+    @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
+        log.trace("onDeleteClientEvent(event)")
+
+        val selected = dialogs.show(
+                title = "Best\u00e4tigung",
+                message = "Willst du den Klienten '${event.client.fullName}' wirklich l\u00f6schen?",
+                type = DialogType.QUESTION,
+                buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
+        )
+        if (selected == null || selected.equals("Abbrechen")) {
+            return
+        }
+
+        clientRepo.delete(event.client)
+        bus.post(ClientDeletedEvent(event.client))
+    }
+
+    @Subscribe fun onClientDeletedEvent(event: ClientDeletedEvent) {
+        log.trace("onClientDeletedEvent(event)")
+        view.masterView.deleteClient(event.client)
+        if (view.detailView.currentClient.equals(event.client)) {
+            view.detailView.currentClient = Client.INSERT_PROTOTYPE
+        }
     }
 
     @VisibleForTesting fun calculateIndex(model: ListModel<Client>, client: Client): Int {

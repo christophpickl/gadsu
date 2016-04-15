@@ -5,9 +5,11 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
+import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.enablePopup
 import at.cpickl.gadsu.view.components.newEventButton
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
@@ -15,13 +17,7 @@ import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.DefaultListModel
-import javax.swing.JLabel
-import javax.swing.JList
-import javax.swing.JScrollPane
-import javax.swing.ListCellRenderer
-import javax.swing.ListModel
-import javax.swing.ListSelectionModel
+import javax.swing.*
 
 @Suppress("UNUSED") val ClientViewNames.List: String get() = "Client.List"
 @Suppress("UNUSED") val ClientViewNames.CreateButton: String get() = "Client.CreateButton"
@@ -33,13 +29,14 @@ interface ClientMasterView {
     fun insertClient(index: Int, client: Client)
     fun selectClient(client: Client)
     fun changeClient(client: Client)
+    fun deleteClient(client: Client)
 
     fun asComponent(): Component
 
 }
 
 class SwingClientMasterView @Inject constructor(
-        eventBus: EventBus,
+        bus: EventBus,
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
 
@@ -57,10 +54,11 @@ class SwingClientMasterView @Inject constructor(
                 if (list.selectedIndex == -1) {
                     // MINOR what to do if selection changes to none? what actually triggers this? deletion of client?!
                 } else {
-                    eventBus.post(ClientSelectedEvent(list.selectedValue))
+                    bus.post(ClientSelectedEvent(list.selectedValue))
                 }
             }
         }
+        list.enablePopup(swing, "L\u00f6schen", { DeleteClientEvent(it) })
 
         val oldRenderer = list.cellRenderer
         list.cellRenderer = ListCellRenderer<Client> { list, client, index, isSelected, cellHasFocus ->
@@ -103,6 +101,11 @@ class SwingClientMasterView @Inject constructor(
     override fun changeClient(client: Client) {
         log.trace("changeClient(client={})", client)
         model.setElementAt(client, findModelIndex(client))
+    }
+
+    override fun deleteClient(client: Client) {
+        log.trace("deleteClient(client={})", client)
+        model.removeElementAt(findModelIndex(client))
     }
 
     // MINOR change to extension function for model

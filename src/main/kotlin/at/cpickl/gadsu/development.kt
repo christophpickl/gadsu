@@ -9,6 +9,19 @@ import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
+
+class Development {
+    companion object {
+        val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
+        init {
+            if (ENABLED) {
+                println("Development mode is enabled via '-Dgadsu.development=true'")
+            }
+        }
+    }
+}
+
+
 class DevelopmentInsertClientEvent : UserEvent()
 
 @Suppress("UNUSED_PARAMETER")

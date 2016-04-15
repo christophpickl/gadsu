@@ -21,12 +21,15 @@ interface ClientRepository {
 
     fun update(client: Client)
 
+    fun delete(client: Client)
+
 }
 
 class ClientSpringJdbcRepository @Inject constructor(
         private val jdbc: JdbcTemplate,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
+
     companion object {
         val TABLE = "client"
     }
@@ -55,7 +58,18 @@ class ClientSpringJdbcRepository @Inject constructor(
         val affectedRows = jdbc.update("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
                 client.firstName, client.lastName, client.id)
         if (affectedRows != 1) {
-            throw PersistenceException("Exepcted exactly one row to be updated, but was: $affectedRows")
+            throw PersistenceException("Exepcted exactly one row to be updated, but was: $affectedRows ($client)")
+        }
+    }
+
+    override fun delete(client: Client) {
+        log.debug("delete(client={})", client)
+        if (client.id == null) {
+            throw PersistenceException("Client got no ID associated! $client")
+        }
+        val affectedRows = jdbc.update("DELETE FROM $TABLE WHERE id = ?", client.id)
+        if (affectedRows != 1) {
+            throw PersistenceException("Exepcted exactly one row to be deleted, but was: $affectedRows ($client)")
         }
     }
 

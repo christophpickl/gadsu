@@ -99,15 +99,4 @@ class AllMightyEventCatcher {
 
 }
 
-class Development {
-    companion object {
-        val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
-        init {
-            if (ENABLED) {
-                println("Development mode is enabled via '-Dgadsu.development=true'")
-            }
-        }
-    }
-}
-
 open class GadsuException(message: String, cause: Exception? = null) : RuntimeException(message, cause)

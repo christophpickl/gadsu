@@ -82,6 +82,26 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         assertSingleFindAll(savedClient)
     }
 
+    @Test(dependsOnMethods = arrayOf("insert", "findAll"))
+    fun delete_sunshine() {
+        whenGenerateIdReturnTestUuid()
+        val savedClient = testee.insert(unsavedClient)
+
+        testee.delete(savedClient)
+
+        assertThat(testee.findAll(), empty())
+    }
+
+    @Test(expectedExceptions = arrayOf(PersistenceException::class))
+    fun delete_clientWithNoId_fails() {
+        testee.delete(unsavedClient)
+    }
+
+    @Test(expectedExceptions = arrayOf(PersistenceException::class))
+    fun delete_notPersistedClient_fails() {
+        testee.delete(unsavedClient.copy(id = "not_exists"))
+    }
+
     private fun whenGenerateIdReturnTestUuid() {
         `when`(idGenerator.generate()).thenReturn(TEST_UUID)
     }

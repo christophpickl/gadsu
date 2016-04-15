@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import org.uispec4j.UISpec4J
-import org.uispec4j.UISpecTestCase
-import org.uispec4j.Window
+import org.uispec4j.*
 import org.uispec4j.interception.MainClassAdapter
+import org.uispec4j.interception.WindowHandler
+import org.uispec4j.interception.WindowInterceptor
 
 
 @Test(groups = arrayOf("uiTest"))
@@ -57,4 +57,15 @@ abstract class UiTest : UISpecTestCase() {
         }
     }
 
+}
+
+fun MenuItem.clickAndDisposeDialog(label: String = "OK") {
+    WindowInterceptor
+            .init(triggerClick())
+            .process(object : WindowHandler() {
+                override fun process(dialog: Window): Trigger {
+                    return dialog.getButton(label).triggerClick();
+                }
+            })
+            .run()
 }
