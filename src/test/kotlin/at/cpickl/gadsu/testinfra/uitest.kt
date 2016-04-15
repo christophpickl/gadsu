@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.GadsuApp
+import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.ClientDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
@@ -36,7 +36,7 @@ abstract class UiTest : UISpecTestCase() {
         log.debug("initUi()")
         super.setUp()
 
-        setAdapter(MainClassAdapter(GadsuApp::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
+        setAdapter(MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
         window = retrieveWindow()
 
         clientDriver = ClientDriver(this, window!!)

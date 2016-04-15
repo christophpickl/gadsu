@@ -7,9 +7,12 @@ import at.cpickl.gadsu.service.LogConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GadsuApp {
+/**
+ * This name will also show up in the native mac app, so dont rename that class.
+ */
+public class Gadsu {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GadsuApp.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Gadsu.class);
 
     public static void main(String[] args) {
         if (System.getProperty("gadsu.disableLog", "").equals("true")) {

@@ -41,6 +41,8 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 * enable auto formatting in intellij
 * tooltips
 * mnemonic and shortcut for menubar
+* read manifest.properties (version number in about dialog)
+* create native EXE for windows
 
 ## Low
 

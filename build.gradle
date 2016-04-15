@@ -2,7 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.text.SimpleDateFormat
 
-
 buildscript {
     ext.kotlin_version = '1.0.1-2'
     repositories {
@@ -12,13 +11,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.1"
-
         // lookup the most recent version here: http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-gradle-plugin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-        // coverage: http://jeroenmols.com/blog/2015/11/13/traviscoveralls/
-//        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.1"
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
     }
 }
 
@@ -41,12 +38,12 @@ repositories {
 // =====================================================================================================================
 
 ext {
-    projectVersion = '1.0.0-SNAPSHOT'
-    myMainClassName = 'at.cpickl.gadsu.GadsuApp'
+    // projectVersion = '1.0.0-SNAPSHOT'
+    myMainClassName = 'at.cpickl.gadsu.Gadsu'
     myAppName = 'Gadsu'
 }
 
-version = projectVersion
+// version = projectVersion
 
 apply plugin: "kotlin"
 
@@ -76,12 +73,10 @@ dependencies {
     compile 'joda-time:joda-time:2.8.1'
     compile 'commons-cli:commons-cli:1.3'
 
-
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3'
     compile 'org.springframework:spring-jdbc:4.2.5.RELEASE'
-
 
     // VIEW
     // -------------------------------------------------------------------------
@@ -91,7 +86,6 @@ dependencies {
     // jasper PDF
     compile 'net.sf.jasperreports:jasperreports:6.1.0'
     compile 'com.lowagie:itext:2.1.7'
-
 
     // LOG
     // -------------------------------------------------------------------------
@@ -114,29 +108,49 @@ dependencies {
 // PACKAGING
 // =====================================================================================================================
 
+// https://github.com/musketyr/gradle-fatjar-plugin
+// ./gradlew fatJar
+apply plugin: 'eu.appsatori.fatjar'
+
+task loadProjectVersionNumber {
+    Properties props = new Properties()
+    File propsFile = new File("version.properties")
+    props.load(propsFile.newDataInputStream())
+    version = props['version']
+    /*
+    Integer nextbuildnum = ( ((props.getProperty('artifactBuildNumber')) as BigDecimal) + 1 )
+    props.setProperty('artifactBuildNumber', nextbuildnum.toString())
+    props.store(propsFile.newWriter(), null)
+    props.load(propsFile.newDataInputStream())
+    */
+
+}
+processResources.dependsOn loadProjectVersionNumber
+
 processResources {
     from('src/main/resources') {
         include '**/metainf.properties'
         filter ReplaceTokens, tokens: [
-                "application.version": projectVersion,
-                "built.date"         : new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date())
+                "application.version": version,
+                "built.date"         : new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date())
         ]
     }
 }
 
-jar {
+
+fatJar {
     manifest {
         // splashscreen-image manifest entry must be in "main JAR" file
         // java -jar is going to ignore -classpath option
         //   => either fat-jar, or reference other lib-jars in manifest
-        attributes 'Implementation-Title': 'MyShiatsu',
-                'Implementation-Version': projectVersion,
+        attributes 'Implementation-Title': 'Gadsu',
+                'Implementation-Version': version,
                 'Main-Class': myMainClassName, // actually not necessary
                 'SplashScreen-Image': "gadsu/splashscreen.jpg",
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version')
     }
-    /* TODO FAT JAR: wenn das machen, dann andere libs in mac app rausnehmen
+    /*
     dependsOn configurations.runtime
     from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } } {
         exclude "META-INF/*.SF"
@@ -146,13 +160,17 @@ jar {
     */
 }
 
+fatJarPrepareFiles {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+}
+
 // =====================================================================================================================
 // PACKAGING MAC
 // =====================================================================================================================
 
-// travis lacks hdiutil binary ...
-//print "[INFO] gadsu.enableMacBundle="
-//println System.properties.getProperty("gadsu.enableMacBundle")
+// travis lacks hdiutil binary, so only enabled by explicit sysproperty
 if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
     println "enabling mac bundle"
     // NOPE!
@@ -168,7 +186,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 
     macAppBundle {
         appName = myAppName
-        dmgName = myAppName + "-" + projectVersion
+        dmgName = myAppName + "-" + version
 
         mainClassName = myMainClassName
         icon = "src/main/buildMac/logo.icns"
@@ -268,7 +286,6 @@ task testUi(type: Test) {
 //        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
     }
 }
-
 
 //apply plugin: "jacoco"
 
