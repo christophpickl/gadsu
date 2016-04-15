@@ -1,64 +1,23 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.*
 import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
-import at.cpickl.gadsu.testinfra.skip
-import at.cpickl.gadsu.view.ViewNames
+import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import org.uispec4j.Window
-import org.uispec4j.interception.PopupMenuInterceptor
 import java.lang.reflect.Method
-import javax.swing.JLabel
 
 
-class ClientDriver(private val test: UiTest, private val window: Window) {
-
-    // MINOR or: val list: ListBox get() = test.mainWindow.getListBox(ViewNames.Client.List) ?
-    val list = window.getListBox(ViewNames.Client.List)
-    val createButton = window.getButton(ViewNames.Client.CreateButton)
-
-    val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)
-    val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)
-    val saveButton = window.getButton(ViewNames.Client.SaveButton)
-    val cancelButton = window.getButton(ViewNames.Client.CancelButton)
-
-    fun saveClient(client: Client) {
-        createButton.click()
-
-        inputFirstName.setText(client.firstName, false)
-        inputLastName.setText(client.lastName, false)
-
-        saveButton.click()
-    }
-
-    fun listIndexOf(findLabel: String): Int {
-        for (i in 0.rangeTo(list.size - 1)) {
-            val label = (list.getSwingRendererComponentAt(i) as JLabel).text
-            if (findLabel.equals(label)) {
-                return i
-            }
-        }
-        throw AssertionError("Not found list entry with label: '$findLabel'!")
-    }
-
-    fun deleteClient(client: Client) {
-        val popup = PopupMenuInterceptor.run(list.triggerRightClick(listIndexOf(client.fullName)))
-        //        popup.contentEquals("Looooschen")
-        val btnDelete = popup.getSubMenu("L\u00F6schen")
-        btnDelete.clickAndDisposeDialog()
-    }
-
-}
 
 @Test(groups = arrayOf("uiTest"))
 class ClientUiTest : UiTest() {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     private var client = Client.unsavedValidInstance()
 
     @BeforeMethod
     fun resetState(method: Method) {
+        log.debug("resetState()")
         val driver = clientDriver()
 
         if (driver.cancelButton.awtComponent.isEnabled) {
@@ -133,9 +92,9 @@ class ClientUiTest : UiTest() {
         assertThat(driver.list.contains(client.lastName))
     }
 
-    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
-        skip("Popup list bug: https://github.com/UISpec4J/UISpec4J/issues/30")
+//        skip("Popup list bug: https://github.com/UISpec4J/UISpec4J/issues/30")
         val driver = clientDriver()
 
         driver.saveClient(client)

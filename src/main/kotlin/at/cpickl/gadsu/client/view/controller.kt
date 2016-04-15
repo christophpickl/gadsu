@@ -1,7 +1,15 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientDeletedEvent
+import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.CreateNewClientEvent
+import at.cpickl.gadsu.client.DeleteClientEvent
+import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
@@ -68,7 +76,6 @@ class ClientViewController @Inject constructor(
 
     @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
         log.trace("onDeleteClientEvent(event)")
-
         val selected = dialogs.show(
                 title = "Best\u00e4tigung",
                 message = "Willst du den Klienten '${event.client.fullName}' wirklich l\u00f6schen?",

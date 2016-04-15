@@ -1,20 +1,22 @@
 package at.cpickl.gadsu;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 import at.cpickl.gadsu.service.LogConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Not easy (impossible?) to define a static void main entry point in Kotlin, so do it in Java ;)
- */
 public class GadsuApp {
 
     private static final Logger LOG = LoggerFactory.getLogger(GadsuApp.class);
 
-    static {
-        LogConfigurator.INSTANCE.configureLog();
+    public static void main(String[] args) {
+        if (System.getProperty("gadsu.disableLog", "").equals("true")) {
+            System.out.println("Gadsu log configuration disabled. (most likely because tests come with own log config)");
+        } else {
+            LogConfigurator.INSTANCE.configureLog();
+        }
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         try {
@@ -23,9 +25,7 @@ public class GadsuApp {
         } catch (Exception e) {
             LOG.error("Could not set native look&feel!", e);
         }
-    }
 
-    public static void main(String[] args) {
         new GadsuStarter().start(args);
     }
 

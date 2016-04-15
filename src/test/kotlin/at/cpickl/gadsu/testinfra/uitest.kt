@@ -6,7 +6,11 @@ import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import org.uispec4j.*
+import org.uispec4j.MenuItem
+import org.uispec4j.Trigger
+import org.uispec4j.UISpec4J
+import org.uispec4j.UISpecTestCase
+import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
@@ -16,9 +20,9 @@ import org.uispec4j.interception.WindowInterceptor
 abstract class UiTest : UISpecTestCase() {
     companion object {
         init {
-            // TODO test logging does not work in tests for main app :(
-            TestLogger().configureLog()
+            System.setProperty("gadsu.disableLog", "true")
             System.setProperty("uispec4j.test.library", "testng")
+            TestLogger().configureLog()
         }
     }
     private val log = LoggerFactory.getLogger(javaClass)
@@ -26,7 +30,6 @@ abstract class UiTest : UISpecTestCase() {
 
     private var clientDriver: ClientDriver? = null
 
-    // MINOR could not get BeforeMethod setup for uispec4j to work :(
     @BeforeClass
     fun initUi() {
         log.debug("initUi()")
@@ -35,7 +38,7 @@ abstract class UiTest : UISpecTestCase() {
         setAdapter(MainClassAdapter(GadsuApp::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
         window = retrieveWindow()
 
-        clientDriver = ClientDriver(this, mainWindow)
+        clientDriver = ClientDriver(window!!)
     }
 
     @AfterClass
@@ -51,7 +54,7 @@ abstract class UiTest : UISpecTestCase() {
         val oldTimeout = UISpec4J.getWindowInterceptionTimeLimit()
         try {
             UISpec4J.setWindowInterceptionTimeLimit(1000 * 20)
-            return getMainWindow()
+            return mainWindow
         } finally {
             UISpec4J.setWindowInterceptionTimeLimit(oldTimeout)
         }
@@ -59,12 +62,12 @@ abstract class UiTest : UISpecTestCase() {
 
 }
 
-fun MenuItem.clickAndDisposeDialog(label: String = "OK") {
+fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String) {
     WindowInterceptor
             .init(triggerClick())
             .process(object : WindowHandler() {
                 override fun process(dialog: Window): Trigger {
-                    return dialog.getButton(label).triggerClick();
+                    return dialog.getButton(buttonLabelToClick).triggerClick();
                 }
             })
             .run()

@@ -8,17 +8,19 @@ import org.testng.ITestListener
 import org.testng.ITestNGListener
 import org.testng.ITestResult
 import org.testng.annotations.BeforeSuite
+import org.testng.annotations.Listeners
 import org.testng.annotations.Test
 
 
 @Test
+@Listeners(LogTestListener::class)
 class TestLogger : BaseLogConfigurator() {
 
     // MINOR springramework still logs (using JDK logging most likely)... reroute it!
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
         logger.level = Level.ALL
         changeLevel("org.springframework", Level.WARN)
-        logger.addAppender(consoleAppender("Gadsu-ConsoleAppender"))
+        logger.addAppender(consoleAppender("Gadsu-ConsoleAppender", "%-27(%d{HH:mm:ss} [%thread]) [%-5level] %logger{42} - %msg%n"))
     }
 
     @BeforeSuite
@@ -27,9 +29,6 @@ class TestLogger : BaseLogConfigurator() {
     }
 
 }
-
-// MINOR improve solution: http://testng.org/doc/documentation-main.html#testng-listeners
-//@Test @Listeners(LogTestListener::class)
 
 class LogTestListener :  ITestNGListener, ITestListener {
 
