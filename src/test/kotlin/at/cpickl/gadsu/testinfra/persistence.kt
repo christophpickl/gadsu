@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.DatabaseManager
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
@@ -11,18 +12,17 @@ import org.testng.annotations.BeforeMethod
 
 abstract class HsqldbTest {
 
-    private var database: EmbeddedDatabase? = null
-    private var unsafeJdbc: JdbcTemplate? = null
+    private var dataSource: EmbeddedDatabase? = null
+    private var jdbc: JdbcTemplate? = null
 
-    abstract fun sqlScripts(): Array<String>
     abstract fun resetTables(): Array<String>
 
     @BeforeClass
     fun initDb() {
         val builder = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";")
-        sqlScripts().forEach { builder.addScript("/gadsu/persistence/" + it) }
-        database = builder.build()
-        unsafeJdbc = JdbcTemplate(database)
+        dataSource = builder.build()
+        DatabaseManager(dataSource!!).migrateDatabase()
+        jdbc = JdbcTemplate(dataSource)
     }
 
     @BeforeMethod
@@ -32,9 +32,9 @@ abstract class HsqldbTest {
 
     @AfterClass
     fun shutdownDb() {
-        database?.shutdown()
+        dataSource?.shutdown()
     }
 
-    protected fun jdbc(): JdbcTemplate = unsafeJdbc!!
+    protected fun jdbc(): JdbcTemplate = jdbc!!
 
 }

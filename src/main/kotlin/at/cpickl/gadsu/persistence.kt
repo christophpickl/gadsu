@@ -3,17 +3,17 @@ package at.cpickl.gadsu
 import at.cpickl.gadsu.service.DateFormats
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
+import org.flywaydb.core.Flyway
 import org.hsqldb.jdbc.JDBCDataSource
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.slf4j.LoggerFactory
-import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.datasource.init.ScriptUtils
 import java.io.File
 import java.sql.Timestamp
 import javax.inject.Inject
+import javax.sql.DataSource
 
 
 /**
@@ -47,7 +47,7 @@ class PersistenceModule(private val args: Args) : AbstractModule() {
         dataSource.url = databaseUrl
         dataSource.user = "SA"
 
-        bind(JDBCDataSource::class.java).toInstance(dataSource)
+        bind(DataSource::class.java).toInstance(dataSource)
         bind(JdbcTemplate::class.java).toInstance(JdbcTemplate(dataSource))
         bind(DatabaseManager::class.java).asEagerSingleton()
     }
@@ -57,7 +57,7 @@ class PersistenceModule(private val args: Args) : AbstractModule() {
  * Shuts down the database connection so HSQLDB persists its data to the filesystem.
  */
 class DatabaseManager @Inject constructor(
-        private val dataSource: JDBCDataSource
+        private val dataSource: DataSource
 ) {
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
@@ -67,14 +67,14 @@ class DatabaseManager @Inject constructor(
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun initDatabase() {
-        log.debug("Executing init SQL scripts.")
-        // FIXME catch exception (e.g. file locked!) => maybe app already running? or just not closed properly => need to remove lock file manually (give hint where it resides)
-        arrayOf("create_client.sql").forEach {
-            val scriptResource = ClassPathResource("/gadsu/persistence/" + it)
-            log.trace("Executing script: {}", scriptResource)
-            ScriptUtils.executeSqlScript(dataSource.connection, scriptResource)
-        }
+    fun migrateDatabase() {
+        log.info("migrateDatabase()")
+        // https://flywaydb.org/documentation/api/
+
+        val flyway = Flyway()
+        flyway.setLocations(*arrayOf("/gadsu/persistence"))
+        flyway.dataSource = dataSource
+        flyway.migrate()
     }
 
     @Suppress("UNUSED_PARAMETER")

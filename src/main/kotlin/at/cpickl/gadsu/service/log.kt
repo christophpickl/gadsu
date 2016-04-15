@@ -91,8 +91,11 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
         logger.level = if (debugEnabled || Development.ENABLED) Level.ALL else Level.DEBUG
 
-        changeLevel("org.apache", Level.WARN)
-        changeLevel("org.springframework", Level.WARN)
+        arrayOf(
+            "org.apache",
+            "org.springframework",
+            "org.flywaydb"
+        ).forEach { changeLevel(it, Level.WARN) }
 
         if (Development.ENABLED) {
             logger.addAppender(consoleAppender("Gadsu-Dev-ConsoleAppender", "%-27(%d{HH:mm:ss} [%thread]) [%-5level] %logger{30} - %msg%n"))

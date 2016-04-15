@@ -40,7 +40,7 @@ class MetaInfLoader : Provider<MetaInf> {
         val version = props.getProperty(PROPKEY_VERSION)
         val builtString = props.getProperty(PROPKEY_BUILT_DATE)
 
-        val built = DATE_FORMATTER.parseDateTime(builtString)
+        val built = if (builtString.equals("@built.date@")) DateTime.now() else DATE_FORMATTER.parseDateTime(builtString)
         cachedValue = MetaInf(version, built)
         return cachedValue!!
     }

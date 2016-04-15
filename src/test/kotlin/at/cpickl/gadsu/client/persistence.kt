@@ -13,13 +13,16 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("hsqldb"))
+//@Listeners(LogTestListener::class)
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
+//    init {
+//        TestLogger().configureLog()
+//    }
 
     private val unsavedClient = Client.unsavedValidInstance()
     private var idGenerator: IdGenerator = mock(IdGenerator::class.java)
     private var testee = ClientSpringJdbcRepository(JdbcTemplate(), idGenerator)
 
-    override fun sqlScripts() = arrayOf("create_client.sql")
     override fun resetTables() = arrayOf("client")
 
     @BeforeMethod

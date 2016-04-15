@@ -39,7 +39,7 @@ class GadsuGuiceStarter @Inject constructor(
     fun start() {
         log.debug("start()")
 
-        database.initDatabase()
+        database.migrateDatabase()
         registerMacHandler()
 
         SwingUtilities.invokeLater {
