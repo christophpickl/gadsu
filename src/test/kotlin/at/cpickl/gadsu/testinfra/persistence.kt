@@ -6,11 +6,11 @@ import at.cpickl.gadsu.SpringJdbcX
 import at.cpickl.gadsu.service.IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hsqldb.jdbc.JDBCDataSource
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
@@ -22,6 +22,8 @@ abstract class HsqldbTest {
             TestLogger().configureLog()
         }
     }
+
+    private val log = LoggerFactory.getLogger(javaClass)
     private var dataSource: EmbeddedDatabase? = null
     private var jdbcx: SpringJdbcX? = null
 
@@ -31,15 +33,17 @@ abstract class HsqldbTest {
 
     @BeforeClass
     fun initDb() {
-        val builder = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";")
-        dataSource = builder.build()
+        val dataSource = JDBCDataSource()
+        dataSource.url = "jdbc:hsqldb:mem:testDb${javaClass.simpleName}"
+        dataSource.user = "SA"
+        log.info("Using data source URL: ${dataSource.url}")
 
-        DatabaseManager(dataSource!!).migrateDatabase()
+        DatabaseManager(dataSource).migrateDatabase()
 //        arrayOf("V1__create_tables.sql").forEach {
 //            ScriptUtils.executeSqlScript(dataSource!!.connection, ClassPathResource("/gadsu/persistence/$it"))
 //        }
 
-        jdbcx = SpringJdbcX(dataSource!!)
+        jdbcx = SpringJdbcX(dataSource)
     }
 
     @BeforeMethod

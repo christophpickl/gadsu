@@ -226,7 +226,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // http://stackoverflow.com/questions/21009125/including-not-excluding-groups-in-testng-and-gradle
 // suite in gradle: http://stackoverflow.com/questions/25774964/gradle-testng-how-to-specify-testng-include-group-in-build-gradle-while-using
 test {
-    testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = false
     //minHeapSize = "128m"
     //maxHeapSize = "512m"
 
