@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.Development
+import at.cpickl.gadsu.GADSU_DIRECTORY
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -10,10 +11,12 @@ import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+import ch.qos.logback.core.rolling.TriggeringPolicyBase
 import ch.qos.logback.core.spi.FilterReply
 import ch.qos.logback.core.status.InfoStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 
 abstract class BaseLogConfigurator {
 
@@ -43,16 +46,18 @@ abstract class BaseLogConfigurator {
 
         // http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
         // http://www.programcreek.com/java-api-examples/index.php?api=ch.qos.logback.core.rolling.TimeBasedRollingPolicy
-        val policy = TimeBasedRollingPolicy<ILoggingEvent>()
-        policy.context = context
-        policy.setParent(appender)
-        policy.fileNamePattern = filenamePattern
-        policy.maxHistory = 14 // two weeks
-        policy.start()
+        val rollingPolicy = TimeBasedRollingPolicy<ILoggingEvent>()
+        rollingPolicy.context = context
+        rollingPolicy.setParent(appender)
+        rollingPolicy.fileNamePattern = filenamePattern
+        rollingPolicy.maxHistory = 14 // two weeks
+        rollingPolicy.start()
+        appender.rollingPolicy = rollingPolicy
 
-        appender.rollingPolicy = policy
-        //        appender.setAppend(true)
-        //        appender.setTriggeringPolicy()
+        val triggeringPolicy = RollOncePerSessionTriggeringPolicy<ILoggingEvent>()
+        triggeringPolicy.start()
+        appender.triggeringPolicy = triggeringPolicy
+        appender.isAppend = true
         appender.context = context
         appender.name = name
         appender.encoder = patternLayout()
@@ -108,7 +113,10 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
                 }))
 
             }
-            logger.addAppender(fileAppender("Gadsu-FileAppender", "gadsu.log", "gadsu-%d{yyyy_MM_dd}.log"))
+            logger.addAppender(fileAppender("Gadsu-FileAppender",
+                    File(GADSU_DIRECTORY, "gadsu.log").absolutePath,
+                    File(GADSU_DIRECTORY, "gadsu-%d{yyyy_MM_dd}.log.zip").absolutePath
+            ))
         }
     }
 
@@ -125,4 +133,17 @@ private class ThresholdFilter(private val level: Level) : Filter<ILoggingEvent>(
         return FilterReply.DENY
     }
 
+}
+
+// http://stackoverflow.com/questions/2492022/how-to-roll-the-log-file-on-startup-in-logback
+private class RollOncePerSessionTriggeringPolicy<E> : TriggeringPolicyBase<E>() {
+    private var doRolling: Boolean = true
+    override fun isTriggeringEvent(activeFile: File, event: E): Boolean {
+        // roll the first time when the event gets called
+        if (doRolling) {
+            doRolling = false;
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,8 +1,6 @@
 
-sudo: false
-
-# this will also include kotlin ;)
 language: kotlin
+sudo: false
 
 # we need to explicitly change to java 8
 jdk:
@@ -10,35 +8,30 @@ jdk:
 
 before_install:
   - "chmod +x gradlew"
-# enable headless mode for travis: https://docs.travis-ci.com/user/gui-and-headless-browsers/
+# enable headless mode for uispec4j: https://docs.travis-ci.com/user/gui-and-headless-browsers/
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - "sleep 3" # give xvfb some time to start
 
-#before_script:
-#  - export gadsu.skipMacBundle=true
-
 script:
   - "./gradlew test testUi"
-#  - "./gradlew assemble -Dgadsu.skipMacBundle=true"
+
+after_success:
+  - "./gradlew test testUi jacocoTestReport coveralls"
 
 notifications:
   email:
     - christoph.pickl@gmail.com
 
+after_failure:
+  - "cat /home/travis/build/christophpickl/gadsu/build/reports/test/index.html"
+  - "cat /home/travis/build/christophpickl/gadsu/build/reports/testUi/index.html"
+
 # avoid re-downloading dependencies all the time
 # https://docs.travis-ci.com/user/languages/java/#Caching
 before_cache:
   - "rm -f $HOME/.gradle/caches/modules-2/modules-2.lock"
-
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-
-after_success:
-  - "./gradlew test testUi jacocoTestReport coveralls"
-
-after_failure:
-  - "cat /home/travis/build/christophpickl/gadsu/build/reports/test/index.html"
-  - "cat /home/travis/build/christophpickl/gadsu/build/reports/testUi/index.html"

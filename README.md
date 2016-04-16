@@ -46,6 +46,7 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 * tooltips
 * mnemonic and shortcut for menubar
 * proper PROD logging (dev switch)
+* export (wichtig), aber auch import (nicht sooo wichtig)
 
 
 # Unicodes
