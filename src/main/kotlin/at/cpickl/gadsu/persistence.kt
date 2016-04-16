@@ -66,6 +66,7 @@ class DatabaseManager @Inject constructor(
         }, "DatabaseShutdownHookThread"))
     }
     private val log = LoggerFactory.getLogger(javaClass)
+    private var databaseConnected: Boolean = false
 
     fun migrateDatabase() {
         log.info("migrateDatabase()")
@@ -75,6 +76,7 @@ class DatabaseManager @Inject constructor(
         flyway.setLocations(*arrayOf("/gadsu/persistence"))
         flyway.dataSource = dataSource
         flyway.migrate()
+        databaseConnected = true
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -83,8 +85,17 @@ class DatabaseManager @Inject constructor(
     }
 
     private fun closeConnection() {
+        if (!databaseConnected) {
+            log.warn("Not going to close database connection as it was never successfully opened")
+            return
+        }
         log.info("Closing database connection.")
-        dataSource.connection.close()
+        try {
+            dataSource.connection.close()
+        } catch (e: Exception) {
+            // when there is a lock, the shutdown hook will fail, avoid this!
+            log.error("Could not close database connection.", e)
+        }
     }
 
 }

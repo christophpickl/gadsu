@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.SwingFactory
@@ -8,7 +7,6 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
@@ -119,7 +117,7 @@ enum class DialogType(val swingConstant: Int) {
 }
 
 class Dialogs @Inject constructor(
-        private val window: MainWindow
+        private val window: MainWindow?
 ) {
     /**
      * @param buttonLabels for each button its label
@@ -127,7 +125,7 @@ class Dialogs @Inject constructor(
      * @return the label which was selected or null if user just hit the close button
      */
     fun show(title: String, message: String, buttonLabels: Array<String>, defaultButton: String? = null, type: DialogType = DialogType.PLAIN): String? {
-        val selected = JOptionPane.showOptionDialog(window.asComponent(), message, title,
+        val selected = JOptionPane.showOptionDialog(window?.asComponent(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])
         if (selected == JOptionPane.CLOSED_OPTION) {
             return null

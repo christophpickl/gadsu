@@ -9,6 +9,7 @@ class ServiceModule : AbstractModule() {
         bind(IdGenerator::class.java).to(UuidGenerator::class.java)
 
         bind(MetaInf::class.java).toProvider(MetaInfLoader::class.java)
+        bind(Prefs::class.java).to(JavaPrefs::class.java)
     }
 
 }

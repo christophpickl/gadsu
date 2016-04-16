@@ -4,6 +4,8 @@ import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
+import at.cpickl.gadsu.view.components.DialogType
+import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Guice
@@ -14,12 +16,31 @@ import javax.swing.SwingUtilities
 
 val GADSU_DIRECTORY = File(System.getProperty("user.home"), ".gadsu")
 
+object GlobalExceptionHandler {
+    private val log = LoggerFactory.getLogger(javaClass)
+    fun register() {
+        log.debug("Registering global exception handler.")
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            log.error("Uncaught exception in thread (${thread.name})", throwable)
+            Dialogs(null).show(
+                    title = "Fehler",
+                    message = "Ein unerwarteter Fehler ist aufgetreten! Siehe Programmlogs f\u00fcr mehr Details.",
+                    buttonLabels = arrayOf("Programm schlie\u00dfen"),
+                    type = DialogType.ERROR
+            )
+            System.exit(1)
+        }
+    }
+}
+
 class GadsuStarter {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start(args: Args) {
         log.info("start(args={})", args)
 
+        GlobalExceptionHandler.register()
         val guice = Guice.createInjector(GadsuModule(args))
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
         app.start()

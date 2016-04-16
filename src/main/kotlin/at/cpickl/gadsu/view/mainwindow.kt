@@ -1,9 +1,12 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.client.view.ChangeBehaviour
 import at.cpickl.gadsu.client.view.ClientViewController
+import at.cpickl.gadsu.service.Prefs
+import at.cpickl.gadsu.service.WindowDescriptor
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -19,9 +22,16 @@ import javax.swing.JPanel
 
 class MainWindowController @Inject constructor(
         private val window: MainWindow,
-        private val clientController: ClientViewController
+        private val clientController: ClientViewController,
+        private val prefs: Prefs
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
+
+    @Subscribe fun onAppStartupEvent(@Suppress("UNUSED_PARAMETER") event: AppStartupEvent) {
+        if (prefs.windowDescriptor != null) {
+            window.descriptor = prefs.windowDescriptor!!
+        }
+    }
 
     @Subscribe fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
         log.info("onQuitUserEvent(event)")
@@ -31,12 +41,15 @@ class MainWindowController @Inject constructor(
             return
         }
 
+        prefs.windowDescriptor = window.descriptor
         window.close()
     }
 }
 
 
 interface MainWindow {
+    var descriptor: WindowDescriptor
+
     fun start()
     fun close()
     fun changeContent(content: Component)
@@ -64,6 +77,13 @@ class SwingMainWindow @Inject constructor(
         contentPane.layout = BorderLayout()
         contentPane.add(container, BorderLayout.CENTER)
     }
+
+    override var descriptor: WindowDescriptor
+        get() = WindowDescriptor(location, size)
+        set(value) {
+            location = value.location
+            size = value.size
+        }
 
     override fun start() {
         setLocationRelativeTo(null)
