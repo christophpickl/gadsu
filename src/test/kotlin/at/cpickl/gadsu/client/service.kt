@@ -23,7 +23,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private var testee: ClientServiceImpl? = null
 
 
-    override fun resetTables() = arrayOf("client", "treatment")
+    override fun resetTables() = arrayOf("treatment", "client")
 
     @BeforeMethod
     fun setUp() {

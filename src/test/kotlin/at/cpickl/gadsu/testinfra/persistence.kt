@@ -6,7 +6,7 @@ import at.cpickl.gadsu.SpringJdbcX
 import at.cpickl.gadsu.service.IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
@@ -33,7 +33,12 @@ abstract class HsqldbTest {
     fun initDb() {
         val builder = EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).setSeparator(";")
         dataSource = builder.build()
+
         DatabaseManager(dataSource!!).migrateDatabase()
+//        arrayOf("V1__create_tables.sql").forEach {
+//            ScriptUtils.executeSqlScript(dataSource!!.connection, ClassPathResource("/gadsu/persistence/$it"))
+//        }
+
         jdbcx = SpringJdbcX(dataSource!!)
     }
 
@@ -50,7 +55,7 @@ abstract class HsqldbTest {
     protected fun jdbcx(): SpringJdbcX = jdbcx!!
 
     protected fun whenGenerateIdReturnTestUuid() {
-        Mockito.`when`(idGenerator.generate()).thenReturn(TEST_UUID)
+        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
     }
 
     protected fun nullJdbcx() = mock(JdbcX::class.java)

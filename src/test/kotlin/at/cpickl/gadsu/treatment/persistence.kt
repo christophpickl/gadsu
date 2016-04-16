@@ -11,16 +11,16 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.springframework.dao.DataIntegrityViolationException
-import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 
 @Test(groups = arrayOf("hsqldb"))
 class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
-    override fun resetTables() = arrayOf("treatment")
+
+    override fun resetTables() = arrayOf("treatment", "client")
 
     private val unsavedClient = Client.unsavedValidInstance()
     private val client = Client.savedValidInstance()
@@ -28,17 +28,15 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
 
     private var testee = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
 
-    @BeforeClass
-    fun insertClient() {
+    @BeforeMethod
+    fun setUp() {
+        idGenerator = mock(IdGenerator::class.java)
+        testee = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
+
+
         ClientSpringJdbcRepository(jdbcx(), object : IdGenerator {
             override fun generate() = client.id!!
         }).insert(client.copy(id = null))
-    }
-
-    @BeforeMethod
-    fun setUp() {
-        idGenerator = Mockito.mock(IdGenerator::class.java)
-        testee = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
     }
 
     fun insert_sunshine() {

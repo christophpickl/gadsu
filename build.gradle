@@ -226,7 +226,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // http://stackoverflow.com/questions/21009125/including-not-excluding-groups-in-testng-and-gradle
 // suite in gradle: http://stackoverflow.com/questions/25774964/gradle-testng-how-to-specify-testng-include-group-in-build-gradle-while-using
 test {
-    testLogging.showStandardStreams = false
+    testLogging.showStandardStreams = true
     //minHeapSize = "128m"
     //maxHeapSize = "512m"
 
@@ -235,8 +235,8 @@ test {
         // https://docs.gradle.org/current/groovydoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html
         excludeGroups 'uiTest'
 
-        parallel = 'classes'
-        threadCount = 5
+        //parallel = 'classes'
+        //threadCount = 1 // !!!! only increase thread count for real unit tests (will break HSQLDB enabled tests!!!)
     }
 
     testLogging {

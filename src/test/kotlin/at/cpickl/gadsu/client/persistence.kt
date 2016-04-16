@@ -116,7 +116,7 @@ class ClientAndTreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
 
-    override fun resetTables() = arrayOf("client", "treatment")
+    override fun resetTables() = arrayOf("treatment", "client")
 
     @BeforeMethod
     fun setUp() {
