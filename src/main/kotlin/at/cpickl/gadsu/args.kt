@@ -37,7 +37,10 @@ interface ArgsParser {
     fun parse(cliArgs: Array<String>): Args
 }
 
-data class Args(val help: (() -> Unit)?, val databaseUrl: String?, val debug: Boolean)
+data class Args(val help: (() -> Unit)?,
+                val databaseUrl: String?,
+                val debug: Boolean,
+                val preferencesNode: String?)
 
 class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
 
@@ -53,12 +56,15 @@ private class CommonsCliArgsParser : ArgsParser {
         private val DEBUG_LONG = "debug"
         private val HELP_SHORT = "?"
         private val HELP_LONG = "help"
+        private val PREFS_NODE_SHORT = "p"
+        private val PREFS_NODE_LONG = "preferences"
     }
     override fun parse(cliArgs: Array<String>): Args {
 
         val options = Options()
-        options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: 'jdbc:hsqldb:file:/some/path').")
+        options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: '${PersistenceModule.DEFAULT_DB_URL}').")
         options.addOption(DEBUG_SHORT, DEBUG_LONG, false, "Increase log level and register additional console appender.")
+        options.addOption(PREFS_NODE_SHORT, PREFS_NODE_LONG, true, "Change the default Java class to be used for preferences node.")
         options.addOption(HELP_SHORT, HELP_LONG, false, "Print this usage help.")
 
         val parser = DefaultParser()
@@ -74,13 +80,14 @@ private class CommonsCliArgsParser : ArgsParser {
         }
 
         if (commands.hasOption(HELP_SHORT)) {
-            return Args(helpFunction, null, false)
+            return Args(helpFunction, null, false, null)
         }
 
         return Args(
                 null,
                 if(commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null,
-                commands.hasOption(DEBUG_SHORT)
+                commands.hasOption(DEBUG_SHORT),
+                if(commands.hasOption(PREFS_NODE_SHORT)) commands.getOptionValue(PREFS_NODE_SHORT) else null
         )
     }
 

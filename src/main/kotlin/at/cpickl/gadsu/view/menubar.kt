@@ -18,7 +18,7 @@ class GadsuMenuBar @Inject constructor(
 
         if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
-            // add entry preferences
+            menuApp.addItem("Einstellungen", ShowPreferencesEvent())
             menuApp.addSeparator()
             menuApp.addItem("Beenden", QuitUserEvent())
 

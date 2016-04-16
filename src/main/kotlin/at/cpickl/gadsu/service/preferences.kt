@@ -10,7 +10,7 @@ interface Prefs {
     var windowDescriptor: WindowDescriptor?
 }
 
-class JavaPrefs : Prefs {
+class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
     companion object {
         private val KEY_WINDOW_X = "WINDOW_X"
         private val KEY_WINDOW_Y = "WINDOW_Y"
@@ -23,7 +23,8 @@ class JavaPrefs : Prefs {
     private val preferences: Preferences
         get() {
             if (_preferences == null) {
-                _preferences = Preferences.userNodeForPackage(javaClass)
+                log.info("Initializing preferences for class: {}", nodeClass.name)
+                _preferences = Preferences.userNodeForPackage(nodeClass)
             }
             return _preferences!!
         }

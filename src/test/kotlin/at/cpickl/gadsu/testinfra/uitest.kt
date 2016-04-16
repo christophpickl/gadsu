@@ -6,15 +6,11 @@ import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import org.uispec4j.Button
-import org.uispec4j.MenuItem
-import org.uispec4j.Trigger
 import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
-import org.uispec4j.interception.WindowHandler
-import org.uispec4j.interception.WindowInterceptor
+import java.util.prefs.Preferences
 
 
 @Test(groups = arrayOf("uiTest"))
@@ -29,6 +25,7 @@ abstract class UiTest : UISpecTestCase() {
     private val log = LoggerFactory.getLogger(javaClass)
     private var window: Window? = null
 
+    private var mainDriver: MainDriver? = null
     private var clientDriver: ClientDriver? = null
 
     @BeforeClass
@@ -36,9 +33,15 @@ abstract class UiTest : UISpecTestCase() {
         log.debug("initUi()")
         super.setUp()
 
-        setAdapter(MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb"))
+        log.debug("Clearing preferences for node: {}", javaClass.name)
+        Preferences.userNodeForPackage(javaClass).clear()
+
+        setAdapter(MainClassAdapter(Gadsu::class.java,
+                "--databaseUrl", "jdbc:hsqldb:mem:testDb",
+                "--preferences", javaClass.name))
         window = retrieveWindow()
 
+        mainDriver = MainDriver(this, window!!)
         clientDriver = ClientDriver(this, window!!)
     }
 
@@ -48,7 +51,8 @@ abstract class UiTest : UISpecTestCase() {
         super.tearDown()
     }
 
-    protected fun clientDriver() = clientDriver!!
+    fun mainDriver() = mainDriver!!
+    fun clientDriver() = clientDriver!!
 
     private fun retrieveWindow():Window {
         // increase timeout, as it seems as app startup needs more time than default timeout
@@ -61,23 +65,4 @@ abstract class UiTest : UISpecTestCase() {
         }
     }
 
-}
-
-fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String) {
-    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
-}
-
-fun Button.clickAndDisposeDialog(buttonLabelToClick: String) {
-    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
-}
-
-private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger) {
-    WindowInterceptor
-            .init(trigger)
-            .process(object : WindowHandler() {
-                override fun process(dialog: Window): Trigger {
-                    return dialog.getButton(buttonLabelToClick).triggerClick();
-                }
-            })
-            .run()
 }

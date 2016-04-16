@@ -44,7 +44,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
     private fun installSubModules(args: Args) {
         install(PersistenceModule(args))
-        install(ServiceModule())
+        install(ServiceModule(args.preferencesNode))
         install(ViewModule())
         install(ClientModule())
     }

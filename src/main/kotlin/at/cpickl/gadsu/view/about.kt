@@ -78,6 +78,6 @@ class AboutWindow @Inject constructor(
         contentPane.add(panel, BorderLayout.CENTER)
         pack()
         isResizable = false
-        setLocationRelativeTo(mainWindow?.asComponent())
+        setLocationRelativeTo(mainWindow?.asJFrame())
     }
 }

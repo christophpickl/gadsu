@@ -1,16 +1,17 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.Development
-import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
-import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.enablePopup
 import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.removeElementByComparator
+import at.cpickl.gadsu.view.components.setElementByComparator
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -75,7 +76,7 @@ class SwingClientMasterView @Inject constructor(
                 }
             }
         }
-        list.enablePopup(swing, "L\u00f6schen", { DeleteClientEvent(it) })
+        list.enablePopup(bus, "L\u00f6schen", { DeleteClientEvent(it) })
 
         val oldRenderer = list.cellRenderer
         list.cellRenderer = ListCellRenderer<Client> { list, client, index, isSelected, cellHasFocus ->
@@ -122,23 +123,12 @@ class SwingClientMasterView @Inject constructor(
 
     override fun changeClient(client: Client) {
         log.trace("changeClient(client={})", client)
-        model.setElementAt(client, findModelIndex(client))
+        model.setElementByComparator(client, client.idComparator)
     }
 
     override fun deleteClient(client: Client) {
         log.trace("deleteClient(client={})", client)
-        model.removeElementAt(findModelIndex(client))
-    }
-
-    // MINOR change to extension function for model
-    private fun findModelIndex(client: Client): Int {
-        for (i in 0.rangeTo(model.size() - 1)) {
-            val c = model.get(i)
-            if (c.id.equals(client.id)) {
-                return i
-            }
-        }
-        throw GadsuException("Could not find element '$client' in model: $model")
+        model.removeElementByComparator(client.idComparator)
     }
 
 }

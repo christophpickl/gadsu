@@ -13,12 +13,13 @@ import java.util.prefs.Preferences
 
     private val testWindowDescriptor = WindowDescriptor(Point(1, 2), Dimension(3, 4))
 
-    private var testee = JavaPrefs()
+    private val prefNode = javaClass
+    private var testee = JavaPrefs(prefNode)
 
     @BeforeMethod
     fun initTestee() {
-        Preferences.userNodeForPackage(JavaPrefs::class.java).clear()
-        testee = JavaPrefs()
+        Preferences.userNodeForPackage(prefNode).clear()
+        testee = JavaPrefs(prefNode)
     }
 
     fun windowDescriptor_nullAtStartup() {

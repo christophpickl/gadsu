@@ -14,11 +14,11 @@ import org.testng.annotations.Test
     }
 
     fun databaseUrl_sunshine() {
-        assertThat(parseArgs(arrayOf("--databaseUrl", testDatabaseUrl)), equalTo(Args(null, testDatabaseUrl, false)))
+        assertThat(parseArgs(arrayOf("--databaseUrl", testDatabaseUrl)).databaseUrl, equalTo(testDatabaseUrl))
     }
 
     fun debug_sunshine() {
-        assertThat(parseArgs(arrayOf("--debug")), equalTo(Args(null, null, true)))
+        assertThat(parseArgs(arrayOf("--debug")).debug, equalTo(true))
     }
 
     @Test(expectedExceptions = arrayOf(ArgsException::class))
@@ -26,9 +26,20 @@ import org.testng.annotations.Test
         parseArgs(arrayOf("--databaseUrl"))
     }
 
+    fun preferences_sunshine() {
+        val fqn = javaClass.name
+        assertThat(parseArgs(arrayOf("--preferences", fqn)).preferencesNode, equalTo(fqn))
+    }
+
+    @Test(expectedExceptions = arrayOf(ArgsException::class))
+    fun preferences_notGivenArgument_shouldFail() {
+        parseArgs(arrayOf("--preferences"))
+    }
+
     @Test(expectedExceptions = arrayOf(ArgsException::class))
     fun invalidParamFails() {
         parseArgs(arrayOf("--foo"))
     }
+
 
 }

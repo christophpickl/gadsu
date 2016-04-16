@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.addChangeListener

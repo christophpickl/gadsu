@@ -31,7 +31,7 @@ open class PersistenceException(message: String, cause: Exception? = null) : Gad
 
 class PersistenceModule(private val args: Args) : AbstractModule() {
     companion object {
-        private val DEFAULT_DB_URL: String
+        val DEFAULT_DB_URL: String
         init {
             // or: "jdbc:hsqldb:mem:mymemdb"
             DEFAULT_DB_URL = "jdbc:hsqldb:file:" + File(GADSU_DIRECTORY, "database").absolutePath

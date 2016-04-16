@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.view.components.SwingFactory
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import org.slf4j.LoggerFactory
@@ -17,6 +18,9 @@ class ViewModule : AbstractModule() {
         bind(MacHandler::class.java).toInstance(if (isMacApp) ReflectiveMacHandler() else DisabledMacHandler() )
 
         bind(SwingFactory::class.java)
+
+        bind(PreferencesController::class.java).asEagerSingleton()
+        bind(PreferencesWindow::class.java).to(SwingPreferencesWindow::class.java).`in`(Scopes.SINGLETON)
 
         install(AboutModule())
     }

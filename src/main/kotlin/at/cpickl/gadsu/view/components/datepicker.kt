@@ -2,8 +2,8 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.RealClock
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.packCenterAndShow
+import at.cpickl.gadsu.view.components.SwingFactory
+import at.cpickl.gadsu.view.components.packCenterAndShow
 import com.google.common.eventbus.EventBus
 import org.jdatepicker.DateModel
 import org.jdatepicker.impl.JDatePanelImpl

@@ -7,6 +7,7 @@ import at.cpickl.gadsu.client.view.ChangeBehaviour
 import at.cpickl.gadsu.client.view.ClientViewController
 import at.cpickl.gadsu.service.Prefs
 import at.cpickl.gadsu.service.WindowDescriptor
+import at.cpickl.gadsu.view.components.MyWindow
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -53,7 +54,7 @@ interface MainWindow {
     fun start()
     fun close()
     fun changeContent(content: Component)
-    fun asComponent(): JFrame
+    fun asJFrame(): JFrame
 }
 
 class SwingMainWindow @Inject constructor(
@@ -100,6 +101,6 @@ class SwingMainWindow @Inject constructor(
         container.add(content, BorderLayout.CENTER)
     }
 
-    override fun asComponent() = this
+    override fun asJFrame() = this
 
 }
