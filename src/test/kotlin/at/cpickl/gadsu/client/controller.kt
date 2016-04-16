@@ -1,26 +1,20 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.ClientView
-import at.cpickl.gadsu.client.view.ClientViewController
-import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.view.MainWindow
-import at.cpickl.gadsu.view.components.Dialogs
-import com.google.common.eventbus.EventBus
+import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.calculateInsertIndex
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.mockito.Mockito.mock
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import javax.swing.DefaultListModel
 
 @Test class ClientViewControllerTest {
 
     private val prototype = Client.savedValidInstance().copy(lastName = "BBB")
-    private var model = DefaultListModel<Client>()
+    private var model = MyListModel<Client>()
 
     @BeforeMethod
     fun resetState() {
-        model = DefaultListModel<Client>()
+        model = MyListModel<Client>()
     }
 
     fun calculateIndex_emptyModel_returns0() {
@@ -57,7 +51,6 @@ import javax.swing.DefaultListModel
         assertThat(calculateIndex(prototype), equalTo(1))
     }
 
-    private fun calculateIndex(client: Client) = ClientViewController(EventBus(), mock(Clock::class.java),
-            mock(ClientView::class.java), mock(ClientRepository::class.java), Dialogs(mock(MainWindow::class.java))).calculateIndex(model, client)
+    private fun calculateIndex(client: Client) = model.calculateInsertIndex(client)
 
 }

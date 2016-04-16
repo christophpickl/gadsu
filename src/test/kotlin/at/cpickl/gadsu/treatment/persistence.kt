@@ -22,9 +22,9 @@ import org.testng.annotations.Test
 class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     override fun resetTables() = arrayOf("treatment")
 
-    private val unsavedTreatment = Treatment.unsavedValidInstance()
     private val unsavedClient = Client.unsavedValidInstance()
     private val client = Client.savedValidInstance()
+    private val unsavedTreatment = Treatment.unsavedValidInstance(client.id!!)
 
     private var testee = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
 

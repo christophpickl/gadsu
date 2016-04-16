@@ -21,6 +21,9 @@ interface ClientRepository {
 
     fun update(client: Client)
 
+    /**
+     * Will NOT trigger cascade delete! Use ClientService instead.
+     */
     fun delete(client: Client)
 
 }

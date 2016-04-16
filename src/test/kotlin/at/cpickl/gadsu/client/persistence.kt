@@ -5,9 +5,14 @@ import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
+import at.cpickl.gadsu.treatment.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.springframework.dao.DataIntegrityViolationException
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -100,6 +105,36 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     private fun assertSingleFindAll(expected: Client) {
         val found = testee.findAll()
         assertThat(found, contains(expected))
+    }
+
+}
+
+@Test(groups = arrayOf("hsqldb", "integration"))
+class ClientAndTreatmentSpringJdbcRepositoryTest : HsqldbTest() {
+
+    private val unsavedClient = Client.unsavedValidInstance()
+    private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
+
+    override fun resetTables() = arrayOf("client", "treatment")
+
+    @BeforeMethod
+    fun setUp() {
+        idGenerator = mock(IdGenerator::class.java)
+        clientRepo = ClientSpringJdbcRepository(jdbcx(), idGenerator)
+        treatmentRepo = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
+    }
+
+    fun deleteClientWithSomeTreatments_repositoryWillFailAsMustBeDoneViaServiceInstead() {
+        `when`(idGenerator.generate()).thenReturn("1").thenReturn("2")
+
+        val savedClient = clientRepo.insert(unsavedClient)
+        val unsavedTreatment = Treatment.unsavedValidInstance(savedClient.id!!)
+        treatmentRepo.insert(unsavedTreatment, savedClient)
+
+        expect(type = PersistenceException::class, causedByType = DataIntegrityViolationException::class, action = {
+            clientRepo.delete(savedClient)
+        })
     }
 
 }

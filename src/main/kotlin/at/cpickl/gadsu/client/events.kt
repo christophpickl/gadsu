@@ -45,3 +45,8 @@ class ClientSelectedEvent(val client: Client, val previousSelected: Client?) : U
                 .toString()
     }
 }
+
+/**
+ * Happens when selected client has been deleted.
+ */
+class ClientUnselectedEvent(val client: Client) : UserEvent()

@@ -115,12 +115,14 @@ interface JdbcX {
 
     fun deleteSingle(sql: String, vararg args: Any?)
 
+    fun transactionSafe(function: () -> Unit)
+
 }
 
-class SpringJdbcX(dataSource: DataSource) : JdbcX {
+class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
+    val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
 
     override fun update(sql: String, vararg args: Any?): Int {
         log.trace("update(sql='{}', args={})", sql, args)
@@ -150,6 +152,30 @@ class SpringJdbcX(dataSource: DataSource) : JdbcX {
     override fun execute(sql: String) {
         log.trace("execute(sql='{}')", sql)
         encapsulateException { jdbc.execute(sql) }
+    }
+
+    override fun transactionSafe(function: () -> Unit) {
+        log.trace("transactionSafe(function)")
+        val wasAutoCommit = dataSource.connection.autoCommit
+        dataSource.connection.autoCommit = false
+        try {
+
+            var committed = false
+            try {
+                function()
+                dataSource.connection.commit()
+                log.trace("Transaction committed.")
+                committed = true
+            } finally {
+                if (committed == false) {
+                    log.trace("Rolling back transaction!")
+                    dataSource.connection.rollback()
+                }
+            }
+
+        } finally {
+            dataSource.connection.autoCommit = wasAutoCommit
+        }
     }
 
     private fun <E> encapsulateException(body: () -> E): E {

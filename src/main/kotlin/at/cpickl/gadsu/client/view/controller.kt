@@ -7,6 +7,8 @@ import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientDeletedEvent
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientUnselectedEvent
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
@@ -27,6 +29,7 @@ class ClientViewController @Inject constructor(
         private val clock: Clock,
         private val view: ClientView,
         private val clientRepo: ClientRepository,
+        private val clientService: ClientService,
         private val dialogs: Dialogs
 ) {
 
@@ -92,8 +95,11 @@ class ClientViewController @Inject constructor(
             return
         }
 
-        clientRepo.delete(event.client)
-        bus.post(ClientDeletedEvent(event.client))
+        clientService.delete(event.client)
+
+        if (event.client.id!!.equals(view.detailView.currentClient.id)) {
+            bus.post(ClientUnselectedEvent(event.client))
+        }
     }
 
     @Subscribe fun onClientDeletedEvent(event: ClientDeletedEvent) {

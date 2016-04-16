@@ -4,6 +4,8 @@ import at.cpickl.gadsu.DatabaseManager
 import at.cpickl.gadsu.JdbcX
 import at.cpickl.gadsu.SpringJdbcX
 import at.cpickl.gadsu.service.IdGenerator
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
@@ -21,7 +23,7 @@ abstract class HsqldbTest {
         }
     }
     private var dataSource: EmbeddedDatabase? = null
-    private var jdbcx: JdbcX? = null
+    private var jdbcx: SpringJdbcX? = null
 
     abstract fun resetTables(): Array<String>
 
@@ -45,7 +47,7 @@ abstract class HsqldbTest {
         dataSource?.shutdown()
     }
 
-    protected fun jdbcx(): JdbcX = jdbcx!!
+    protected fun jdbcx(): SpringJdbcX = jdbcx!!
 
     protected fun whenGenerateIdReturnTestUuid() {
         Mockito.`when`(idGenerator.generate()).thenReturn(TEST_UUID)
@@ -53,5 +55,14 @@ abstract class HsqldbTest {
 
     protected fun nullJdbcx() = mock(JdbcX::class.java)
 
+    protected fun assertEmptyTable(tableName: String) {
+        assertThat("Expected table '$tableName' to be empty.", jdbcx().countTableEntries(tableName), equalTo(0))
+    }
+
 }
 
+fun SpringJdbcX.countTableEntries(tableName: String): Int {
+    var count: Int? = null
+    jdbc.query("SELECT COUNT(*) AS cnt FROM $tableName") { rs -> count = rs.getInt("cnt") }
+    return count!!
+}

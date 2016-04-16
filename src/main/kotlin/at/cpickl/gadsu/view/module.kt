@@ -19,6 +19,9 @@ class ViewModule : AbstractModule() {
 
         bind(SwingFactory::class.java)
 
+        bind(GadsuMenuBar::class.java).asEagerSingleton()
+        bind(GadsuMenuBarController::class.java).asEagerSingleton()
+
         install(AboutModule())
     }
 

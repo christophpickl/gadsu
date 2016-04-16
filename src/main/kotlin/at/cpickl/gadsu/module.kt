@@ -1,6 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
+import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.view.ViewModule
@@ -51,7 +52,10 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(PersistenceModule(args))
         install(ServiceModule(args.preferencesNode))
         install(ViewModule())
+
         install(ClientModule())
         install(TreatmentModule())
+
+        install(ReportModule())
     }
 }
