@@ -172,6 +172,9 @@ fatJarPrepareFiles {
 // PACKAGING MAC
 // =====================================================================================================================
 
+// $ gradle createApp -Dgadsu.enableMacBundle=true
+// $ gradle createDmg -Dgadsu.enableMacBundle=true
+
 // travis lacks hdiutil binary, so only enabled by explicit sysproperty
 if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
     println "enabling mac bundle"
@@ -183,8 +186,6 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
     // https://github.com/crotwell/gradle-macappbundle
     // https://github.com/crotwell/gradle-macappbundle/wiki/Intro
     apply plugin: 'edu.sc.seis.macAppBundle'
-    // $ gradle createApp
-    // $ gradle createDmg
 
     macAppBundle {
         appName = myAppName
