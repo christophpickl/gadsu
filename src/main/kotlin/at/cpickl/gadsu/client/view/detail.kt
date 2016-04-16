@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.treatment.view.TreatmentTable
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
@@ -38,7 +39,8 @@ interface ClientDetailView {
 
 }
 class SwingClientDetailView @Inject constructor(
-        swing: SwingFactory
+        swing: SwingFactory,
+        treatmentTable: TreatmentTable
 ) : GridPanel(), ClientDetailView {
     companion object {
         private val BTN_SAVE_LABEL_INSERT = "Neu anlegen"
@@ -94,10 +96,12 @@ class SwingClientDetailView @Inject constructor(
         c.weightx = 1.0
         c.weighty = 0.0
         add(formPanel)
+
         c.gridy++
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
-        add(JLabel("")) // hack the UI
+        add(treatmentTable)
+
         c.gridy++
         c.fill = GridBagConstraints.NONE
         c.anchor = GridBagConstraints.CENTER

@@ -1,12 +1,10 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.GadsuException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Point
 import javax.swing.DefaultListModel
 import javax.swing.JList
-import javax.swing.ListModel
 
 
 val <T> JList<T>.log: Logger
@@ -25,23 +23,17 @@ fun <T> JList<T>.myLocationToIndex(point: Point): Int {
     //    return -1
 }
 
+class MyListModel<E> : DefaultListModel<E>(), IndexableModel<E> {
+    override val indexableSize: Int get() = size
+    override fun indexableElementAt(index: Int) = getElementAt(index)
 
-fun <E> DefaultListModel<E>.setElementByComparator(newValue: E, comparator: (current: E) -> Boolean) {
-    val index = findIndexByComparator(comparator)
-    setElementAt(newValue, index)
-}
-
-fun <E> DefaultListModel<E>.removeElementByComparator(comparator: (current: E) -> Boolean) {
-    val index = findIndexByComparator(comparator)
-    removeElementAt(index)
-}
-
-fun <E> ListModel<E>.findIndexByComparator(comparator: (current: E) -> Boolean): Int {
-    for (i in 0.rangeTo(size - 1)) {
-        val c = getElementAt(i)
-        if (comparator(c)) {
-            return i
-        }
+    fun setElementByComparator(newValue: E, comparator: (current: E) -> Boolean) {
+        val index = findIndexByComparator(comparator)
+        setElementAt(newValue, index)
     }
-    throw GadsuException("Could not determine index of list entry!")
+
+    fun removeElementByComparator(comparator: (current: E) -> Boolean) {
+        val index = findIndexByComparator(comparator)
+        removeElementAt(index)
+    }
 }

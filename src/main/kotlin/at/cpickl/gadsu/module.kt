@@ -2,6 +2,7 @@ package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.service.ServiceModule
+import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
@@ -51,5 +52,6 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(ServiceModule(args.preferencesNode))
         install(ViewModule())
         install(ClientModule())
+        install(TreatmentModule())
     }
 }

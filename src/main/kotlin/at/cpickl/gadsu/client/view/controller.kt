@@ -14,12 +14,11 @@ import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
-import com.google.common.annotations.VisibleForTesting
+import at.cpickl.gadsu.view.components.calculateInsertIndex
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
-import javax.swing.ListModel
 
 
 @Suppress("UNUSED_PARAMETER")
@@ -56,7 +55,7 @@ class ClientViewController @Inject constructor(
 
     @Subscribe fun onClientCreatedEvent(event: ClientCreatedEvent) {
         log.trace("onClientCreatedEvent(event)")
-        val index = calculateIndex(view.masterView.model, event.client)
+        val index = view.masterView.model.calculateInsertIndex(event.client)
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
         view.detailView.currentClient = event.client
@@ -140,18 +139,6 @@ class ClientViewController @Inject constructor(
         }
     }
 
-    @VisibleForTesting fun calculateIndex(model: ListModel<Client>, client: Client): Int {
-        var index = 0
-        for (i in 0.rangeTo(model.size - 1)) {
-            val c = model.getElementAt(i)
-            if (client.compareTo(c) > 0) {
-                index++
-            } else {
-                break
-            }
-        }
-        return index
-    }
 
 }
 

@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.RowMapper
 import java.io.File
 import java.sql.Timestamp
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class PersistenceModule(private val args: Args) : AbstractModule() {
         dataSource.user = "SA"
 
         bind(DataSource::class.java).toInstance(dataSource)
-        bind(JdbcTemplate::class.java).toInstance(JdbcTemplate(dataSource))
+        bind(JdbcX::class.java).toInstance(SpringJdbcX(dataSource))
         bind(DatabaseManager::class.java).asEagerSingleton()
     }
 }
@@ -101,3 +101,63 @@ class DatabaseManager @Inject constructor(
 }
 
 fun DateTime.toSqlTimestamp() = Timestamp(millis)
+
+
+interface JdbcX {
+
+    fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E>
+
+    fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E>
+
+    fun update(sql: String, vararg args: Any?): Int
+
+    fun execute(sql: String)
+
+    fun deleteSingle(sql: String, vararg args: Any?)
+
+}
+
+class SpringJdbcX(dataSource: DataSource) : JdbcX {
+
+    private val log = LoggerFactory.getLogger(javaClass)
+    private val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
+
+    override fun update(sql: String, vararg args: Any?): Int {
+        log.trace("update(sql='{}', args={})", sql, args)
+        return encapsulateException({ jdbc.update(sql, *args) })
+    }
+
+    override fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E> {
+        log.trace("query(sql='{}', rowMapper)", sql)
+        return encapsulateException({ jdbc.query(sql, rowMapper) })
+    }
+
+    override fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E> {
+        log.trace("query(sql='{}', args={}, rowMapper)", sql, args)
+        return encapsulateException({ jdbc.query(sql, args, rowMapper) })
+    }
+
+    override fun deleteSingle(sql: String, vararg args: Any?) {
+        log.trace("deleteSingle(sql='{}', args)", sql, args)
+        encapsulateException {
+            val affectedRows = jdbc.update(sql, *args)
+            if (affectedRows != 1) {
+                throw PersistenceException("Expected exactly one row to be deleted, but was: $affectedRows!")
+            }
+        }
+    }
+
+    override fun execute(sql: String) {
+        log.trace("execute(sql='{}')", sql)
+        encapsulateException { jdbc.execute(sql) }
+    }
+
+    private fun <E> encapsulateException(body: () -> E): E {
+        try {
+            return body()
+        } catch (e: Exception) {
+            throw PersistenceException("SQL execution failed! See cause for more details.", e)
+        }
+    }
+
+}

@@ -7,29 +7,22 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.springframework.jdbc.core.JdbcTemplate
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("hsqldb"))
-//@Listeners(LogTestListener::class)
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
-//    init {
-//        TestLogger().configureLog()
-//    }
 
     private val unsavedClient = Client.unsavedValidInstance()
-    private var idGenerator: IdGenerator = mock(IdGenerator::class.java)
-    private var testee = ClientSpringJdbcRepository(JdbcTemplate(), idGenerator)
+    private var testee = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
 
     override fun resetTables() = arrayOf("client")
 
     @BeforeMethod
     fun setUp() {
         idGenerator = mock(IdGenerator::class.java)
-        testee = ClientSpringJdbcRepository(jdbc(), idGenerator)
+        testee = ClientSpringJdbcRepository(jdbcx(), idGenerator)
     }
 
     fun insert() {
@@ -38,12 +31,12 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         val actualSaved = testee.insert(unsavedClient)
         assertThat(actualSaved, equalTo(unsavedClient.copy(id = TEST_UUID)))
 
-        val result = jdbc().query("SELECT * FROM client", Client.ROW_MAPPER)
+        val result = jdbcx().query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, contains(actualSaved))
     }
 
     fun insert_idSet_fails() {
-        expect(PersistenceException::class, "Client must not have set the ID", {
+        expect(type = PersistenceException::class, messageContains = "Client must not have set the ID", action = {
             testee.insert(unsavedClient.copy(id = TEST_UUID))
         })
     }
@@ -102,10 +95,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     @Test(expectedExceptions = arrayOf(PersistenceException::class))
     fun delete_notPersistedClient_fails() {
         testee.delete(unsavedClient.copy(id = "not_exists"))
-    }
-
-    private fun whenGenerateIdReturnTestUuid() {
-        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
     }
 
     private fun assertSingleFindAll(expected: Client) {

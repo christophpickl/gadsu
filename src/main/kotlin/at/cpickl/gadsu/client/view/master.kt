@@ -7,11 +7,11 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.enablePopup
 import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.removeElementByComparator
-import at.cpickl.gadsu.view.components.setElementByComparator
+import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -19,19 +19,16 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import javax.swing.DefaultListModel
 import javax.swing.JLabel
 import javax.swing.JList
-import javax.swing.JScrollPane
 import javax.swing.ListCellRenderer
-import javax.swing.ListModel
 import javax.swing.ListSelectionModel
 
 @Suppress("UNUSED") val ClientViewNames.List: String get() = "Client.List"
 @Suppress("UNUSED") val ClientViewNames.CreateButton: String get() = "Client.CreateButton"
 
 interface ClientMasterView {
-    val model: ListModel<Client>
+    val model: MyListModel<Client>
 
     fun initClients(clients: List<Client>)
     fun insertClient(index: Int, client: Client)
@@ -51,7 +48,7 @@ class SwingClientMasterView @Inject constructor(
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
 
-    override val model = DefaultListModel<Client>()
+    override val model = MyListModel<Client>()
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val list = JList<Client>(model)
@@ -90,7 +87,7 @@ class SwingClientMasterView @Inject constructor(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
-        add(JScrollPane(list))
+        add(list.scrolled())
 
         c.fill = GridBagConstraints.HORIZONTAL
         c.weighty = 0.0

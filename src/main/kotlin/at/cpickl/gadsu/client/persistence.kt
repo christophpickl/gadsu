@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.JdbcX
 import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.toSqlTimestamp
 import com.google.inject.Inject
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 
 interface ClientRepository {
@@ -26,7 +26,7 @@ interface ClientRepository {
 }
 
 class ClientSpringJdbcRepository @Inject constructor(
-        private val jdbc: JdbcTemplate,
+        private val jdbcx: JdbcX,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
 
@@ -36,7 +36,7 @@ class ClientSpringJdbcRepository @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAll(): List<Client> {
-        val clients = jdbc.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
+        val clients = jdbcx.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
         clients.sort()
         return clients
     }
@@ -47,14 +47,14 @@ class ClientSpringJdbcRepository @Inject constructor(
             throw PersistenceException("Client must not have set the ID! ($client)")
         }
         val newId = idGenerator.generate()
-        jdbc.update("INSERT INTO $TABLE (id, firstName, lastName, created) VALUES (?, ?, ?, ?)",
+        jdbcx.update("INSERT INTO $TABLE (id, firstName, lastName, created) VALUES (?, ?, ?, ?)",
                 newId, client.firstName, client.lastName, client.created.toSqlTimestamp())
         return client.copy(id = newId)
     }
 
     override fun update(client: Client) {
         log.debug("update(client={})", client)
-        val affectedRows = jdbc.update("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
+        val affectedRows = jdbcx.update("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
                 client.firstName, client.lastName, client.id)
         if (affectedRows != 1) {
             throw PersistenceException("Exepcted exactly one row to be updated, but was: $affectedRows ($client)")
@@ -66,10 +66,7 @@ class ClientSpringJdbcRepository @Inject constructor(
         if (client.id == null) {
             throw PersistenceException("Client got no ID associated! $client")
         }
-        val affectedRows = jdbc.update("DELETE FROM $TABLE WHERE id = ?", client.id)
-        if (affectedRows != 1) {
-            throw PersistenceException("Exepcted exactly one row to be deleted, but was: $affectedRows ($client)")
-        }
+        jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id)
     }
 
 }
