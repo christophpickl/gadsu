@@ -3,6 +3,7 @@ package at.cpickl.gadsu.testinfra
 import org.slf4j.LoggerFactory
 import org.uispec4j.Button
 import org.uispec4j.MenuItem
+import org.uispec4j.TextBox
 import org.uispec4j.Trigger
 import org.uispec4j.Window
 import org.uispec4j.interception.WindowHandler
@@ -14,6 +15,12 @@ class MainDriver(val test: UiTest, val window: Window) {
     // via extension methods
 }
 
+
+var TextBox.text: String
+    get() = getText()
+    set(value) {
+        setText(value, false)
+    }
 
 fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String) {
     _clickAndDisposeDialog(buttonLabelToClick, triggerClick())

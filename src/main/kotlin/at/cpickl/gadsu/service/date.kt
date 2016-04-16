@@ -12,7 +12,6 @@ class DateFormats {
 }
 
 interface Clock {
-    // TODO myshiatsu got some nice extension methods for formatting joda date time ;)
     fun now(): DateTime
 }
 

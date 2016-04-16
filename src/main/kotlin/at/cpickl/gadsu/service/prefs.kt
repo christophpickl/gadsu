@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.PreferencesData
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Point
@@ -8,10 +9,14 @@ import java.util.prefs.Preferences
 
 interface Prefs {
     var windowDescriptor: WindowDescriptor?
+    var preferencesData: PreferencesData?
 }
 
 class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
+
     companion object {
+        private val KEY_DUMMY = "DUMMY"
+
         private val KEY_WINDOW_X = "WINDOW_X"
         private val KEY_WINDOW_Y = "WINDOW_Y"
         private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
@@ -29,7 +34,29 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             return _preferences!!
         }
 
-        override var windowDescriptor: WindowDescriptor?
+    override var preferencesData: PreferencesData?
+        get() {
+
+            val dummy = preferences.get(KEY_DUMMY, null)
+            if (dummy == null) {
+                return null
+            }
+            return PreferencesData(dummy)
+        }
+        set(value) {
+            log.trace("set preferencesData(value={})", value)
+            if (value == null) {
+                preferences.remove(KEY_DUMMY)
+                preferences.flush()
+                return
+            }
+
+            preferences.put(KEY_DUMMY, value.dummy)
+            preferences.flush()
+        }
+
+
+    override var windowDescriptor: WindowDescriptor?
         get() {
             val x = preferences.getInt(KEY_WINDOW_X, -1)
             if (x == -1) {

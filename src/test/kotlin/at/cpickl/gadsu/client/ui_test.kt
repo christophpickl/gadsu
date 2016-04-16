@@ -26,7 +26,6 @@ class ClientUiTest : UiTest() {
         val driver = clientDriver()
 
         if (driver.cancelButton.awtComponent.isEnabled) {
-            // TODO watch out for confirmation
             driver.cancelButton.click()
         }
         driver.createButton.click()
@@ -40,8 +39,8 @@ class ClientUiTest : UiTest() {
 
         assertThat(driver.saveButton.textEquals("Neu anlegen")) // sanity check
 
-        driver.inputFirstName.setText(client.firstName, false)
-        driver.inputLastName.setText(client.lastName, false)
+        driver.inputFirstName.text = client.firstName
+        driver.inputLastName.text = client.lastName
 
         driver.saveButton.click()
         assertThat(driver.saveButton.textEquals("Speichern"))
@@ -56,8 +55,8 @@ class ClientUiTest : UiTest() {
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
 
-        driver.inputFirstName.setText(client.firstName, false)
-        driver.inputLastName.setText(client.lastName, false)
+        driver.inputFirstName.text = client.firstName
+        driver.inputLastName.text = client.lastName
 
         driver.cancelButton.click()
 
@@ -73,7 +72,7 @@ class ClientUiTest : UiTest() {
         assertThat(not(driver.saveButton.isEnabled))
         assertThat(not(driver.cancelButton.isEnabled))
 
-        driver.inputFirstName.setText("changed", false)
+        driver.inputFirstName.text = "changed"
 
         assertThat(driver.saveButton.isEnabled)
         assertThat(driver.cancelButton.isEnabled)
@@ -87,10 +86,10 @@ class ClientUiTest : UiTest() {
     fun updateClient_shouldUpdateInListAsWell() {
         val driver = clientDriver()
 
-        driver.inputLastName.setText("initial last name will be updated", false)
+        driver.inputLastName.text = "initial last name will be updated"
         driver.saveButton.click()
 
-        driver.inputLastName.setText(client.lastName, false)
+        driver.inputLastName.text = client.lastName
         driver.saveButton.click()
 
         assertThat(driver.list.selectionEquals(client.lastName))
@@ -121,15 +120,15 @@ class ClientUiTest : UiTest() {
     fun checkUnsavedChanges_createButton_newClient() {
         val driver = clientDriver()
 
-        driver.inputFirstName.setText("foo", false)
+        driver.inputFirstName.text = "foo"
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
     fun checkUnsavedChanges_createButton_newClient_save() {
         val driver = clientDriver()
 
-        driver.inputFirstName.setText(client.firstName, false)
-        driver.inputLastName.setText(client.lastName, false)
+        driver.inputFirstName.text = client.firstName
+        driver.inputLastName.text = client.lastName
         driver.createButton.clickAndDisposeDialog("Speichern")
 
         driver.assertListContains(client)
@@ -139,7 +138,7 @@ class ClientUiTest : UiTest() {
         val driver = clientDriver()
 
         driver.saveClient(client)
-        driver.inputFirstName.setText("something else", false)
+        driver.inputFirstName.text = "something else"
 
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
@@ -150,7 +149,7 @@ class ClientUiTest : UiTest() {
         driver.saveClient(client)
 
         driver.createButton.click()
-        driver.inputFirstName.setText("foo", false)
+        driver.inputFirstName.text = "foo"
 
         WindowInterceptor
                 .init({ driver.list.select(client.fullName) })
@@ -166,7 +165,7 @@ class ClientUiTest : UiTest() {
     fun checkUnsavedChanges_selectDifferentInList_existingClient() {
         val driver = clientDriver()
 
-        driver.inputFirstName.setText("foo", false)
+        driver.inputFirstName.text = "foo"
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 

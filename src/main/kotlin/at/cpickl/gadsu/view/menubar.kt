@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.ShowPreferencesEvent
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
 import javax.swing.JMenu

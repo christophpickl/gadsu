@@ -22,6 +22,8 @@ abstract class BaseLogConfigurator {
 
     protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
     protected val context: LoggerContext
+    private var yetConfigured = false
+
     init {
         context = LoggerFactory.getILoggerFactory() as LoggerContext
     }
@@ -75,6 +77,13 @@ abstract class BaseLogConfigurator {
     }
 
     fun configureLog() {
+        if (yetConfigured) {
+            println("Log configurator '${javaClass.simpleName}' has been already activated. " +
+                    "(Usually happens because of manually enabling log in tests and by testng suites)")
+            return
+        }
+        yetConfigured = true
+
         val status = context.statusManager
         status.add(InfoStatus("Setting up log configuration.", context))
 

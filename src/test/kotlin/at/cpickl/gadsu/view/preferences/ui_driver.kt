@@ -2,7 +2,7 @@ package at.cpickl.gadsu.view.preferences
 
 import at.cpickl.gadsu.testinfra.MainDriver
 import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.view.Preferences
+import at.cpickl.gadsu.Preferences
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.uispec4j.MenuItem

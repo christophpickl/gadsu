@@ -3,9 +3,10 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.addChangeListener
 import at.cpickl.gadsu.view.components.changeSize
 import at.cpickl.gadsu.view.components.newEventButton
@@ -79,26 +80,9 @@ class SwingClientDetailView @Inject constructor(
         btnCancel.changeSize(newSize)
         updateModifiedStateIndicator() // set buttons disabled at startup
 
-        val formPanel = GridPanel()
-        formPanel.c.anchor = GridBagConstraints.WEST
-        formPanel.c.weightx = 0.0
-        formPanel.c.fill = GridBagConstraints.NONE
-        formPanel.add(JLabel("Vorname"))
-        formPanel.c.gridx++
-        formPanel.c.weightx = 1.0
-        formPanel.c.fill = GridBagConstraints.HORIZONTAL
-        formPanel.add(inpFirstName)
-
-        formPanel.c.weightx = 0.0
-        formPanel.c.fill = GridBagConstraints.NONE
-        formPanel.c.gridx = 0
-        formPanel.c.gridy++
-        formPanel.add(JLabel("Nachname"))
-        formPanel.c.weightx = 1.0
-        formPanel.c.fill = GridBagConstraints.HORIZONTAL
-        formPanel.c.gridx++
-        formPanel.add(inpLastName)
-
+        val formPanel = FormPanel()
+        formPanel.addFormInput("Vorname", inpFirstName)
+        formPanel.addFormInput("Nachname", inpLastName)
 
         val buttonPanel = JPanel()
         buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
@@ -122,7 +106,6 @@ class SwingClientDetailView @Inject constructor(
     }
 
     override fun updateModifiedStateIndicator() {
-        log.trace("updateModifiedStateIndicator()")
         val modified = isModified()
         allButtons.forEach {
             it.isEnabled = modified

@@ -19,9 +19,6 @@ class ViewModule : AbstractModule() {
 
         bind(SwingFactory::class.java)
 
-        bind(PreferencesController::class.java).asEagerSingleton()
-        bind(PreferencesWindow::class.java).to(SwingPreferencesWindow::class.java).`in`(Scopes.SINGLETON)
-
         install(AboutModule())
     }
 

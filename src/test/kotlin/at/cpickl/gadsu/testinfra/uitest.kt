@@ -19,7 +19,7 @@ abstract class UiTest : UISpecTestCase() {
         init {
             System.setProperty("gadsu.disableLog", "true")
             System.setProperty("uispec4j.test.library", "testng")
-            TestLogger().configureLog() // MINOR i dont think this is actually necessary, is it?!
+            TestLogger().configureLog() // do it twice during the build, but enable once when running in IDE ;)
         }
     }
     private val log = LoggerFactory.getLogger(javaClass)

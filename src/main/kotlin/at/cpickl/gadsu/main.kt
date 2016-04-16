@@ -4,7 +4,7 @@ import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
-import at.cpickl.gadsu.view.ShowPreferencesEvent
+import at.cpickl.gadsu.ShowPreferencesEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.EventBus

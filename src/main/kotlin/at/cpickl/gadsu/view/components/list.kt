@@ -13,7 +13,7 @@ val <T> JList<T>.log: Logger
     get() = LoggerFactory.getLogger(JList::class.java)
 
 fun <T> JList<T>.myLocationToIndex(point: Point): Int {
-    // MINOR there is a bug: https://github.com/UISpec4J/UISpec4J/issues/30
+    // uispec4j bug: https://github.com/UISpec4J/UISpec4J/issues/30
     return locationToIndex(point) // returns _closest_ index! :(
     //    for (i in 0.rangeTo(model.size - 1)) {
     //        val bounds = getCellBounds(i, i)

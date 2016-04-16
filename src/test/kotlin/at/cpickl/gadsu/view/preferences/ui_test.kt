@@ -9,8 +9,6 @@ import java.awt.Point
 @Test(groups = arrayOf("uiTest"))
 class PreferencesUiTest : UiTest() {
 
-    // TODO after/before test close window to reset state again
-
     private var driver: PreferencesDriver? = null
 
     @BeforeMethod

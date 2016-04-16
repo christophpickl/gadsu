@@ -10,7 +10,6 @@ import at.cpickl.gadsu.client.view.SaveButton
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.view.ViewNames
-import org.junit.BeforeClass
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
@@ -20,7 +19,6 @@ class ClientDriver(private val test: UiTest, private val window: Window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // MINOR or: val list: ListBox get() = test.mainWindow.getListBox(ViewNames.Client.List) ?
     val list = window.getListBox(ViewNames.Client.List)
     val createButton = window.getButton(ViewNames.Client.CreateButton)
 
@@ -32,8 +30,8 @@ class ClientDriver(private val test: UiTest, private val window: Window) {
     fun saveClient(client: Client) {
         createButton.click()
 
-        inputFirstName.setText(client.firstName, false)
-        inputLastName.setText(client.lastName, false)
+        inputFirstName.text = client.firstName
+        inputLastName.text = client.lastName
 
         saveButton.click()
     }

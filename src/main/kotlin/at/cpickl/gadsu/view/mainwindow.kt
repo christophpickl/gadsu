@@ -64,12 +64,12 @@ class SwingMainWindow @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val container = JPanel()
+    private var _descriptor: WindowDescriptor? = null
 
     init {
         if (Development.ENABLED) container.background = Color.CYAN
 
         jMenuBar = gadsuMenuBar
-        size = Dimension(600, 400)
         addCloseListener { bus.post(QuitUserEvent()) }
 
         container.layout = BorderLayout()
@@ -82,12 +82,17 @@ class SwingMainWindow @Inject constructor(
     override var descriptor: WindowDescriptor
         get() = WindowDescriptor(location, size)
         set(value) {
+            log.trace("set descriptor(value={})", value)
+            _descriptor = value
             location = value.location
             size = value.size
         }
 
     override fun start() {
-        setLocationRelativeTo(null)
+        if (_descriptor == null) {
+            size = Dimension(600, 400)
+            setLocationRelativeTo(null)
+        }
         setVisible(true)
     }
 

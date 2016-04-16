@@ -5,6 +5,7 @@ import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
+import com.google.inject.Scopes
 import com.google.inject.TypeLiteral
 import com.google.inject.matcher.Matchers
 import com.google.inject.spi.InjectionListener
@@ -20,6 +21,9 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         log.debug("configure()")
 
         bind(DevelopmentController::class.java).asEagerSingleton()
+
+        bind(PreferencesController::class.java).asEagerSingleton()
+        bind(PreferencesWindow::class.java).to(SwingPreferencesWindow::class.java).`in`(Scopes.SINGLETON)
 
         configureEventBus()
         installSubModules(args)

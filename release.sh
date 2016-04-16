@@ -75,7 +75,7 @@ myEcho "----------------------------------"
 git clone $GIT_URL $CHECKOUT_DIR
 cd $CHECKOUT_DIR
 
-# TODO check there are no snapshots
+# check there are no snapshots
 
 echo
 myEcho "Running test build."

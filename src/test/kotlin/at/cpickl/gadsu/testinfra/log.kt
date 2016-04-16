@@ -16,7 +16,6 @@ import org.testng.annotations.Test
 @Listeners(LogTestListener::class)
 class TestLogger : BaseLogConfigurator() {
 
-    // MINOR springramework still logs (using JDK logging most likely)... reroute it!
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
         logger.level = Level.ALL
 

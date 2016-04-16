@@ -12,7 +12,7 @@ import javax.swing.JPopupMenu
 
 
 fun <T> JList<T>.enablePopup(bus: EventBus, label: String, eventProvider: (element: T) -> UserEvent) {
-    val list = this // TODO i dont know kotlin!!! https://kotlinlang.org/docs/reference/this-expressions.html
+    val list = this
     addMouseListener(object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
             maybeShowPopup(e)

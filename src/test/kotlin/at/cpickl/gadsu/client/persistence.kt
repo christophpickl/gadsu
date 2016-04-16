@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
 import org.hamcrest.MatcherAssert.assertThat
@@ -35,18 +36,16 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         whenGenerateIdReturnTestUuid()
 
         val actualSaved = testee.insert(unsavedClient)
-
-//        assertThat(actualSaved, theSameAs(newClient.withId(generatedId)).excludePath("Client.Created"))
         assertThat(actualSaved, equalTo(unsavedClient.copy(id = TEST_UUID)))
 
         val result = jdbc().query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, contains(actualSaved))
     }
 
-    // TODO be more precise (introduce custom exception type, or check exception message, or even introduce expect() test infra ;)
-    @Test(expectedExceptions = arrayOf(PersistenceException::class))
     fun insert_idSet_fails() {
-        testee.insert(unsavedClient.copy(id = TEST_UUID))
+        expect(PersistenceException::class, "Client must not have set the ID", {
+            testee.insert(unsavedClient.copy(id = TEST_UUID))
+        })
     }
 
     @Test(dependsOnMethods = arrayOf("insert"))
