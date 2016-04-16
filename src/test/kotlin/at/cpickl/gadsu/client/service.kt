@@ -33,7 +33,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         testee = ClientServiceImpl(clientRepo, treatmentRepo, jdbcx(), EventBus())
     }
 
-    fun deleteClientWithSomeTreatments_repositoryWillFailAsMustBeDoneViaServiceInstead() {
+    fun deleteClientWithSomeTreatments_willSucceedAsInternallyDeletesAllTreatmentsFirst() {
         `when`(idGenerator.generate()).thenReturn("1").thenReturn("2")
 
         val savedClient = clientRepo.insert(unsavedClient)

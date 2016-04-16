@@ -23,9 +23,10 @@ notifications:
   email:
     - christoph.pickl@gmail.com
 
-after_failure:
-  - "cat /home/travis/build/christophpickl/gadsu/build/reports/test/index.html"
-  - "cat /home/travis/build/christophpickl/gadsu/build/reports/testUi/index.html"
+# we would need to cache them first ...
+#after_failure:
+#  - "cat /home/travis/build/christophpickl/gadsu/build/reports/test/index.html"
+#  - "cat /home/travis/build/christophpickl/gadsu/build/reports/testUi/index.html"
 
 # avoid re-downloading dependencies all the time
 # https://docs.travis-ci.com/user/languages/java/#Caching

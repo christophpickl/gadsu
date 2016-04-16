@@ -6,3 +6,5 @@
   * 3h ... some more basic client features
   * 4h ... completed initial client UI/logic
   * 2h ... release infrastructure
+  * 2h ... resolving misc tasktags
+  * 4h ... basic treatment infra
