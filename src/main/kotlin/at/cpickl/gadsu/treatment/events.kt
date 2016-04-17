@@ -7,6 +7,12 @@ import at.cpickl.gadsu.client.Client
 
 class CreateTreatmentEvent() : UserEvent()
 
+class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
+    override fun toString(): String{
+        return "OpenTreatmentEvent(treatment=$treatment)"
+    }
+}
+
 /**
  * Return back to the client view.
  */

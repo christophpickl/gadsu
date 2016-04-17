@@ -25,11 +25,11 @@ import javax.swing.JTextField
 
 
 interface ClientDetailView {
-    var currentClient: Client
-
     fun readClient(): Client
+    fun writeClient(client: Client)
     fun isModified(): Boolean
     fun updateModifiedStateIndicator()
+    fun focusFirst()
     fun asComponent(): Component
 
 }
@@ -37,21 +37,18 @@ class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
         treatmentTable: TreatmentsInClientView
 ) : GridPanel(), ClientDetailView {
+
+    private var originalClient = Client.INSERT_PROTOTYPE
+
+
     companion object {
         private val BTN_SAVE_LABEL_INSERT = "Neu anlegen"
         private val BTN_SAVE_LABEL_UPDATE = "Speichern"
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private var _currentClient: Client = Client.INSERT_PROTOTYPE
-    override var currentClient: Client
-        get() = _currentClient
-        set(value) {
-            log.trace("set currentClient(value={})", value)
-            btnSave.text = if (value.yetPersisted) BTN_SAVE_LABEL_UPDATE else BTN_SAVE_LABEL_INSERT
-            _currentClient = value
-            updateFields()
-        }
+    // FIXME use it private var _currentClient: Client = Client.INSERT_PROTOTYPE
+
 
     private val btnSave = swing.newEventButton(BTN_SAVE_LABEL_INSERT, ViewNames.Client.SaveButton, { SaveClientEvent() })
     private val btnCancel = JButton("Abbrechen")
@@ -70,7 +67,7 @@ class SwingClientDetailView @Inject constructor(
         allInputs.forEach { it.addChangeListener { updateModifiedStateIndicator() } }
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
-            currentClient = _currentClient
+            updateFields()
         }
         val newSize = Dimension(btnSave.preferredSize.width + 20, btnSave.preferredSize.height)
         btnSave.changeSize(newSize)
@@ -105,6 +102,18 @@ class SwingClientDetailView @Inject constructor(
         add(buttonPanel)
     }
 
+    override fun readClient(): Client {
+        return Client(originalClient.id, originalClient.created, inpFirstName.text, inpLastName.text)
+    }
+
+    override fun writeClient(client: Client) {
+        log.trace("set currentClient(client={})", client)
+
+        originalClient = client
+        btnSave.text = if (client.yetPersisted) BTN_SAVE_LABEL_UPDATE else BTN_SAVE_LABEL_INSERT
+        updateFields()
+    }
+
     override fun updateModifiedStateIndicator() {
         val modified = isModified()
         allButtons.forEach {
@@ -114,20 +123,20 @@ class SwingClientDetailView @Inject constructor(
 
     override fun isModified(): Boolean {
         return ComparisonChain.start()
-                .compare(currentClient.firstName, inpFirstName.text)
-                .compare(currentClient.lastName, inpLastName.text)
+                .compare(originalClient.firstName, inpFirstName.text)
+                .compare(originalClient.lastName, inpLastName.text)
                 .result() != 0
     }
 
-    override fun readClient(): Client {
-        return Client(currentClient.id, inpFirstName.text, inpLastName.text, currentClient.created)
-    }
-
-    private fun updateFields() {
-        inpFirstName.text = currentClient.firstName
-        inpLastName.text = currentClient.lastName
+    override fun focusFirst() {
+        inpFirstName.requestFocus()
     }
 
     override fun asComponent() = this
+
+    private fun updateFields() {
+        inpFirstName.text = originalClient.firstName
+        inpLastName.text = originalClient.lastName
+    }
 
 }

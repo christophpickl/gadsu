@@ -42,7 +42,7 @@ class ReportController @Inject constructor(
 
     @Subscribe fun onCreateProtocolEvent(event: CreateProtocolEvent) {
         log.debug("onCreateProtocolEvent(event={})", event)
-        val client = currentClient.data!!
+        val client = currentClient.data
 
         val treatments = treatmentRepo.findAllFor(client)
 

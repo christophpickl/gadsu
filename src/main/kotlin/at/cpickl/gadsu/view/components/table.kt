@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components
 
+import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
@@ -9,6 +10,9 @@ import javax.swing.table.AbstractTableModel
 class TableColumn<E>(val name: String, val width: Int, val transform: (value: E) -> Any)
 
 class MyTable<E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
+
+    val log = LoggerFactory.getLogger(javaClass)
+
     init {
         name = viewName
         setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN)
@@ -24,6 +28,9 @@ class MyTable<E>(private val _model: MyTableModel<E>, viewName: String) : JTable
         selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
         columnSelectionAllowed = false
     }
+
+    fun getEntityAt(row: Int): E = _model.entityAt(row)
+
 }
 class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(), IndexableModel<E> {
 
@@ -62,4 +69,7 @@ class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(),
         data.removeAt(index)
         fireTableDataChanged()
     }
+
+    fun entityAt(index: Int): E = data[index]
+
 }

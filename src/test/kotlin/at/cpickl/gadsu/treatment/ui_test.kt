@@ -2,6 +2,7 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
+import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
 import org.hamcrest.MatcherAssert
@@ -13,7 +14,7 @@ import org.uispec4j.Panel
 import org.uispec4j.Window
 
 // good UI test code sample: https://github.com/UISpec4J/UISpec4J/blob/master/uispec4j/src/test/java/org/uispec4j/PanelTest.java
-class TreatmentDriver(private val test: UiTest, private val window: Window) {
+class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     // in client view
     val openNewButton = window.getButton(ViewNames.Treatment.OpenNewButton)

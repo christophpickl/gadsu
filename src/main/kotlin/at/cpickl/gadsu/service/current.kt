@@ -63,11 +63,11 @@ interface HasId {
     val id: String?
 }
 
-abstract class Current<V : HasId?>(private val id: String, private val bus: EventBus) {
+abstract class Current<V : HasId?>(private val id: String, private val bus: EventBus, initialData: V) {
     private val log = LoggerFactory.getLogger(javaClass)
-    private var _data: V? = null
+    private var _data: V = initialData
 
-    var data: V?
+    var data: V
         get() = _data
         set(value) {
             if (value === _data) return
@@ -101,7 +101,7 @@ abstract class Current<V : HasId?>(private val id: String, private val bus: Even
 }
 
 class CurrentClient @Inject constructor(bus: EventBus) :
-        Current<Client?>(ID, bus) {
+        Current<Client>(ID, bus, Client.INSERT_PROTOTYPE) {
     companion object {
         val ID: String = "client"
     }
@@ -111,7 +111,7 @@ val CurrentPropertiesChangedEvent.Companion.ID_Client: String get() = CurrentCli
 
 
 class CurrentTreatment @Inject constructor(bus: EventBus) :
-        Current<Treatment?>(ID, bus) {
+        Current<Treatment?>(ID, bus, null) {
     companion object {
         val ID: String = "treatment"
     }

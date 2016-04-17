@@ -55,15 +55,16 @@ class ClientViewController @Inject constructor(
         }
 
         // TODO right now we still need 'view.detailView.currentClient', will be changed in future
-        if (view.detailView.currentClient.yetPersisted) {
+        if (currentClient.data.yetPersisted) {
             // there was a client selected, and now we want to create a new client
-            bus.post(ClientUnselectedEvent(view.detailView.currentClient))
+            bus.post(ClientUnselectedEvent(currentClient.data))
         }
 
         view.masterView.selectClient(null)
         val newCreatingClient = Client.INSERT_PROTOTYPE
 
-        view.detailView.currentClient = newCreatingClient
+        view.detailView.writeClient(newCreatingClient)
+        view.detailView.focusFirst()
         currentClient.data = newCreatingClient
     }
 
@@ -74,13 +75,29 @@ class ClientViewController @Inject constructor(
         saveClient(client)
     }
 
+    private fun saveClient(client: Client) {
+        if (client.yetPersisted) {
+            clientRepo.update(client)
+
+            bus.post(ClientUpdatedEvent(client))
+
+        } else {
+            val toBeInserted = client.copy(created = clock.now())
+            log.trace("Going to insert: {}", toBeInserted)
+            val savedClient = clientRepo.insert(toBeInserted)
+            log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
+
+            bus.post(ClientCreatedEvent(savedClient))
+        }
+    }
+
     @Subscribe fun onClientCreatedEvent(event: ClientCreatedEvent) {
         log.trace("onClientCreatedEvent(event)")
         val index = view.masterView.model.calculateInsertIndex(event.client)
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
 
-        view.detailView.currentClient = event.client
+        view.detailView.writeClient(event.client)
         currentClient.data = event.client
     }
 
@@ -89,7 +106,7 @@ class ClientViewController @Inject constructor(
         view.masterView.changeClient(event.client)
 //        view.masterView.selectClient(event.client) ... nope, not needed
 
-        view.detailView.currentClient = event.client
+        view.detailView.writeClient(event.client)
         currentClient.data = event.client
         view.detailView.updateModifiedStateIndicator()
     }
@@ -103,7 +120,7 @@ class ClientViewController @Inject constructor(
         }
 
         currentClient.data = event.client
-        view.detailView.currentClient = event.client
+        view.detailView.writeClient(event.client)
     }
 
     @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
@@ -120,9 +137,7 @@ class ClientViewController @Inject constructor(
 
         clientService.delete(event.client)
 
-        // MINOR dont rely on view's currentClient, always check CurrentClient object instead
-        if (event.client.id!!.equals(view.detailView.currentClient.id)) {
-
+        if (event.client.id!!.equals(currentClient.data.id)) {
             bus.post(ClientUnselectedEvent(event.client))
         }
     }
@@ -131,9 +146,9 @@ class ClientViewController @Inject constructor(
         log.trace("onClientDeletedEvent(event)")
         view.masterView.deleteClient(event.client)
 
-        if (view.detailView.currentClient.equals(event.client)) {
+        if (currentClient.data.id!!.equals(event.client.id)) {
             val newInsert = Client.INSERT_PROTOTYPE
-            view.detailView.currentClient = newInsert
+            view.detailView.writeClient(newInsert)
             currentClient.data = newInsert
         }
     }
@@ -166,19 +181,6 @@ class ClientViewController @Inject constructor(
                 return ChangeBehaviour.ABORT
             }
             else -> throw GadsuException("Unhandled dialog option: '$result'")
-        }
-    }
-
-    private fun saveClient(client: Client) {
-        if (client.yetPersisted) {
-            clientRepo.update(client)
-            bus.post(ClientUpdatedEvent(client))
-        } else {
-            val toBeInserted = client.copy(created = clock.now())
-            log.trace("Going to insert: {}", toBeInserted)
-            val savedClient = clientRepo.insert(toBeInserted)
-            log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
-            bus.post(ClientCreatedEvent(savedClient))
         }
     }
 

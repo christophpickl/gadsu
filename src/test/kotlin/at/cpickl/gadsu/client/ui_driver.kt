@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.view.ViewNames
@@ -8,7 +9,7 @@ import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
 import javax.swing.JLabel
 
-class ClientDriver(private val test: UiTest, private val window: Window) {
+class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

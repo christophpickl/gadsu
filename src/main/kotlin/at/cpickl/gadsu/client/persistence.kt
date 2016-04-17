@@ -79,8 +79,8 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
     get() = RowMapper { rs, rowNum ->
         Client(
                 rs.getString("id"),
+                DateTime(rs.getTimestamp("created")),
                 rs.getString("firstName"),
-                rs.getString("lastName"),
-                DateTime(rs.getTimestamp("created"))
+                rs.getString("lastName")
         )
     }

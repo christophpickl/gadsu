@@ -34,6 +34,8 @@ class ClientUiTest : UiTest() {
         client = Client.unsavedValidInstance().copy(firstName = javaClass.simpleName, lastName = method.name)
     }
 
+    // --------------------------------------------------------------------------- save
+
     fun saveClient_sunshine() {
         val driver = clientDriver()
 
@@ -49,6 +51,21 @@ class ClientUiTest : UiTest() {
         driver.assertListContains(client)
     }
 
+    fun updateClient_shouldUpdateInListAsWell() {
+        val driver = clientDriver()
+
+        driver.inputLastName.text = "initial last name will be updated"
+        driver.saveButton.click()
+
+        driver.inputLastName.text = client.lastName
+        driver.saveButton.click()
+
+        assertThat(driver.list.selectionEquals(client.lastName))
+        assertThat(driver.list.contains(client.lastName))
+    }
+
+    // --------------------------------------------------------------------------- cancel
+
     fun cancelInsertClient_shouldClearAllFields() {
         val driver = clientDriver()
 
@@ -63,6 +80,41 @@ class ClientUiTest : UiTest() {
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
     }
+
+
+    // --------------------------------------------------------------------------- delete
+
+    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+    fun deleteClient_sunshine() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+        driver.deleteClient(client)
+
+        assertThat(not(driver.list.contains(client.fullName)))
+    }
+
+    // --------------------------------------------------------------------------- create new
+
+    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+    fun createNewClientRequest_shouldDeselectEntryInMasterList() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+        assertThat(driver.list.selectionEquals(client.fullName))
+
+        driver.createButton.click()
+        assertThat(driver.list.selectionIsEmpty())
+    }
+
+    fun `When hit create button, then the first name textfield should have focus`() {
+        val driver = clientDriver()
+
+        driver.createButton.click()
+        driver.assertHasFocus(driver.inputFirstName)
+    }
+
+    // --------------------------------------------------------------------------- check changes
 
     // same applies for already saved client
     // and also when hit the cancel button
@@ -81,40 +133,6 @@ class ClientUiTest : UiTest() {
 
         assertThat(not(driver.saveButton.isEnabled))
         assertThat(not(driver.cancelButton.isEnabled))
-    }
-
-    fun updateClient_shouldUpdateInListAsWell() {
-        val driver = clientDriver()
-
-        driver.inputLastName.text = "initial last name will be updated"
-        driver.saveButton.click()
-
-        driver.inputLastName.text = client.lastName
-        driver.saveButton.click()
-
-        assertThat(driver.list.selectionEquals(client.lastName))
-        assertThat(driver.list.contains(client.lastName))
-    }
-
-    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
-    fun deleteClient_sunshine() {
-        val driver = clientDriver()
-
-        driver.saveClient(client)
-        driver.deleteClient(client)
-
-        assertThat(not(driver.list.contains(client.fullName)))
-    }
-
-    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
-    fun createNewClientRequest_shouldDeselectEntryInMasterList() {
-        val driver = clientDriver()
-
-        driver.saveClient(client)
-        assertThat(driver.list.selectionEquals(client.fullName))
-
-        driver.createButton.click()
-        assertThat(driver.list.selectionIsEmpty())
     }
 
     fun checkUnsavedChanges_createButton_newClient() {
@@ -159,7 +177,6 @@ class ClientUiTest : UiTest() {
                     }
                 })
                 .run()
-
     }
 
     fun checkUnsavedChanges_selectDifferentInList_existingClient() {

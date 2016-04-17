@@ -32,11 +32,6 @@ import org.testng.annotations.Test
 
     // --------------------------------------------------------------------------- init set tests
 
-    fun `Given no data set, when set to null, then no events dispatched`() {
-        testee.data = null
-        busListener.assertEmpty()
-    }
-
     fun `Given no data set, when set to a client, then changed event`() {
         testee.data = client1
         busListener.assertContains(CurrentChangedEvent(eventId, null, client1))
@@ -64,14 +59,6 @@ import org.testng.annotations.Test
 
         testee.data = client1
         busListener.assertEmpty()
-    }
-
-    fun `Given client ist set, when set to NULL, then changed event`() {
-        testee.data = client1
-        busListener.clear()
-
-        testee.data = null
-        busListener.assertContains(CurrentChangedEvent(eventId, client1, null))
     }
 
     fun `Given client without ID is set, when changing to same client but with a set ID, then changed event dispatched`() {

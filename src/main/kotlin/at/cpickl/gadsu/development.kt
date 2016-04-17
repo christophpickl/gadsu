@@ -64,7 +64,6 @@ class DevelopmentController @Inject constructor(
             clientService.delete(it)
         }
 
-
         arrayOf(newClient("Max", "Mustermann"), newClient("Anna", "Nym")).forEach {
             val savedClient = clientRepo.insert(it)
             bus.post(ClientCreatedEvent(savedClient))
@@ -78,7 +77,7 @@ class DevelopmentController @Inject constructor(
         }
     }
 
-    private fun newClient(firstName: String, lastName: String) = Client(null, firstName, lastName, clock.now())
+    private fun newClient(firstName: String, lastName: String) = Client(null, clock.now(), firstName, lastName)
 
     private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, number, clock.now(), clock.now())
 

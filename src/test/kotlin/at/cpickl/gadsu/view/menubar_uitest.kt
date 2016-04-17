@@ -2,13 +2,14 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.unsavedValidInstance
+import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.MenuItem
 import org.uispec4j.Window
 
-class MenuBarDriver(private val test: UiTest, private val window: Window) {
+class MenuBarDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private val menu = window.menuBar
     private val menuReports = menu.getMenu("Berichte")

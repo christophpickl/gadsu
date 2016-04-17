@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment.inclient
 import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
+import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyTable
@@ -11,7 +12,9 @@ import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.TableColumn
 import at.cpickl.gadsu.view.components.calculateInsertIndex
 import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.registerDoubleClicked
 import at.cpickl.gadsu.view.components.scrolled
+import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
@@ -22,7 +25,8 @@ import javax.swing.JPanel
 
 
 class TreatmentsInClientView @Inject constructor(
-        private val swing: SwingFactory
+        private val swing: SwingFactory,
+        private val bus: EventBus
 ): JPanel() {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -39,10 +43,13 @@ class TreatmentsInClientView @Inject constructor(
     ))
 
     private val table = MyTable<Treatment>(model, ViewNames.Treatment.TableInClientView)
+
+
     init {
         debugColor = Color.RED
         layout = BorderLayout()
         newTreatmentButton.isEnabled = false
+        table.registerDoubleClicked { row, treatment -> bus.post(OpenTreatmentEvent(treatment)) }
 
         add(JLabel("Behandlungen"), BorderLayout.NORTH)
         add(table.scrolled(), BorderLayout.CENTER)
