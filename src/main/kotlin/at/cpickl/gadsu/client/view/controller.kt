@@ -15,6 +15,7 @@ import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
@@ -32,6 +33,7 @@ class ClientViewController @Inject constructor(
         private val window: MainWindow,
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
+        private val currentClient: CurrentClient,
         private val dialogs: Dialogs
 ) {
 
@@ -51,13 +53,16 @@ class ClientViewController @Inject constructor(
             return
         }
 
-        // MINOR right now we still need 'view.detailView.currentClient', will be changed in future
+        // TODO right now we still need 'view.detailView.currentClient', will be changed in future
         if (view.detailView.currentClient.yetPersisted) {
             bus.post(ClientUnselectedEvent(view.detailView.currentClient))
         }
 
         view.masterView.selectClient(null)
-        view.detailView.currentClient = Client.INSERT_PROTOTYPE
+        val newCreatingClient = Client.INSERT_PROTOTYPE
+
+        view.detailView.currentClient = newCreatingClient
+        currentClient.data = newCreatingClient // dispatches an event
     }
 
 
@@ -72,7 +77,9 @@ class ClientViewController @Inject constructor(
         val index = view.masterView.model.calculateInsertIndex(event.client)
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
+
         view.detailView.currentClient = event.client
+        currentClient.data = event.client
     }
 
     @Subscribe fun onClientUpdatedEvent(event: ClientUpdatedEvent) {

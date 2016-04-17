@@ -5,7 +5,7 @@ import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 
-open class GadsuException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
+open class GadsuException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 /**
  * Marker interface marking an exception to be caught and presented to the client.

@@ -22,7 +22,7 @@ import javax.swing.JMenuItem
 class Development {
     companion object {
         val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
-        val COLOR_ENABLED = ENABLED && true
+        val COLOR_ENABLED = ENABLED && false
 
         init {
             if (ENABLED) {
