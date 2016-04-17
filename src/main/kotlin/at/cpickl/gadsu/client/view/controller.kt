@@ -26,6 +26,7 @@ import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 
 
+@Suppress("UNUSED_PARAMETER")
 class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
@@ -55,6 +56,7 @@ class ClientViewController @Inject constructor(
 
         // TODO right now we still need 'view.detailView.currentClient', will be changed in future
         if (view.detailView.currentClient.yetPersisted) {
+            // there was a client selected, and now we want to create a new client
             bus.post(ClientUnselectedEvent(view.detailView.currentClient))
         }
 
@@ -62,7 +64,7 @@ class ClientViewController @Inject constructor(
         val newCreatingClient = Client.INSERT_PROTOTYPE
 
         view.detailView.currentClient = newCreatingClient
-        currentClient.data = newCreatingClient // dispatches an event
+        currentClient.data = newCreatingClient
     }
 
 
@@ -88,6 +90,7 @@ class ClientViewController @Inject constructor(
 //        view.masterView.selectClient(event.client) ... nope, not needed
 
         view.detailView.currentClient = event.client
+        currentClient.data = event.client
         view.detailView.updateModifiedStateIndicator()
     }
 
@@ -98,6 +101,8 @@ class ClientViewController @Inject constructor(
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
         }
+
+        currentClient.data = event.client
         view.detailView.currentClient = event.client
     }
 
@@ -115,7 +120,9 @@ class ClientViewController @Inject constructor(
 
         clientService.delete(event.client)
 
+        // MINOR dont rely on view's currentClient, always check CurrentClient object instead
         if (event.client.id!!.equals(view.detailView.currentClient.id)) {
+
             bus.post(ClientUnselectedEvent(event.client))
         }
     }
@@ -123,8 +130,11 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onClientDeletedEvent(event: ClientDeletedEvent) {
         log.trace("onClientDeletedEvent(event)")
         view.masterView.deleteClient(event.client)
+
         if (view.detailView.currentClient.equals(event.client)) {
-            view.detailView.currentClient = Client.INSERT_PROTOTYPE
+            val newInsert = Client.INSERT_PROTOTYPE
+            view.detailView.currentClient = newInsert
+            currentClient.data = newInsert
         }
     }
 

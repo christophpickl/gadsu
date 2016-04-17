@@ -3,11 +3,9 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
-import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
-import org.testng.annotations.Guice
 import org.testng.annotations.Test
 import org.uispec4j.Panel
 import org.uispec4j.UISpec4J
@@ -67,7 +65,8 @@ abstract class UiTest : UISpecTestCase() {
     fun clientDriver() = clientDriver!!
     fun treatmentDriver() = treatmentDriver!!
 
-    internal fun assertPanelContainedInMainWindow(panelName: String) {
+    @Test(enabled = false)
+    fun assertPanelContainedInMainWindow(panelName: String) {
         assertThat("$panelName expected to be contained in main window.",
                 window!!.containsUIComponent(Panel::class.java, panelName))
     }

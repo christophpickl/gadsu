@@ -4,6 +4,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.Button
@@ -15,9 +17,10 @@ class TreatmentDriver(private val test: UiTest, private val window: Window) {
 
     // in client view
     val openNewButton = window.getButton(ViewNames.Treatment.OpenNewButton)
+    val treatmentsInClientViewTable = window.getTable(ViewNames.Treatment.TableInClientView)
 
-
-    // main treatment view. fields must be deferred as might not been added yet.
+    // main treatment view. field access must be deferred as not yet added to the view.
+    val saveButton: Button get() = window.getButton(ViewNames.Treatment.SaveButton)
     val backButton: Button get() = window.getButton(ViewNames.Treatment.BackButton)
     val mainPanel: Panel get() = window.getPanel(ViewNames.Treatment.MainPanel)
 
@@ -25,6 +28,15 @@ class TreatmentDriver(private val test: UiTest, private val window: Window) {
 
     fun assertPanelVisible() {
         test.assertPanelContainedInMainWindow(ViewNames.Treatment.MainPanel)
+    }
+
+    fun saveDummyTreatment() {
+        // nothing to fill in ATM ...
+        saveButton.click()
+    }
+
+    fun assertTreatmentsInClientViewContains(expectedRows: Int) {
+        MatcherAssert.assertThat(treatmentsInClientViewTable.rowCount, Matchers.equalTo(expectedRows))
     }
 
 }
@@ -68,6 +80,17 @@ class TreatmentUiTest : UiTest() {
         treatmentDriver().backButton.click()
 
         clientDriver().assertPanelVisible()
+    }
+
+    fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
+        clientDriver().saveClient(client)
+        treatmentDriver().assertTreatmentsInClientViewContains(0) // sanity check
+
+        treatmentDriver().openNewButton.click()
+        treatmentDriver().saveDummyTreatment()
+        treatmentDriver().backButton.click()
+
+        treatmentDriver().assertTreatmentsInClientViewContains(1) // MINOR improve assertion
     }
 
 }

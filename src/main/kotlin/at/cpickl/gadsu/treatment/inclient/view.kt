@@ -38,7 +38,7 @@ class TreatmentsInClientView @Inject constructor(
             TableColumn<Treatment>("Datum", 100, { it.date.formatDateTime() })
     ))
 
-    private val table = MyTable<Treatment>(model)
+    private val table = MyTable<Treatment>(model, ViewNames.Treatment.TableInClientView)
     init {
         debugColor = Color.RED
         layout = BorderLayout()

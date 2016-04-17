@@ -8,8 +8,9 @@ import javax.swing.table.AbstractTableModel
 
 class TableColumn<E>(val name: String, val width: Int, val transform: (value: E) -> Any)
 
-class MyTable<E>(private val _model: MyTableModel<E>) : JTable(_model) {
+class MyTable<E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
     init {
+        name = viewName
         setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN)
         for (i in 0.rangeTo(_model.columns.size - 1)) {
             if (i === _model.columns.size - 1) {

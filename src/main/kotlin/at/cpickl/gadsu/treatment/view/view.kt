@@ -41,6 +41,9 @@ class SwingTreatmentView @Inject constructor(
         add(JLabel("Number: ${originalTreatment.number}"))
 
         c.gridy++
+        add(inpDate)
+
+        c.gridy++
         add(swing.newEventButton("Speichern", ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment(), client) }))
 
         c.gridy++
