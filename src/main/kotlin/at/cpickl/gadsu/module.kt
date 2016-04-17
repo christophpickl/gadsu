@@ -1,13 +1,13 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
+import at.cpickl.gadsu.preferences.PreferencesModule
 import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
-import com.google.inject.Scopes
 import com.google.inject.TypeLiteral
 import com.google.inject.matcher.Matchers.any
 import com.google.inject.spi.InjectionListener
@@ -21,9 +21,6 @@ class GadsuModule(private val args: Args) : AbstractModule() {
     override fun configure() {
         log.debug("configure()")
         bind(DevelopmentController::class.java).asEagerSingleton()
-
-        bind(PreferencesController::class.java).asEagerSingleton()
-        bind(PreferencesWindow::class.java).to(SwingPreferencesWindow::class.java).`in`(Scopes.SINGLETON)
 
         configureEventBus()
         installSubModules(args)
@@ -42,12 +39,13 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
     private fun installSubModules(args: Args) {
         install(PersistenceModule(args.databaseUrl))
-        install(ServiceModule(args.preferencesNode))
+        install(ServiceModule())
         install(ViewModule())
 
         install(ClientModule())
         install(TreatmentModule())
 
+        install(PreferencesModule(args.preferencesNode))
         install(ReportModule())
     }
 }

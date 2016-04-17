@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.preferences.JavaPrefs
+import at.cpickl.gadsu.preferences.WindowDescriptor
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue

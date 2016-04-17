@@ -4,7 +4,7 @@ import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.client.view.ChangeBehaviour
 import at.cpickl.gadsu.client.view.ClientViewController
-import at.cpickl.gadsu.service.Prefs
+import at.cpickl.gadsu.preferences.Prefs
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

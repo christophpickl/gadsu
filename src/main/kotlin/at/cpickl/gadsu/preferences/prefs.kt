@@ -1,6 +1,5 @@
-package at.cpickl.gadsu.service
+package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.PreferencesData
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Point
@@ -15,7 +14,7 @@ interface Prefs {
 class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 
     companion object {
-        private val KEY_DUMMY = "DUMMY"
+        private val KEY_USERNAME = "USERNAME"
 
         private val KEY_WINDOW_X = "WINDOW_X"
         private val KEY_WINDOW_Y = "WINDOW_Y"
@@ -36,22 +35,23 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 
     override var preferencesData: PreferencesData?
         get() {
-
-            val dummy = preferences.get(KEY_DUMMY, null)
-            if (dummy === null) {
+            log.trace("get preferencesData()")
+            val username = preferences.get(KEY_USERNAME, null)
+            if (username === null) { // just check one of them is enough
                 return null
             }
-            return PreferencesData(dummy)
+
+            return PreferencesData(username)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
             if (value === null) {
-                preferences.remove(KEY_DUMMY)
+                preferences.remove(KEY_USERNAME)
                 preferences.flush()
                 return
             }
 
-            preferences.put(KEY_DUMMY, value.dummy)
+            preferences.put(KEY_USERNAME, value.username)
             preferences.flush()
         }
 

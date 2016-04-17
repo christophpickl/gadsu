@@ -3,10 +3,12 @@ package at.cpickl.gadsu.report
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
+import com.google.inject.Provider
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -31,8 +33,9 @@ class ReportException(message: String, cause: Exception? = null) : GadsuExceptio
 class ReportController @Inject constructor(
         private val treatmentRepo: TreatmentRepository,
         private val protocolGenerator: ProtocolGenerator,
-        private val clock: Clock
-) {
+        private val clock: Clock,
+        private val preferences: Provider<PreferencesData>
+        ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -43,7 +46,7 @@ class ReportController @Inject constructor(
         val treatments = treatmentRepo.findAllFor(client)
 
         val report = ProtocolReportData(
-                author = "load name from pref", // FIXME load from preferences
+                author = preferences.get().username,
                 printDate = clock.now(),
                 client = ClientReportData(
                         fullName = client.fullName

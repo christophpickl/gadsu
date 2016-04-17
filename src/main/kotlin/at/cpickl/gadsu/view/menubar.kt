@@ -3,11 +3,11 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitUserEvent
-import at.cpickl.gadsu.ShowPreferencesEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.ClientUnselectedEvent
+import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe

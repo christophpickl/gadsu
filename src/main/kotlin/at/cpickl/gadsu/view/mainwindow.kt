@@ -2,7 +2,7 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.debugColor
-import at.cpickl.gadsu.service.WindowDescriptor
+import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.view.components.MyWindow
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory

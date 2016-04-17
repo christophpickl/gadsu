@@ -1,6 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.view.ClientView
+import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
