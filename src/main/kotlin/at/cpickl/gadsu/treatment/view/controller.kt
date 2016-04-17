@@ -7,6 +7,7 @@ import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
+import at.cpickl.gadsu.treatment.TreatmentChangedEvent
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.treatment.TreatmentService
@@ -41,7 +42,7 @@ class TreatmentController @Inject constructor(
     private fun changeToTreatmentView(treatment: Treatment?) {
         val client = currentClient.data
 
-        val number = 42 // FIXME calculate sequence number
+        val number = 1 // FIXME calculate sequence number
         val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
 
         val treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
@@ -53,8 +54,8 @@ class TreatmentController @Inject constructor(
 
         val treatmentToSave = event.treatment
         if (treatmentToSave.yetPersisted) {
-            // FIXME treatmentService.update(treatmentToSave)
-            // bus.post(TreatmentChangedEvent(treatmentToSave))
+            treatmentService.update(treatmentToSave)
+            bus.post(TreatmentChangedEvent(treatmentToSave))
 
         } else {
             val insertedTreatment = treatmentService.insert(treatmentToSave, event.client)

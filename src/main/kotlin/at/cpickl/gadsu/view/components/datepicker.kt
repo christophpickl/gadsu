@@ -2,41 +2,28 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.RealClock
-import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.packCenterAndShow
 import com.google.common.eventbus.EventBus
 import org.jdatepicker.DateModel
 import org.jdatepicker.impl.JDatePanelImpl
 import org.jdatepicker.impl.JDatePickerImpl
 import org.jdatepicker.impl.UtilDateModel
 import org.joda.time.DateTime
-import java.awt.BorderLayout
 import java.util.Calendar
 import java.util.Date
 import java.util.Properties
 import javax.swing.JButton
 import javax.swing.JFormattedTextField
-import javax.swing.JFrame
-import javax.swing.WindowConstants
 
 
 // https://sourceforge.net/projects/jdatepicker/
 // http://www.codejava.net/java-se/swing/how-to-use-jdatepicker-to-display-calendar-component
-
 fun main(args: Array<String>) {
     val datePicker = SwingFactory(EventBus(), RealClock()).newDatePicker()
-
     val btn = JButton("print selected date")
     btn.addActionListener {
         println("selectedDate: " + datePicker.selectedDate())
     }
-
-    val frame = JFrame()
-    frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-    frame.contentPane.layout = BorderLayout()
-    frame.contentPane.add(datePicker, BorderLayout.CENTER)
-    frame.contentPane.add(btn, BorderLayout.SOUTH)
-    frame.packCenterAndShow()
+    showFramed(datePicker, btn)
 }
 
 /**
@@ -61,7 +48,7 @@ class MyDatePicker(model: DateModel<Date>) : JDatePickerImpl(JDatePanelImpl(mode
             LABELS.setProperty("text.year", "Jahr")
         }
     }
-    fun selectedDate(): DateTime? {
+    fun selectedDate(): DateTime? { // TODO refactor, make return value non-nullable, make preselected date mandatory!
         if (model.value === null) {
             return null
         }

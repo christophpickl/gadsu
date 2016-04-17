@@ -1,62 +1,119 @@
 package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyDatePicker
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.newDatePicker
 import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.newPersistableEventButton
+import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.showFramed
+import com.google.common.collect.ComparisonChain
+import com.google.common.eventbus.EventBus
 import com.google.inject.assistedinject.Assisted
+import org.joda.time.DateTime
+import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Component
+import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextArea
 
+
+fun main(args: Array<String>) {
+    System.setProperty("gadsu.development", "true")
+    val bus = EventBus()
+    val clock = RealClock()
+
+    val client = Client.INSERT_PROTOTYPE.copy(id = "myId")
+    val treatment = Treatment.insertPrototype(client.id!!, 1, DateTime.now())
+
+    showFramed(SwingTreatmentView(SwingFactory(bus, clock), client, treatment))
+}
 
 interface TreatmentView {
     fun asComponent(): Component
+    fun isModified(): Boolean
 }
 
 
 class SwingTreatmentView @Inject constructor(
         private val swing: SwingFactory,
         @Assisted private val client: Client,
-        @Assisted private val originalTreatment: Treatment
+        @Assisted private val treatment: Treatment
 ) : GridPanel(), TreatmentView {
 
     // FIXME calculate number in DB
-
-    private val inpDate: MyDatePicker = swing.newDatePicker(originalTreatment.date)
-
     // FIXME is modified support
+
+    private val inpDate: MyDatePicker = swing.newDatePicker(treatment.date)
+    private val inpNote: JTextArea = JTextArea()
+
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment(), client) })
+
     init {
         name = ViewNames.Treatment.MainPanel
+        inpNote.name = ViewNames.Treatment.InputNote
+        debugColor = Color.YELLOW
 
+        btnSave.changeLabel(treatment)
+        inpNote.text = treatment.note
+
+
+        c.weighty = 0.0
         add(JLabel("Treatment for ${client.firstName}"))
 
         c.gridy++
-        add(JLabel("Number: ${originalTreatment.number}"))
+        add(JLabel("Number: ${treatment.number}"))
 
         c.gridy++
         add(inpDate)
 
         c.gridy++
-        add(swing.newEventButton("Speichern", ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment(), client) }))
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(inpNote.scrolled())
 
         c.gridy++
-        add(swing.newEventButton("Zur\u00fcck", ViewNames.Treatment.BackButton, { TreatmentBackEvent() }))
+        c.fill = GridBagConstraints.HORIZONTAL
+        c.weightx = 1.0
+        c.weighty = 0.0
+        c.anchor = GridBagConstraints.WEST
+
+        val buttonPanel = JPanel(BorderLayout())
+        buttonPanel.debugColor = Color.ORANGE
+        buttonPanel.add(swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }), BorderLayout.WEST)
+        buttonPanel.add(btnSave, BorderLayout.EAST)
+        add(buttonPanel)
     }
+
+    override fun isModified(): Boolean {
+        return ComparisonChain.start()
+                .compare(treatment.date, inpDate.selectedDate()!!)
+                .compare(treatment.note, inpNote.text)
+                .result() != 0
+    }
+
 
     private fun readTreatment(): Treatment {
         return Treatment(
-                originalTreatment.id,
-                originalTreatment.clientId,
-                originalTreatment.number,
-                originalTreatment.created,
-                inpDate.selectedDate()!!
+                treatment.id,
+                treatment.created,
+                treatment.clientId,
+                treatment.number,
+                inpDate.selectedDate()!!,
+                inpNote.text
         )
     }
 

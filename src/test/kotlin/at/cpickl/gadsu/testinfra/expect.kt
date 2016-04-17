@@ -24,7 +24,7 @@ object Expects {
             }
 
             if (causedByType != null) {
-                assertThat(e.cause, notNullValue())
+                assertThat("Was expecting a cause for '$e'!", e.cause, notNullValue())
                 val cause = e.cause!!
                 assertThat("Expected a caused by exception of type '${causedByType.simpleName}' but a '${cause.javaClass.simpleName}' was thrown!",
                         cause.javaClass != causedByType, equalTo(true))

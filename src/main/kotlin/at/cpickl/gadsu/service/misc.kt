@@ -4,6 +4,15 @@ import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.util.UUID
 
+
+interface HasId {
+    val id: String?
+}
+
+interface Persistable {
+    val yetPersisted: Boolean
+}
+
 interface IdGenerator {
     fun generate(): String
 }

@@ -8,6 +8,8 @@ interface TreatmentService {
 
     fun insert(treatmentToSave: Treatment, client: Client): Treatment
 
+    fun update(treatment: Treatment)
+
 }
 
 class TreatmentServiceImpl @Inject constructor(
@@ -18,6 +20,10 @@ class TreatmentServiceImpl @Inject constructor(
 
     override fun insert(treatmentToSave: Treatment, client: Client): Treatment {
         return repository.insert(treatmentToSave, client)
+    }
+
+    override fun update(treatment: Treatment) {
+        repository.update(treatment)
     }
 
 }

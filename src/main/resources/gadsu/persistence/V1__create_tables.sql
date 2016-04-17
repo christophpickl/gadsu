@@ -10,9 +10,10 @@ CREATE TABLE treatment (
   id CHAR(36) NOT NULL PRIMARY KEY,
   id_client CHAR(36) NOT NULL,
 
+  created TIMESTAMP NOT NULL,
   number INT NOT NULL,
   date TIMESTAMP NOT NULL,
-  created TIMESTAMP NOT NULL,
+  note VARCHAR(1000) NOT NULL,
 
   FOREIGN KEY (id_client) REFERENCES client(id)
 );

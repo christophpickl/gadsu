@@ -2,51 +2,18 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
-import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.view.ViewNames
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import org.uispec4j.Button
-import org.uispec4j.Panel
-import org.uispec4j.Window
-
-// good UI test code sample: https://github.com/UISpec4J/UISpec4J/blob/master/uispec4j/src/test/java/org/uispec4j/PanelTest.java
-class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
-
-    // in client view
-    val openNewButton = window.getButton(ViewNames.Treatment.OpenNewButton)
-    val treatmentsInClientViewTable = window.getTable(ViewNames.Treatment.TableInClientView)
-
-    // main treatment view. field access must be deferred as not yet added to the view.
-    val saveButton: Button get() = window.getButton(ViewNames.Treatment.SaveButton)
-    val backButton: Button get() = window.getButton(ViewNames.Treatment.BackButton)
-    val mainPanel: Panel get() = window.getPanel(ViewNames.Treatment.MainPanel)
-
-    fun windowContainsMainPanel() = window.findUIComponent(Panel::class.java, ViewNames.Treatment.MainPanel) != null
-
-    fun assertPanelVisible() {
-        test.assertPanelContainedInMainWindow(ViewNames.Treatment.MainPanel)
-    }
-
-    fun saveDummyTreatment() {
-        // nothing to fill in ATM ...
-        saveButton.click()
-    }
-
-    fun assertTreatmentsInClientViewContains(expectedRows: Int) {
-        MatcherAssert.assertThat(treatmentsInClientViewTable.rowCount, Matchers.equalTo(expectedRows))
-    }
-
-}
 
 @Test(groups = arrayOf("uiTest"))
 class TreatmentUiTest : UiTest() {
 
     private var client = Client.savedValidInstance()
     private var treatment = Treatment.unsavedValidInstance(client.id!!)
+    private var treatmentMini = treatment.toMini()
 
     @BeforeMethod
     fun resetState() {
@@ -56,16 +23,24 @@ class TreatmentUiTest : UiTest() {
         clientDriver().createButton.click() // reset client form
     }
 
+    // --------------------------------------------------------------------------- create button state
+
     fun `New treatment button only enabled when client is selected`() {
         assertThat("Expected new treatment button to be disabled at startup!",
                 not(treatmentDriver().openNewButton.isEnabled))
 
         clientDriver().saveClient(client)
-        assertThat("Expected new treatment button to be enabled after creating a new client!", treatmentDriver().openNewButton.isEnabled)
+
+        assertThat("Expected new treatment button to be enabled after creating a new client!",
+                treatmentDriver().openNewButton.isEnabled)
 
         clientDriver().createButton.click()
-        assertThat("Expected new treatment button to be disabled when creating new client!", not(treatmentDriver().openNewButton.isEnabled))
+
+        assertThat("Expected new treatment button to be disabled when creating new client!",
+                not(treatmentDriver().openNewButton.isEnabled))
     }
+
+    // --------------------------------------------------------------------------- open new
 
     fun `Given user is selected, when hit new treatment button, then panel should be displayed`() {
         clientDriver().saveClient(client)
@@ -73,6 +48,8 @@ class TreatmentUiTest : UiTest() {
         treatmentDriver().openNewButton.click()
         treatmentDriver().assertPanelVisible()
     }
+
+    // --------------------------------------------------------------------------- back button
 
     fun `Given creating new treatment, hitting back button leads to client view again`() {
         clientDriver().saveClient(client)
@@ -83,15 +60,67 @@ class TreatmentUiTest : UiTest() {
         clientDriver().assertPanelVisible()
     }
 
+    // --------------------------------------------------------------------------- save
+
     fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
-        clientDriver().saveClient(client)
-        treatmentDriver().assertTreatmentsInClientViewContains(0) // sanity check
+        val driver = treatmentDriver()
+        mainDriver().createClientAndTreatment(client, treatmentMini)
+        driver.backButton.click()
 
-        treatmentDriver().openNewButton.click()
-        treatmentDriver().saveDummyTreatment()
-        treatmentDriver().backButton.click()
-
-        treatmentDriver().assertTreatmentsInClientViewContains(1) // MINOR improve assertion
+        driver.assertTreatmentsInClientViewContains(1) // MINOR improve assertion
     }
 
+
+    fun `Given a saved treatment, when updating it,contents are stored and will show up again when doubleclicking on it in the client view`() {
+        val driver = treatmentDriver()
+
+        mainDriver().createClientAndTreatment(client, treatmentMini)
+
+        val newNote = "some other note from test"
+        driver.inputNote.text = newNote
+        driver.saveButton.click()
+
+        MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
+        driver.backButton.click()
+
+        driver.openTreatment(treatmentMini)
+        MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
+        // MINOR add some more asserts, after TreatmentMini got some more values
+    }
+
+
+    // --------------------------------------------------------------------------- check changes
+
+    fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
+        val driver = treatmentDriver()
+        clientDriver().saveClient(client)
+
+        driver.openNewButton.click()
+
+        assertThat(driver.saveButton.isEnabled)
+    }
+
+    fun `Given a fresh inserted treatment, then the save button should be disabled, but be enabled when changing some property`() {
+        val driver = treatmentDriver()
+
+        mainDriver().createClientAndTreatment(client, treatmentMini)
+        assertThat("Not any changes, therefor save button should be disabled!",
+                not(driver.saveButton.isEnabled))
+
+        driver.inputNote.text = "some other note from test"
+        assertThat("Expected save button to be enabled after changing the note!",
+                driver.saveButton.isEnabled)
+
+        // and check save again as well ;)
+        driver.saveButton.click()
+        assertThat("Changes have been saved, therefor save button should be disabled!",
+                not(driver.saveButton.isEnabled))
+    }
+
+    // MINOR test create new treatment and insert, update it, then check if updates propagated to treatment table in client view
+
 }
+
+data class TreatmentMini(val number: Int, val note: String)
+
+fun Treatment.toMini() = TreatmentMini(number, note)

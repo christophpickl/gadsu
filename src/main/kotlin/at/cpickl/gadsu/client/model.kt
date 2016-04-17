@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.service.HasId
+import at.cpickl.gadsu.service.Persistable
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
@@ -9,14 +10,14 @@ data class Client(
         val created: DateTime,
         val firstName: String,
         val lastName: String
-) : Comparable<Client>, HasId {
+) : Comparable<Client>, HasId, Persistable {
     companion object {
         // needed for static extension methods
 
         val INSERT_PROTOTYPE = Client(null, DateTime.now(), "", "") // created will be overridden anyway, so its ok to use no Clock here ;)
     }
 
-    val yetPersisted: Boolean
+    override val yetPersisted: Boolean
         get() = id != null
 
     val fullName: String

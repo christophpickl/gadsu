@@ -38,3 +38,4 @@
 * @ClientSpringJdbcRepositoryTest hamcrest-bean would be nice ;) assertThat(actualSaved, theSameAs(newClient.withId(generatedId)).excludePath("Client.Created"))
 * haha, one can see the prefs window float down to that position ;)
 * investigate: http://jetbrains.github.io/spek/
+* good UI test code sample: https://github.com/UISpec4J/UISpec4J/blob/master/uispec4j/src/test/java/org/uispec4j/PanelTest.java

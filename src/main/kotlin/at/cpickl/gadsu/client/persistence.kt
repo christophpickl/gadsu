@@ -46,8 +46,8 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun insert(client: Client): Client {
         log.debug("insert(client={})", client)
-        if (client.id != null) {
-            throw PersistenceException("Client must not have set the ID! ($client)")
+        if (client.yetPersisted) {
+            throw PersistenceException("Client must not have set an ID! ($client)")
         }
         val newId = idGenerator.generate()
         jdbcx.update("INSERT INTO $TABLE (id, firstName, lastName, created) VALUES (?, ?, ?, ?)",
@@ -57,11 +57,11 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun update(client: Client) {
         log.debug("update(client={})", client)
-        val affectedRows = jdbcx.update("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
-                client.firstName, client.lastName, client.id)
-        if (affectedRows != 1) {
-            throw PersistenceException("Exepcted exactly one row to be updated, but was: $affectedRows ($client)")
+        if (!client.yetPersisted) {
+            throw PersistenceException("Client must have set an ID! ($client)")
         }
+        jdbcx.updateSingle("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
+                client.firstName, client.lastName, client.id)
     }
 
     override fun delete(client: Client) {

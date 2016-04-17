@@ -52,10 +52,11 @@ abstract class UiTest : UISpecTestCase() {
                 "--preferences", javaClass.name))
         window = retrieveWindow()
 
-        mainDriver = MainDriver(this, window!!)
         menuBarDriver = MenuBarDriver(this, window!!)
         clientDriver = ClientDriver(this, window!!)
         treatmentDriver = TreatmentDriver(this, window!!)
+
+        mainDriver = MainDriver(this, window!!, menuBarDriver!!, clientDriver!!, treatmentDriver!!)
     }
 
     @AfterClass

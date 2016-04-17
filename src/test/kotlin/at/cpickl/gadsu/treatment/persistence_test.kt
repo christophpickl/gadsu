@@ -39,6 +39,8 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         }).insert(client.copy(id = null))
     }
 
+    // --------------------------------------------------------------------------- insert
+
     fun insert_sunshine() {
         whenGenerateIdReturnTestUuid()
 
@@ -54,9 +56,12 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun insert_notExistingClient_failBecauseOfForeignKeyReferenceViolation() {
+        whenGenerateIdReturnTestUuid()
         expect(type = PersistenceException::class,
                 causedByType = DataIntegrityViolationException::class,
-                action = {testee.insert(unsavedTreatment, client.copy(id = "not_existing"))})
+                action = {
+                    testee.insert(unsavedTreatment, client.copy(id = "not_existing"))
+                })
 
     }
 
@@ -65,6 +70,8 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
             testee.insert(unsavedTreatment.copy(id = "already_got_an_id"), client)
         })
     }
+
+    // --------------------------------------------------------------------------- find
 
     @Test(dependsOnMethods = arrayOf("insert_sunshine"))
     fun findAll_sunshine() {
@@ -80,6 +87,43 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
             testee.findAllFor(unsavedClient)
         })
     }
+
+    // --------------------------------------------------------------------------- update
+
+    @Test(dependsOnMethods = arrayOf("insert_sunshine", "findAll_sunshine"))
+    fun `update sunshine`() {
+        whenGenerateIdReturnTestUuid()
+        val saved = testee.insert(unsavedTreatment, client)
+        val updated = saved.copy(note = "new note")
+
+        testee.update(updated)
+
+        assertThat(testee.findAllFor(client), contains(updated))
+    }
+
+    fun `update unsaved treatment fails`() {
+        expect(type = PersistenceException::class, action = {
+            testee.update(unsavedTreatment)
+        })
+    }
+
+    @Test(dependsOnMethods = arrayOf("insert_sunshine", "findAll_sunshine"))
+    fun `update does not change client ID or created`() {
+        whenGenerateIdReturnTestUuid()
+
+        val saved = testee.insert(unsavedTreatment, client)
+        val updated = saved.copy(clientId = "something else ID", created = saved.created.plusDays(1))
+
+        testee.update(updated)
+
+        val all = testee.findAllFor(client)
+        assertThat(all, hasSize(1))
+        val actual = all[0]
+        assertThat(actual, equalTo(saved))
+        assertThat(actual, not(equalTo(updated)))
+    }
+
+    // --------------------------------------------------------------------------- delete
 
     @Test(dependsOnMethods = arrayOf("insert_sunshine", "findAll_sunshine"))
     fun delete_sunshine() {

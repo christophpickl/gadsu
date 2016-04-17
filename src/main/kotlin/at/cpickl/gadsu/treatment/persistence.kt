@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.treatment
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.JdbcX
 import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.client.Client
@@ -12,11 +13,9 @@ import javax.inject.Inject
 
 interface TreatmentRepository {
 
-    fun insert(treatment: Treatment, client: Client): Treatment
-    // FIXME update
-    // FIXME delete
     fun findAllFor(client: Client): List<Treatment>
-
+    fun insert(treatment: Treatment, client: Client): Treatment
+    fun update(treatment: Treatment)
     fun delete(treatment: Treatment)
 
 }
@@ -32,6 +31,15 @@ class TreatmentSpringJdbcRepository @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    override fun findAllFor(client: Client): List<Treatment> {
+        if (client.yetPersisted === false) {
+            throw PersistenceException("Client was not yet persisted! ($client)")
+        }
+        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id), Treatment.ROW_MAPPER)
+        treatments.sort()
+        return treatments
+    }
+
     override fun insert(treatment: Treatment, client: Client): Treatment {
         log.debug("insert(treatment={}, client={})", treatment, client)
 
@@ -43,18 +51,23 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         }
 
         val newId = idGenerator.generate()
-        jdbcx.update("INSERT INTO $TABLE (id, id_client, number, date, created) VALUES(?, ?, ?, ?, ?)",
-                newId, client.id, treatment.number, treatment.date.toSqlTimestamp(), treatment.created.toSqlTimestamp())
+        @Suppress("SENSELESS_COMPARISON") // yes, it can indeed be that way!
+        if (newId === null) {
+            throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
+        }
+
+        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, note) VALUES(?, ?, ?, ?, ?, ?)",
+                newId, client.id, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.note)
         return treatment.copy(id = newId)
     }
 
-    override fun findAllFor(client: Client): List<Treatment> {
-        if (client.yetPersisted === false) {
-            throw PersistenceException("Client was not yet persisted! ($client)")
+    override fun update(treatment: Treatment) {
+        log.debug("update(treatment={})", treatment)
+        if (!treatment.yetPersisted) {
+            throw PersistenceException("Treatment must have set an ID! ($treatment)")
         }
-        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id), Treatment.ROW_MAPPER)
-        treatments.sort()
-        return treatments
+        jdbcx.updateSingle("UPDATE ${TABLE} SET number = ?, date = ?, note = ? WHERE id = ?",
+                treatment.number, treatment.date.toSqlTimestamp(), treatment.note, treatment.id)
     }
 
     override fun delete(treatment: Treatment) {
@@ -72,9 +85,10 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
     get() = RowMapper { rs, rowNum ->
         Treatment(
                 rs.getString("id"),
+                DateTime(rs.getTimestamp("created")),
                 rs.getString("id_client"),
                 rs.getInt("number"),
-                DateTime(rs.getTimestamp("created")),
-                DateTime(rs.getTimestamp("date"))
+                DateTime(rs.getTimestamp("date")),
+                rs.getString("note")
         )
     }

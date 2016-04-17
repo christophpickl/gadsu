@@ -84,7 +84,6 @@ class TreatmentsInClientView @Inject constructor(
         model.removeElementByComparator(treatment.idComparator)
     }
 
-    // not yet used
     fun change(treatment: Treatment) {
         log.trace("change(treatment={})", treatment)
         model.setElementByComparator(treatment, treatment.idComparator)

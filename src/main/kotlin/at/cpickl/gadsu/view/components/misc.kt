@@ -5,13 +5,25 @@ import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
+import java.awt.Component
+import javax.swing.BoxLayout
 import javax.swing.JComponent
+import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextField
+import javax.swing.WindowConstants
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 val SWING_log = LoggerFactory.getLogger("at.cpickl.gadsu.view.components.SWING")
+
+fun showFramed(vararg components: Component) {
+    val frame = JFrame()
+    frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+    frame.contentPane.layout = BoxLayout(frame.contentPane, BoxLayout.X_AXIS)
+    components.forEach { frame.contentPane.add(it) }
+    frame.packCenterAndShow()
+}
 
 class SwingFactory @Inject constructor(
         val bus: EventBus,

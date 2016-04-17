@@ -26,4 +26,6 @@ class TreatmentSaveEvent(val treatment: Treatment, val client: Client) : UserEve
 
 class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent()
 
+class TreatmentChangedEvent(val treatment: Treatment) : AppEvent()
+
 class TreatmentDeletedEvent(val treatment: Treatment) : AppEvent()

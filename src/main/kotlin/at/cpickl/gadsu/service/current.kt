@@ -59,10 +59,6 @@ class CurrentPropertiesChangedEvent(id: String, oldData: Any?, newData: Any?) : 
     }
 }
 
-interface HasId {
-    val id: String?
-}
-
 abstract class Current<V : HasId?>(private val id: String, private val bus: EventBus, initialData: V) {
     private val log = LoggerFactory.getLogger(javaClass)
     private var _data: V = initialData

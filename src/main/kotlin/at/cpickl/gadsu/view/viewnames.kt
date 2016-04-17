@@ -35,6 +35,7 @@ object TreatmentViewNames {
     val BackButton = "Treatment.BackButton"
     val SaveButton = "Treatment.SaveButton"
     val TableInClientView = "Treatment.TableInClientView"
+    val InputNote = "Treatment.InputNote"
 }
 
 object PreferencesViewNames {

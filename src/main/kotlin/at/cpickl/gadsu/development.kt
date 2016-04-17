@@ -21,12 +21,14 @@ import javax.swing.JMenuItem
 
 class Development {
     companion object {
-        val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
-        val COLOR_ENABLED = ENABLED && false
+        private val SYSPROPERTY_KEY = "gadsu.development"
+
+        val ENABLED: Boolean = System.getProperty(SYSPROPERTY_KEY, "").equals("true")
+        val COLOR_ENABLED = ENABLED && true
 
         init {
             if (ENABLED) {
-                println("Development mode is enabled via '-Dgadsu.development=true'")
+                println("Development mode is enabled via '-D$SYSPROPERTY_KEY=true'")
             }
         }
 
@@ -79,7 +81,7 @@ class DevelopmentController @Inject constructor(
 
     private fun newClient(firstName: String, lastName: String) = Client(null, clock.now(), firstName, lastName)
 
-    private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, number, clock.now(), clock.now())
+    private fun newTreatment(number: Int, client: Client) = Treatment(null, clock.now(), client.id!!, number, clock.now(), "note for treatment number $number")
 
 }
 

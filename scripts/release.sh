@@ -28,7 +28,7 @@ changeVersion() {
     checkLastCommand
 }
 
-source version.properties
+source ../version.properties
 
 myEcho "Preparing new GADSU release"
 myEcho "=================================="

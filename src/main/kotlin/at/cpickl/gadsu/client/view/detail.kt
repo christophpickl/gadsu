@@ -10,7 +10,7 @@ import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.addChangeListener
 import at.cpickl.gadsu.view.components.changeSize
-import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.newPersistableEventButton
 import com.google.common.collect.ComparisonChain
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -25,14 +25,19 @@ import javax.swing.JTextField
 
 
 interface ClientDetailView {
+
     fun readClient(): Client
     fun writeClient(client: Client)
     fun isModified(): Boolean
     fun updateModifiedStateIndicator()
     fun focusFirst()
     fun asComponent(): Component
-
 }
+
+//fun enableChangeListener(delegate: JTextField) {
+//
+//}
+
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
         treatmentTable: TreatmentsInClientView
@@ -40,17 +45,12 @@ class SwingClientDetailView @Inject constructor(
 
     private var originalClient = Client.INSERT_PROTOTYPE
 
-
-    companion object {
-        private val BTN_SAVE_LABEL_INSERT = "Neu anlegen"
-        private val BTN_SAVE_LABEL_UPDATE = "Speichern"
-    }
     private val log = LoggerFactory.getLogger(javaClass)
 
     // FIXME use it private var _currentClient: Client = Client.INSERT_PROTOTYPE
 
 
-    private val btnSave = swing.newEventButton(BTN_SAVE_LABEL_INSERT, ViewNames.Client.SaveButton, { SaveClientEvent() })
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
     private val btnCancel = JButton("Abbrechen")
 
     private val inpFirstName = JTextField()
@@ -58,6 +58,7 @@ class SwingClientDetailView @Inject constructor(
 
     /** Used to change enable/disable state on changes. */
     private val allButtons = arrayOf(btnSave, btnCancel)
+
     /** Used to detect any changes. */
     private val allInputs = arrayOf(inpFirstName, inpLastName)
 
@@ -110,7 +111,7 @@ class SwingClientDetailView @Inject constructor(
         log.trace("set currentClient(client={})", client)
 
         originalClient = client
-        btnSave.text = if (client.yetPersisted) BTN_SAVE_LABEL_UPDATE else BTN_SAVE_LABEL_INSERT
+        btnSave.changeLabel(client)
         updateFields()
     }
 

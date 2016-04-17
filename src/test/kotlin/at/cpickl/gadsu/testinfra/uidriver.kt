@@ -1,5 +1,10 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.treatment.TreatmentDriver
+import at.cpickl.gadsu.treatment.TreatmentMini
+import at.cpickl.gadsu.view.MenuBarDriver
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
@@ -13,9 +18,24 @@ import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 
 
-class MainDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
+class MainDriver(
+        test: UiTest,
+        window: Window,
+        val menuBarDriver: MenuBarDriver,
+        val clientDriver: ClientDriver,
+        val treatmentDriver: TreatmentDriver
+        ) : BaseDriver(test, window) {
+
     val log = LoggerFactory.getLogger(javaClass)
-    // via extension methods
+
+    fun createClientAndTreatment(client: Client, treatment: TreatmentMini) {
+        clientDriver.saveClient(client)
+
+        treatmentDriver.openNewButton.click()
+        treatmentDriver.save(treatment)
+    }
+
+    // and some via extension methods
 }
 
 abstract class BaseDriver(val test: UiTest, val window: Window) {

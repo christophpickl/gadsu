@@ -117,17 +117,14 @@ interface JdbcX {
 
     fun transactionSafe(function: () -> Unit)
 
+    fun updateSingle(sql: String, vararg args: Any?)
+
 }
 
 class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
 
     private val log = LoggerFactory.getLogger(javaClass)
     val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
-
-    override fun update(sql: String, vararg args: Any?): Int {
-        log.trace("update(sql='{}', args={})", sql, args)
-        return encapsulateException({ jdbc.update(sql, *args) })
-    }
 
     override fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E> {
         log.trace("query(sql='{}', rowMapper)", sql)
@@ -137,6 +134,18 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
     override fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E> {
         log.trace("query(sql='{}', args={}, rowMapper)", sql, args)
         return encapsulateException({ jdbc.query(sql, args, rowMapper) })
+    }
+
+    override fun update(sql: String, vararg args: Any?): Int {
+        log.trace("update(sql='{}', args={})", sql, args)
+        return encapsulateException({ jdbc.update(sql, *args) })
+    }
+
+    override fun updateSingle(sql: String, vararg args: Any?) {
+        val affectedRows = jdbc.update(sql, *args)
+        if (affectedRows != 1) {
+            throw PersistenceException("Expected exactly one row to be updated, but was: $affectedRows!")
+        }
     }
 
     override fun deleteSingle(sql: String, vararg args: Any?) {

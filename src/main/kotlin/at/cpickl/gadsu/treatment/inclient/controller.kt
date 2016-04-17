@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment.inclient
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.ClientUnselectedEvent
+import at.cpickl.gadsu.treatment.TreatmentChangedEvent
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -44,6 +45,9 @@ class TreatmentsInClientController @Inject constructor(
         view.delete(event.treatment)
     }
 
-    // FIXME onTreatmentChanged
+    @Subscribe fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
+        log.debug("onTreatmentChangedEvent(event={})", event)
+        view.change(event.treatment)
+    }
 
 }
