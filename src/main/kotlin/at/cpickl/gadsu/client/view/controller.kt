@@ -46,9 +46,11 @@ class ClientViewController @Inject constructor(
         if (checkChanges() == ChangeBehaviour.ABORT) {
             return
         }
+        // FIXME dispatch client unselected event, if there was a (non-yet-persisted) client selected previously
         view.masterView.selectClient(null)
         view.detailView.currentClient = Client.INSERT_PROTOTYPE
     }
+
 
     @Subscribe fun onSaveClientEvent(event: SaveClientEvent) {
         log.trace("onSaveClientEvent(event)")

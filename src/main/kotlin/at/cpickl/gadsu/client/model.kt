@@ -1,14 +1,15 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.service.HasId
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
 data class Client(
-        val id: String?, // it is null if not yet persisted
+        override val id: String?, // it is null if not yet persisted
         val firstName: String,
         val lastName: String,
         val created: DateTime
-) : Comparable<Client> {
+) : Comparable<Client>, HasId {
     companion object {
         // needed for static extension methods
 

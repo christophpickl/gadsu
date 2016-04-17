@@ -8,3 +8,5 @@
   * 2h ... release infrastructure
   * 2h ... resolving misc tasktags
   * 4h ... basic treatment infra
+  * 4h ... core report generation feature
+  

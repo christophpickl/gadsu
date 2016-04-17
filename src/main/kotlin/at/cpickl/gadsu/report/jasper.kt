@@ -61,7 +61,7 @@ class JasperEngineImpl : JasperEngine {
 
     override fun view(config: ReportConfig) {
         log.debug("view(config={})", config)
-        JasperViewer.viewReport(generatePrintArtifact(config), true) // MINOR always exit? noooo, not in app when previewing!
+        JasperViewer.viewReport(generatePrintArtifact(config), false) // disable exit on close
     }
 
     private fun validateSaveTarget(target: File, forceOverwrite: Boolean) {

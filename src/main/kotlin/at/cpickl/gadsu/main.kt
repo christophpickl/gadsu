@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainWindow
@@ -107,3 +108,5 @@ open class GadsuException(message: String, cause: Exception? = null) : RuntimeEx
  * Marker interface marking an exception to be caught and presented to the client.
  */
 interface GadsuUserException
+
+

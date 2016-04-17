@@ -15,6 +15,9 @@ class ServiceModule(private val nodePrefsFqn: String?) : AbstractModule() {
         bind(Prefs::class.java).toInstance(JavaPrefs(nodeClass))
 
         bind(WebPageOpener::class.java).to(SwingWebPageOpener::class.java).asEagerSingleton()
+
+
+        install(CurrentModule())
     }
 
 }
