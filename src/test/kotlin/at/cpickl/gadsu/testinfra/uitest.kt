@@ -3,9 +3,11 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
+import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
+import org.testng.annotations.Guice
 import org.testng.annotations.Test
 import org.uispec4j.Panel
 import org.uispec4j.UISpec4J
@@ -14,6 +16,12 @@ import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import java.util.prefs.Preferences
 
+//@Guice(modules = arrayOf(UiTestModule::class))
+//class UiTestModule : AbstractModule() {
+//    override fun configure() {
+//        bind(ClientDriver::class.java).toInstance(clientDriver)
+//    }
+//}
 
 @Test(groups = arrayOf("uiTest"))
 abstract class UiTest : UISpecTestCase() {
@@ -27,7 +35,7 @@ abstract class UiTest : UISpecTestCase() {
     private val log = LoggerFactory.getLogger(javaClass)
     private var window: Window? = null
 
-    private var mainDriver: MainDriver? = null // MINOR try it, avoid nulls: Mockito.mock(MainDriver::class.java)
+    private var mainDriver: MainDriver? = null
     private var clientDriver: ClientDriver? = null
     private var treatmentDriver: TreatmentDriver? = null
 
@@ -59,8 +67,7 @@ abstract class UiTest : UISpecTestCase() {
     fun clientDriver() = clientDriver!!
     fun treatmentDriver() = treatmentDriver!!
 
-
-    protected fun assertPanelContainedInMainWindow(panelName: String) {
+    internal fun assertPanelContainedInMainWindow(panelName: String) {
         assertThat("$panelName expected to be contained in main window.",
                 window!!.containsUIComponent(Panel::class.java, panelName))
     }
@@ -77,3 +84,4 @@ abstract class UiTest : UISpecTestCase() {
     }
 
 }
+
