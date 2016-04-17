@@ -3,8 +3,9 @@
 
 ## High
 
-* proper exception handling (needs some global concept)
-* migrate DB version
+* integrate report generation (save PDF, view, and print report)
+* treatment CRUDs
+* protocol generation UI wizard
 
 ## Med
 

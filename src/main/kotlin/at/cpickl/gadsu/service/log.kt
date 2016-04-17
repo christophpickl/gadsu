@@ -106,9 +106,10 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
         logger.level = if (debugEnabled || Development.ENABLED) Level.ALL else Level.DEBUG
 
         arrayOf(
-            "org.apache",
-            "org.springframework",
-            "org.flywaydb"
+                "org.apache",
+                "org.springframework",
+                "org.flywaydb",
+                "net.sf.jasperreports"
         ).forEach { changeLevel(it, Level.WARN) }
 
         if (Development.ENABLED) {

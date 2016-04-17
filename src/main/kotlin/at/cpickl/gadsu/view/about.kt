@@ -2,9 +2,9 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent
+import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.view.components.GridPanel
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -81,7 +81,7 @@ class AboutWindow @Inject constructor(
         aboutText.text =
                 "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
                 "Version ${metaInf.applicationVersion}<br>" +
-                "(${DateFormats.DATE_TIME.print(metaInf.built)})<br>" +
+                "(${metaInf.built.formatDateTime()})<br>" +
                 "By Christoph Pickl<br>" +
                 "<br>" +
                 """Visit the <a href="https://github.com/christophpickl/gadsu">Website</a>"""

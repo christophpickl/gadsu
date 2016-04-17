@@ -2,7 +2,7 @@ package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
@@ -60,7 +60,7 @@ class TreatmentTable : JPanel() {
     // right click popup
     private val model = MyTableModel<Treatment>(listOf(
             TableColumn<Treatment>("Nr", 20, { it.number }),
-            TableColumn<Treatment>("Datum", 100, { DateFormats.DATE_TIME.print(it.date) })
+            TableColumn<Treatment>("Datum", 100, { it.date.formatDateTime() })
     ))
 
     private val table = MyTable<Treatment>(model)

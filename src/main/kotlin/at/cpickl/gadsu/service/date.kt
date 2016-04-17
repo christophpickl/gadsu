@@ -10,6 +10,8 @@ class DateFormats {
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
     }
 }
+fun DateTime.formatDate() = DateFormats.DATE.print(this)
+fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
 
 interface Clock {
     fun now(): DateTime
