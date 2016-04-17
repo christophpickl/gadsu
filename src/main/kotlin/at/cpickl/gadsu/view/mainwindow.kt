@@ -63,6 +63,7 @@ class SwingMainWindow @Inject constructor(
         ) : MainWindow, MyWindow("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
+    private val defaultSize = Dimension(600, 400)
     private val container = JPanel()
     private var _descriptor: WindowDescriptor? = null
 
@@ -85,12 +86,13 @@ class SwingMainWindow @Inject constructor(
             log.trace("set descriptor(value={})", value)
             _descriptor = value
             location = value.location
-            size = value.size
+            size = if (value.isValidSize) value.size else defaultSize
         }
+
 
     override fun start() {
         if (_descriptor === null) {
-            size = Dimension(600, 400)
+            size = defaultSize
             setLocationRelativeTo(null)
         }
         setVisible(true)
