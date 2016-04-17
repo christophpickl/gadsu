@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
+import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyListModel
@@ -24,8 +24,7 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.ListSelectionModel
 
-@Suppress("UNUSED") val ClientViewNames.List: String get() = "Client.List"
-@Suppress("UNUSED") val ClientViewNames.CreateButton: String get() = "Client.CreateButton"
+
 
 interface ClientMasterView {
     val model: MyListModel<Client>
@@ -55,7 +54,8 @@ class SwingClientMasterView @Inject constructor(
     private var previousSelected: Client? = null
 
     init {
-        if (Development.ENABLED) background = Color.RED
+        name = ViewNames.Client.MainPanel
+        debugColor = Color.RED
 
         list.name = ViewNames.Client.List
         list.addListSelectionListener { e ->

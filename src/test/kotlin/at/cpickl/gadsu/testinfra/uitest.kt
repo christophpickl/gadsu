@@ -2,10 +2,12 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.treatment.TreatmentDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
+import org.uispec4j.Panel
 import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
@@ -25,8 +27,9 @@ abstract class UiTest : UISpecTestCase() {
     private val log = LoggerFactory.getLogger(javaClass)
     private var window: Window? = null
 
-    private var mainDriver: MainDriver? = null
+    private var mainDriver: MainDriver? = null // MINOR try it, avoid nulls: Mockito.mock(MainDriver::class.java)
     private var clientDriver: ClientDriver? = null
+    private var treatmentDriver: TreatmentDriver? = null
 
     @BeforeClass
     fun initUi() {
@@ -43,6 +46,7 @@ abstract class UiTest : UISpecTestCase() {
 
         mainDriver = MainDriver(this, window!!)
         clientDriver = ClientDriver(this, window!!)
+        treatmentDriver = TreatmentDriver(this, window!!)
     }
 
     @AfterClass
@@ -53,6 +57,13 @@ abstract class UiTest : UISpecTestCase() {
 
     fun mainDriver() = mainDriver!!
     fun clientDriver() = clientDriver!!
+    fun treatmentDriver() = treatmentDriver!!
+
+
+    protected fun assertPanelContainedInMainWindow(panelName: String) {
+        assertThat("$panelName expected to be contained in main window.",
+                window!!.containsUIComponent(Panel::class.java, panelName))
+    }
 
     private fun retrieveWindow():Window {
         // increase timeout, as it seems as app startup needs more time than default timeout

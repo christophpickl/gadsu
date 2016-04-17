@@ -80,3 +80,9 @@ class ClientSelectedEvent(val client: Client, val previousSelected: Client?) : U
  * Happens when selected client has been deleted.
  */
 class ClientUnselectedEvent(val client: Client) : UserEvent()
+
+
+/**
+ * Back button in treatments view.
+ */
+class ShowClientViewEvent() : AppEvent()

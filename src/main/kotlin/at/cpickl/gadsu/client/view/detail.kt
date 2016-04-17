@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.treatment.view.TreatmentTable
+import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
@@ -20,14 +20,9 @@ import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.BoxLayout
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
-@Suppress("UNUSED") val ClientViewNames.SaveButton: String get() = "Client.SaveButton"
-@Suppress("UNUSED") val ClientViewNames.CancelButton: String get() = "Client.CancelButton"
-@Suppress("UNUSED") val ClientViewNames.InputFirstName: String get() = "Client.InputFirstName"
-@Suppress("UNUSED") val ClientViewNames.InputLastName: String get() = "Client.InputLastName"
 
 interface ClientDetailView {
     var currentClient: Client
@@ -40,7 +35,7 @@ interface ClientDetailView {
 }
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
-        treatmentTable: TreatmentTable
+        treatmentTable: TreatmentsInClientView
 ) : GridPanel(), ClientDetailView {
     companion object {
         private val BTN_SAVE_LABEL_INSERT = "Neu anlegen"
@@ -88,7 +83,8 @@ class SwingClientDetailView @Inject constructor(
 
         val buttonPanel = JPanel()
         buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
-        if (Development.ENABLED) buttonPanel.background = Color.BLUE
+        buttonPanel.debugColor = Color.BLUE
+
         buttonPanel.add(btnSave)
         buttonPanel.add(btnCancel)
 

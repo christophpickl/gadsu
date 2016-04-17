@@ -12,7 +12,9 @@ import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
+import java.awt.Color
 import javax.inject.Inject
+import javax.swing.JComponent
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 
@@ -20,6 +22,8 @@ import javax.swing.JMenuItem
 class Development {
     companion object {
         val ENABLED: Boolean = System.getProperty("gadsu.development", "").equals("true")
+        val COLOR_ENABLED = ENABLED && true
+
         init {
             if (ENABLED) {
                 println("Development mode is enabled via '-Dgadsu.development=true'")
@@ -79,3 +83,12 @@ class DevelopmentController @Inject constructor(
     private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, number, clock.now(), clock.now())
 
 }
+
+var JComponent.debugColor: Color?
+        get() = null
+        set(value) {
+            if (Development.COLOR_ENABLED) {
+                background = value
+            }
+        }
+

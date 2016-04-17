@@ -13,7 +13,9 @@ import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.components.calculateInsertIndex
@@ -23,11 +25,11 @@ import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 
 
-@Suppress("UNUSED_PARAMETER")
 class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
+        private val window: MainWindow,
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val dialogs: Dialogs
@@ -38,6 +40,8 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onAppStartupEvent(event: AppStartupEvent) {
         log.trace("onAppStartupEvent(event)")
         view.masterView.initClients(clientRepo.findAll())
+
+        bus.post(ShowClientViewEvent())
     }
 
     @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
@@ -46,7 +50,12 @@ class ClientViewController @Inject constructor(
         if (checkChanges() === ChangeBehaviour.ABORT) {
             return
         }
-        // FIXME dispatch client unselected event, if there was a (non-yet-persisted) client selected previously
+
+        // MINOR right now we still need 'view.detailView.currentClient', will be changed in future
+        if (view.detailView.currentClient.yetPersisted) {
+            bus.post(ClientUnselectedEvent(view.detailView.currentClient))
+        }
+
         view.masterView.selectClient(null)
         view.detailView.currentClient = Client.INSERT_PROTOTYPE
     }
@@ -110,6 +119,12 @@ class ClientViewController @Inject constructor(
         if (view.detailView.currentClient.equals(event.client)) {
             view.detailView.currentClient = Client.INSERT_PROTOTYPE
         }
+    }
+
+    @Subscribe fun onShowClientViewEvent(event: ShowClientViewEvent) {
+        log.debug("onShowClientViewEvent(event={})", event)
+
+        window.changeContent(view.asComponent())
     }
 
     fun checkChanges(): ChangeBehaviour {

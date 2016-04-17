@@ -15,15 +15,6 @@ import javax.swing.BorderFactory
 import javax.swing.JTextField
 
 
-object PreferencesViewNames {
-    val Window = "Preferences.Window"
-}
-
-@Suppress("UNUSED")
-val ViewNames.Preferences: PreferencesViewNames
-    get() = PreferencesViewNames
-
-
 
 class ShowPreferencesEvent : UserEvent()
 class PreferencesWindowClosedEvent : UserEvent()

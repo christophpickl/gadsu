@@ -1,59 +1,34 @@
-package at.cpickl.gadsu.treatment.view
+package at.cpickl.gadsu.treatment.inclient
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.service.formatDateTime
+import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
-import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
-import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyTable
 import at.cpickl.gadsu.view.components.MyTableModel
+import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.TableColumn
 import at.cpickl.gadsu.view.components.calculateInsertIndex
+import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.scrolled
-import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.FlowLayout
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
 
 
-class TreatmentTableController @Inject constructor(
-        private val table: TreatmentTable,
-        private val repository: TreatmentRepository
-) {
-    private var recentClient: Client? = null
-
-    @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        recentClient = event.client
-        table.initData(repository.findAllFor(event.client))
-    }
-
-    @Subscribe fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
-        if (!event.treatment.clientId.equals(recentClient?.id)) {
-            return
-        }
-        table.insert(event.treatment)
-    }
-
-    @Subscribe fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
-        if (!event.treatment.clientId.equals(recentClient?.id)) {
-            return
-        }
-        table.delete(event.treatment)
-    }
-
-    // FIXME onTreatmentChanged
-
-}
-
-
-class TreatmentTable : JPanel() {
+class TreatmentsInClientView @Inject constructor(
+        private val swing: SwingFactory
+): JPanel() {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // TODO :
+    private val newTreatmentButton = swing.newEventButton("Neue Behandlung", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
+
+    // TODO TreatmentsInClientView
     // set view name
     // inject event bus
     // register double click
@@ -65,9 +40,25 @@ class TreatmentTable : JPanel() {
 
     private val table = MyTable<Treatment>(model)
     init {
+        debugColor = Color.RED
         layout = BorderLayout()
+        newTreatmentButton.isEnabled = false
+
         add(JLabel("Behandlungen"), BorderLayout.NORTH)
         add(table.scrolled(), BorderLayout.CENTER)
+
+        val btnPanel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+        btnPanel.debugColor = Color.ORANGE
+
+        btnPanel.add(newTreatmentButton)
+        add(btnPanel, BorderLayout.SOUTH)
+    }
+
+    /**
+     * By default at startup disabled.
+     */
+    fun enableNewButton(value: Boolean) {
+        newTreatmentButton.isEnabled = value
     }
 
     fun initData(treatments: List<Treatment>) {

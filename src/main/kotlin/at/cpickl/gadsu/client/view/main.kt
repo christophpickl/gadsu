@@ -1,22 +1,12 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.Development
-import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.view.components.GridPanel
 import com.google.inject.Inject
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-
-
-object ClientViewNames {
-    // all via extensions
-}
-
-@Suppress("UNUSED")
-val ViewNames.Client: ClientViewNames
-    get() = ClientViewNames
 
 
 interface ClientView {
@@ -32,7 +22,7 @@ class SwingClientView @Inject constructor(
 ) : GridPanel(), ClientView {
 
     init {
-        if (Development.ENABLED) background = Color.YELLOW
+        debugColor = Color.YELLOW
 
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0

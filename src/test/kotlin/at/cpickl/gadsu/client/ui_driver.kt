@@ -1,12 +1,5 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.CancelButton
-import at.cpickl.gadsu.client.view.Client
-import at.cpickl.gadsu.client.view.CreateButton
-import at.cpickl.gadsu.client.view.InputFirstName
-import at.cpickl.gadsu.client.view.InputLastName
-import at.cpickl.gadsu.client.view.List
-import at.cpickl.gadsu.client.view.SaveButton
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.view.ViewNames
@@ -26,6 +19,7 @@ class ClientDriver(private val test: UiTest, private val window: Window) {
     val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)
     val saveButton = window.getButton(ViewNames.Client.SaveButton)
     val cancelButton = window.getButton(ViewNames.Client.CancelButton)
+
 
     fun saveClient(client: Client) {
         createButton.click()
@@ -55,6 +49,10 @@ class ClientDriver(private val test: UiTest, private val window: Window) {
 
     fun assertListContains(client: Client) {
         test.assertThat(list.contains(client.fullName))
+    }
+
+    fun assertPanelVisible() {
+        test.assertPanelContainedInMainWindow(ViewNames.Client.MainPanel)
     }
 
 }

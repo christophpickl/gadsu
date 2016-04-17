@@ -1,15 +1,10 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.QuitUserEvent
-import at.cpickl.gadsu.client.view.ChangeBehaviour
-import at.cpickl.gadsu.client.view.ClientViewController
-import at.cpickl.gadsu.service.Prefs
+import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.service.WindowDescriptor
 import at.cpickl.gadsu.view.components.MyWindow
 import com.google.common.eventbus.EventBus
-import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
@@ -20,32 +15,6 @@ import javax.swing.BorderFactory
 import javax.swing.JFrame
 import javax.swing.JPanel
 
-
-class MainWindowController @Inject constructor(
-        private val window: MainWindow,
-        private val clientController: ClientViewController,
-        private val prefs: Prefs
-) {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-    @Subscribe fun onAppStartupEvent(@Suppress("UNUSED_PARAMETER") event: AppStartupEvent) {
-        if (prefs.windowDescriptor != null) {
-            window.descriptor = prefs.windowDescriptor!!
-        }
-    }
-
-    @Subscribe fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
-        log.info("onQuitUserEvent(event)")
-
-        if (clientController.checkChanges() === ChangeBehaviour.ABORT) {
-            log.debug("Quit aborted by changes detected by the client controller.")
-            return
-        }
-
-        prefs.windowDescriptor = window.descriptor
-        window.close()
-    }
-}
 
 
 interface MainWindow {
@@ -68,7 +37,8 @@ class SwingMainWindow @Inject constructor(
     private var _descriptor: WindowDescriptor? = null
 
     init {
-        if (Development.ENABLED) container.background = Color.CYAN
+        container.name = ViewNames.Main.ContainerPanel
+        container.debugColor = Color.CYAN
 
         jMenuBar = gadsuMenuBar
         addCloseListener { bus.post(QuitUserEvent()) }
@@ -76,6 +46,7 @@ class SwingMainWindow @Inject constructor(
         container.layout = BorderLayout()
         container.border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
 
+        contentPane.name = ViewNames.Main.ContentPanel
         contentPane.layout = BorderLayout()
         contentPane.add(container, BorderLayout.CENTER)
     }
@@ -106,6 +77,9 @@ class SwingMainWindow @Inject constructor(
         log.trace("changeContent(content={})", content)
         container.removeAll()
         container.add(content, BorderLayout.CENTER)
+        container.revalidate()
+        container.repaint()
+
     }
 
     override fun asJFrame() = this
