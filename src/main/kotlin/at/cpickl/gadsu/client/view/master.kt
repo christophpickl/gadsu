@@ -60,7 +60,7 @@ class SwingClientMasterView @Inject constructor(
         list.name = ViewNames.Client.List
         list.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
-                if (list.selectedIndex == -1) {
+                if (list.selectedIndex === -1) {
                     // MINOR what to do if selection changes to none? what actually triggers this? deletion of client?!
                     // might also happen because of future search, but this should then lead to NO event publishing (client should stay displayed in detail view)
                 } else {
@@ -111,7 +111,7 @@ class SwingClientMasterView @Inject constructor(
 
     override fun selectClient(client: Client?) {
         log.trace("selectClient(client={})", client)
-        if (client == null) {
+        if (client === null) {
             previousSelected = null
             list.clearSelection()
         } else {

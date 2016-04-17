@@ -24,7 +24,7 @@ class SwingWebPageOpener : WebPageOpener {
     private var desktop: Desktop? = null
     override val isSupported: Boolean
         get() {
-            if (_isSupported == null) {
+            if (_isSupported === null) {
                 desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
                 _isSupported = desktop != null && desktop!!.isSupported(Desktop.Action.BROWSE)
             }
@@ -33,7 +33,7 @@ class SwingWebPageOpener : WebPageOpener {
 
     override fun open(url: URL) {
         log.info("open(url='{}')", url)
-        if (isSupported == false) {
+        if (isSupported === false) {
             throw GadsuException("Opening links is not supported on your machine!")
         }
         desktop!!.browse(url.toURI())
@@ -41,7 +41,7 @@ class SwingWebPageOpener : WebPageOpener {
 
     @Subscribe fun onOpenWebpageEvent(event: OpenWebpageEvent) {
         log.debug("onOpenWebpageEvent(event)")
-        if (isSupported == false) {
+        if (isSupported === false) {
             Dialogs(null).show(
                     title = "Ups",
                     message = "Dein System unterst\u00fctzt nicht das \u00d6ffnen von Links!",

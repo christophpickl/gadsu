@@ -35,10 +35,10 @@ class TreatmentSpringJdbcRepository @Inject constructor(
     override fun insert(treatment: Treatment, client: Client): Treatment {
         log.debug("insert(treatment={}, client={})", treatment, client)
 
-        if (client.yetPersisted == false) {
+        if (client.yetPersisted === false) {
             throw PersistenceException("Client was not yet persisted! ($treatment, $client)")
         }
-        if (treatment.yetPersisted == true) {
+        if (treatment.yetPersisted === true) {
             throw PersistenceException("Treatment was yet persisted! ($treatment, $client)")
         }
 
@@ -49,7 +49,7 @@ class TreatmentSpringJdbcRepository @Inject constructor(
     }
 
     override fun findAllFor(client: Client): List<Treatment> {
-        if (client.yetPersisted == false) {
+        if (client.yetPersisted === false) {
             throw PersistenceException("Client was not yet persisted! ($client)")
         }
         val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id), Treatment.ROW_MAPPER)
@@ -59,7 +59,7 @@ class TreatmentSpringJdbcRepository @Inject constructor(
 
     override fun delete(treatment: Treatment) {
         log.debug("delete(treatment={})", treatment)
-        if (treatment.yetPersisted == false) {
+        if (treatment.yetPersisted === false) {
             throw PersistenceException("Treatment was not yet persisted! ($treatment)")
         }
         jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", treatment.id)

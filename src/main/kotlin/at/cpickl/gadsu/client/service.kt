@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
+// MINOR delegate functions (partly, no delete!) from repo: https://objectpartners.com/2016/02/23/an-introduction-to-kotlin/
 interface ClientService {
     fun delete(client: Client)
 }

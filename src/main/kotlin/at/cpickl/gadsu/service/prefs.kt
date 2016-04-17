@@ -27,7 +27,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
     private var _preferences: Preferences? = null
     private val preferences: Preferences
         get() {
-            if (_preferences == null) {
+            if (_preferences === null) {
                 log.info("Initializing preferences for class: {}", nodeClass.name)
                 _preferences = Preferences.userNodeForPackage(nodeClass)
             }
@@ -38,14 +38,14 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         get() {
 
             val dummy = preferences.get(KEY_DUMMY, null)
-            if (dummy == null) {
+            if (dummy === null) {
                 return null
             }
             return PreferencesData(dummy)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
-            if (value == null) {
+            if (value === null) {
                 preferences.remove(KEY_DUMMY)
                 preferences.flush()
                 return
@@ -59,7 +59,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
     override var windowDescriptor: WindowDescriptor?
         get() {
             val x = preferences.getInt(KEY_WINDOW_X, -1)
-            if (x == -1) {
+            if (x === -1) {
                 return null
             }
             val y = preferences.getInt(KEY_WINDOW_Y, -1)
@@ -69,7 +69,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         }
         set(value) {
             log.trace("set windowDescriptor(value={})", value)
-            if (value == null) {
+            if (value === null) {
                 preferences.remove(KEY_WINDOW_X)
                 preferences.remove(KEY_WINDOW_Y)
                 preferences.remove(KEY_WINDOW_WIDTH)

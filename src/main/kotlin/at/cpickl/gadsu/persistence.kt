@@ -29,7 +29,7 @@ import javax.sql.DataSource
 open class PersistenceException(message: String, cause: Exception? = null) : GadsuException(message, cause)
 
 
-class PersistenceModule(private val args: Args) : AbstractModule() {
+class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
     companion object {
         val DEFAULT_DB_URL: String
         init {
@@ -40,7 +40,7 @@ class PersistenceModule(private val args: Args) : AbstractModule() {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun configure() {
-        val databaseUrl = args.databaseUrl ?: DEFAULT_DB_URL
+        val databaseUrl = databaseUrl ?: DEFAULT_DB_URL
         log.debug("configure() ... using database URL; '{}'", databaseUrl)
 
         val dataSource = JDBCDataSource()
@@ -167,7 +167,7 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
                 log.trace("Transaction committed.")
                 committed = true
             } finally {
-                if (committed == false) {
+                if (committed === false) {
                     log.trace("Rolling back transaction!")
                     dataSource.connection.rollback()
                 }

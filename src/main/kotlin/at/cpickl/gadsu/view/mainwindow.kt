@@ -37,7 +37,7 @@ class MainWindowController @Inject constructor(
     @Subscribe fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
         log.info("onQuitUserEvent(event)")
 
-        if (clientController.checkChanges() == ChangeBehaviour.ABORT) {
+        if (clientController.checkChanges() === ChangeBehaviour.ABORT) {
             log.debug("Quit aborted by changes detected by the client controller.")
             return
         }
@@ -89,7 +89,7 @@ class SwingMainWindow @Inject constructor(
         }
 
     override fun start() {
-        if (_descriptor == null) {
+        if (_descriptor === null) {
             size = Dimension(600, 400)
             setLocationRelativeTo(null)
         }

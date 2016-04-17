@@ -91,7 +91,7 @@ class SwingPreferencesWindow @Inject constructor(
     override fun readData() = PreferencesData(inpDummy.text)
 
     override fun start() {
-        if (yetCreated == false) {
+        if (yetCreated === false) {
             yetCreated = true
             size = Dimension(500, 400)
             isResizable = false

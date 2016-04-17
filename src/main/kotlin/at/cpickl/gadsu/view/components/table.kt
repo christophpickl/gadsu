@@ -12,7 +12,7 @@ class MyTable<E>(private val _model: MyTableModel<E>) : JTable(_model) {
     init {
         setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN)
         for (i in 0.rangeTo(_model.columns.size - 1)) {
-            if (i == _model.columns.size - 1) {
+            if (i === _model.columns.size - 1) {
                 columnModel.getColumn(i).maxWidth = Int.MAX_VALUE
             } else {
                 columnModel.getColumn(i).maxWidth = _model.columns[i].width

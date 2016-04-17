@@ -5,15 +5,20 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 import java.util.Objects
+import javax.inject.Inject
 
 // FIXME use current infrastructure (also for treatment)
 class CurrentModule : AbstractModule() {
     override fun configure() {
-        bind(CurrentClient::class.java).asEagerSingleton()
+        bind(CurrentClient::class.java)
     }
 }
 
-data class CurrentChangedEvent(val id: String, val oldData: Any, val newData: Any)
+data class CurrentChangedEvent(val id: String, val oldData: Any, val newData: Any) {
+    companion object {
+        // for extensions
+    }
+}
 
 interface HasId {
     val id: String?
@@ -26,7 +31,7 @@ abstract class Current<V : HasId>(private val id: String, initialData: V, privat
     var data: V
         get() = _data
         set(value) {
-            if (value == data) {
+            if (value === data) {
                 return
             }
             if (!Objects.equals(value.id, data.id)) {
@@ -38,4 +43,11 @@ abstract class Current<V : HasId>(private val id: String, initialData: V, privat
 
 }
 
-class CurrentClient(initialData: Client, bus: EventBus) : Current<Client>("client", initialData, bus)
+class CurrentClient @Inject constructor(bus: EventBus) :
+        Current<Client>(ID, INITIAL_DATA, bus) {
+    companion object {
+        val INITIAL_DATA = Client.INSERT_PROTOTYPE
+        val ID: String = "client"
+        val CurrentChangedEvent.Companion.ID_CLIENT: String get() = ID
+    }
+}

@@ -24,7 +24,7 @@ class Dialogs @Inject constructor(
     fun show(title: String, message: String, buttonLabels: Array<String>, defaultButton: String? = null, type: DialogType = DialogType.PLAIN): String? {
         val selected = JOptionPane.showOptionDialog(window?.asJFrame(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])
-        if (selected == JOptionPane.CLOSED_OPTION) {
+        if (selected === JOptionPane.CLOSED_OPTION) {
             return null
         }
         return buttonLabels[selected]

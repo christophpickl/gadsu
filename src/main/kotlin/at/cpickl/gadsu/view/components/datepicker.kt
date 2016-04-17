@@ -62,7 +62,7 @@ class MyDatePicker(model: DateModel<Date>) : JDatePickerImpl(JDatePanelImpl(mode
         }
     }
     fun selectedDate(): DateTime? {
-        if (model.value == null) {
+        if (model.value === null) {
             return null
         }
         val selectedDate = model.value as Date
@@ -79,7 +79,7 @@ class DatePickerFormatter : JFormattedTextField.AbstractFormatter() {
         if (value is Calendar) {
             return formatter.print(value.time.time)
         }
-        if (value == null) {
+        if (value === null) {
             return ""
         }
         throw UnsupportedOperationException("Expected date picker value to be either a GregorianCalender instance or null, but was: $value")

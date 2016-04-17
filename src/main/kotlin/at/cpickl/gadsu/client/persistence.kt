@@ -66,7 +66,7 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun delete(client: Client) {
         log.debug("delete(client={})", client)
-        if (client.id == null) {
+        if (client.id === null) {
             throw PersistenceException("Client got no ID associated! $client")
         }
         jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id)

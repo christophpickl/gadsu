@@ -9,19 +9,17 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.google.inject.TypeLiteral
-import com.google.inject.matcher.Matchers
+import com.google.inject.matcher.Matchers.any
 import com.google.inject.spi.InjectionListener
 import com.google.inject.spi.TypeEncounter
 import com.google.inject.spi.TypeListener
 import org.slf4j.LoggerFactory
-
 
 class GadsuModule(private val args: Args) : AbstractModule() {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun configure() {
         log.debug("configure()")
-
         bind(DevelopmentController::class.java).asEagerSingleton()
 
         bind(PreferencesController::class.java).asEagerSingleton()
@@ -33,23 +31,17 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
 
     private fun configureEventBus() {
-        val eventBus = EventBus({ exception, context ->
+        val bus = EventBus({ exception, context ->
             log.error("Uncaught exception in event bus! context=$context", exception)
         })
-        bind(EventBus::class.java).toInstance(eventBus)
+        bind(EventBus::class.java).toInstance(bus)
+        bindListener(any(), BusRegisteringTypeListener(bus))
 
-        // remove necessity to call "bus.register(this)" all the time
-        // https://spin.atomicobject.com/2012/01/13/the-guava-eventbus-on-guice/
-        bindListener(Matchers.any(), object : TypeListener {
-            override fun <I> hear(literal: TypeLiteral<I>, encounter: TypeEncounter<I>) {
-                encounter.register(InjectionListener { i -> eventBus.register(i) })
-            }
-        })
         bind(AllMightyEventCatcher::class.java).asEagerSingleton()
     }
 
     private fun installSubModules(args: Args) {
-        install(PersistenceModule(args))
+        install(PersistenceModule(args.databaseUrl))
         install(ServiceModule(args.preferencesNode))
         install(ViewModule())
 
@@ -57,5 +49,13 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(TreatmentModule())
 
         install(ReportModule())
+    }
+}
+
+// remove necessity to call "bus.register(this)" all the time
+// https://spin.atomicobject.com/2012/01/13/the-guava-eventbus-on-guice/
+class BusRegisteringTypeListener(private val bus: EventBus) : TypeListener {
+    override fun <I> hear(literal: TypeLiteral<I>, encounter: TypeEncounter<I>) {
+        encounter.register(InjectionListener { i -> bus.register(i) })
     }
 }

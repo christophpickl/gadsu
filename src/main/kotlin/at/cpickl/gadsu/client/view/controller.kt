@@ -43,7 +43,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         log.trace("onCreateNewClientEvent(event)")
 
-        if (checkChanges() == ChangeBehaviour.ABORT) {
+        if (checkChanges() === ChangeBehaviour.ABORT) {
             return
         }
         // FIXME dispatch client unselected event, if there was a (non-yet-persisted) client selected previously
@@ -78,7 +78,7 @@ class ClientViewController @Inject constructor(
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
         log.trace("onClientSelectedEvent(event)")
 
-        if (checkChanges() == ChangeBehaviour.ABORT) {
+        if (checkChanges() === ChangeBehaviour.ABORT) {
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
         }
@@ -93,7 +93,7 @@ class ClientViewController @Inject constructor(
                 type = DialogType.QUESTION,
                 buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
         )
-        if (selected == null || selected.equals("Abbrechen")) {
+        if (selected === null || selected.equals("Abbrechen")) {
             return
         }
 
@@ -142,7 +142,10 @@ class ClientViewController @Inject constructor(
             clientRepo.update(client)
             bus.post(ClientUpdatedEvent(client))
         } else {
-            val savedClient = clientRepo.insert(client.copy(created = clock.now()))
+            val toBeInserted = client.copy(created = clock.now())
+            log.trace("Going to insert: {}", toBeInserted)
+            val savedClient = clientRepo.insert(toBeInserted)
+            log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
             bus.post(ClientCreatedEvent(savedClient))
         }
     }

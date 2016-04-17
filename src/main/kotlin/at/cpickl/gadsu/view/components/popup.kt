@@ -25,7 +25,7 @@ fun <T> JList<T>.enablePopup(bus: EventBus, label: String, eventProvider: (eleme
         private fun maybeShowPopup(e: MouseEvent) {
             if (e.isPopupTrigger) {
                 val index = myLocationToIndex(e.point)
-                if (index == -1) {
+                if (index === -1) {
                     return
                 }
                 val element = model.getElementAt(index)

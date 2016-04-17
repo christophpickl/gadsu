@@ -11,7 +11,7 @@ class ServiceModule(private val nodePrefsFqn: String?) : AbstractModule() {
 
         bind(MetaInf::class.java).toProvider(MetaInfLoader::class.java).`in`(Scopes.SINGLETON)
 
-        val nodeClass = if (nodePrefsFqn == null) JavaPrefs::class.java else Class.forName(nodePrefsFqn)
+        val nodeClass = if (nodePrefsFqn === null) JavaPrefs::class.java else Class.forName(nodePrefsFqn)
         bind(Prefs::class.java).toInstance(JavaPrefs(nodeClass))
 
         bind(WebPageOpener::class.java).to(SwingWebPageOpener::class.java).asEagerSingleton()
