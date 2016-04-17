@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view
 
 object ViewNames {
     val Main = MainViewNames
+    val MenuBar = MenuBarViewNames
     val Client = ClientViewNames
     val Treatment = TreatmentViewNames
     val Preferences = PreferencesViewNames
@@ -10,6 +11,10 @@ object ViewNames {
 object MainViewNames {
     val ContainerPanel = "Main.ContainerPanel"
     val ContentPanel = "Main.ContentPanel"
+}
+
+object MenuBarViewNames {
+    val ProtocolGenerate = "MenuBar.ProtocolGenerate"
 }
 
 object ClientViewNames {

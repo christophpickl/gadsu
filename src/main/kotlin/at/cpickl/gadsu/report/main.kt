@@ -2,9 +2,9 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
@@ -25,7 +25,7 @@ class ReportModule : AbstractModule() {
 /**
  * User requested to generate a new protocol report.
  */
-class CreateProtocolEvent(val client: Client) : UserEvent()
+class CreateProtocolEvent() : UserEvent()
 
 
 class ReportException(message: String, cause: Exception? = null) : GadsuException(message, cause)
@@ -34,14 +34,15 @@ class ReportController @Inject constructor(
         private val treatmentRepo: TreatmentRepository,
         private val protocolGenerator: ProtocolGenerator,
         private val clock: Clock,
+        private val currentClient: CurrentClient,
         private val preferences: Provider<PreferencesData>
         ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Subscribe fun onCreateProtocolEvent(event: CreateProtocolEvent) {
-        log.debug("onCreateProtocolEvent(event.client={})", event.client)
-        val client = event.client
+        log.debug("onCreateProtocolEvent(event={})", event)
+        val client = currentClient.data!!
 
         val treatments = treatmentRepo.findAllFor(client)
 

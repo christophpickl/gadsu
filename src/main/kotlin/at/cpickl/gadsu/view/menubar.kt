@@ -5,12 +5,14 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.client.ClientUnselectedEvent
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
+import at.cpickl.gadsu.service.CurrentChangedEvent
+import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.ID_Client
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.swing.JMenu
 import javax.swing.JMenuBar
@@ -21,33 +23,36 @@ enum class MenuBarEntry {
     REPORT_PROTOCOL
 }
 
-class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent()
+class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
+    override fun toString(): String{
+        return "MenuBarEntryClickedEvent(entry=$entry)"
+    }
+}
 
 
 class GadsuMenuBarController @Inject constructor(
         private val menuBar: GadsuMenuBar,
-        private val bus: EventBus
+        private val bus: EventBus,
+        private val currentClient: CurrentClient
 ) {
-
-    private var recentClient: Client? = null
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @Subscribe fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
+        log.debug("onMenuBarEntryClickedEvent(event={})", event)
         when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
-            MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent(recentClient!!))
+            MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
 
             else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
         }
     }
 
-    @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        recentClient = event.client
-        menuBar.itemProtocol.isEnabled = true
-    }
+    @Subscribe fun onCurrentChangedEvent(event: CurrentChangedEvent) {
+        log.debug("onCurrentChangedEvent(event={})", event)
 
-    @Subscribe fun onClientUnselectedEvent(@Suppress("UNUSED_PARAMETER") event: ClientUnselectedEvent) {
-        recentClient = null
-        menuBar.itemProtocol.isEnabled = false
+        if (event.id == CurrentChangedEvent.ID_Client) {
+            menuBar.itemProtocol.isEnabled = event.newData is Client && event.newData.yetPersisted
+        }
     }
 
 }
@@ -87,6 +92,7 @@ class GadsuMenuBar @Inject constructor(
         val menuReports = JMenu("Berichte")
 
         itemProtocol.isEnabled = false
+        itemProtocol.name = ViewNames.MenuBar.ProtocolGenerate
         itemProtocol.addActionListener { bus.post(MenuBarEntryClickedEvent(MenuBarEntry.REPORT_PROTOCOL)) }
         menuReports.add(itemProtocol)
 

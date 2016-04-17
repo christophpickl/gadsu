@@ -3,6 +3,7 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
+import at.cpickl.gadsu.view.MenuBarDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
@@ -34,6 +35,7 @@ abstract class UiTest : UISpecTestCase() {
     private var window: Window? = null
 
     private var mainDriver: MainDriver? = null
+    private var menuBarDriver: MenuBarDriver? = null
     private var clientDriver: ClientDriver? = null
     private var treatmentDriver: TreatmentDriver? = null
 
@@ -51,6 +53,7 @@ abstract class UiTest : UISpecTestCase() {
         window = retrieveWindow()
 
         mainDriver = MainDriver(this, window!!)
+        menuBarDriver = MenuBarDriver(this, window!!)
         clientDriver = ClientDriver(this, window!!)
         treatmentDriver = TreatmentDriver(this, window!!)
     }
@@ -62,6 +65,7 @@ abstract class UiTest : UISpecTestCase() {
     }
 
     fun mainDriver() = mainDriver!!
+    fun menuBarDriver() = menuBarDriver!!
     fun clientDriver() = clientDriver!!
     fun treatmentDriver() = treatmentDriver!!
 

@@ -104,16 +104,17 @@ class CurrentClient @Inject constructor(bus: EventBus) :
         Current<Client?>(ID, bus) {
     companion object {
         val ID: String = "client"
-        val CurrentChangedEvent.Companion.ID_CLIENT: String get() = ID
-        val CurrentPropertiesChangedEvent.Companion.ID_CLIENT: String get() = ID
     }
 }
+val CurrentChangedEvent.Companion.ID_Client: String get() = CurrentClient.ID
+val CurrentPropertiesChangedEvent.Companion.ID_Client: String get() = CurrentClient.ID
+
 
 class CurrentTreatment @Inject constructor(bus: EventBus) :
         Current<Treatment?>(ID, bus) {
     companion object {
         val ID: String = "treatment"
-        val CurrentChangedEvent.Companion.ID_Treatment: String get() = ID
-        val CurrentPropertiesChangedEvent.Companion.ID_Treatment: String get() = ID
     }
 }
+val CurrentChangedEvent.Companion.ID_Treatment: String get() = CurrentTreatment.ID
+val CurrentPropertiesChangedEvent.Companion.ID_Treatment: String get() = CurrentTreatment.ID
