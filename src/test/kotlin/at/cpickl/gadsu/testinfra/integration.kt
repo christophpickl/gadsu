@@ -12,7 +12,6 @@ import com.google.inject.testing.fieldbinder.Bind
 import com.google.inject.testing.fieldbinder.BoundFieldModule
 import com.google.inject.util.Modules
 import org.mockito.Mockito
-import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.prefs.Preferences
@@ -23,10 +22,8 @@ import javax.inject.Inject
 // http://testng.org/doc/documentation-main.html#guice-dependency-injection
 //@Guice(modules = arrayOf(ClientModule::class))
 abstract class GuiceIntegrationTest {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-    private val PREFERENCES_NODE = javaClass
-    private val PREFERENCES_NODE_NAME = PREFERENCES_NODE.name
+    private val preferencesNode = javaClass
+    private val preferencesNodeName = preferencesNode.name
 
     // https://github.com/google/guice/wiki/BoundFields
     @Bind protected var mockClientRepository: ClientRepository = Mockito.mock(ClientRepository::class.java)
@@ -43,7 +40,7 @@ abstract class GuiceIntegrationTest {
 
     @BeforeMethod
     fun init() {
-        val prefs = Preferences.userNodeForPackage(PREFERENCES_NODE)
+        val prefs = Preferences.userNodeForPackage(preferencesNode)
         prefs.clear()
         prefs.flush()
 
@@ -53,7 +50,7 @@ abstract class GuiceIntegrationTest {
 
         Guice.createInjector(
                 Modules.override(
-                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, PREFERENCES_NODE_NAME))
+                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, preferencesNodeName))
                 ).with(BoundFieldModule.of(this))
         ).injectMembers(this)
 
