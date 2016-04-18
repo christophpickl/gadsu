@@ -4,6 +4,7 @@ echo "./gradlew clean test testUi"
 
 ./gradlew clean test testUi
 
-if [ $? -ne 0] then
+if [ $? -ne 0 ]
+then
     say "Test build failed"
 fi

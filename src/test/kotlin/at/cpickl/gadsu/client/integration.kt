@@ -16,6 +16,7 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
     @Inject private var view: ClientView? = null
 
     fun `Given mock client repository setup, when post a SaveClientEvent, then some other events should be dispatched and repository calls invoked`() {
+        view!!.detailView.writeClient(Client.unsavedValidInstance())
         val viewClient = view!!.detailView.readClient()
         val expectedToSaveClient = viewClient.copy(created = clock.now())
         val savedClient = expectedToSaveClient.copy(id = TEST_UUID1)

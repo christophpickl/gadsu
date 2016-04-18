@@ -20,6 +20,7 @@ import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
+import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
@@ -55,6 +56,8 @@ class SwingTreatmentView @Inject constructor(
         viewName = ViewNames.Treatment.MainPanel,
         _debugColor = Color.YELLOW
 ), TreatmentView {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     // FIXME calculate number in DB
 
@@ -114,6 +117,7 @@ class SwingTreatmentView @Inject constructor(
     }
 
     override fun wasSaved(newTreatment: Treatment) {
+        log.trace("wasSaved(newTreatment)")
         treatment = newTreatment
 
         btnSave.changeLabel(treatment)
@@ -123,6 +127,7 @@ class SwingTreatmentView @Inject constructor(
     override fun asComponent() = this
 
     private fun readTreatment(): Treatment {
+        log.trace("readTreatment()")
         return Treatment(
                 treatment.id,
                 treatment.clientId,

@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.clearSeconds
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
+import at.cpickl.gadsu.service.parseDateTimeWithoutSeconds
 import org.joda.time.DateTime
 import javax.swing.JTextField
 
@@ -13,7 +13,7 @@ class DateAndTimePicker(
         swing: SwingFactory
 ) : GridPanel() {
 
-    private val inpTime = JTextField() // TODO make own time component; must also react on changes
+    private val inpTime = JTextField() // FIXME make own time component; must also react on changes
     private val inpDate: MyDatePicker
     init {
         inpDate = modificationChecker.enableChangeListener(swing.newDatePicker(initialDate))
@@ -26,8 +26,8 @@ class DateAndTimePicker(
     }
 
     fun readDateTime(): DateTime {
-        val time = DateFormats.TIME_MINUTES.parseDateTime(inpTime.text)
-        return inpDate.selectedDate()!!
+        val time = inpTime.text.parseDateTimeWithoutSeconds()
+        return inpDate.selectedDate()
                 .withHourOfDay(time.hourOfDay)
                 .withMinuteOfHour(time.minuteOfHour)
                 .clearSeconds()

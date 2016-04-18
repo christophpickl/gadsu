@@ -21,7 +21,7 @@ class ModificationChecker(
     }
 
     fun enableChangeListener(delegate: MyDatePicker): MyDatePicker {
-        // FIXME implement me
+        delegate.addChangeListener { checkModificationsAndSetEnabled() }
         return delegate
     }
 
@@ -40,6 +40,13 @@ class ModificationChecker(
         }
     }
 
+}
+
+fun MyDatePicker.addChangeListener(listener: () -> Unit) {
+    this.addActionListener {
+        println("fuchur")
+        listener()
+    }
 }
 
 fun JTextComponent.addChangeListener(listener: () -> Unit) {
