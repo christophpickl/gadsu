@@ -1,11 +1,13 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.persistence.JdbcX
-import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.client.ensurePersisted
+import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.PersistenceErrorCode
+import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.service.IdGenerator
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
@@ -17,6 +19,8 @@ interface TreatmentRepository {
     fun insert(treatment: Treatment, client: Client): Treatment
     fun update(treatment: Treatment)
     fun delete(treatment: Treatment)
+
+    fun countAllFor(client: Client): Int
 
 }
 
@@ -32,23 +36,18 @@ class TreatmentSpringJdbcRepository @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
-        if (client.yetPersisted === false) {
-            throw PersistenceException("Client was not yet persisted! ($client)")
-        }
-        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id), Treatment.ROW_MAPPER)
-        treatments.sort()
+        client.ensurePersisted()
+
+        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? ORDER BY number", arrayOf(client.id), Treatment.ROW_MAPPER)
+        // because of ORDER clause, not needed: treatments.sort()
         return treatments
     }
 
     override fun insert(treatment: Treatment, client: Client): Treatment {
         log.debug("insert(treatment={}, client={})", treatment, client)
 
-        if (client.yetPersisted === false) {
-            throw PersistenceException("Client was not yet persisted! ($treatment, $client)")
-        }
-        if (treatment.yetPersisted === true) {
-            throw PersistenceException("Treatment was yet persisted! ($treatment, $client)")
-        }
+        client.ensurePersisted()
+        treatment.ensureNotPersisted()
 
         val newId = idGenerator.generate()
         @Suppress("SENSELESS_COMPARISON") // yes, it can indeed be that way!
@@ -63,21 +62,38 @@ class TreatmentSpringJdbcRepository @Inject constructor(
 
     override fun update(treatment: Treatment) {
         log.debug("update(treatment={})", treatment)
-        if (!treatment.yetPersisted) {
-            throw PersistenceException("Treatment must have set an ID! ($treatment)")
-        }
+        treatment.ensurePersisted()
+
         jdbcx.updateSingle("UPDATE ${TABLE} SET number = ?, date = ?, note = ? WHERE id = ?",
                 treatment.number, treatment.date.toSqlTimestamp(), treatment.note, treatment.id)
     }
 
     override fun delete(treatment: Treatment) {
         log.debug("delete(treatment={})", treatment)
-        if (treatment.yetPersisted === false) {
-            throw PersistenceException("Treatment was not yet persisted! ($treatment)")
-        }
+        treatment.ensurePersisted()
+
         jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", treatment.id)
     }
 
+    override fun countAllFor(client: Client): Int {
+        log.debug("countAllFor(client={})", client)
+        client.ensurePersisted()
+
+        return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
+    }
+
+}
+
+fun Treatment.ensurePersisted() {
+    if (!yetPersisted) {
+        throw PersistenceException("Treatment must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
+    }
+}
+
+fun Treatment.ensureNotPersisted() {
+    if (yetPersisted) {
+        throw PersistenceException("Treatment must not have set an ID! ($this)", PersistenceErrorCode.EXPECTED_NOT_YET_PERSISTED)
+    }
 }
 
 @Suppress("UNUSED")

@@ -33,7 +33,7 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
 
 open class FormPanel : GridPanel() {
     init {
-        c.anchor = GridBagConstraints.WEST
+        c.anchor = GridBagConstraints.NORTHWEST
     }
 
     fun addFormInput(label: String, input: Component) {

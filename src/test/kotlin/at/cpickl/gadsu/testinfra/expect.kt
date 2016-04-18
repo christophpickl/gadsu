@@ -7,11 +7,12 @@ import kotlin.reflect.KClass
 
 object Expects {
 
-    fun expect(type: KClass<out Exception>,
+    fun <E : Exception> expect(type: KClass<E>,
                action: () -> Unit,
                messageContains: String? = null,
                causedByType: KClass<out Exception>? = null,
-               causedByMessageContains: String? = null) {
+               causedByMessageContains: String? = null,
+               exceptionAsserter: ((E) -> Unit)? = null) {
         try {
             action()
             Assert.fail("Expected a ${type.simpleName} to be thrown!")
@@ -21,6 +22,10 @@ object Expects {
 
             if (messageContains != null) {
                 assertThat(e.message, containsString(messageContains))
+            }
+
+            if (exceptionAsserter != null) {
+                exceptionAsserter(e as E) // yes, already checked above
             }
 
             if (causedByType != null) {

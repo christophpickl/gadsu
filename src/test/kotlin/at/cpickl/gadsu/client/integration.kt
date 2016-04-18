@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.testinfra.GuiceIntegrationTest
-import at.cpickl.gadsu.testinfra.TEST_UUID
+import at.cpickl.gadsu.testinfra.TEST_UUID1
 import org.mockito.Mockito.*
 import org.slf4j.LoggerFactory
 import org.testng.annotations.Test
@@ -18,7 +18,7 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
     fun `Given mock client repository setup, when post a SaveClientEvent, then some other events should be dispatched and repository calls invoked`() {
         val viewClient = view!!.detailView.readClient()
         val expectedToSaveClient = viewClient.copy(created = clock.now())
-        val savedClient = expectedToSaveClient.copy(id = TEST_UUID)
+        val savedClient = expectedToSaveClient.copy(id = TEST_UUID1)
         val saveEvent = SaveClientEvent()
 
         log.trace("expectedToSaveClient: $expectedToSaveClient")

@@ -58,8 +58,9 @@ abstract class HsqldbTest {
 
     protected fun jdbcx(): SpringJdbcX = jdbcx!!
 
-    protected fun whenGenerateIdReturnTestUuid() {
-        `when`(idGenerator.generate()).thenReturn(TEST_UUID)
+    protected fun whenGenerateIdReturnTestUuid(vararg ids: String = arrayOf(TEST_UUID1)) {
+        var mockStub = `when`(idGenerator.generate())
+        ids.forEach { mockStub = mockStub.thenReturn(it) }
     }
 
     protected fun nullJdbcx() = mock(JdbcX::class.java)

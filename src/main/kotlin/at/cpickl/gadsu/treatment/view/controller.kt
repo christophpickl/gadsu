@@ -45,7 +45,7 @@ class TreatmentController @Inject constructor(
     private fun changeToTreatmentView(treatment: Treatment?) {
         val client = currentClient.data
 
-        val number = 1 // FIXME calculate sequence number
+        val number = treatmentService.calculateNextNumber(client)
         val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
 
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)

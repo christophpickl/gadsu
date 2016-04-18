@@ -5,6 +5,7 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
 import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toBufferedImage
 import at.cpickl.gadsu.persistence.toSqlTimestamp
@@ -54,10 +55,7 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun insert(client: Client): Client {
         log.debug("insert(client={})", client)
-
-        if (client.yetPersisted) {
-            throw PersistenceException("Client must not have set an ID! ($client)")
-        }
+        client.ensureNotPersisted()
 
         val newId = idGenerator.generate()
         val sqlInsert = "INSERT INTO $TABLE (id, firstName, lastName, created, picture) VALUES (?, ?, ?, ?, ?)"
@@ -67,10 +65,7 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun update(client: Client) {
         log.debug("update(client={})", client)
-
-        if (!client.yetPersisted) {
-            throw PersistenceException("Client must have set an ID! ($client)")
-        }
+        client.ensurePersisted()
 
         jdbcx.updateSingle("UPDATE $TABLE SET firstName = ?, lastName = ?, picture = ? WHERE id = ?",
                 client.firstName, client.lastName, client.picture.toSqlBlob(), client.id)
@@ -78,14 +73,22 @@ class ClientSpringJdbcRepository @Inject constructor(
 
     override fun delete(client: Client) {
         log.debug("delete(client={})", client)
-
-        if (client.id === null) {
-            throw PersistenceException("Client got no ID associated! $client")
-        }
+        client.ensurePersisted()
 
         jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id)
     }
 
+}
+
+fun Client.ensurePersisted() {
+    if (!yetPersisted) {
+        throw PersistenceException("Client must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
+    }
+}
+fun Client.ensureNotPersisted() {
+    if (yetPersisted) {
+        throw PersistenceException("Client must not have set an ID! ($this)", PersistenceErrorCode.EXPECTED_NOT_YET_PERSISTED)
+    }
 }
 
 @Suppress("UNUSED")

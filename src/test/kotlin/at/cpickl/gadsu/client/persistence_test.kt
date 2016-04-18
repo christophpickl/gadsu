@@ -7,7 +7,7 @@ import at.cpickl.gadsu.persistence.toByteArray
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.TEST_UUID
+import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.testProfilePicture1
 import at.cpickl.gadsu.testinfra.testProfilePicture2
@@ -44,7 +44,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         whenGenerateIdReturnTestUuid()
 
         val actualSaved = testee.insert(unsavedClient)
-        assertThat(actualSaved, equalTo(unsavedClient.copy(id = TEST_UUID)))
+        assertThat(actualSaved, equalTo(unsavedClient.copy(id = TEST_UUID1)))
 
         val result = jdbcx().query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, contains(actualSaved))
@@ -52,7 +52,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     fun insert_idSet_fails() {
         expect(type = PersistenceException::class, messageContains = "Client must not have set an ID", action = {
-            testee.insert(unsavedClient.copy(id = TEST_UUID))
+            testee.insert(unsavedClient.copy(id = TEST_UUID1))
         })
     }
 

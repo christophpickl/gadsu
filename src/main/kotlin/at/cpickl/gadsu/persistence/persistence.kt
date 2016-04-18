@@ -27,8 +27,19 @@ import javax.sql.DataSource
 /**
  * Custom exception type.
  */
-open class PersistenceException(message: String, cause: Exception? = null) : GadsuException(message, cause)
+open class PersistenceException(message: String, val errorCode: PersistenceErrorCode, cause: Exception? = null) : GadsuException(message, cause)
 
+enum class PersistenceErrorCode {
+
+    EXPECTED_YET_PERSISTED,
+    EXPECTED_NOT_YET_PERSISTED,
+
+    EXPECT_DELETED_ONE,
+    EXPECT_UPDATE_ONE,
+
+    UNKNOWN
+
+}
 
 /**
  * Shuts down the database connection so HSQLDB persists its data to the filesystem.

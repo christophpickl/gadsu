@@ -60,7 +60,6 @@ class ClientViewController @Inject constructor(
             return
         }
 
-        // TODO right now we still need 'view.detailView.currentClient', will be changed in future
         if (currentClient.data.yetPersisted) {
             // there was a client selected, and now we want to create a new client
             bus.post(ClientUnselectedEvent(currentClient.data))

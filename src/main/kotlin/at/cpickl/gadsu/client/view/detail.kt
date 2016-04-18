@@ -3,19 +3,14 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.debugColor
-import at.cpickl.gadsu.image.ImagePicker
 import at.cpickl.gadsu.image.ImagePickerFactory
-import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.image.SwingImagePicker
 import at.cpickl.gadsu.image.toMyImage
-import at.cpickl.gadsu.preferences.JavaPrefs
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
@@ -23,14 +18,12 @@ import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.changeSize
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import com.google.common.collect.ComparisonChain
-import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
-import java.io.File
 import javax.swing.BoxLayout
 import javax.swing.ImageIcon
 import javax.swing.JButton
@@ -61,8 +54,6 @@ class SwingClientDetailView @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // FIXME use it private var _currentClient: Client = Client.INSERT_PROTOTYPE
-
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
     private val btnCancel = JButton("Abbrechen")
 
@@ -72,7 +63,7 @@ class SwingClientDetailView @Inject constructor(
     private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
     private val inpLastName = modificationChecker.enableChangeListener(JTextField())
 
-    private var originalImage = Images.DEFAULT_PROFILE_MAN // TODO check if this instance!
+    private var originalImage = Images.DEFAULT_PROFILE_MAN
     private var imageChanged = false
     private val imageContainer = JLabel(originalImage.toViewBigRepresentation())
 
@@ -97,9 +88,12 @@ class SwingClientDetailView @Inject constructor(
         formPanel.addFormInput("Nachname", inpLastName)
 
         val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
-        formPanel.addFormInput("Bild", imagePicker.asComponent())
 
-        formPanel.addFormInput("", imageContainer)
+        val imagePanel = GridPanel()
+        imagePanel.add(imageContainer)
+        imagePanel.c.gridy++
+        imagePanel.add(imagePicker.asComponent())
+        formPanel.addFormInput("Bild", imagePanel)
 
         val buttonPanel = JPanel()
         buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)

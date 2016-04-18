@@ -24,6 +24,8 @@ interface JdbcX {
 
     fun updateSingle(sql: String, vararg args: Any?)
 
+    fun count(table: String, args: Array<in Any>, optionalWhereClause: String = ""): Int
+
 }
 
 class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
@@ -49,7 +51,7 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
     override fun updateSingle(sql: String, vararg args: Any?) {
         val affectedRows = jdbc.update(sql, *args)
         if (affectedRows != 1) {
-            throw PersistenceException("Expected exactly one row to be updated, but was: $affectedRows!")
+            throw PersistenceException("Expected exactly one row to be updated, but was: $affectedRows!", PersistenceErrorCode.EXPECT_UPDATE_ONE)
         }
     }
 
@@ -58,10 +60,13 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
         encapsulateException {
             val affectedRows = jdbc.update(sql, *args)
             if (affectedRows != 1) {
-                throw PersistenceException("Expected exactly one row to be deleted, but was: $affectedRows!")
+                throw PersistenceException("Expected exactly one row to be deleted, but was: $affectedRows!", PersistenceErrorCode.EXPECT_DELETED_ONE)
             }
         }
     }
+
+    override fun count(table: String, args: Array<in Any>, optionalWhereClause: String): Int =
+            jdbc.queryForObject("SELECT COUNT(*) FROM $table $optionalWhereClause", args) { rs, rowNum -> rs.getInt(1) }
 
     override fun execute(sql: String) {
         log.trace("execute(sql='{}')", sql)
@@ -96,7 +101,7 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
         try {
             return body()
         } catch (e: Exception) {
-            throw PersistenceException("SQL execution failed! See cause for more details.", e)
+            throw PersistenceException("SQL execution failed! See cause for more details.", PersistenceErrorCode.UNKNOWN, e)
         }
     }
 

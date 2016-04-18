@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.components.GridPanel
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
@@ -37,7 +36,7 @@ class SwingImagePicker @Inject constructor (
     init {
         name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"
 
-        val btnOpen = JButton(Labels.Buttons.OpenFile)
+        val btnOpen = JButton("Bild w\u00e4hlen")
         btnOpen.name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
         btnOpen.addActionListener { onOpenFile() }
 

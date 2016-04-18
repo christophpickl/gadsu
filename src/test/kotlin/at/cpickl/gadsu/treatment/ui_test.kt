@@ -99,6 +99,16 @@ class TreatmentUiTest : UiTest() {
         // MINOR add some more asserts, after TreatmentMini got some more values
     }
 
+    // --------------------------------------------------------------------------- number
+
+    // TODO write test to check for correct number generation
+    // insert client and treatment
+    //   check number field in treatment view
+    //   check client-treatment table content
+    // create another treatment
+    //   check again with number 2
+    // delete number 1
+    //   check number 2 is now number 1
 
     // --------------------------------------------------------------------------- check changes
 

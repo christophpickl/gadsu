@@ -9,7 +9,7 @@ import at.cpickl.gadsu.service.clearSeconds
 import org.joda.time.DateTime
 import org.testng.SkipException
 
-val TEST_UUID =  "11111111-1234-1234-1234-000000000000"
+val TEST_UUID1 =  "11111111-1234-1234-1234-000000000000"
 val TEST_UUID2 = "22222222-1234-1234-1234-000000000000"
 val TEST_DATE = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:10:20")
 val TEST_DATE_WITHOUT_SECONDS = TEST_DATE.clearSeconds()
@@ -31,7 +31,7 @@ class SimpleTestableClock(_now: DateTime? = null): Clock {
 }
 
 class SimpleTestableIdGenerator(_id: String? = null) : IdGenerator {
-    var id = _id ?: TEST_UUID
+    var id = _id ?: TEST_UUID1
     override fun generate() = id
 }
 

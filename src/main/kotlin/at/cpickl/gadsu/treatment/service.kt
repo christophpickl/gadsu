@@ -11,6 +11,8 @@ interface TreatmentService {
 
     fun update(treatment: Treatment)
 
+    fun calculateNextNumber(client: Client): Int
+
 }
 
 class TreatmentServiceImpl @Inject constructor(
@@ -27,6 +29,10 @@ class TreatmentServiceImpl @Inject constructor(
 
     override fun update(treatment: Treatment) {
         repository.update(treatment)
+    }
+
+    override fun calculateNextNumber(client: Client): Int {
+        return repository.countAllFor(client) + 1
     }
 
 }
