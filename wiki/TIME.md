@@ -11,5 +11,6 @@
   * 5h ... basic treatment infra
   * 5h ... core report generation feature
   * 5h ... treatment crud
-  * 5h ... client picture
+  * 10h ... client picture
+  * 5h ... UI improvements
 

@@ -1,11 +1,15 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.Ordered
+import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.orderedValuesOf
+import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
+import at.cpickl.gadsu.view.components.Labeled
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
@@ -72,36 +76,31 @@ data class Contact(
 }
 
 
-enum class Gender(override val sqlCode: String) : SqlEnum {
-    MALE("M"),
-    FEMALE("F"),
-    UNKNOWN("?");
+enum class Gender(override val order: Int, override val sqlCode: String, override val label: String) :
+        Ordered, SqlEnum, Labeled {
+    MALE(1, "M", "M\u00e4nnlich"),
+    FEMALE(2, "F", "Weiblich"),
+    UNKNOWN(99, "?", "Unbekannt");
 
     companion object {
-        fun parseSqlCode(search: String) = _parseSqlCode(Gender.values(), search)
+        fun orderedValues():List<Gender> = orderedValuesOf(Gender.values())
+        fun parseSqlCode(search: String) = parseSqlCodeFor(Gender.values(), search)
     }
 }
 
-enum class Relationship(override val sqlCode: String, val label: String) : SqlEnum {
-    SINGLE("SINGLE", "ledig"),
-    RELATION("RELATION", "partnerschaft"),
-    MARRIED("MARRIED", "verheiratet"),
-    DIVORCED("DIVORCED", "geschieden"),
-    WIDOW("WIDOW", "verwitwet"),
-    UNKNOWN("UNKNOWN", "Unbekannt");
+enum class Relationship(override val order: Int, override val sqlCode: String, override val label: String) :
+        Ordered, SqlEnum, Labeled {
+    SINGLE(1, "SINGLE", "ledig"),
+    RELATION(2, "RELATION", "partnerschaft"),
+    MARRIED(3, "MARRIED", "verheiratet"),
+    DIVORCED(4, "DIVORCED", "geschieden"),
+    WIDOW(5, "WIDOW", "verwitwet"),
+    UNKNOWN(99, "UNKNOWN", "Unbekannt");
 
 
     companion object {
-        fun parseSqlCode(search: String) = _parseSqlCode(Relationship.values(), search)
+        fun orderedValues():List<Relationship> = orderedValuesOf(Relationship.values())
+        fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
     }
 }
 
-interface SqlEnum {
-    val sqlCode: String
-}
-
-
-private fun <E : SqlEnum> _parseSqlCode(values: Array<E>, search: String): E {
-    return values.firstOrNull { it.sqlCode.equals(search) } ?:
-            throw GadsuException("Unhandled SQL code: '${search}'!")
-}

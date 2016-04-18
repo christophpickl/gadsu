@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.image.ImagePickerFactory
@@ -14,6 +15,7 @@ import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
+import at.cpickl.gadsu.view.components.MyComboBox
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.changeSize
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -62,6 +64,7 @@ class SwingClientDetailView @Inject constructor(
     // attention: must come AFTER list of buttons due to hacky design nature ;)
     private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
     private val inpLastName = modificationChecker.enableChangeListener(JTextField())
+    private val inpGender = modificationChecker.enableChangeListener(MyComboBox<Gender>(Gender.values(), originalClient.gender))
 
     private var originalImage = Images.DEFAULT_PROFILE_MAN
     private var imageChanged = false
@@ -83,24 +86,20 @@ class SwingClientDetailView @Inject constructor(
         btnSave.changeSize(newSize)
         btnCancel.changeSize(newSize)
 
+        val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
+
+
+
         val formPanel = FormPanel()
         formPanel.addFormInput("Vorname", inpFirstName)
         formPanel.addFormInput("Nachname", inpLastName)
-
-        val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
+        formPanel.addFormInput("Geschlecht", inpGender)
 
         val imagePanel = GridPanel()
         imagePanel.add(imageContainer)
         imagePanel.c.gridy++
         imagePanel.add(imagePicker.asComponent())
         formPanel.addFormInput("Bild", imagePanel)
-
-        val buttonPanel = JPanel()
-        buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
-        buttonPanel.debugColor = Color.BLUE
-
-        buttonPanel.add(btnSave)
-        buttonPanel.add(btnCancel)
 
         c.fill = GridBagConstraints.HORIZONTAL
         c.weightx = 1.0
@@ -112,6 +111,12 @@ class SwingClientDetailView @Inject constructor(
         c.weighty = 1.0
         add(treatmentTable)
 
+
+        val buttonPanel = JPanel()
+        buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
+        buttonPanel.debugColor = Color.BLUE
+        buttonPanel.add(btnSave)
+        buttonPanel.add(btnCancel)
 
         c.gridy++
         c.fill = GridBagConstraints.NONE
@@ -130,7 +135,7 @@ class SwingClientDetailView @Inject constructor(
                 // FIXME these fields got no UI yet!
                 originalClient.contact,
                 originalClient.birthday,
-                originalClient.gender,
+                inpGender.selectedItemTyped,
                 originalClient.countryOfOrigin,
                 originalClient.relationship,
                 originalClient.job,
@@ -152,20 +157,22 @@ class SwingClientDetailView @Inject constructor(
         modificationChecker.trigger()
     }
 
-    override fun isModified(): Boolean {
-        return imageChanged ||
-                ComparisonChain.start()
-                    .compare(originalClient.firstName, inpFirstName.text)
-                    .compare(originalClient.lastName, inpLastName.text)
-                    .result() != 0
-    }
-
     override fun focusFirst() {
         log.trace("focusFirst()")
         val requested = inpFirstName.requestFocusInWindow()
         if (!requested) {
             log.warn("Requesting focus failed for: {}", inpFirstName)
         }
+    }
+
+    override fun isModified(): Boolean {
+        return imageChanged ||
+                ComparisonChain.start()
+                        .compare(originalClient.firstName, inpFirstName.text)
+                        .compare(originalClient.lastName, inpLastName.text)
+                        // FIXME add more fields
+                        .compare(originalClient.gender, inpGender.selectedItemTyped)
+                        .result() != 0
     }
 
     override fun changeImage(newImage: MyImage) {
@@ -177,17 +184,18 @@ class SwingClientDetailView @Inject constructor(
         modificationChecker.trigger()
     }
 
-    override fun asComponent() = this
-
     private fun updateFields() {
         log.debug("updateFields()")
 
         inpFirstName.text = originalClient.firstName
         inpLastName.text = originalClient.lastName
+        inpGender.selectedItemTyped = originalClient.gender
+        // FIXME add more fields
         imageChanged = false
         imageContainer.icon = originalClient.picture.toViewBigRepresentation()
-
         modificationChecker.trigger()
     }
+
+    override fun asComponent() = this
 
 }
