@@ -117,8 +117,8 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("zipCode"),
                         rs.getString("city")
                 ),
-                if (rs.getTimestamp("birtyday") == null) null
-                else DateTime(rs.getTimestamp("birtyday")),
+                if (rs.getTimestamp("birthyday") == null) null
+                else DateTime(rs.getTimestamp("birthyday")),
                 Gender.parseSqlCode(rs.getString("gender_enum")),
                 rs.getString("countryOfOrigin"),
                 Relationship.parseSqlCode(rs.getString("relationship_enum")),
