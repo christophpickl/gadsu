@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-./gradlew clean test testUi
+CMD="./gradlew clean test testUi"
+echo $CMD
+`$CMD`

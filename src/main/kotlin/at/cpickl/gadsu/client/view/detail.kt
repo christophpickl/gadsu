@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.image.ImagePickerFactory
 import at.cpickl.gadsu.image.ImageSelectedEvent
+import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.SwingImagePicker
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
@@ -81,7 +82,7 @@ class SwingClientDetailView @Inject constructor(
     // attention: must come AFTER list of buttons due to hacky design nature ;)
     private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
     private val inpLastName = modificationChecker.enableChangeListener(JTextField())
-    private val image = JLabel("-BILD-")
+    private val image = JLabel(Images.DEFAULT_PROFILE_MAN.toViewRepresentation())
 
     private var imageChanged = false
 
@@ -90,6 +91,7 @@ class SwingClientDetailView @Inject constructor(
 
         inpFirstName.name = ViewNames.Client.InputFirstName
         inpLastName.name = ViewNames.Client.InputLastName
+        image.name = ViewNames.Client.ImageContainer
 
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
@@ -134,12 +136,19 @@ class SwingClientDetailView @Inject constructor(
     }
 
     override fun readClient(): Client {
-        return Client(originalClient.id, originalClient.created, inpFirstName.text, inpLastName.text)
+        return Client(
+                originalClient.id,
+                originalClient.created,
+                inpFirstName.text,
+                inpLastName.text,
+                Images.readFromImageIcon(image.icon as ImageIcon)
+        )
     }
 
     override fun writeClient(client: Client) {
         log.trace("set currentClient(client={})", client)
 
+        imageChanged = false
         originalClient = client
         btnSave.changeLabel(client)
         updateFields()
@@ -154,10 +163,11 @@ class SwingClientDetailView @Inject constructor(
 //    }
 
     override fun isModified(): Boolean {
-        return ComparisonChain.start()
-                .compare(originalClient.firstName, inpFirstName.text)
-                .compare(originalClient.lastName, inpLastName.text)
-                .result() != 0
+        return imageChanged ||
+                ComparisonChain.start()
+                    .compare(originalClient.firstName, inpFirstName.text)
+                    .compare(originalClient.lastName, inpLastName.text)
+                    .result() != 0
     }
 
     override fun focusFirst() {
@@ -170,7 +180,9 @@ class SwingClientDetailView @Inject constructor(
 
     override fun changeImage(newImage: ImageIcon) {
         log.debug("changeImage(newImage)")
+        imageChanged = true
         image.icon = newImage
+        modificationChecker.trigger()
     }
 
     override fun asComponent() = this
@@ -178,6 +190,7 @@ class SwingClientDetailView @Inject constructor(
     private fun updateFields() {
         inpFirstName.text = originalClient.firstName
         inpLastName.text = originalClient.lastName
+        image.icon = originalClient.picture.toViewRepresentation()
     }
 
 }

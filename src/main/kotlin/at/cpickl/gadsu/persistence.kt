@@ -9,6 +9,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.slf4j.LoggerFactory
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import java.io.File
 import java.sql.Timestamp
@@ -105,6 +106,8 @@ fun DateTime.toSqlTimestamp() = Timestamp(millis)
 
 interface JdbcX {
 
+    val jdbc: JdbcTemplate
+
     fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E>
 
     fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E>
@@ -124,7 +127,7 @@ interface JdbcX {
 class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
 
     private val log = LoggerFactory.getLogger(javaClass)
-    val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
+    override val jdbc = org.springframework.jdbc.core.JdbcTemplate(dataSource)
 
     override fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E> {
         log.trace("query(sql='{}', rowMapper)", sql)

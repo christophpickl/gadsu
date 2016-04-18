@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.IdGenerator
@@ -31,4 +33,13 @@ class SimpleTestableClock(_now: DateTime? = null): Clock {
 class SimpleTestableIdGenerator(_id: String? = null) : IdGenerator {
     var id = _id ?: TEST_UUID
     override fun generate() = id
+}
+
+val PROFILE_PICTURE_CLASSPATH_1 = "/gadsu_test/test_client_picture1.jpg"
+val PROFILE_PICTURE_CLASSPATH_2 = "/gadsu_test/test_client_picture2.jpg"
+fun Images.testProfilePicture1(): MyImage {
+    return Images.readFromClasspath(PROFILE_PICTURE_CLASSPATH_1)
+}
+fun Images.testProfilePicture2(): MyImage {
+    return Images.readFromClasspath(PROFILE_PICTURE_CLASSPATH_2)
 }

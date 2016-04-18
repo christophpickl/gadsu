@@ -9,19 +9,28 @@ import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
 import java.awt.Component
-import java.awt.GridBagConstraints
 import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 import javax.swing.JButton
 import javax.swing.JFileChooser
-import javax.swing.JTextField
 import javax.swing.filechooser.FileNameExtensionFilter
 
+private val LOG_image = LoggerFactory.getLogger("at.cpickl.gadsu.image")
+
 interface ImagePicker {
+    companion object {
+        val VIEWNAME_SUFFIX_PANEL: String get() = "Panel"
+//        val VIEWNAME_SUFFIX_PATH: String get() = "PathTextBox"
+        val VIEWNAME_SUFFIX_OPENBUTTON: String get() = "OpenButton"
+    }
+
+
     fun asComponent(): Component
+
 }
 
 class SwingImagePicker @Inject constructor (
@@ -30,31 +39,26 @@ class SwingImagePicker @Inject constructor (
         @Assisted private val viewNamePrefix: String
 ) : GridPanel(), ImagePicker {
 
-    companion object {
-        private val VIEWNAME_SUFFIX_PANEL = ".Panel"
-        private val VIEWNAME_SUFFIX_PATH = ".PathTextBox"
-        private val VIEWNAME_SUFFIX_OPENBUTTON = ".OpenButton"
-    }
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val txtPath = JTextField()
+//    private val txtPath = JTextField()
 
     init {
-        name = "$viewNamePrefix.${VIEWNAME_SUFFIX_PANEL}"
-        txtPath.name = "$viewNamePrefix.${VIEWNAME_SUFFIX_PATH}"
+        name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"
+//        txtPath.name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_PATH}"
+//        txtPath.isEditable = false
 
-        txtPath.isEditable = false
+//        c.weightx = 1.0
+//        c.fill = GridBagConstraints.HORIZONTAL
+//        add(txtPath)
 
-        c.weightx = 1.0
-        c.fill = GridBagConstraints.HORIZONTAL
-        add(txtPath)
+//        c.weightx = 0.0
+//        c.fill = GridBagConstraints.NONE
 
-        c.gridx++
-        c.weightx = 0.0
-        c.fill = GridBagConstraints.NONE
         val btnOpen = JButton(Labels.Buttons.OpenFile)
-        btnOpen.name = "$viewNamePrefix.${VIEWNAME_SUFFIX_OPENBUTTON}"
+        btnOpen.name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
         btnOpen.addActionListener { onOpenFile() }
+
         add(btnOpen)
     }
 
@@ -73,27 +77,69 @@ class SwingImagePicker @Inject constructor (
                 log.debug("Ignoring invalid file (this patches the JFileChooser default behaviour of allowing *.* files although extension filter is set)")
                 return
             }
+            bus.post(ImageSelectedEvent(viewNamePrefix, selectedFile.readImageIcon()))
 
-            onFileSelected(selectedFile)
         } else {
             log.debug("Choosing an image aborted by user.")
         }
     }
 
-    private fun onFileSelected(file: File) {
-        log.debug("File selected '{}'. Going to read as image.", file.absolutePath)
-        val image: BufferedImage
-        try {
-            // we could do this in some background thread, but nah, its fast anyway ;)
-            image = ImageIO.read(file)
-        } catch(e: IOException) {
-            throw GadsuException("Failed to read image from: '${file.absolutePath}'!", e) // TODO show error dialog instead
-        }
-
-        val imageIcon = ImageIcon(image);
-        bus.post(ImageSelectedEvent(viewNamePrefix, imageIcon))
-    }
-
     override fun asComponent() = this
 
 }
+
+fun File.readImageIcon() = _safeReadImageIcon {
+    LOG_image.debug("File#readImageIcon('{}')", this.absolutePath)
+    ImageIO.read(this)
+}
+
+fun String.readImageIconFromClasspath(): ImageIcon {
+    return _safeReadImageIcon {
+        LOG_image.debug("String#readImageIconFromClasspath('{}')", this)
+        ImageIO.read(SwingImagePicker::class.java.getResource(this))
+    }
+}
+
+//fun ByteArray.readImageIcon() = _safeReadImageIcon {
+//    LOG_image.debug("ByteArray#readImageIcon('{}')")
+//    ImageIO.read(ByteArrayInputStream(this))
+//}
+
+fun ByteArray.readBufferedImage() = _safeReadBufferedImage {
+    ImageIO.read(ByteArrayInputStream(this)) // ... NO! this will simply return null!
+
+//    val inputStream = ByteArrayInputStream(this)
+//    ImageIO.read(MemoryCacheImageInputStream(inputStream))
+
+    // NO! getWidth(null) will return -1 and fail
+//    val img: Image = Toolkit.getDefaultToolkit().createImage(this)
+//    val buffered = BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+//    val graphics = buffered.createGraphics()
+//    graphics.drawImage(img, 0, 0, null);
+//    graphics.dispose()
+//    buffered
+
+
+}
+
+/*
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ImageIO.write(bufferedImage, "jpg", baos);
+InputStream is = new ByteArrayInputStream(baos.toByteArray());
+ */
+
+private fun _safeReadImageIcon(function: () -> BufferedImage): ImageIcon {
+    return ImageIcon(_safeReadBufferedImage(function));
+}
+
+private fun _safeReadBufferedImage(function: () -> BufferedImage?): BufferedImage {
+    val buffered: BufferedImage?
+    try {
+        // we could do this in some background thread, but nah, its fast anyway ;)
+        buffered = function()
+    } catch(e: IOException) {
+        throw GadsuException("Failed to read image icon!", e) // TODO show error dialog instead
+    }
+    return buffered ?: throw GadsuException("Reading image failed (no details available, it is just null)!")
+}
+

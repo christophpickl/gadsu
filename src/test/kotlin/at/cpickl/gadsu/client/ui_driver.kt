@@ -1,12 +1,16 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.image.ImageSelectedEvent
+import at.cpickl.gadsu.image.readImageIconFromClasspath
 import at.cpickl.gadsu.testinfra.BaseDriver
+import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.view.ViewNames
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
+import javax.swing.ImageIcon
 import javax.swing.JLabel
 
 class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
@@ -21,6 +25,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     val saveButton = window.getButton(ViewNames.Client.SaveButton)
     val cancelButton = window.getButton(ViewNames.Client.CancelButton)
 
+    private val imageContainer = window.getTextBox(ViewNames.Client.ImageContainer)
 
     fun saveClient(client: Client) {
         createButton.click()
@@ -56,11 +61,17 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         test.assertPanelContainedInMainWindow(ViewNames.Client.MainPanel)
     }
 
-    fun changeImage(fileClassPath: String) {
+    fun changeImage(fileClassPath: String = PROFILE_PICTURE_CLASSPATH_1) {
         log.debug("changeImage(fileClassPath='{}')", fileClassPath)
 
-        // dispatch ImageSelectedEvent in bus
+        val imageIcon = fileClassPath.readImageIconFromClasspath()
+        postEvent(ImageSelectedEvent(ViewNames.Client.ImagePrefix, imageIcon))
+    }
 
+
+    fun readImage(): ImageIcon? {
+        val label = imageContainer.awtComponent as JLabel
+        return label.icon as ImageIcon?
     }
 
 }

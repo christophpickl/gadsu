@@ -27,7 +27,7 @@ interface MainWindow {
 }
 
 class SwingMainWindow @Inject constructor(
-        private val bus: EventBus,
+        val bus: EventBus, // make it visible for directy UI test hack ;)
         private val gadsuMenuBar: GadsuMenuBar
         ) : MainWindow, MyWindow("Gadsu") {
 

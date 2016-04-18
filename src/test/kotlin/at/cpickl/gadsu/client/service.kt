@@ -22,9 +22,6 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var testee: ClientServiceImpl? = null
 
-
-    override fun resetTables() = arrayOf("treatment", "client")
-
     @BeforeMethod
     fun setUp() {
         idGenerator = mock(IdGenerator::class.java)

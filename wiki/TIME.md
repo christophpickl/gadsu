@@ -2,12 +2,14 @@
 
 * april 2016
   * 5h ... project setup
-  * 4h ... basic client ui
-  * 6h ... advanced project setup (build, travis, coverall, test infra)
+  * 5h ... basic client ui
+  * 5h ... advanced project setup (build, travis, coverall, test infra)
   * 3h ... some more basic client features
-  * 4h ... completed initial client UI/logic
+  * 5h ... completed initial client UI/logic
   * 2h ... release infrastructure
   * 2h ... resolving misc tasktags
-  * 4h ... basic treatment infra
-  * 4h ... core report generation feature
-  * 6h ... treatment crud
+  * 5h ... basic treatment infra
+  * 5h ... core report generation feature
+  * 5h ... treatment crud
+  * 5h ... client picture
+

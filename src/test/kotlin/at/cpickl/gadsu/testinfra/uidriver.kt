@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.treatment.TreatmentMini
 import at.cpickl.gadsu.view.MenuBarDriver
+import at.cpickl.gadsu.view.SwingMainWindow
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
@@ -44,6 +46,11 @@ abstract class BaseDriver(val test: UiTest, val window: Window) {
         Thread.sleep(500)
         assertThat("Expected component '${component}' to " + (if(!hasFocus) "not " else "") + "have focus!",
                 component.awtComponent.hasFocus(), equalTo(hasFocus))
+    }
+
+    fun postEvent(event: Event) {
+        val swingWindow = window.awtComponent as SwingMainWindow
+        swingWindow.bus.post(event)
     }
 
 }

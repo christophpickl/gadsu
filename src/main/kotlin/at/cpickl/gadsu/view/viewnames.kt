@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.image.ImagePicker
+
 object ViewNames {
     val Main = MainViewNames
     val MenuBar = MenuBarViewNames
@@ -27,7 +29,11 @@ object ClientViewNames {
 
     val InputFirstName = "Client.InputFirstName"
     val InputLastName = "Client.InputLastName"
-    val ImagePrefix = "Client.Image" // .Panel, .PathTextBox, .OpenButton
+
+    val ImageContainer = "Client.ImageContainer"
+    val ImagePrefix = "Client.Image" // .Panel, .OpenButton
+    val OpenImageButton = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
+    val ImagePickerPanel = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"
 }
 
 object TreatmentViewNames {

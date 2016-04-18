@@ -11,7 +11,7 @@ import org.uispec4j.Window
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 import java.lang.reflect.Method
-
+import java.util.Objects
 
 
 @Test(groups = arrayOf("uiTest"))
@@ -191,18 +191,25 @@ class ClientUiTest : UiTest() {
     // --------------------------------------------------------------------------- image
 
     // check changes
-    fun `Given saved client, when changing image, then save button should be enabled`() {
-        skip("not yet implemented")
+    fun `When changing image, then save button should be enabled`() {
         val driver = clientDriver()
+        assertThat(not(driver.saveButton.isEnabled)) // sanity check
 
-        driver.saveClient(client)
-        assertThat(not(driver.saveButton.isEnabled))
+        driver.changeImage()
 
-        driver.changeImage("/gadsu_test/test_client_picture1.jpg")
-        assertThat(driver.saveButton.isEnabled)
+        assertThat("Expected save button to be anbled after changing the image!", driver.saveButton.isEnabled)
     }
 
-    // TODO check input textfield when image is selected
+    fun `When changing image, then image content should have been changed`() {
+        val driver = clientDriver()
+        val oldImage = driver.readImage()
+
+        driver.changeImage()
+
+        val newImage = driver.readImage()
+        assertFalse("Expected image to have changed but was still the same as before changing it!",
+                Objects.equals(oldImage, newImage))
+    }
 
 }
 

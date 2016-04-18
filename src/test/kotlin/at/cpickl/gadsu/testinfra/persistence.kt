@@ -24,10 +24,10 @@ abstract class HsqldbTest {
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
+    private val allTables = arrayOf("treatment", "client")
+
     private var dataSource: EmbeddedDatabase? = null
     private var jdbcx: SpringJdbcX? = null
-
-    abstract fun resetTables(): Array<String>
 
     protected var idGenerator: IdGenerator = mock(IdGenerator::class.java)
 
@@ -48,7 +48,7 @@ abstract class HsqldbTest {
 
     @BeforeMethod
     fun resetDb() {
-        resetTables().forEach { jdbcx!!.execute("DELETE FROM $it") }
+        allTables.forEach { jdbcx!!.execute("DELETE FROM $it") }
     }
 
     @AfterClass

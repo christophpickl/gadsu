@@ -3,7 +3,9 @@ CREATE TABLE client (
 
   firstName VARCHAR(100) NOT NULL,
   lastName VARCHAR(100) NOT NULL,
-  created TIMESTAMP NOT NULL
+  created TIMESTAMP NOT NULL,
+
+  picture BLOB
 );
 
 CREATE TABLE treatment (

@@ -4,6 +4,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
@@ -66,12 +68,16 @@ class DevelopmentController @Inject constructor(
             clientService.delete(it)
         }
 
-        arrayOf(newClient("Max", "Mustermann"), newClient("Anna", "Nym")).forEach {
+        arrayOf(newClient("Max", "Mustermann", Images.DEFAULT_PROFILE_MAN),
+                newClient("Anna", "Nym", Images.DEFAULT_PROFILE_WOMAN)
+        ).forEach {
             val savedClient = clientRepo.insert(it)
             bus.post(ClientCreatedEvent(savedClient))
 
             if (savedClient.firstName.equals("Max")) {
-                arrayOf(newTreatment(1, savedClient), newTreatment(2, savedClient)).forEach {
+                arrayOf(newTreatment(1, savedClient),
+                        newTreatment(2, savedClient)
+                ).forEach {
                     treatmentRepo.insert(it, savedClient)
                     bus.post(TreatmentCreatedEvent(it))
                 }
@@ -79,7 +85,8 @@ class DevelopmentController @Inject constructor(
         }
     }
 
-    private fun newClient(firstName: String, lastName: String) = Client(null, clock.now(), firstName, lastName)
+    private fun newClient(firstName: String, lastName: String, image: MyImage) =
+            Client(null, clock.now(), firstName, lastName, image)
 
     private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, clock.now(), number, clock.nowWithoutSeconds(),
             "note for treatment number $number")
