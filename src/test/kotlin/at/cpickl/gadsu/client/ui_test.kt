@@ -192,6 +192,7 @@ class ClientUiTest : UiTest() {
 
     // check changes
     fun `Given saved client, when changing image, then save button should be enabled`() {
+        skip("not yet implemented")
         val driver = clientDriver()
 
         driver.saveClient(client)

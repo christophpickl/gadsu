@@ -14,10 +14,11 @@ before_install:
   - "sleep 3" # give xvfb some time to start
 
 script:
-  - "./gradlew test testUi"
+  - "./gradlew test testUi jacocoTestReport"
 
 after_success:
-  - "./gradlew test testUi jacocoTestReport coveralls"
+  - bash <(curl -s https://codecov.io/bash)
+#  - "./gradlew test testUi jacocoTestReport coveralls"
 
 notifications:
   email:
