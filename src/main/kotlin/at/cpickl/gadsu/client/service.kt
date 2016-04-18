@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.JdbcX
+import at.cpickl.gadsu.persistence.JdbcX
 import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import com.google.common.eventbus.EventBus

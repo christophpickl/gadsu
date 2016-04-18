@@ -1,11 +1,11 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.JdbcX
-import at.cpickl.gadsu.PersistenceException
+import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.toSqlTimestamp
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper

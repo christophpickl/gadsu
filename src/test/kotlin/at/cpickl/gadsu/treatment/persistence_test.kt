@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.PersistenceException
+import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSpringJdbcRepository
 import at.cpickl.gadsu.client.savedValidInstance

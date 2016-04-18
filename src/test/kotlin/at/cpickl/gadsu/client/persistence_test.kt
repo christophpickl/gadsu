@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.PersistenceException
+import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.IdGenerator

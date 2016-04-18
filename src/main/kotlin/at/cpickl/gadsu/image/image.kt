@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.UserEvent
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
@@ -8,20 +7,8 @@ import javax.swing.Icon
 import javax.swing.ImageIcon
 
 
-class ImageSelectedEvent(
-        val viewNamePrefix: String, // in order to identify the correct one, as
-        val image: ImageIcon
-) : UserEvent()
-
-
-interface MyImage {
-
-    fun toViewRepresentation(): Icon
-    fun toSaveRepresentation(): ByteArray?
-
-}
-
 object Images {
+
     val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic_default_man.jpg")
     val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic_default_woman.jpg")
 
@@ -37,6 +24,19 @@ object Images {
         return ClasspathImage(classpath)
     }
 }
+
+
+interface MyImage {
+
+    fun toViewRepresentation(): Icon
+
+    /**
+     * @return null if default is still set (or user cleared picture, then it will fall back to default again)
+     */
+    fun toSaveRepresentation(): ByteArray?
+
+}
+
 
 /**
  * Default if nothing is selected.

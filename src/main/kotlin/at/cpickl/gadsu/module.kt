@@ -2,6 +2,7 @@ package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.image.ImageModule
+import at.cpickl.gadsu.persistence.PersistenceModule
 import at.cpickl.gadsu.preferences.PreferencesModule
 import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.ServiceModule

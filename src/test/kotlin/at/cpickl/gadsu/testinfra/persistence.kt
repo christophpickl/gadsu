@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.DatabaseManager
-import at.cpickl.gadsu.JdbcX
-import at.cpickl.gadsu.SpringJdbcX
+import at.cpickl.gadsu.persistence.DatabaseManager
+import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.SpringJdbcX
 import at.cpickl.gadsu.service.IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

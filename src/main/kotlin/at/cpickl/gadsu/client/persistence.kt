@@ -1,27 +1,18 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.JdbcX
-import at.cpickl.gadsu.PersistenceException
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.image.readBufferedImage
+import at.cpickl.gadsu.image.toSqlBlob
+import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.PersistenceException
+import at.cpickl.gadsu.persistence.toBufferedImage
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.toSqlTimestamp
 import com.google.inject.Inject
-import org.hsqldb.jdbc.JDBCBlob
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.SqlParameterValue
-import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback
-import org.springframework.jdbc.support.lob.DefaultLobHandler
-import org.springframework.jdbc.support.lob.LobCreator
-import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
 import java.sql.Blob
-import java.sql.PreparedStatement
-import java.sql.Types
-import javax.imageio.ImageIO
 
 interface ClientRepository {
 
@@ -69,27 +60,7 @@ class ClientSpringJdbcRepository @Inject constructor(
 
         val newId = idGenerator.generate()
         val sqlInsert = "INSERT INTO $TABLE (id, firstName, lastName, created, picture) VALUES (?, ?, ?, ?, ?)"
-//        jdbcx.update(sqlInsert,
-//                newId, client.firstName, client.lastName, client.created.toSqlTimestamp(), client.picture.toSqlBlob())
-
-        val lobHandler = DefaultLobHandler()
-        jdbcx.jdbc.execute(sqlInsert, object : AbstractLobCreatingPreparedStatementCallback(lobHandler) {
-            override fun setValues(ps: PreparedStatement, lobCreator: LobCreator) {
-                var index = 0
-                ps.setString(++index, newId)
-                ps.setString(++index, client.firstName)
-                ps.setString(++index, client.lastName)
-                ps.setTimestamp(++index, client.created.toSqlTimestamp())
-                val pictureBytes = client.picture.toSaveRepresentation()
-                if (pictureBytes == null) {
-                    ps.setNull(++index, Types.BLOB)
-                } else {
-                    lobCreator.setBlobAsBytes(ps, ++index, pictureBytes)
-                }
-            }
-
-        })
-
+        jdbcx.update(sqlInsert, newId, client.firstName, client.lastName, client.created.toSqlTimestamp(), client.picture.toSqlBlob())
         return client.copy(id = newId)
     }
 
@@ -140,32 +111,8 @@ private fun readFromBlob(blob: Blob?): MyImage {
     }
 
     log.trace("Loading image for client from database BLOB.")
-    val bytes = blob.getBytes(1, blob.length().toInt())
-    val buffered = ImageIO.read(ByteArrayInputStream(bytes))
-//    Files.write(bytes, File("readFromBlob.jpg"))
-    return Images.readFromBufferedImage(buffered)
-
-//    return Images.readFromBufferedImage(blob.toBufferedImage())
-}
-
-fun Blob.toByteArray(): ByteArray {
-    val blobLength = this.length().toInt()
-    return this.getBytes(1, blobLength)
-}
-
-fun Blob.toBufferedImage(): BufferedImage {
-    return toByteArray().readBufferedImage()
+//    Files.write(blob.toByteArray(), File("readFromBlob.jpg"))
+    return Images.readFromBufferedImage(blob.toBufferedImage())
 }
 
 
-fun MyImage.toSqlBlob(): SqlParameterValue? {
-    val bytes = toSaveRepresentation() ?: return null
-//    return JDBCBlob(bytes)
-//    JDBCBlob()
-//    val lobHandler = DefaultLobHandler()
-//    val contentStream = ByteArrayInputStream(bytes)
-//    val contentLength = bytes.size
-//    return SqlLobValue(contentStream, contentLength, lobHandler)
-
-    return SqlParameterValue(Types.BLOB, JDBCBlob(bytes))
-}

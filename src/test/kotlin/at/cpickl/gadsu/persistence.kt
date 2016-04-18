@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.persistence.SQL_TIMESTAMP
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.testinfra.TEST_DATE
 import org.hamcrest.MatcherAssert.assertThat
