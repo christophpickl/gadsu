@@ -17,7 +17,7 @@ private val LOG_image = LoggerFactory.getLogger("at.cpickl.gadsu.image")
 
 class ImageSelectedEvent(
         val viewNamePrefix: String, // in order to identify the correct one, as
-        val image: ImageIcon
+        val image: MyImage
 ) : UserEvent()
 
 

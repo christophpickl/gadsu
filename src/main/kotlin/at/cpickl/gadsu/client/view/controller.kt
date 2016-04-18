@@ -87,6 +87,7 @@ class ClientViewController @Inject constructor(
             log.trace("Going to insert: {}", toBeInserted)
             val savedClient = clientRepo.insert(toBeInserted)
             log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
+            if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
 
             bus.post(ClientCreatedEvent(savedClient))
         }
@@ -167,10 +168,7 @@ class ClientViewController @Inject constructor(
         }
 
         val image = event.image
-        val height = image.image.getHeight(image.imageObserver)
-        val width = image.image.getWidth(image.imageObserver)
-
-        log.trace("image size: ${width}x${height}")
+        log.trace("image size: ${image.size}")
         // FIXME validate size, resize, or whatever
         // val scaledImage = imageToScale.getScaledInstance(newWidth, newHighth, Image.SCALE_FAST);
 

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-CMD="./gradlew clean test testUi"
-echo $CMD
-`$CMD`
+echo "./gradlew clean test testUi"
+
+./gradlew clean test testUi
+
+if [ $? -ne 0] then
+    say "Test build failed"
+fi

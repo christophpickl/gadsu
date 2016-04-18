@@ -2,7 +2,6 @@ package at.cpickl.gadsu.image
 
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.SwingFactory
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
@@ -24,7 +23,6 @@ interface ImagePicker {
 
 class SwingImagePicker @Inject constructor (
         private val bus: EventBus,
-        private val swing: SwingFactory,
         @Assisted private val viewNamePrefix: String
 ) : GridPanel(), ImagePicker {
 
@@ -55,7 +53,7 @@ class SwingImagePicker @Inject constructor (
                 log.debug("Ignoring invalid file (this patches the JFileChooser default behaviour of allowing *.* files although extension filter is set)")
                 return
             }
-            bus.post(ImageSelectedEvent(viewNamePrefix, selectedFile.readImageIcon()))
+            bus.post(ImageSelectedEvent(viewNamePrefix, selectedFile.toMyImage()))
 
         } else {
             log.debug("Choosing an image aborted by user.")

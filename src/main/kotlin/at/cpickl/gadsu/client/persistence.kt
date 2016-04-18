@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
 import at.cpickl.gadsu.persistence.JdbcX
 import at.cpickl.gadsu.persistence.PersistenceException
@@ -112,7 +113,7 @@ private fun readFromBlob(blob: Blob?): MyImage {
 
     log.trace("Loading image for client from database BLOB.")
 //    Files.write(blob.toByteArray(), File("readFromBlob.jpg"))
-    return Images.readFromBufferedImage(blob.toBufferedImage())
+    return blob.toBufferedImage().toMyImage()
 }
 
 

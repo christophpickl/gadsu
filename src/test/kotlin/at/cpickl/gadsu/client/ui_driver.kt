@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.image.ImageSelectedEvent
-import at.cpickl.gadsu.image.readImageIconFromClasspath
+import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.UiTest
@@ -64,8 +64,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     fun changeImage(fileClassPath: String = PROFILE_PICTURE_CLASSPATH_1) {
         log.debug("changeImage(fileClassPath='{}')", fileClassPath)
 
-        val imageIcon = fileClassPath.readImageIconFromClasspath()
-        postEvent(ImageSelectedEvent(ViewNames.Client.ImagePrefix, imageIcon))
+        postEvent(ImageSelectedEvent(ViewNames.Client.ImagePrefix, fileClassPath.toMyImage()))
     }
 
 

@@ -6,7 +6,9 @@ import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.image.ImagePickerFactory
 import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.SwingImagePicker
+import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
@@ -36,7 +38,7 @@ fun main(args: Array<String>) {
     Framed.showWithContext { context ->
 
         val factory = object : ImagePickerFactory {
-            override fun create(viewNamePrefix: String) = SwingImagePicker(context.bus, context.swing, viewNamePrefix)
+            override fun create(viewNamePrefix: String) = SwingImagePicker(context.bus, viewNamePrefix)
         }
         val view = SwingClientDetailView(context.swing, TreatmentsInClientView(context.swing, context.bus), factory)
 
@@ -56,7 +58,7 @@ interface ClientDetailView {
     fun readClient(): Client
     fun writeClient(client: Client)
     fun isModified(): Boolean
-    fun changeImage(newImage: ImageIcon)
+    fun changeImage(newImage: MyImage)
     fun focusFirst()
     fun asComponent(): Component
 }
@@ -82,19 +84,21 @@ class SwingClientDetailView @Inject constructor(
     // attention: must come AFTER list of buttons due to hacky design nature ;)
     private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
     private val inpLastName = modificationChecker.enableChangeListener(JTextField())
-    private val image = JLabel(Images.DEFAULT_PROFILE_MAN.toViewRepresentation())
 
+    private var originalImage = Images.DEFAULT_PROFILE_MAN // TODO check if this instance!
     private var imageChanged = false
+    private val imageContainer = JLabel(originalImage.toViewRepresentation())
 
     init {
         modificationChecker.disableAll()
 
         inpFirstName.name = ViewNames.Client.InputFirstName
         inpLastName.name = ViewNames.Client.InputLastName
-        image.name = ViewNames.Client.ImageContainer
+        imageContainer.name = ViewNames.Client.ImageContainer
 
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
+            log.debug("btnCancel clicked")
             updateFields()
         }
         val newSize = Dimension(btnSave.preferredSize.width + 20, btnSave.preferredSize.height)
@@ -108,7 +112,7 @@ class SwingClientDetailView @Inject constructor(
         val imagePicker = imagePickerFactory.create(imageViewNamePrefix)
         formPanel.addFormInput("Bild", imagePicker.asComponent())
 
-        formPanel.addFormInput("", image)
+        formPanel.addFormInput("", imageContainer)
 
         val buttonPanel = JPanel()
         buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
@@ -141,7 +145,8 @@ class SwingClientDetailView @Inject constructor(
                 originalClient.created,
                 inpFirstName.text,
                 inpLastName.text,
-                Images.readFromImageIcon(image.icon as ImageIcon)
+                if (originalImage.toViewRepresentation() === imageContainer.icon) originalImage
+                else (imageContainer.icon as ImageIcon).toMyImage()
         )
     }
 
@@ -154,13 +159,6 @@ class SwingClientDetailView @Inject constructor(
         updateFields()
         modificationChecker.trigger()
     }
-
-//    override fun updateModifiedStateIndicator() {
-//        val modified = isModified()
-//        allButtons.forEach {
-//            it.isEnabled = modified
-//        }
-//    }
 
     override fun isModified(): Boolean {
         return imageChanged ||
@@ -178,19 +176,25 @@ class SwingClientDetailView @Inject constructor(
         }
     }
 
-    override fun changeImage(newImage: ImageIcon) {
+    override fun changeImage(newImage: MyImage) {
         log.debug("changeImage(newImage)")
         imageChanged = true
-        image.icon = newImage
+        originalImage = newImage
+        imageContainer.icon = originalImage.toViewRepresentation()
         modificationChecker.trigger()
     }
 
     override fun asComponent() = this
 
     private fun updateFields() {
+        log.debug("updateFields()")
+
         inpFirstName.text = originalClient.firstName
         inpLastName.text = originalClient.lastName
-        image.icon = originalClient.picture.toViewRepresentation()
+        imageChanged = false
+        imageContainer.icon = originalClient.picture.toViewRepresentation()
+
+        modificationChecker.trigger()
     }
 
 }
