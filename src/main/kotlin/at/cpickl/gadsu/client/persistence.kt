@@ -58,8 +58,18 @@ class ClientSpringJdbcRepository @Inject constructor(
         client.ensureNotPersisted()
 
         val newId = idGenerator.generate()
-        val sqlInsert = "INSERT INTO $TABLE (id, firstName, lastName, created, picture) VALUES (?, ?, ?, ?, ?)"
-        jdbcx.update(sqlInsert, newId, client.firstName, client.lastName, client.created.toSqlTimestamp(), client.picture.toSqlBlob())
+        val sqlInsert = """
+        INSERT INTO $TABLE (
+            id, firstName, lastName, created, birthday,
+            gender_enum, countryOfOrigin, mail, phone, street,
+            zipCode, city, relationship_enum, job, children,
+            note, picture
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+        jdbcx.update(sqlInsert,
+                newId, client.firstName, client.lastName, client.created.toSqlTimestamp(), client.birthday?.toSqlTimestamp(),
+                client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
+                client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
+                client.note, client.picture.toSqlBlob())
         return client.copy(id = newId)
     }
 
@@ -100,6 +110,22 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 DateTime(rs.getTimestamp("created")),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
+                Contact(
+                        rs.getString("mail"),
+                        rs.getString("phone"),
+                        rs.getString("street"),
+                        rs.getString("zipCode"),
+                        rs.getString("city")
+                ),
+                if (rs.getTimestamp("birtyday") == null) null
+                else DateTime(rs.getTimestamp("birtyday")),
+                Gender.parseSqlCode(rs.getString("gender_enum")),
+                rs.getString("countryOfOrigin"),
+                Relationship.parseSqlCode(rs.getString("relationship_enum")),
+                rs.getString("job"),
+                rs.getString("children"),
+                rs.getString("note"),
+
                 readFromBlob(rs.getBlob("picture"))
 
         )

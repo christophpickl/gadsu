@@ -4,8 +4,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.image.Images
-import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
@@ -13,6 +13,7 @@ import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import javax.inject.Inject
@@ -68,15 +69,31 @@ class DevelopmentController @Inject constructor(
             clientService.delete(it)
         }
 
-        arrayOf(newClient("Max", "Mustermann", Images.DEFAULT_PROFILE_MAN),
-                newClient("Anna", "Nym", Images.DEFAULT_PROFILE_WOMAN)
+        arrayOf(
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Max",
+                        lastName = "Mustermann",
+                        gender = Gender.MALE,
+                        picture = Images.DEFAULT_PROFILE_MAN
+                ),
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Anna",
+                        lastName = "Nym",
+                        gender = Gender.FEMALE,
+                        picture = Images.DEFAULT_PROFILE_WOMAN
+                )
         ).forEach {
             val savedClient = clientRepo.insert(it)
             bus.post(ClientCreatedEvent(savedClient))
 
             if (savedClient.firstName.equals("Max")) {
-                arrayOf(newTreatment(1, savedClient),
-                        newTreatment(2, savedClient)
+                arrayOf(
+                        Treatment.insertPrototype(
+                                clientId = savedClient.id!!,
+                                number = 1,
+                                date = DateTime.now(),
+                                note = "my note for treatment 1 for maxiiii"
+                        )
                 ).forEach {
                     treatmentRepo.insert(it, savedClient)
                     bus.post(TreatmentCreatedEvent(it))
@@ -85,19 +102,17 @@ class DevelopmentController @Inject constructor(
         }
     }
 
-    private fun newClient(firstName: String, lastName: String, image: MyImage) =
-            Client(null, clock.now(), firstName, lastName, image)
-
-    private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, clock.now(), number, clock.nowWithoutSeconds(),
+    private fun newTreatment(number: Int, client: Client) =
+            Treatment(null, client.id!!, clock.now(), number, clock.nowWithoutSeconds(),
             "note for treatment number $number")
 
 }
 
 var JComponent.debugColor: Color?
-        get() = null
-        set(value) {
-            if (Development.COLOR_ENABLED) {
-                background = value
-            }
+    get() = null
+    set(value) {
+        if (Development.COLOR_ENABLED) {
+            background = value
         }
+    }
 

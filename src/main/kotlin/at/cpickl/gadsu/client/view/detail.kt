@@ -126,6 +126,17 @@ class SwingClientDetailView @Inject constructor(
                 originalClient.created,
                 inpFirstName.text,
                 inpLastName.text,
+
+                // FIXME these fields got no UI yet!
+                originalClient.contact,
+                originalClient.birthday,
+                originalClient.gender,
+                originalClient.countryOfOrigin,
+                originalClient.relationship,
+                originalClient.job,
+                originalClient.children,
+                originalClient.note,
+
                 if (originalImage.toViewBigRepresentation() === imageContainer.icon) originalImage
                 else (imageContainer.icon as ImageIcon).toMyImage()
         )

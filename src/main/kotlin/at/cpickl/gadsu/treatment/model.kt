@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.treatment
 
+import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
@@ -19,9 +20,20 @@ data class Treatment(
 
     companion object {
         // needed for static extension methods
-        fun insertPrototype(clientId: String, number: Int, date: DateTime): Treatment {
+        fun insertPrototype(clientId: String,
+                            number: Int,
+                            date: DateTime,
+                            created: DateTime = DUMMY_CREATED, // created will be overridden anyway
+                            note: String = ""
+        ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
-            return Treatment(null, clientId, DateTime.now(), number, date.clearSeconds(), "")
+            return Treatment(
+                    null, // id not yet set
+                    clientId,
+                    created,
+                    number,
+                    date.clearSeconds(),
+                    note)
         }
     }
 
