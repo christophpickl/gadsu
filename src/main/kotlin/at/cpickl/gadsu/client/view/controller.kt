@@ -15,6 +15,10 @@ import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.image.ImageSelectedEvent
+import at.cpickl.gadsu.image.readImageIcon
+import at.cpickl.gadsu.image.size
+import at.cpickl.gadsu.image.toMyImage
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.view.MainWindow
@@ -36,7 +40,8 @@ class ClientViewController @Inject constructor(
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val currentClient: CurrentClient,
-        private val dialogs: Dialogs
+        private val dialogs: Dialogs,
+        private val prefs: Prefs
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -77,20 +82,33 @@ class ClientViewController @Inject constructor(
     }
 
     private fun saveClient(client: Client) {
+        if (client.firstName.isEmpty() && client.lastName.isEmpty()) {
+            dialogs.show(
+                    title = "Speichern abgebrochen",
+                    message = "Es muss zumindest entweder ein Vorname oder ein Nachname eingegeben werden.",
+                    buttonLabels = arrayOf("Speichern Abbrechen"),
+                    type = DialogType.WARN
+            )
+            return
+        }
+
         if (client.yetPersisted) {
             clientRepo.update(client)
-
             bus.post(ClientUpdatedEvent(client))
-
-        } else {
-            val toBeInserted = client.copy(created = clock.now())
-            log.trace("Going to insert: {}", toBeInserted)
-            val savedClient = clientRepo.insert(toBeInserted)
-            log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
-            if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
-
-            bus.post(ClientCreatedEvent(savedClient))
+            return
         }
+
+        // insert new
+        val toBeInserted = client.copy(created = clock.now())
+
+        log.trace("Going to insert: {}", toBeInserted)
+        val savedClient = clientRepo.insert(toBeInserted)
+        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
+
+        @Suppress("SENSELESS_COMPARISON")
+        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
+
+        bus.post(ClientCreatedEvent(savedClient))
     }
 
     @Subscribe fun onClientCreatedEvent(event: ClientCreatedEvent) {
@@ -166,13 +184,22 @@ class ClientViewController @Inject constructor(
             log.debug("Aborting image selection, as was not dispatched for client view.")
             return
         }
+        prefs.clientPictureDefaultFolder = event.imageFile.parentFile ?: event.imageFile
 
-        val image = event.image
-        log.trace("image size: ${image.size}")
-        // FIXME validate size, resize, or whatever
-        // val scaledImage = imageToScale.getScaledInstance(newWidth, newHighth, Image.SCALE_FAST);
+        val file = event.imageFile
+        val icon = file.readImageIcon()
+        val size = icon.size()
+        if (size.width != size.height) {
+            dialogs.show(
+                    title = "Ung\u00fcltige Datei",
+                    message = "Das ausgew\u00e4hlte Bild muss gleiche Seitenverh\u00e4ltnisse haben. Die Bildgr\u00f6\u00dfe betr\u00e4gt: ${size.width}x${size.height}",
+                    buttonLabels = arrayOf("Okay"),
+                    type = DialogType.WARN
+            )
+            return
+        }
 
-        view.detailView.changeImage(image)
+        view.detailView.changeImage(file.toMyImage())
     }
 
     fun checkChanges(): ChangeBehaviour {

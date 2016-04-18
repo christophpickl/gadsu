@@ -3,12 +3,15 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.image.ImagePicker
 import at.cpickl.gadsu.image.ImagePickerFactory
 import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.SwingImagePicker
 import at.cpickl.gadsu.image.toMyImage
+import at.cpickl.gadsu.preferences.JavaPrefs
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
@@ -27,30 +30,13 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
+import java.io.File
 import javax.swing.BoxLayout
 import javax.swing.ImageIcon
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
-
-fun main(args: Array<String>) {
-    Framed.showWithContext { context ->
-
-        val factory = object : ImagePickerFactory {
-            override fun create(viewNamePrefix: String) = SwingImagePicker(context.bus, viewNamePrefix)
-        }
-        val view = SwingClientDetailView(context.swing, TreatmentsInClientView(context.swing, context.bus), factory)
-
-        context.bus.register(object : Any() {
-            @Subscribe fun onImageSelectedEvent(event: ImageSelectedEvent) {
-                view.changeImage(event.image)
-            }
-        })
-
-        view
-    }
-}
 
 interface ClientDetailView {
     val imageViewNamePrefix: String get() = ViewNames.Client.ImagePrefix
@@ -66,7 +52,8 @@ interface ClientDetailView {
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
         treatmentTable: TreatmentsInClientView,
-        imagePickerFactory: ImagePickerFactory
+        imagePickerFactory: ImagePickerFactory,
+        prefs: Prefs
 ) : GridPanel(), ClientDetailView, ModificationAware {
 
 
@@ -87,7 +74,7 @@ class SwingClientDetailView @Inject constructor(
 
     private var originalImage = Images.DEFAULT_PROFILE_MAN // TODO check if this instance!
     private var imageChanged = false
-    private val imageContainer = JLabel(originalImage.toViewRepresentation())
+    private val imageContainer = JLabel(originalImage.toViewBigRepresentation())
 
     init {
         modificationChecker.disableAll()
@@ -109,7 +96,7 @@ class SwingClientDetailView @Inject constructor(
         formPanel.addFormInput("Vorname", inpFirstName)
         formPanel.addFormInput("Nachname", inpLastName)
 
-        val imagePicker = imagePickerFactory.create(imageViewNamePrefix)
+        val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
         formPanel.addFormInput("Bild", imagePicker.asComponent())
 
         formPanel.addFormInput("", imageContainer)
@@ -145,7 +132,7 @@ class SwingClientDetailView @Inject constructor(
                 originalClient.created,
                 inpFirstName.text,
                 inpLastName.text,
-                if (originalImage.toViewRepresentation() === imageContainer.icon) originalImage
+                if (originalImage.toViewBigRepresentation() === imageContainer.icon) originalImage
                 else (imageContainer.icon as ImageIcon).toMyImage()
         )
     }
@@ -180,7 +167,8 @@ class SwingClientDetailView @Inject constructor(
         log.debug("changeImage(newImage)")
         imageChanged = true
         originalImage = newImage
-        imageContainer.icon = originalImage.toViewRepresentation()
+        imageContainer.icon = originalImage.toViewBigRepresentation()
+
         modificationChecker.trigger()
     }
 
@@ -192,7 +180,7 @@ class SwingClientDetailView @Inject constructor(
         inpFirstName.text = originalClient.firstName
         inpLastName.text = originalClient.lastName
         imageChanged = false
-        imageContainer.icon = originalClient.picture.toViewRepresentation()
+        imageContainer.icon = originalClient.picture.toViewBigRepresentation()
 
         modificationChecker.trigger()
     }

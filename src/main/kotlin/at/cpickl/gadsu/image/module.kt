@@ -8,9 +8,6 @@ class ImageModule : AbstractModule() {
         install(FactoryModuleBuilder()
                 .implement(ImagePicker::class.java, SwingImagePicker::class.java)
                 .build(ImagePickerFactory::class.java))
-    }
-}
 
-interface ImagePickerFactory {
-    fun create(viewNamePrefix: String): ImagePicker
+    }
 }

@@ -35,8 +35,8 @@ class SimpleTestableIdGenerator(_id: String? = null) : IdGenerator {
     override fun generate() = id
 }
 
-val PROFILE_PICTURE_CLASSPATH_1 = "/gadsu_test/test_client_picture1.jpg"
-val PROFILE_PICTURE_CLASSPATH_2 = "/gadsu_test/test_client_picture2.jpg"
+val PROFILE_PICTURE_CLASSPATH_1 = "/gadsu_test/profile_pic-valid_man1.jpg"
+val PROFILE_PICTURE_CLASSPATH_2 = "/gadsu_test/profile_pic-valid_man2.jpg"
 
 fun Images.testProfilePicture1() = PROFILE_PICTURE_CLASSPATH_1.toMyImage()
 fun Images.testProfilePicture2() = PROFILE_PICTURE_CLASSPATH_2.toMyImage()

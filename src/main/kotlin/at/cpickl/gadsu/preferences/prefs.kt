@@ -3,12 +3,15 @@ package at.cpickl.gadsu.preferences
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Point
+import java.io.File
 import java.util.prefs.Preferences
 
 
 interface Prefs {
-    var windowDescriptor: WindowDescriptor?
     var preferencesData: PreferencesData?
+
+    var windowDescriptor: WindowDescriptor?
+    var clientPictureDefaultFolder: File
 }
 
 class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
@@ -20,6 +23,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         private val KEY_WINDOW_Y = "WINDOW_Y"
         private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
         private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
+
+        private val KEY_CLIENT_PICTURE_DEFAULT_FOLDER = "CLIENT_PICTURE_DEFAULT_FOLDER"
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -82,6 +87,13 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.putInt(KEY_WINDOW_WIDTH, value.size.width)
             preferences.putInt(KEY_WINDOW_HEIGHT, value.size.height)
             preferences.flush()
+        }
+
+    override var clientPictureDefaultFolder: File
+        get() = File(preferences.get(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, System.getProperty("user.home")))
+        set(value) {
+            log.trace("set clientPictureDefaultFolder(value={})", value.absolutePath)
+            preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
         }
 }
 

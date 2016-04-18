@@ -10,6 +10,7 @@ import at.cpickl.gadsu.view.SwingMainWindow
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
+import org.testng.Assert
 import org.uispec4j.Button
 import org.uispec4j.MenuItem
 import org.uispec4j.TextBox
@@ -61,19 +62,23 @@ var TextBox.text: String
         setText(value, false)
     }
 
-fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String) {
-    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
+fun MenuItem.clickAndDisposeDialog(buttonLabelToClick: String, expectedTitle: String? = null) {
+    _clickAndDisposeDialog(buttonLabelToClick, triggerClick(), expectedTitle)
 }
 
-fun Button.clickAndDisposeDialog(buttonLabelToClick: String) {
-    _clickAndDisposeDialog(buttonLabelToClick, triggerClick())
+fun Button.clickAndDisposeDialog(buttonLabelToClick: String, expectedTitle: String? = null) {
+    _clickAndDisposeDialog(buttonLabelToClick, triggerClick(), expectedTitle)
 }
 
-private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger) {
+private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger, expectedTitle: String? = null) {
     WindowInterceptor
             .init(trigger)
             .process(object : WindowHandler() {
                 override fun process(dialog: Window): Trigger {
+                    if (expectedTitle != null) {
+                        Assert.assertTrue(dialog.titleEquals(expectedTitle).isTrue,
+                                "Expected dialog title to be equals with '$expectedTitle' but was: '${dialog.title}'!")
+                    }
                     return dialog.getButton(buttonLabelToClick).triggerClick();
                 }
             })

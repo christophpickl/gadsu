@@ -5,6 +5,7 @@ import at.cpickl.gadsu.UserEvent
 import org.hsqldb.jdbc.JDBCBlob
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.SqlParameterValue
+import java.awt.Dimension
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -17,7 +18,7 @@ private val LOG_image = LoggerFactory.getLogger("at.cpickl.gadsu.image")
 
 class ImageSelectedEvent(
         val viewNamePrefix: String, // in order to identify the correct one, as
-        val image: MyImage
+        val imageFile: File
 ) : UserEvent()
 
 
@@ -43,6 +44,8 @@ fun MyImage.toSqlBlob(): SqlParameterValue? {
     val bytes = toSaveRepresentation() ?: return null
     return SqlParameterValue(Types.BLOB, JDBCBlob(bytes))
 }
+
+fun ImageIcon.size() = Dimension(image.getWidth(imageObserver), image.getHeight(imageObserver))
 
 // --------------------------------------------------------------------------- internal
 

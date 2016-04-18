@@ -26,7 +26,7 @@ class Development {
         private val SYSPROPERTY_KEY = "gadsu.development"
 
         val ENABLED: Boolean = System.getProperty(SYSPROPERTY_KEY, "").equals("true")
-        val COLOR_ENABLED = ENABLED && true
+        val COLOR_ENABLED = ENABLED && false
 
         init {
             if (ENABLED) {

@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.image.ImageSelectedEvent
-import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.UiTest
@@ -10,6 +9,7 @@ import at.cpickl.gadsu.view.ViewNames
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
+import java.io.File
 import javax.swing.ImageIcon
 import javax.swing.JLabel
 
@@ -64,7 +64,10 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     fun changeImage(fileClassPath: String = PROFILE_PICTURE_CLASSPATH_1) {
         log.debug("changeImage(fileClassPath='{}')", fileClassPath)
 
-        postEvent(ImageSelectedEvent(ViewNames.Client.ImagePrefix, fileClassPath.toMyImage()))
+
+        val file = File(javaClass.getResource(fileClassPath).file)
+        log.trace("Trying to set classpath image via file reference: '{}'", file.absolutePath)
+        postEvent(ImageSelectedEvent(ViewNames.Client.ImagePrefix, file))
     }
 
 

@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.image
 
+import at.cpickl.gadsu.GadsuException
+import sun.awt.image.ToolkitImage
 import java.awt.Dimension
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -8,10 +10,26 @@ import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.ImageIcon
 
+enum class ImageSize(private val _dimension: Dimension) {
+    /** In picture tab when changing picture.*/
+    BIG(Dimension(200, 200)),
+
+    /** Usually displayed in detail views. */
+    MEDIUM(Dimension(100, 100)),
+
+    /** Rendered in lists. */
+    LITTLE(Dimension(50, 50));
+
+    val width: Int get() = _dimension.width
+    val height: Int get() = _dimension.height
+
+    fun toDimension(): Dimension = _dimension
+}
+
 
 object Images {
-    val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic_default_man.jpg")
-    val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic_default_woman.jpg")
+    val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.jpg")
+    val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.jpg")
 }
 
 fun ImageIcon.toMyImage(): MyImage = ImageIconImage(this)
@@ -22,14 +40,14 @@ fun String.toMyImage(): MyImage = ClasspathImage(this)
 
 interface MyImage {
 
-    val size: Dimension
-
-    fun toViewRepresentation(): Icon
-
     /**
      * @return null if default is still set (or user cleared picture, then it will fall back to default again)
      */
     fun toSaveRepresentation(): ByteArray?
+
+    fun toViewBigRepresentation(): Icon
+    fun toViewMedRepresentation(): Icon
+    fun toViewLilRepresentation(): Icon
 
 }
 
@@ -41,9 +59,11 @@ private class DefaultImage(private val classpath: String) : MyImage {
 
     private val delegate = ClasspathImage(classpath)
 
-    override val size: Dimension get() = delegate.size
-    override fun toViewRepresentation() = delegate.toViewRepresentation()
     override fun toSaveRepresentation() = null // disable persisting default images
+
+    override fun toViewBigRepresentation() = delegate.toViewBigRepresentation()
+    override fun toViewMedRepresentation() = delegate.toViewMedRepresentation()
+    override fun toViewLilRepresentation() = delegate.toViewLilRepresentation()
 
 }
 
@@ -65,23 +85,45 @@ private class ClasspathImage(private val classpath: String) : IconifiedImage(cla
 private class FileImage(file: File) : IconifiedImage(file.readImageIcon())
 
 
-private abstract class IconifiedImage(private val icon: ImageIcon) : MyImage {
-    override fun toViewRepresentation() = icon
-    override fun toSaveRepresentation() = convertJpgBytes(icon)
+private abstract class IconifiedImage(private val original: ImageIcon) : MyImage {
 
-    private val _size = Dimension(icon.image.getWidth(icon.imageObserver), icon.image.getHeight(icon.imageObserver))
-    override val size: Dimension get() = _size
+    private val bytes: ByteArray
+    private val big: ImageIcon
+    private val med: ImageIcon
+    private val lil: ImageIcon
+    init {
+        big = original.scale(ImageSize.BIG)
+        med = original.scale(ImageSize.MEDIUM)
+        lil = original.scale(ImageSize.LITTLE)
+
+        bytes = big.toByteArray()
+    }
+
+    override fun toSaveRepresentation() = bytes
+
+    override fun toViewBigRepresentation() = big
+    override fun toViewMedRepresentation() = med
+    override fun toViewLilRepresentation() = lil
+
 }
 
+private fun ImageIcon.toByteArray(): ByteArray {
+    val bufferedImage: BufferedImage
 
-private fun convertJpgBytes(icon: ImageIcon): ByteArray {
-    val bufferedImage = icon.image as BufferedImage
+    if (image is BufferedImage) {
+        bufferedImage = image as BufferedImage
+    } else if (image is ToolkitImage) {
+        val tkImage = image as ToolkitImage
+        bufferedImage = tkImage.bufferedImage
+    } else {
+        throw GadsuException("Converting image to byte array failed because of unhandled image type: ${image.javaClass.name}")
+    }
 
-    val baos = ByteArrayOutputStream()
-    ImageIO.write( bufferedImage, "jpg", baos);
-    baos.flush()
-    val imageInByte = baos.toByteArray()
-    baos.close()
+    val outStream = ByteArrayOutputStream()
+    ImageIO.write(bufferedImage, "jpg", outStream)
+    outStream.flush()
+    val imageInByte = outStream.toByteArray()
+    outStream.close()
 
     return imageInByte
 }

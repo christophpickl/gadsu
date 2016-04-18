@@ -24,15 +24,16 @@ class SwingClientView @Inject constructor(
     init {
         debugColor = Color.YELLOW
 
-        c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
 
-        c.weightx = 0.3
+        c.fill = GridBagConstraints.VERTICAL
+        c.weightx = 0.0
         c.gridx = 0
         add(masterView.asComponent())
 
-        c.weightx = 0.7
         c.gridx++
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
         c.insets = Insets(0, 10, 0, 0)
         add(detailView.asComponent())
     }

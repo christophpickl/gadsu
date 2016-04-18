@@ -65,6 +65,15 @@ class ClientUiTest : UiTest() {
         assertThat(driver.list.contains(client.lastName))
     }
 
+    fun `Save without any name entered fails`() {
+        val driver = clientDriver()
+
+        driver.changeImage()
+        assertThat("Expected save button to be enabled after changing the image", driver.saveButton.isEnabled)
+
+        driver.saveButton.clickAndDisposeDialog("Speichern Abbrechen", "Speichern abgebrochen")
+    }
+
     // --------------------------------------------------------------------------- cancel
 
     fun cancelInsertClient_shouldClearAllFields() {
