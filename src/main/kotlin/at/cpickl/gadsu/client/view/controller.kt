@@ -14,6 +14,7 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowClientViewEvent
+import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.view.MainWindow
@@ -156,6 +157,24 @@ class ClientViewController @Inject constructor(
         log.debug("onShowClientViewEvent(event={})", event)
 
         window.changeContent(view.asComponent())
+    }
+
+    @Subscribe fun onImageSelectedEvent(event: ImageSelectedEvent) {
+        log.debug("onImageSelectedEvent(event={})", event)
+        if (!event.viewNamePrefix.equals(view.detailView.imageViewNamePrefix)) {
+            log.debug("Aborting image selection, as was not dispatched for client view.")
+            return
+        }
+
+        val image = event.image
+        val height = image.image.getHeight(image.imageObserver)
+        val width = image.image.getWidth(image.imageObserver)
+
+        log.trace("image size: ${width}x${height}")
+        // FIXME validate size, resize, or whatever
+        // val scaledImage = imageToScale.getScaledInstance(newWidth, newHighth, Image.SCALE_FAST);
+
+        view.detailView.changeImage(image)
     }
 
     fun checkChanges(): ChangeBehaviour {

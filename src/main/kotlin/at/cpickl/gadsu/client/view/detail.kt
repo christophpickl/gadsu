@@ -3,9 +3,13 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.image.ImagePickerFactory
+import at.cpickl.gadsu.image.ImageSelectedEvent
+import at.cpickl.gadsu.image.SwingImagePicker
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
+import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
@@ -13,6 +17,7 @@ import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.changeSize
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import com.google.common.collect.ComparisonChain
+import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -20,25 +25,47 @@ import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.BoxLayout
+import javax.swing.ImageIcon
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
+fun main(args: Array<String>) {
+    Framed.showWithContext { context ->
+
+        val factory = object : ImagePickerFactory {
+            override fun create(viewNamePrefix: String) = SwingImagePicker(context.bus, context.swing, viewNamePrefix)
+        }
+        val view = SwingClientDetailView(context.swing, TreatmentsInClientView(context.swing, context.bus), factory)
+
+        context.bus.register(object : Any() {
+            @Subscribe fun onImageSelectedEvent(event: ImageSelectedEvent) {
+                view.changeImage(event.image)
+            }
+        })
+
+        view
+    }
+}
 
 interface ClientDetailView {
+    val imageViewNamePrefix: String get() = ViewNames.Client.ImagePrefix
 
     fun readClient(): Client
     fun writeClient(client: Client)
     fun isModified(): Boolean
-//    fun updateModifiedStateIndicator()
+    fun changeImage(newImage: ImageIcon)
     fun focusFirst()
     fun asComponent(): Component
 }
 
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
-        treatmentTable: TreatmentsInClientView
+        treatmentTable: TreatmentsInClientView,
+        imagePickerFactory: ImagePickerFactory
 ) : GridPanel(), ClientDetailView, ModificationAware {
+
 
     private var originalClient = Client.INSERT_PROTOTYPE
 
@@ -54,7 +81,9 @@ class SwingClientDetailView @Inject constructor(
     // attention: must come AFTER list of buttons due to hacky design nature ;)
     private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
     private val inpLastName = modificationChecker.enableChangeListener(JTextField())
+    private val image = JLabel("-BILD-")
 
+    private var imageChanged = false
 
     init {
         modificationChecker.disableAll()
@@ -74,6 +103,11 @@ class SwingClientDetailView @Inject constructor(
         formPanel.addFormInput("Vorname", inpFirstName)
         formPanel.addFormInput("Nachname", inpLastName)
 
+        val imagePicker = imagePickerFactory.create(imageViewNamePrefix)
+        formPanel.addFormInput("Bild", imagePicker.asComponent())
+
+        formPanel.addFormInput("", image)
+
         val buttonPanel = JPanel()
         buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
         buttonPanel.debugColor = Color.BLUE
@@ -90,6 +124,7 @@ class SwingClientDetailView @Inject constructor(
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
         add(treatmentTable)
+
 
         c.gridy++
         c.fill = GridBagConstraints.NONE
@@ -131,6 +166,11 @@ class SwingClientDetailView @Inject constructor(
         if (!requested) {
             log.warn("Requesting focus failed for: {}", inpFirstName)
         }
+    }
+
+    override fun changeImage(newImage: ImageIcon) {
+        log.debug("changeImage(newImage)")
+        image.icon = newImage
     }
 
     override fun asComponent() = this

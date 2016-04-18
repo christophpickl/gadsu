@@ -1,6 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
+import at.cpickl.gadsu.image.ImageModule
 import at.cpickl.gadsu.preferences.PreferencesModule
 import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.ServiceModule
@@ -47,6 +48,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(ClientModule())
         install(TreatmentModule())
 
+        install(ImageModule())
         install(PreferencesModule(args.preferencesNode))
         install(ReportModule())
     }

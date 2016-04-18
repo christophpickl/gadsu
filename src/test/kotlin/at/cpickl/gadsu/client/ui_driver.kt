@@ -3,7 +3,6 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
-import at.cpickl.gadsu.treatment.TreatmentMini
 import at.cpickl.gadsu.view.ViewNames
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
@@ -55,6 +54,13 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun assertPanelVisible() {
         test.assertPanelContainedInMainWindow(ViewNames.Client.MainPanel)
+    }
+
+    fun changeImage(fileClassPath: String) {
+        log.debug("changeImage(fileClassPath='{}')", fileClassPath)
+
+        // dispatch ImageSelectedEvent in bus
+
     }
 
 }

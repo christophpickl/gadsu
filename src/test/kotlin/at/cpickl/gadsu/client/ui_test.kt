@@ -188,4 +188,20 @@ class ClientUiTest : UiTest() {
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
+    // --------------------------------------------------------------------------- image
+
+    // check changes
+    fun `Given saved client, when changing image, then save button should be enabled`() {
+        val driver = clientDriver()
+
+        driver.saveClient(client)
+        assertThat(not(driver.saveButton.isEnabled))
+
+        driver.changeImage("/gadsu_test/test_client_picture1.jpg")
+        assertThat(driver.saveButton.isEnabled)
+    }
+
+    // TODO check input textfield when image is selected
+
 }
+

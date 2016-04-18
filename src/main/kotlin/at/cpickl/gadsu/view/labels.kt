@@ -36,12 +36,14 @@ object Buttons_DE : Buttons {
     override val Insert = "Neu anlegen"
     override val Update = "Speichern"
     override val Back = "Zur\u00fcck"
+    override val OpenFile = "Durchsuchen"
 }
 
 object Buttons_EN : Buttons {
     override val Insert = "Insert"
     override val Update = "Update"
     override val Back = "Back"
+    override val OpenFile = "Open File"
 }
 
 
@@ -49,4 +51,5 @@ interface Buttons {
     val Insert: String
     val Update: String
     val Back: String
+    val OpenFile: String
 }

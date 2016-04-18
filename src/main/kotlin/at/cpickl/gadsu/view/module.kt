@@ -10,18 +10,24 @@ class ViewModule : AbstractModule() {
 
     override fun configure() {
         log.debug("configure()")
+
+
+        bind(SwingFactory::class.java)
+
+        // main window
         bind(MainWindow::class.java).to(SwingMainWindow::class.java).`in`(Scopes.SINGLETON)
         bind(MainWindowController::class.java).asEagerSingleton()
 
+        // mac handling
         val isMacApp = System.getProperty("gadsu.isMacApp", "").equals("true")
         log.debug("isMacApp={}", isMacApp)
         bind(MacHandler::class.java).toInstance(if (isMacApp) ReflectiveMacHandler() else DisabledMacHandler() )
 
-        bind(SwingFactory::class.java)
-
+        // menu bar
         bind(GadsuMenuBar::class.java).asEagerSingleton()
         bind(GadsuMenuBarController::class.java).asEagerSingleton()
 
+        // about
         install(AboutModule())
     }
 

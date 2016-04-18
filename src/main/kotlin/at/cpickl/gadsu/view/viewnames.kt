@@ -27,6 +27,7 @@ object ClientViewNames {
 
     val InputFirstName = "Client.InputFirstName"
     val InputLastName = "Client.InputLastName"
+    val ImagePrefix = "Client.Image" // .Panel, .PathTextBox, .OpenButton
 }
 
 object TreatmentViewNames {

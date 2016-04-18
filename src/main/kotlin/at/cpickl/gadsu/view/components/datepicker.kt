@@ -23,7 +23,8 @@ fun main(args: Array<String>) {
     btn.addActionListener {
         println("selectedDate: " + datePicker.selectedDate())
     }
-    showFramed(datePicker, btn)
+
+    Framed.show(datePicker, btn)
 }
 
 /**

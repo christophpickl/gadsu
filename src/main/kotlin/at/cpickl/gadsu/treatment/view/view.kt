@@ -2,13 +2,13 @@ package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.debugColor
-import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DateAndTimePicker
+import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
@@ -17,9 +17,7 @@ import at.cpickl.gadsu.view.components.newDateAndTimePicker
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.scrolled
-import at.cpickl.gadsu.view.components.showFramed
 import com.google.common.collect.ComparisonChain
-import com.google.common.eventbus.EventBus
 import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
 import java.awt.BorderLayout
@@ -34,13 +32,13 @@ import javax.swing.JTextArea
 
 fun main(args: Array<String>) {
     System.setProperty("gadsu.development", "true")
-    val bus = EventBus()
-    val clock = RealClock()
 
     val client = Client.INSERT_PROTOTYPE.copy(id = "myId")
     val treatment = Treatment.insertPrototype(client.id!!, 1, DateTime.now())
 
-    showFramed(SwingTreatmentView(SwingFactory(bus, clock), client, treatment))
+    Framed.showWithContext { context ->
+        SwingTreatmentView(context.swing, client, treatment)
+    }
 }
 
 interface TreatmentView : ModificationAware {
