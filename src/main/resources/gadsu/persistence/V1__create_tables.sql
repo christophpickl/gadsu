@@ -12,7 +12,7 @@ CREATE TABLE treatment (
 
   created TIMESTAMP NOT NULL,
   number INT NOT NULL,
-  date TIMESTAMP NOT NULL,
+  date TIMESTAMP NOT NULL, -- second and millisecond will be cut off by application
   note VARCHAR(1000) NOT NULL,
 
   FOREIGN KEY (id_client) REFERENCES client(id)

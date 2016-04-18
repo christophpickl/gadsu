@@ -1,14 +1,21 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.debugColor
+import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-open class GridPanel : JPanel() {
+open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPanel() {
+
     val c = GridBagConstraints()
+
     init {
+        if (viewName !== null) name = viewName
+        if (_debugColor !== null) debugColor = _debugColor
+
         val gridBagLayout = GridBagLayout()
         layout = gridBagLayout
         gridBagLayout.setConstraints(this, c)

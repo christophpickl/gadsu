@@ -108,7 +108,6 @@ class ClientViewController @Inject constructor(
 
         view.detailView.writeClient(event.client)
         currentClient.data = event.client
-        view.detailView.updateModifiedStateIndicator()
     }
 
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {

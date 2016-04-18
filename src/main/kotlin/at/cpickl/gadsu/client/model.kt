@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
 import com.google.common.collect.ComparisonChain
@@ -14,7 +15,8 @@ data class Client(
     companion object {
         // needed for static extension methods
 
-        val INSERT_PROTOTYPE = Client(null, DateTime.now(), "", "") // created will be overridden anyway, so its ok to use no Clock here ;)
+        // created will be overridden anyway
+        val INSERT_PROTOTYPE = Client(null, DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:00:00"), "", "")
     }
 
     override val yetPersisted: Boolean

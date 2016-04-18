@@ -30,7 +30,6 @@ class GadsuGuiceStarter @Inject constructor(
         private val window: MainWindow,
         private val bus: EventBus,
         private val mac: MacHandler,
-        private val clientView: ClientView,
         private val database: DatabaseManager
 ) {
     private val log = LoggerFactory.getLogger(javaClass)

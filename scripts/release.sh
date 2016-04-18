@@ -44,6 +44,8 @@ myEcho "Release Summary:"
 myEcho "----------------------------------"
 myEcho "  Release Version: $VERSION_RELEASE"
 myEcho "  Development Version: $VERSION_DEVELOPMENT"
+myEcho "  Build Directory: $BUILD_DIR"
+
 echo
 
 

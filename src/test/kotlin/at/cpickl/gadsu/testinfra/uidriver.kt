@@ -41,6 +41,7 @@ class MainDriver(
 abstract class BaseDriver(val test: UiTest, val window: Window) {
 
     fun assertHasFocus(component: UIComponent, hasFocus: Boolean = true) {
+        Thread.sleep(500)
         assertThat("Expected component '${component}' to " + (if(!hasFocus) "not " else "") + "have focus!",
                 component.awtComponent.hasFocus(), equalTo(hasFocus))
     }

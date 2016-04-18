@@ -41,7 +41,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun insert_idSet_fails() {
-        expect(type = PersistenceException::class, messageContains = "Client must not have set the ID", action = {
+        expect(type = PersistenceException::class, messageContains = "Client must not have set an ID", action = {
             testee.insert(unsavedClient.copy(id = TEST_UUID))
         })
     }

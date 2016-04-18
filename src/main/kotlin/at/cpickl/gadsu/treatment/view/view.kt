@@ -8,10 +8,12 @@ import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.components.DateAndTimePicker
 import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.MyDatePicker
+import at.cpickl.gadsu.view.components.ModificationAware
+import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.newDatePicker
+import at.cpickl.gadsu.view.components.newDateAndTimePicker
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.scrolled
@@ -41,34 +43,41 @@ fun main(args: Array<String>) {
     showFramed(SwingTreatmentView(SwingFactory(bus, clock), client, treatment))
 }
 
-interface TreatmentView {
+interface TreatmentView : ModificationAware {
+    fun wasSaved(newTreatment: Treatment)
     fun asComponent(): Component
-    fun isModified(): Boolean
 }
 
 
 class SwingTreatmentView @Inject constructor(
         private val swing: SwingFactory,
         @Assisted private val client: Client,
-        @Assisted private val treatment: Treatment
-) : GridPanel(), TreatmentView {
+        @Assisted private var treatment: Treatment
+) : GridPanel(
+        viewName = ViewNames.Treatment.MainPanel,
+        _debugColor = Color.YELLOW
+), TreatmentView {
 
     // FIXME calculate number in DB
-    // FIXME is modified support
 
-    private val inpDate: MyDatePicker = swing.newDatePicker(treatment.date)
-    private val inpNote: JTextArea = JTextArea()
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, {
+        TreatmentSaveEvent(readTreatment(), client)
+    })
 
-    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment(), client) })
+    private val modificationChecker = ModificationChecker(this, btnSave)
+
+    private val inpDate: DateAndTimePicker = swing.newDateAndTimePicker(modificationChecker, treatment.date)
+
+    private val inpNote: JTextArea = swing.newTextArea(
+            viewName = ViewNames.Treatment.InputNote,
+            initialText = treatment.note,
+            enableOn = modificationChecker)
 
     init {
-        name = ViewNames.Treatment.MainPanel
-        inpNote.name = ViewNames.Treatment.InputNote
-        debugColor = Color.YELLOW
-
+        if (treatment.yetPersisted) {
+            modificationChecker.disableAll()
+        }
         btnSave.changeLabel(treatment)
-        inpNote.text = treatment.note
-
 
         c.weighty = 0.0
         add(JLabel("Treatment for ${client.firstName}"))
@@ -99,24 +108,31 @@ class SwingTreatmentView @Inject constructor(
     }
 
     override fun isModified(): Boolean {
+        println("t.date=${treatment.date}, inp.date=${inpDate.readDateTime()}")
         return ComparisonChain.start()
-                .compare(treatment.date, inpDate.selectedDate()!!)
+                .compare(treatment.date, inpDate.readDateTime())
                 .compare(treatment.note, inpNote.text)
                 .result() != 0
     }
 
+    override fun wasSaved(newTreatment: Treatment) {
+        treatment = newTreatment
+
+        btnSave.changeLabel(treatment)
+        modificationChecker.trigger()
+    }
+
+    override fun asComponent() = this
 
     private fun readTreatment(): Treatment {
         return Treatment(
                 treatment.id,
-                treatment.created,
                 treatment.clientId,
+                treatment.created,
                 treatment.number,
-                inpDate.selectedDate()!!,
+                inpDate.readDateTime(),
                 inpNote.text
         )
     }
-
-    override fun asComponent() = this
 
 }

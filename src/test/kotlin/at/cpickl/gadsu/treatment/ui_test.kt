@@ -70,6 +70,17 @@ class TreatmentUiTest : UiTest() {
         driver.assertTreatmentsInClientViewContains(1) // MINOR improve assertion
     }
 
+    fun `When creating a new treatment, then the button labels change`() {
+        val driver = treatmentDriver()
+
+        clientDriver().saveClient(client)
+        driver.openNewButton.click()
+        driver.assertSaveButtonLabel("Neu anlegen")
+
+        driver.saveButton.click()
+        driver.assertSaveButtonLabel("Speichern")
+    }
+
 
     fun `Given a saved treatment, when updating it,contents are stored and will show up again when doubleclicking on it in the client view`() {
         val driver = treatmentDriver()

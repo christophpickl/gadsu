@@ -10,10 +10,11 @@ import javax.swing.BoxLayout
 import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JScrollPane
-import javax.swing.JTextField
+import javax.swing.JTextArea
 import javax.swing.WindowConstants
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.text.JTextComponent
 
 val SWING_log = LoggerFactory.getLogger("at.cpickl.gadsu.view.components.SWING")
 
@@ -31,10 +32,18 @@ class SwingFactory @Inject constructor(
 ) {
     val log = LoggerFactory.getLogger(javaClass)
 
+    fun newTextArea(viewName: String, initialText: String, enableOn: ModificationChecker): JTextArea {
+        val text = JTextArea()
+        text.name = viewName
+        text.text = initialText
+        enableOn.enableChangeListener(text)
+        return text
+    }
+
     // via extension methods
 }
 
-fun JTextField.addChangeListener(listener: () -> Unit) {
+fun JTextComponent.addChangeListener(listener: () -> Unit) {
     document.addDocumentListener(object : DocumentListener {
         override fun changedUpdate(e: DocumentEvent) {
             listener()
@@ -107,3 +116,40 @@ fun <E> ListModel<E>.findIndexByComparator(comparator: (current: E) -> Boolean):
 }
 
  */
+
+interface ModificationAware {
+    fun isModified(): Boolean
+}
+
+class ModificationChecker(
+        private val modificationAware: ModificationAware,
+        private vararg val enableDisableComponents: Component
+) {
+
+    fun <T : JTextComponent> enableChangeListener(delegate: T): T {
+        delegate.addChangeListener { checkModificationsAndSetEnabled() }
+        return delegate
+    }
+
+    fun enableChangeListener(delegate: MyDatePicker): MyDatePicker {
+        // FIXME implement me
+        return delegate
+    }
+
+    fun trigger() {
+        checkModificationsAndSetEnabled()
+    }
+
+    fun disableAll() {
+        enableDisableComponents.forEach { it.isEnabled = false }
+    }
+
+    private fun checkModificationsAndSetEnabled() {
+        val modified = modificationAware.isModified()
+        enableDisableComponents.forEach {
+            it.isEnabled = modified
+        }
+    }
+
+}
+

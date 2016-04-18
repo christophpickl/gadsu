@@ -34,13 +34,13 @@ import org.testng.annotations.Test
 
     fun `Given no data set, when set to a client, then changed event`() {
         testee.data = client1
-        busListener.assertContains(CurrentChangedEvent(eventId, null, client1))
+        busListener.assertContains(CurrentChangedEvent(eventId, CurrentClient.INITIAL_VALUE, client1))
     }
 
-    fun `Given no data set, when set to a client without an ID, then changed event`() {
+    fun `Given no data set, when set to a client without an ID, then changed property event because initial value has no ID set too`() {
         val savedClient = client1.copy(id = null)
         testee.data = savedClient
-        busListener.assertContains(CurrentChangedEvent(eventId, null, savedClient))
+        busListener.assertContains(CurrentPropertiesChangedEvent(eventId, CurrentClient.INITIAL_VALUE, savedClient))
     }
 
     // --------------------------------------------------------------------------- override set tests

@@ -97,9 +97,10 @@ abstract class Current<V : HasId?>(private val id: String, private val bus: Even
 }
 
 class CurrentClient @Inject constructor(bus: EventBus) :
-        Current<Client>(ID, bus, Client.INSERT_PROTOTYPE) {
+        Current<Client>(ID, bus, INITIAL_VALUE) {
     companion object {
         val ID: String = "client"
+        val INITIAL_VALUE = Client.INSERT_PROTOTYPE
     }
 }
 val CurrentChangedEvent.Companion.ID_Client: String get() = CurrentClient.ID

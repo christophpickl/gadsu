@@ -7,8 +7,9 @@ import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.ModificationAware
+import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.addChangeListener
 import at.cpickl.gadsu.view.components.changeSize
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import com.google.common.collect.ComparisonChain
@@ -29,19 +30,15 @@ interface ClientDetailView {
     fun readClient(): Client
     fun writeClient(client: Client)
     fun isModified(): Boolean
-    fun updateModifiedStateIndicator()
+//    fun updateModifiedStateIndicator()
     fun focusFirst()
     fun asComponent(): Component
 }
 
-//fun enableChangeListener(delegate: JTextField) {
-//
-//}
-
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
         treatmentTable: TreatmentsInClientView
-) : GridPanel(), ClientDetailView {
+) : GridPanel(), ClientDetailView, ModificationAware {
 
     private var originalClient = Client.INSERT_PROTOTYPE
 
@@ -49,23 +46,22 @@ class SwingClientDetailView @Inject constructor(
 
     // FIXME use it private var _currentClient: Client = Client.INSERT_PROTOTYPE
 
-
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
     private val btnCancel = JButton("Abbrechen")
 
-    private val inpFirstName = JTextField()
-    private val inpLastName = JTextField()
+    private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
 
-    /** Used to change enable/disable state on changes. */
-    private val allButtons = arrayOf(btnSave, btnCancel)
+    // attention: must come AFTER list of buttons due to hacky design nature ;)
+    private val inpFirstName = modificationChecker.enableChangeListener(JTextField())
+    private val inpLastName = modificationChecker.enableChangeListener(JTextField())
 
-    /** Used to detect any changes. */
-    private val allInputs = arrayOf(inpFirstName, inpLastName)
 
     init {
+        modificationChecker.disableAll()
+
         inpFirstName.name = ViewNames.Client.InputFirstName
         inpLastName.name = ViewNames.Client.InputLastName
-        allInputs.forEach { it.addChangeListener { updateModifiedStateIndicator() } }
+
         btnCancel.name = ViewNames.Client.CancelButton
         btnCancel.addActionListener {
             updateFields()
@@ -73,7 +69,6 @@ class SwingClientDetailView @Inject constructor(
         val newSize = Dimension(btnSave.preferredSize.width + 20, btnSave.preferredSize.height)
         btnSave.changeSize(newSize)
         btnCancel.changeSize(newSize)
-        updateModifiedStateIndicator() // set buttons disabled at startup
 
         val formPanel = FormPanel()
         formPanel.addFormInput("Vorname", inpFirstName)
@@ -113,14 +108,15 @@ class SwingClientDetailView @Inject constructor(
         originalClient = client
         btnSave.changeLabel(client)
         updateFields()
+        modificationChecker.trigger()
     }
 
-    override fun updateModifiedStateIndicator() {
-        val modified = isModified()
-        allButtons.forEach {
-            it.isEnabled = modified
-        }
-    }
+//    override fun updateModifiedStateIndicator() {
+//        val modified = isModified()
+//        allButtons.forEach {
+//            it.isEnabled = modified
+//        }
+//    }
 
     override fun isModified(): Boolean {
         return ComparisonChain.start()
@@ -130,7 +126,11 @@ class SwingClientDetailView @Inject constructor(
     }
 
     override fun focusFirst() {
-        inpFirstName.requestFocus()
+        log.trace("focusFirst()")
+        val requested = inpFirstName.requestFocusInWindow()
+        if (!requested) {
+            log.warn("Requesting focus failed for: {}", inpFirstName)
+        }
     }
 
     override fun asComponent() = this

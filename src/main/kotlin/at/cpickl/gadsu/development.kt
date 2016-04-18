@@ -81,7 +81,8 @@ class DevelopmentController @Inject constructor(
 
     private fun newClient(firstName: String, lastName: String) = Client(null, clock.now(), firstName, lastName)
 
-    private fun newTreatment(number: Int, client: Client) = Treatment(null, clock.now(), client.id!!, number, clock.now(), "note for treatment number $number")
+    private fun newTreatment(number: Int, client: Client) = Treatment(null, client.id!!, clock.now(), number, clock.nowWithoutSeconds(),
+            "note for treatment number $number")
 
 }
 

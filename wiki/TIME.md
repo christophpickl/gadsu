@@ -10,4 +10,4 @@
   * 2h ... resolving misc tasktags
   * 4h ... basic treatment infra
   * 4h ... core report generation feature
-  
+  * 6h ... treatment crud

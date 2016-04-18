@@ -5,7 +5,7 @@ import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.view.ViewNames
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
 import org.uispec4j.Button
 import org.uispec4j.Panel
@@ -34,7 +34,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     }
 
     fun assertTreatmentsInClientViewContains(expectedRows: Int) {
-        MatcherAssert.assertThat(treatmentsInClientViewTable.rowCount, Matchers.equalTo(expectedRows))
+        MatcherAssert.assertThat(treatmentsInClientViewTable.rowCount, equalTo(expectedRows))
     }
 
     fun save(treatment: TreatmentMini) {
@@ -56,6 +56,10 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
             }
         }
         throw GadsuException("Could not find index for treatment: $treatment!")
+    }
+
+    fun assertSaveButtonLabel(expectedLabel: String) {
+        MatcherAssert.assertThat(saveButton.label, equalTo(expectedLabel))
     }
 
 }

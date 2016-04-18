@@ -29,6 +29,9 @@ class TreatmentController @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    private var treatmentView: TreatmentView? = null
+
+
     @Subscribe fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
         log.debug("onCreateTreatmentEvent(event={})", event)
         changeToTreatmentView(null)
@@ -45,28 +48,32 @@ class TreatmentController @Inject constructor(
         val number = 1 // FIXME calculate sequence number
         val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
 
-        val treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
-        window.changeContent(treatmentView.asComponent())
+        treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
+        window.changeContent(treatmentView!!.asComponent())
     }
 
     @Subscribe fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
         log.info("onTreatmentSaveEvent(event={})", event)
 
+        val treatmentAfterSave: Treatment
         val treatmentToSave = event.treatment
-        if (treatmentToSave.yetPersisted) {
-            treatmentService.update(treatmentToSave)
-            bus.post(TreatmentChangedEvent(treatmentToSave))
-
-        } else {
+        if (!treatmentToSave.yetPersisted) {
             val insertedTreatment = treatmentService.insert(treatmentToSave, event.client)
             bus.post(TreatmentCreatedEvent(insertedTreatment))
+            treatmentAfterSave = insertedTreatment
+        } else {
+            treatmentService.update(treatmentToSave)
+            bus.post(TreatmentChangedEvent(treatmentToSave))
+            treatmentAfterSave = treatmentToSave
+
         }
+        treatmentView!!.wasSaved(treatmentAfterSave)
     }
 
     @Subscribe fun onTreatmentBackEvent(event: TreatmentBackEvent) {
         log.debug("onTreatmentBackEvent(event={})", event)
 
-        // TODO check changes
+        // FIXME check changes
 
         bus.post(ShowClientViewEvent())
     }

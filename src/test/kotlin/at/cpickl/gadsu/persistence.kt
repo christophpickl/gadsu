@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 @Test class DateFormatsPersistenceTest {
 
     fun formatTimestamp() {
-        assertThat(DateFormats.SQL_TIMESTAMP.print(TEST_DATE), equalTo("TIMESTAMP '2001-12-01 12:59:59'"))
+        assertThat(DateFormats.SQL_TIMESTAMP.print(TEST_DATE), equalTo("TIMESTAMP '2000-01-01 00:10:20'"))
     }
 
 }

@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.client.view.ClientView
+import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.testinfra.GuiceIntegrationTest
 import at.cpickl.gadsu.testinfra.TEST_UUID
 import org.mockito.Mockito.*
@@ -28,7 +29,8 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
         busListener.assertContains(
                 saveEvent, // we did it :)
                 ClientCreatedEvent(savedClient),
-                ClientSelectedEvent(savedClient, null)
+                ClientSelectedEvent(savedClient, null),
+                CurrentChangedEvent("client", Client.INSERT_PROTOTYPE, savedClient)
         )
         verify(mockClientRepository).insert(expectedToSaveClient)
         verify(mockTreatmentRepository).findAllFor(savedClient)

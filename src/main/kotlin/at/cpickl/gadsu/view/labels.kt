@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.GadsuException
+
 enum class Lang {
     DE, EN
 }
@@ -10,7 +12,16 @@ object Labels {
 
     init {
         // FIXME check system property for language (luxury: configurable via preferences)
-        lang = Lang.EN
+        lang = overrideLang() ?: Lang.DE
+    }
+
+    private fun overrideLang(): Lang? {
+        val overrideLang = System.getProperty("gadsu.overrideLanguage", null) ?: return null
+        when (overrideLang) {
+            "DE" -> return Lang.DE
+            "EN" -> return Lang.EN
+            else -> throw GadsuException("Invalid override language value '$overrideLang'!")
+        }
     }
 
     val Buttons: Buttons get() {

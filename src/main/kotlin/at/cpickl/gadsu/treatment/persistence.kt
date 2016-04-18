@@ -85,8 +85,8 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
     get() = RowMapper { rs, rowNum ->
         Treatment(
                 rs.getString("id"),
-                DateTime(rs.getTimestamp("created")),
                 rs.getString("id_client"),
+                DateTime(rs.getTimestamp("created")),
                 rs.getInt("number"),
                 DateTime(rs.getTimestamp("date")),
                 rs.getString("note")
