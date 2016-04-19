@@ -62,6 +62,7 @@ class TreatmentUiTest : UiTest() {
 
     // --------------------------------------------------------------------------- save
 
+    //<editor-fold desc="save">
     fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
         val driver = treatmentDriver()
         mainDriver().createClientAndTreatment(client, treatmentMini)
@@ -98,6 +99,7 @@ class TreatmentUiTest : UiTest() {
         MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
         // MINOR add some more asserts, after TreatmentMini got some more values
     }
+    //</editor-fold>
 
     // --------------------------------------------------------------------------- number
 
@@ -109,17 +111,6 @@ class TreatmentUiTest : UiTest() {
     //   check again with number 2
     // delete number 1
     //   check number 2 is now number 1
-
-    // --------------------------------------------------------------------------- check changes
-
-    fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
-        val driver = treatmentDriver()
-        clientDriver().saveClient(client)
-
-        driver.openNewButton.click()
-
-        assertThat(driver.saveButton.isEnabled)
-    }
 
     fun `Given a fresh inserted treatment, then the save button should be disabled, but be enabled when changing some property`() {
         val driver = treatmentDriver()
@@ -136,6 +127,15 @@ class TreatmentUiTest : UiTest() {
         driver.saveButton.click()
         assertThat("Changes have been saved, therefor save button should be disabled!",
                 not(driver.saveButton.isEnabled))
+    }
+
+    // --------------------------------------------------------------------------- check changes
+
+    fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
+        val driver = treatmentDriver()
+        clientDriver().saveClient(client)
+        driver.openNewButton.click()
+        assertThat(driver.saveButton.isEnabled)
     }
 
     // MINOR test create new treatment and insert, update it, then check if updates propagated to treatment table in client view

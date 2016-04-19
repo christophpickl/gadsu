@@ -11,7 +11,7 @@ import org.uispec4j.Window
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 import java.lang.reflect.Method
-import java.util.Objects
+import java.util.*
 
 
 @Test(groups = arrayOf("uiTest"))
@@ -35,7 +35,10 @@ class ClientUiTest : UiTest() {
         client = Client.unsavedValidInstance().copy(firstName = javaClass.simpleName, lastName = method.name)
     }
 
-    // --------------------------------------------------------------------------- save
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="save">
 
     fun saveClient_sunshine() {
         val driver = clientDriver()
@@ -74,8 +77,11 @@ class ClientUiTest : UiTest() {
         driver.saveButton.clickAndDisposeDialog("Speichern Abbrechen", "Speichern abgebrochen")
     }
 
-    // --------------------------------------------------------------------------- cancel
+    //</editor-fold>
 
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="cancel">
     fun cancelInsertClient_shouldClearAllFields() {
         val driver = clientDriver()
 
@@ -92,7 +98,11 @@ class ClientUiTest : UiTest() {
     }
 
 
-    // --------------------------------------------------------------------------- delete
+    //</editor-fold>
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="delete">
 
     @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
@@ -104,7 +114,11 @@ class ClientUiTest : UiTest() {
         assertThat(not(driver.list.contains(client.fullName)))
     }
 
-    // --------------------------------------------------------------------------- create new
+    //</editor-fold>
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="create new">
 
     @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
@@ -125,7 +139,11 @@ class ClientUiTest : UiTest() {
         driver.assertHasFocus(driver.inputFirstName)
     }
 
-    // --------------------------------------------------------------------------- check changes
+    //</editor-fold>
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="check changes">
 
     // same applies for already saved client
     // and also when hit the cancel button
@@ -197,7 +215,11 @@ class ClientUiTest : UiTest() {
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
-    // --------------------------------------------------------------------------- image
+    //</editor-fold>
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="image">
 
     // check changes
     fun `When changing image, then save button should be enabled`() {
@@ -219,6 +241,8 @@ class ClientUiTest : UiTest() {
         assertFalse("Expected image to have changed but was still the same as before changing it!",
                 Objects.equals(oldImage, newImage))
     }
+
+    //</editor-fold>
 
 }
 
