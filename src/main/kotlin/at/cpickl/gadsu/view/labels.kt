@@ -40,10 +40,17 @@ enum class Language {
 }
 
 object Labels {
+    // MINOR use reflection instead and cache result for future reoccuring use
     val Buttons: Buttons get() {
         when(Languages.language) {
             Language.DE -> return Buttons_DE
             else -> return Buttons_EN
+        }
+    }
+    val Tabs: Tabs get() {
+        when(Languages.language) {
+            Language.DE -> return Tabs_DE
+            else -> return Tabs_EN
         }
     }
 }
@@ -65,4 +72,20 @@ interface Buttons {
     val Insert: String
     val Update: String
     val Back: String
+}
+
+object Tabs_DE : Tabs {
+    override val ClientMain = "Maaain"
+    override val ClientDetail = "Deetail"
+}
+
+object Tabs_EN : Tabs {
+    override val ClientMain = "Maaain"
+    override val ClientDetail = "Deetail"
+}
+
+
+interface Tabs {
+    val ClientMain: String
+    val ClientDetail: String
 }

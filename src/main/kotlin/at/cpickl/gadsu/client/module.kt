@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.view.ClientDetailView
+import at.cpickl.gadsu.client.view.detail.ClientDetailView
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.client.view.ClientViewController
-import at.cpickl.gadsu.client.view.SwingClientDetailView
+import at.cpickl.gadsu.client.view.detail.SwingClientDetailView
 import at.cpickl.gadsu.client.view.SwingClientMasterView
 import at.cpickl.gadsu.client.view.SwingClientView
 import com.google.inject.AbstractModule

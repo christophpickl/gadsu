@@ -34,6 +34,7 @@ object ClientViewNames {
     val ImagePrefix = "Client.Image" // .Panel, .OpenButton
     val OpenImageButton = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
     val ImagePickerPanel = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"
+    val TabbedPane = "Client.TabbedPane"
 }
 
 object TreatmentViewNames {

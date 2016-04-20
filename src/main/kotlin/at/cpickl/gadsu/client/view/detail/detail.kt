@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.client.view
+package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
@@ -11,7 +11,6 @@ import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
@@ -31,6 +30,7 @@ import javax.swing.ImageIcon
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JTabbedPane
 import javax.swing.JTextField
 
 interface ClientDetailView {
@@ -70,6 +70,10 @@ class SwingClientDetailView @Inject constructor(
     private var imageChanged = false
     private val imageContainer = JLabel(originalImage.toViewBigRepresentation())
 
+    private val tabMain = ClientTabMain()
+    private val tabDetail = ClientTabDetail()
+    private val allTabs = arrayOf(tabMain, tabDetail)
+
     init {
         modificationChecker.disableAll()
 
@@ -86,29 +90,38 @@ class SwingClientDetailView @Inject constructor(
         btnSave.changeSize(newSize)
         btnCancel.changeSize(newSize)
 
-        val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
+//        val imagePicker = imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
+//
+//        val formPanel = FormPanel()
+//        formPanel.addFormInput("Vorname", inpFirstName)
+//        formPanel.addFormInput("Nachname", inpLastName)
+//        formPanel.addFormInput("Geschlecht", inpGender)
+//
+//        val imagePanel = GridPanel()
+//        imagePanel.add(imageContainer)
+//        imagePanel.c.gridy++
+//        imagePanel.add(imagePicker.asComponent())
+//        formPanel.addFormInput("Bild", imagePanel)
+//
+//        c.fill = GridBagConstraints.HORIZONTAL
+//        c.weightx = 1.0
+//        c.weighty = 0.0
+//        add(formPanel)
 
+        val tabbed = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
+        tabbed.name = ViewNames.Client.TabbedPane
+        allTabs.forEach {
+            tabbed.addTab(it.title, it.asComponent())
+        }
 
-
-        val formPanel = FormPanel()
-        formPanel.addFormInput("Vorname", inpFirstName)
-        formPanel.addFormInput("Nachname", inpLastName)
-        formPanel.addFormInput("Geschlecht", inpGender)
-
-        val imagePanel = GridPanel()
-        imagePanel.add(imageContainer)
-        imagePanel.c.gridy++
-        imagePanel.add(imagePicker.asComponent())
-        formPanel.addFormInput("Bild", imagePanel)
-
-        c.fill = GridBagConstraints.HORIZONTAL
+        c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
-        c.weighty = 0.0
-        add(formPanel)
+        c.weighty = 1.0
+        add(tabbed)
 
         c.gridy++
         c.fill = GridBagConstraints.BOTH
-        c.weighty = 1.0
+        c.weighty = 3.0
         add(treatmentSubview)
 
 
