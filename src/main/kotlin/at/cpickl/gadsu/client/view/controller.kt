@@ -158,7 +158,7 @@ class ClientViewController @Inject constructor(
         log.trace("onClientDeletedEvent(event)")
         view.masterView.deleteClient(event.client)
 
-        if (currentClient.data.id!!.equals(event.client.id)) {
+        if (currentClient.data.id != null && currentClient.data.id.equals(event.client.id)) {
             val newInsert = Client.INSERT_PROTOTYPE
             view.detailView.writeClient(newInsert)
             currentClient.data = newInsert

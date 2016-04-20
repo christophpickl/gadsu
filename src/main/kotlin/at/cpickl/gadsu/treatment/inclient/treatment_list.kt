@@ -14,7 +14,7 @@ import javax.swing.JLabel
 
 class TreatmentCell(val treatment: Treatment): DefaultCellView<Treatment>(treatment), CellView {
 
-    private val lblNumber = JLabel("${treatment.number}. Behandlung")
+    private val lblNumber = JLabel("${treatment.number}.")
     private val lblDate = JLabel("${treatment.date.formatDateTimeLong()}")
 
     override val applicableForegrounds: Array<JComponent> = arrayOf(lblNumber, lblDate)

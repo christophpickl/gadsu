@@ -7,6 +7,7 @@ import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.calculateInsertIndex
@@ -19,7 +20,7 @@ import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
-import java.awt.FlowLayout
+import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JList
 import javax.swing.JPanel
@@ -43,7 +44,7 @@ class TreatmentsInClientView @Inject constructor(
 ): JPanel() {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val newTreatmentButton = swing.newEventButton("Neue Behandlung", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
+    private val newTreatmentButton = swing.newEventButton("Neue Behandlung anlegen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
 
 
     private val treatmentsModel = MyListModel<Treatment>()
@@ -61,8 +62,10 @@ class TreatmentsInClientView @Inject constructor(
         treatmentsView.registerDoubleClicked { row, treatment -> bus.post(OpenTreatmentEvent(treatment)) }
         add(treatmentsView.scrolled(), BorderLayout.CENTER)
 
-        val btnPanel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+        val btnPanel = GridPanel()
         btnPanel.debugColor = Color.ORANGE
+        btnPanel.c.weightx = 1.0
+        btnPanel.c.fill = GridBagConstraints.HORIZONTAL
         btnPanel.add(newTreatmentButton)
         add(btnPanel, BorderLayout.SOUTH)
     }

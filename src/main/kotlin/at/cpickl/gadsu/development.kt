@@ -4,9 +4,12 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -76,11 +79,22 @@ class DevelopmentController @Inject constructor(
         deleteAll()
 
         arrayOf(
-                Client.INSERT_PROTOTYPE.copy(
-                        firstName = "Max",
-                        lastName = "Mustermann",
-                        gender = Gender.MALE,
-                        picture = Images.DEFAULT_PROFILE_MAN
+//                Client.INSERT_PROTOTYPE.copy(
+//                        firstName = "Max",
+//                        lastName = "Mustermann",
+//                        gender = Gender.MALE,
+//                        picture = Images.DEFAULT_PROFILE_MAN
+                Client(null, DUMMY_CREATED, "Max", "Mustermann",
+                        Contact(
+                                mail = "max@mustermann.at",
+                                phone = "0699 11 22 33 432",
+                                street = "Hauptstrasse 22/11/A",
+                                zipCode = "1010",
+                                city = "Wien"
+                        ),
+                        DateFormats.DATE.parseDateTime("26.10.1986"), Gender.MALE, "\u00d6sterreich",
+                        Relationship.MARRIED, "Computermensch", "keine", "Meine supi wuzi Anmerkung.",
+                        Images.DEFAULT_PROFILE_MAN
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",

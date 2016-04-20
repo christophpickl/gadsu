@@ -75,13 +75,13 @@ interface Buttons {
 }
 
 object Tabs_DE : Tabs {
-    override val ClientMain = "Maaain"
-    override val ClientDetail = "Deetail"
+    override val ClientMain = "Allgemein"
+    override val ClientDetail = "Profil"
 }
 
 object Tabs_EN : Tabs {
-    override val ClientMain = "Maaain"
-    override val ClientDetail = "Deetail"
+    override val ClientMain = "Main"
+    override val ClientDetail = "Detail"
 }
 
 

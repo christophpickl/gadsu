@@ -6,8 +6,27 @@ import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
+import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
+
+
+object Pad {
+    val ZERO   = Insets(0, 0, 0, 0)
+    val TOP    = Insets(5, 0, 0, 0)
+    val LEFT   = Insets(0, 5, 0, 0)
+    val BOTTOM = Insets(0, 0, 5, 0)
+    val RIGHT  = Insets(0, 0, 0, 5)
+}
+
+
+fun GridBagConstraints.fatComponent() {
+    fill = GridBagConstraints.BOTH
+    weightx = 1.0
+    weighty = 1.0
+}
+
+
 
 open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPanel() {
 
@@ -28,6 +47,25 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
     override fun add(comp: Component): Component? {
         super.add(comp, c)
         return null
+    }
+
+
+    fun addColumned(vararg columns: Pair<Double, JComponent>) {
+        c.fill = GridBagConstraints.BOTH
+        c.weighty = 1.0
+        c.anchor = GridBagConstraints.NORTH
+        var first = true
+        columns.forEach {
+            if (first) {
+                first = false
+            } else {
+                c.insets = Pad.LEFT
+            }
+
+            c.weightx = it.first
+            add(it.second)
+            c.gridx++
+        }
     }
 
 }
@@ -54,5 +92,13 @@ open class FormPanel : GridPanel() {
 
         c.gridy++
         c.gridx = 0
+    }
+
+    fun addLastRowFilling() {
+        c.gridwidth = 2
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(JLabel()) // some nice UI hack ;)
     }
 }

@@ -5,9 +5,9 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.Component
 import java.io.File
 import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -18,7 +18,7 @@ interface ImagePicker {
         val VIEWNAME_SUFFIX_OPENBUTTON: String get() = "OpenButton"
     }
 
-    fun asComponent(): Component
+    fun asComponent(): JComponent
 }
 
 interface ImagePickerFactory {
