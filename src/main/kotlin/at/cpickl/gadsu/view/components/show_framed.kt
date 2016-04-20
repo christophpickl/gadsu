@@ -4,8 +4,10 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.RealClock
 import com.google.common.eventbus.EventBus
 import java.awt.Component
+import java.awt.Dimension
 import javax.swing.BoxLayout
 import javax.swing.JFrame
+import javax.swing.UIManager
 import javax.swing.WindowConstants
 
 /**
@@ -13,20 +15,28 @@ import javax.swing.WindowConstants
  */
 class Framed {
     companion object {
+        init {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+            JFrame.setDefaultLookAndFeelDecorated(true)
+        }
 
-        fun showWithContext(function: ((context: FramedContext) -> Component)) {
+        fun showWithContext(function: ((context: FramedContext) -> Component), size: Dimension? = null) {
             val _context = FramedContext()
             val component = function.invoke(_context)
-            Framed()._show(component)
+            Framed()._show(arrayOf(component), size)
         }
 
 
-        fun show(vararg components: Component) {
-            Framed()._show(*components)
+        fun show(component: Component, size: Dimension? = null) {
+            Framed()._show(arrayOf(component), size)
+        }
+
+        fun show(components: Array<Component>, size: Dimension? = null) {
+            Framed()._show(components, size)
         }
     }
 
-    private fun _show(vararg components: Component) {
+    private fun _show(components: Array<Component>, size: Dimension? = null) {
         val frame = JFrame()
 
         frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
@@ -34,7 +44,13 @@ class Framed {
 
         components.forEach { frame.contentPane.add(it) }
 
-        frame.packCenterAndShow()
+        if (size != null) {
+            frame.size = size
+        } else {
+            frame.pack()
+        }
+        frame.setLocationRelativeTo(null)
+        frame.isVisible = true
     }
 }
 class FramedContext(

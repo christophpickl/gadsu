@@ -45,7 +45,7 @@ class MenubarUiTest : UiTest() {
     fun `Given user is selected, generate protocol should be enabled`() {
         val driver = menuBarDriver()
 
-        clientDriver().saveClient(Client.unsavedValidInstance())
+        clientDriver().saveNewClient(Client.unsavedValidInstance())
         driver.assertItemEnabled(driver.menuReportsGenerateProtocol, true)
     }
 

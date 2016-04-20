@@ -6,12 +6,7 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.enablePopup
-import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.*
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -19,9 +14,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import javax.swing.JLabel
 import javax.swing.JList
-import javax.swing.ListCellRenderer
 import javax.swing.ListSelectionModel
 
 
@@ -76,12 +69,7 @@ class SwingClientMasterView @Inject constructor(
         }
         list.enablePopup(bus, "L\u00f6schen", { DeleteClientEvent(it) })
 
-        val oldRenderer = list.cellRenderer
-        list.cellRenderer = ListCellRenderer<Client> { list, client, index, isSelected, cellHasFocus ->
-            val oldComponent = oldRenderer.getListCellRendererComponent(list, client, index, isSelected, cellHasFocus) as JLabel
-            oldComponent.text = client.fullName
-            oldComponent
-        }
+        list.cellRenderer = ClientListCellRender()
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.layoutOrientation = JList.VERTICAL
 

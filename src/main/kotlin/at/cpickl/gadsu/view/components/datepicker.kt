@@ -9,9 +9,8 @@ import org.jdatepicker.impl.JDatePanelImpl
 import org.jdatepicker.impl.JDatePickerImpl
 import org.jdatepicker.impl.UtilDateModel
 import org.joda.time.DateTime
-import java.util.Calendar
-import java.util.Date
-import java.util.Properties
+import java.awt.Component
+import java.util.*
 import javax.swing.JButton
 import javax.swing.JFormattedTextField
 
@@ -25,7 +24,7 @@ fun main(args: Array<String>) {
         println("selectedDate: " + datePicker.selectedDate())
     }
 
-    Framed.show(datePicker, btn)
+    Framed.show(arrayOf(datePicker as Component, btn))
 }
 
 /**

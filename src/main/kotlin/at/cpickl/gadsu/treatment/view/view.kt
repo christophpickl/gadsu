@@ -7,16 +7,7 @@ import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.DateAndTimePicker
-import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.ModificationAware
-import at.cpickl.gadsu.view.components.ModificationChecker
-import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.newDateAndTimePicker
-import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.newPersistableEventButton
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.*
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
@@ -37,9 +28,9 @@ fun main(args: Array<String>) {
     val client = Client.INSERT_PROTOTYPE.copy(id = "myId")
     val treatment = Treatment.insertPrototype(client.id!!, 1, DateTime.now())
 
-    Framed.showWithContext { context ->
+    Framed.showWithContext({ context ->
         SwingTreatmentView(context.swing, client, treatment)
-    }
+    })
 }
 
 interface TreatmentView : ModificationAware {

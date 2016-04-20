@@ -15,6 +15,7 @@
 * mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
 * in UI auf max length (durch DB limits) setzen (eigene textfeld/textarea komponente mit konstruktor)
 * reset prefs feature
+* add DB constraint that firstName+lastName combination is unique!
 
 ## Low
 

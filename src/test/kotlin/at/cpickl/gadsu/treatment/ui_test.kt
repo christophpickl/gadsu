@@ -29,7 +29,7 @@ class TreatmentUiTest : UiTest() {
         assertThat("Expected new treatment button to be disabled at startup!",
                 not(treatmentDriver().openNewButton.isEnabled))
 
-        clientDriver().saveClient(client)
+        clientDriver().saveNewClient(client)
 
         assertThat("Expected new treatment button to be enabled after creating a new client!",
                 treatmentDriver().openNewButton.isEnabled)
@@ -43,7 +43,7 @@ class TreatmentUiTest : UiTest() {
     // --------------------------------------------------------------------------- open new
 
     fun `Given user is selected, when hit new treatment button, then panel should be displayed`() {
-        clientDriver().saveClient(client)
+        clientDriver().saveNewClient(client)
 
         treatmentDriver().openNewButton.click()
         treatmentDriver().assertPanelVisible()
@@ -52,7 +52,7 @@ class TreatmentUiTest : UiTest() {
     // --------------------------------------------------------------------------- back button
 
     fun `Given creating new treatment, hitting back button leads to client view again`() {
-        clientDriver().saveClient(client)
+        clientDriver().saveNewClient(client)
 
         treatmentDriver().openNewButton.click()
         treatmentDriver().backButton.click()
@@ -74,7 +74,7 @@ class TreatmentUiTest : UiTest() {
     fun `When creating a new treatment, then the button labels change`() {
         val driver = treatmentDriver()
 
-        clientDriver().saveClient(client)
+        clientDriver().saveNewClient(client)
         driver.openNewButton.click()
         driver.assertSaveButtonLabel("Neu anlegen")
 
@@ -133,7 +133,7 @@ class TreatmentUiTest : UiTest() {
 
     fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
         val driver = treatmentDriver()
-        clientDriver().saveClient(client)
+        clientDriver().saveNewClient(client)
         driver.openNewButton.click()
         assertThat(driver.saveButton.isEnabled)
     }

@@ -11,12 +11,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
 import org.testng.Assert
-import org.uispec4j.Button
-import org.uispec4j.MenuItem
-import org.uispec4j.TextBox
-import org.uispec4j.Trigger
-import org.uispec4j.UIComponent
-import org.uispec4j.Window
+import org.uispec4j.*
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 
@@ -32,7 +27,7 @@ class MainDriver(
     val log = LoggerFactory.getLogger(javaClass)
 
     fun createClientAndTreatment(client: Client, treatment: TreatmentMini) {
-        clientDriver.saveClient(client)
+        clientDriver.saveNewClient(client)
 
         treatmentDriver.openNewButton.click()
         treatmentDriver.save(treatment)
@@ -42,6 +37,17 @@ class MainDriver(
 }
 
 abstract class BaseDriver(val test: UiTest, val window: Window) {
+
+    fun triggerDialogAndClick(functionToOpenDialog: () -> Unit, buttonLabelToClick: String) {
+        WindowInterceptor
+                .init({ functionToOpenDialog() })
+                .process(object : WindowHandler() {
+                    override fun process(dialog: Window): Trigger {
+                        return dialog.getButton(buttonLabelToClick).triggerClick();
+                    }
+                })
+                .run()
+    }
 
     fun assertHasFocus(component: UIComponent, hasFocus: Boolean = true) {
         Thread.sleep(500)

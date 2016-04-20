@@ -6,10 +6,6 @@ import at.cpickl.gadsu.testinfra.skip
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import org.uispec4j.Trigger
-import org.uispec4j.Window
-import org.uispec4j.interception.WindowHandler
-import org.uispec4j.interception.WindowInterceptor
 import java.lang.reflect.Method
 import java.util.*
 
@@ -51,21 +47,25 @@ class ClientUiTest : UiTest() {
         driver.saveButton.click()
         assertThat(driver.saveButton.textEquals("Speichern"))
 
-        assertThat(driver.list.selectionEquals("${client.firstName} ${client.lastName}"))
         driver.assertListContains(client)
+        driver.assertListSelected(client)
     }
 
     fun updateClient_shouldUpdateInListAsWell() {
         val driver = clientDriver()
 
-        driver.inputLastName.text = "initial last name will be updated"
+        driver.fillForm(client)
         driver.saveButton.click()
 
-        driver.inputLastName.text = client.lastName
+        driver.assertListContains(client)
+        driver.assertListSelected(client)
+
+        val updatedClient = client.copy(firstName = "initial first name will be updated")
+        driver.fillForm(updatedClient)
         driver.saveButton.click()
 
-        assertThat(driver.list.selectionEquals(client.lastName))
-        assertThat(driver.list.contains(client.lastName))
+        driver.assertListContains(updatedClient)
+        driver.assertListSelected(updatedClient)
     }
 
     fun `Save without any name entered fails`() {
@@ -104,14 +104,14 @@ class ClientUiTest : UiTest() {
 
     //<editor-fold desc="delete">
 
-    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
+//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
         val driver = clientDriver()
 
-        driver.saveClient(client)
+        driver.saveNewClient(client)
         driver.deleteClient(client)
 
-        assertThat(not(driver.list.contains(client.fullName)))
+        driver.assertListNotContains(client)
     }
 
     //</editor-fold>
@@ -124,11 +124,11 @@ class ClientUiTest : UiTest() {
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
         val driver = clientDriver()
 
-        driver.saveClient(client)
-        assertThat(driver.list.selectionEquals(client.fullName))
+        driver.saveNewClient(client)
+        driver.assertListSelected(client)
 
         driver.createButton.click()
-        assertThat(driver.list.selectionIsEmpty())
+        driver.assertListSelectionEmpty()
     }
 
     fun `When hit create button, then the first name textfield should have focus`() {
@@ -184,7 +184,7 @@ class ClientUiTest : UiTest() {
     fun checkUnsavedChanges_createButton_existingClient() {
         val driver = clientDriver()
 
-        driver.saveClient(client)
+        driver.saveNewClient(client)
         driver.inputFirstName.text = "something else"
 
         driver.createButton.clickAndDisposeDialog("Abbrechen")
@@ -193,19 +193,12 @@ class ClientUiTest : UiTest() {
     fun checkUnsavedChanges_selectDifferentInList_forNewClient() {
         val driver = clientDriver()
 
-        driver.saveClient(client)
+        driver.saveNewClient(client)
 
         driver.createButton.click()
         driver.inputFirstName.text = "foo"
 
-        WindowInterceptor
-                .init({ driver.list.select(client.fullName) })
-                .process(object : WindowHandler() {
-                    override fun process(dialog: Window): Trigger {
-                        return dialog.getButton("Abbrechen").triggerClick();
-                    }
-                })
-                .run()
+        driver.triggerDialogAndClick({ driver.selectList(client) }, "Abbrechen")
     }
 
     fun checkUnsavedChanges_selectDifferentInList_existingClient() {

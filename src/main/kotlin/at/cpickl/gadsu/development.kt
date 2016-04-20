@@ -1,10 +1,6 @@
 package at.cpickl.gadsu
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCreatedEvent
-import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.client.ClientService
-import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.treatment.Treatment
@@ -26,7 +22,7 @@ class Development {
     companion object {
         private val SYSPROPERTY_KEY = "gadsu.development"
 
-        val ENABLED: Boolean = System.getProperty(SYSPROPERTY_KEY, "").equals("true")
+        val ENABLED: Boolean = System.getProperty(SYSPROPERTY_KEY, "").toLowerCase().equals("true") || System.getProperty(SYSPROPERTY_KEY, "").equals("1")
         val COLOR_ENABLED = ENABLED && false
 
         init {

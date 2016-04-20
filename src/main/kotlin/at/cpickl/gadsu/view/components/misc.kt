@@ -4,7 +4,9 @@ import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
+import java.awt.Font
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
@@ -29,3 +31,9 @@ class SwingFactory @Inject constructor(
 }
 
 fun JComponent.scrolled(): JComponent = JScrollPane(this)
+
+
+fun JLabel.bold(): JLabel {
+    font = font.deriveFont(Font.BOLD)
+    return this
+}
