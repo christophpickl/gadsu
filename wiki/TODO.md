@@ -40,6 +40,7 @@
 * haha, one can see the prefs window float down to that position ;)
 * investigate: http://jetbrains.github.io/spek/
 * good UI test code sample: https://github.com/UISpec4J/UISpec4J/blob/master/uispec4j/src/test/java/org/uispec4j/PanelTest.java
+* instead of polluting the code with thousands of log statements for EventBus on-listener-methods, use a more centralized (AOP-like) approach
 
 
 ## Luxury

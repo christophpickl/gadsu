@@ -42,15 +42,23 @@ class Development {
             val menuDevelopment = JMenu("Development")
             menu.add(menuDevelopment)
 
-            val item = JMenuItem("Reset Data")
-            item.addActionListener { e -> bus.post(DevelopmentResetDataClientEvent()) }
-            menuDevelopment.add(item)
+
+            addItemTo(menuDevelopment, "Reset Data", DevelopmentResetDataEvent(), bus)
+            addItemTo(menuDevelopment, "Clear Data", DevelopmentClearDataEvent(), bus)
         }
+
+        private fun addItemTo(menu: JMenu, label: String, event: UserEvent, bus: EventBus) {
+            val item = JMenuItem(label)
+            item.addActionListener { bus.post(event) }
+            menu.add(item)
+        }
+
     }
 }
 
 
-class DevelopmentResetDataClientEvent : UserEvent()
+class DevelopmentResetDataEvent : UserEvent()
+class DevelopmentClearDataEvent : UserEvent()
 
 @Suppress("UNUSED_PARAMETER")
 class DevelopmentController @Inject constructor(
@@ -62,12 +70,10 @@ class DevelopmentController @Inject constructor(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onDevelopmentResetDataClientEvent(event: DevelopmentResetDataClientEvent) {
-        log.debug("onDevelopmentResetDataClientEvent(event)")
+    @Subscribe fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {
+        log.debug("DevelopmentResetDataEvent(event)")
 
-        clientRepo.findAll().forEach {
-            clientService.delete(it)
-        }
+        deleteAll()
 
         arrayOf(
                 Client.INSERT_PROTOTYPE.copy(
@@ -102,9 +108,17 @@ class DevelopmentController @Inject constructor(
         }
     }
 
-    private fun newTreatment(number: Int, client: Client) =
-            Treatment(null, client.id!!, clock.now(), number, clock.nowWithoutSeconds(),
-            "note for treatment number $number")
+    @Subscribe fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {
+        log.debug("onDevelopmentClearDataEvent(event={})", event)
+
+        deleteAll()
+    }
+
+    private fun deleteAll() {
+        clientService.findAll().forEach {
+            clientService.delete(it)
+        }
+    }
 
 }
 

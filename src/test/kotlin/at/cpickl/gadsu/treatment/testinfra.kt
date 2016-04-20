@@ -10,12 +10,19 @@ import at.cpickl.gadsu.testinfra.TEST_UUID1
 
 
 @Suppress("UNUSED")
-fun Treatment.Companion.unsavedValidInstance(clientId: String) = Treatment(null, clientId, TEST_DATE, 1, TEST_DATE_WITHOUT_SECONDS, "note")
-@Suppress("UNUSED")
-fun Treatment.Companion.unsavedValidInstance(client: Client) = Treatment(null, client.id!!, TEST_DATE, 1, TEST_DATE_WITHOUT_SECONDS, "note")
+fun Treatment.Companion.unsavedValidInstance(clientId: String) =
+        Treatment(null, clientId, TEST_DATE, 1, TEST_DATE_WITHOUT_SECONDS, "note")
+
+
+fun Treatment.Companion.unsavedValidInstance(client: Client) =
+        unsavedValidInstance(client.id!!)
+
+fun Treatment.Companion.savedValidInstance(clientId: String, treatmentId: String = TEST_UUID1) =
+        unsavedValidInstance(clientId).copy(id = treatmentId)
 
 @Suppress("UNUSED")
-fun Treatment.Companion.savedValidInstance(clientId: String) = unsavedValidInstance(clientId).copy(id = TEST_UUID1)
+// add fields: date, ...
+fun Treatment.Companion.uiInstance(note: String) = unsavedValidInstance("id_not_used").copy(note = note)
 
 
 fun Expects.expectPersistenceException(errorCode: PersistenceErrorCode, executeAction: () -> Unit) {

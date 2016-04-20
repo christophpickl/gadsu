@@ -25,7 +25,7 @@ class TreatmentUiTest : UiTest() {
     }
 
 
-    // --------------------------------------------------------------------------- create button state
+    // --------------------------------------------------------------------------- create button
 
     fun `New treatment button only enabled when client is selected`() {
         assertThat("Expected new treatment button to be disabled at startup!",
@@ -40,6 +40,16 @@ class TreatmentUiTest : UiTest() {
 
         assertThat("Expected new treatment button to be disabled when creating new client!",
                 not(treatmentDriver().openNewButton.isEnabled))
+    }
+
+    fun `Given client with a treatment, when hit create button, then the treatment list should be empty`() {
+        val driver = clientDriver()
+        saveClient(client)
+        treatmentDriver().save(treatment = Treatment.uiInstance(note = "should not be here note 1"), returnToClientView = true)
+
+        driver.createButton.click()
+
+        treatmentDriver().assertTreatmentsListEmpty()
     }
 
     // --------------------------------------------------------------------------- open new
@@ -159,4 +169,5 @@ class TreatmentUiTest : UiTest() {
     // MINOR test create new treatment and insert, update it, then check if updates propagated to treatment table in client view
 
 }
+
 

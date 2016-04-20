@@ -8,7 +8,11 @@ import javax.inject.Inject
 
 
 interface ClientService {
+
+    fun findAll(): List<Client>
+
     fun delete(client: Client)
+
 }
 
 class ClientServiceImpl @Inject constructor(
@@ -18,11 +22,13 @@ class ClientServiceImpl @Inject constructor(
         private val bus: EventBus
 
 ) : ClientService {
-
     private val log = LoggerFactory.getLogger(javaClass)
+
+    override fun findAll() = clientRepo.findAll()
 
     override fun delete(client: Client) {
         log.debug("delete(client={})", client)
+
         jdbcx.transactionSafe {
             treatmentService.deleteAllFor(client)
 

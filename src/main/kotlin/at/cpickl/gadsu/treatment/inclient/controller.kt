@@ -23,15 +23,15 @@ class TreatmentsInClientController @Inject constructor(
     private var recentClient: Client? = null // MINOR change to Current infra
 
     @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
+        log.debug("onClientSelectedEvent(event={})", event)
         recentClient = event.client
 
-        view.initData(service.findAllFor(event.client))
-        view.enableNewButton(true)
+        view.enableData(service.findAllFor(event.client))
     }
 
     @Subscribe fun onClientUnselectedEvent(event: ClientUnselectedEvent) {
         log.debug("onClientUnselectedEvent(event={})", event)
-        view.enableNewButton(false)
+        view.disableData()
     }
 
     @Subscribe fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {

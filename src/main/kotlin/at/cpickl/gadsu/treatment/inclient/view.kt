@@ -28,7 +28,7 @@ import javax.swing.JPanel
 fun main(args: Array<String>) {
     Framed.showWithContext({
         val view = TreatmentsInClientView(it.swing, it.bus)
-        view.initData(listOf(
+        view.enableData(listOf(
                 Treatment.insertPrototype("1", 1, DateTime.now()),
                 Treatment.insertPrototype("2", 2, DateTime.now().plusDays(1)),
                 Treatment.insertPrototype("3", 3, DateTime.now().plusDays(2))
@@ -53,7 +53,7 @@ class TreatmentsInClientView @Inject constructor(
     init {
         debugColor = Color.RED
         layout = BorderLayout()
-        newTreatmentButton.isEnabled = false
+        newTreatmentButton.isEnabled = false // disabled by default at startup
 
         treatmentsView.name = ViewNames.Treatment.ListInClientView
         treatmentsView.enablePopup(bus, "L\u00f6schen", { DeleteTreatmentEvent(it) })
@@ -65,18 +65,6 @@ class TreatmentsInClientView @Inject constructor(
         btnPanel.debugColor = Color.ORANGE
         btnPanel.add(newTreatmentButton)
         add(btnPanel, BorderLayout.SOUTH)
-    }
-
-    /**
-     * By default at startup disabled.
-     */
-    fun enableNewButton(value: Boolean) {
-        newTreatmentButton.isEnabled = value
-    }
-
-    fun initData(treatments: List<Treatment>) {
-        log.trace("initData(treatments={})", treatments)
-        treatmentsModel.resetData(treatments)
     }
 
     fun insert(treatment: Treatment) {
@@ -93,6 +81,20 @@ class TreatmentsInClientView @Inject constructor(
     fun change(treatment: Treatment) {
         log.trace("change(treatment={})", treatment)
         treatmentsModel.setElementByComparator(treatment, treatment.idComparator)
+    }
+
+    fun enableData(treatments: List<Treatment>) {
+        log.trace("initData(treatments={})", treatments)
+
+        treatmentsModel.resetData(treatments)
+        newTreatmentButton.isEnabled = true
+    }
+
+    fun disableData() {
+        log.debug("disableData()")
+
+        treatmentsModel.clear()
+        newTreatmentButton.isEnabled = false
     }
 
 }

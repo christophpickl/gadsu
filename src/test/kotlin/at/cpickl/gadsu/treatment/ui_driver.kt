@@ -101,4 +101,8 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         MatcherAssert.assertThat(listCellAt(index).treatment.note, equalTo(expectedNote))
     }
 
+    fun assertTreatmentsListEmpty() {
+        test.assertThat(treatmentsList.isEmpty)
+    }
+
 }
