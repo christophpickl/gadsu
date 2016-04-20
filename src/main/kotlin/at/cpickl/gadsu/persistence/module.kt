@@ -27,7 +27,7 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
         dataSource.user = "SA"
 
         bind(DataSource::class.java).toInstance(dataSource)
-        bind(JdbcX::class.java).toInstance(SpringJdbcX(dataSource))
+        bind(Jdbcx::class.java).toInstance(SpringJdbcx(dataSource))
         bind(DatabaseManager::class.java).asEagerSingleton()
     }
 }

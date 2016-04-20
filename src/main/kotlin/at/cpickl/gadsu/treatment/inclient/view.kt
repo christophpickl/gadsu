@@ -21,7 +21,6 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.FlowLayout
 import javax.inject.Inject
-import javax.swing.JLabel
 import javax.swing.JList
 import javax.swing.JPanel
 
@@ -55,15 +54,15 @@ class TreatmentsInClientView @Inject constructor(
         debugColor = Color.RED
         layout = BorderLayout()
         newTreatmentButton.isEnabled = false
+
+        treatmentsView.name = ViewNames.Treatment.ListInClientView
         treatmentsView.enablePopup(bus, "L\u00f6schen", { DeleteTreatmentEvent(it) })
         treatmentsView.cellRenderer = TreatmentListCellRenderer()
         treatmentsView.registerDoubleClicked { row, treatment -> bus.post(OpenTreatmentEvent(treatment)) }
-
         add(treatmentsView.scrolled(), BorderLayout.CENTER)
 
         val btnPanel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
         btnPanel.debugColor = Color.ORANGE
-
         btnPanel.add(newTreatmentButton)
         add(btnPanel, BorderLayout.SOUTH)
     }

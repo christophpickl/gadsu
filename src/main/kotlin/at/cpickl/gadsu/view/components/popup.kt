@@ -29,8 +29,6 @@ fun <T> JList<T>.enablePopup(bus: EventBus, label: String, eventProvider: (eleme
                 createAndShowPopup(bus, list, e.point, label, { eventProvider(element) })
             }
         }
-
-
     })
 }
 

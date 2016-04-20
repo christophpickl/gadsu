@@ -4,7 +4,7 @@ import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toBufferedImage
@@ -36,7 +36,7 @@ interface ClientRepository {
 }
 
 class ClientSpringJdbcRepository @Inject constructor(
-        private val jdbcx: JdbcX,
+        private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
 

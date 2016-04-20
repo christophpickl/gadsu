@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Gadsu
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
@@ -70,10 +71,14 @@ abstract class UiTest : UISpecTestCase() {
     fun clientDriver() = clientDriver!!
     fun treatmentDriver() = treatmentDriver!!
 
-    @Test(enabled = false)
+    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
     fun assertPanelContainedInMainWindow(panelName: String) {
         assertThat("$panelName expected to be contained in main window.",
                 window!!.containsUIComponent(Panel::class.java, panelName))
+    }
+
+    protected fun saveClient(client: Client) {
+        clientDriver().saveNewClient(client)
     }
 
     private fun retrieveWindow():Window {

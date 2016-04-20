@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.testinfra.UiTest
+import at.cpickl.gadsu.testinfra.skip
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -13,7 +14,7 @@ class TreatmentUiTest : UiTest() {
 
     private var client = Client.savedValidInstance()
     private var treatment = Treatment.unsavedValidInstance(client.id!!)
-    private var treatmentMini = treatment.toMini()
+
 
     @BeforeMethod
     fun resetState() {
@@ -23,13 +24,14 @@ class TreatmentUiTest : UiTest() {
         clientDriver().createButton.click() // reset client form
     }
 
+
     // --------------------------------------------------------------------------- create button state
 
     fun `New treatment button only enabled when client is selected`() {
         assertThat("Expected new treatment button to be disabled at startup!",
                 not(treatmentDriver().openNewButton.isEnabled))
 
-        clientDriver().saveNewClient(client)
+        saveClient(client)
 
         assertThat("Expected new treatment button to be enabled after creating a new client!",
                 treatmentDriver().openNewButton.isEnabled)
@@ -43,7 +45,7 @@ class TreatmentUiTest : UiTest() {
     // --------------------------------------------------------------------------- open new
 
     fun `Given user is selected, when hit new treatment button, then panel should be displayed`() {
-        clientDriver().saveNewClient(client)
+        saveClient(client)
 
         treatmentDriver().openNewButton.click()
         treatmentDriver().assertPanelVisible()
@@ -52,7 +54,7 @@ class TreatmentUiTest : UiTest() {
     // --------------------------------------------------------------------------- back button
 
     fun `Given creating new treatment, hitting back button leads to client view again`() {
-        clientDriver().saveNewClient(client)
+        saveClient(client)
 
         treatmentDriver().openNewButton.click()
         treatmentDriver().backButton.click()
@@ -65,7 +67,7 @@ class TreatmentUiTest : UiTest() {
     //<editor-fold desc="save">
     fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
         val driver = treatmentDriver()
-        mainDriver().createClientAndTreatment(client, treatmentMini)
+        mainDriver().createClientAndTreatment(client, treatment)
         driver.backButton.click()
 
         driver.assertTreatmentsInClientViewContains(1) // MINOR improve assertion
@@ -74,7 +76,7 @@ class TreatmentUiTest : UiTest() {
     fun `When creating a new treatment, then the button labels change`() {
         val driver = treatmentDriver()
 
-        clientDriver().saveNewClient(client)
+        saveClient(client)
         driver.openNewButton.click()
         driver.assertSaveButtonLabel("Neu anlegen")
 
@@ -86,7 +88,7 @@ class TreatmentUiTest : UiTest() {
     fun `Given a saved treatment, when updating it,contents are stored and will show up again when doubleclicking on it in the client view`() {
         val driver = treatmentDriver()
 
-        mainDriver().createClientAndTreatment(client, treatmentMini)
+        mainDriver().createClientAndTreatment(client, treatment)
 
         val newNote = "some other note from test"
         driver.inputNote.text = newNote
@@ -95,7 +97,7 @@ class TreatmentUiTest : UiTest() {
         MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
         driver.backButton.click()
 
-        driver.openTreatment(treatmentMini)
+        driver.openTreatment(treatment.number)
         MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
         // MINOR add some more asserts, after TreatmentMini got some more values
     }
@@ -103,19 +105,33 @@ class TreatmentUiTest : UiTest() {
 
     // --------------------------------------------------------------------------- number
 
-    // TODO write test to check for correct number generation
-    // insert client and treatment
-    //   check number field in treatment view
-    //   check client-treatment table content
-    // create another treatment
-    //   check again with number 2
-    // delete number 1
-    //   check number 2 is now number 1
+    fun `reacalcNumber, full fledged test`() {
+        skip("again a uispec4j bug with Rectangle rect = jList.getCellBounds(row, row); (ListBox#rightClick)")
+        val driver = treatmentDriver()
+        saveClient(client)
+
+        val treatment1 = treatment.copy(note = "note1", number = 1) // TODO somehow get back the real treatment instance via driver (has ID and number properly set!)
+        val treatment2 = treatment.copy(note = "note2", number = 2)
+        val treatment3 = treatment.copy(note = "note3", number = 3)
+        driver.save(treatment = treatment1, returnToClientView = true)
+        driver.save(treatment = treatment2, returnToClientView = true)
+        driver.save(treatment = treatment3, returnToClientView = true)
+
+        driver.assertTreatmentsListContains(1, 2, 3) // FIXME reverse order!!!
+
+        driver.deleteTreatment(treatment2)
+
+        driver.assertTreatmentsListContains(1, 2)
+
+        driver.assertTreatmentListAt(index = 1, expectedNote = treatment1.note)
+        driver.assertTreatmentListAt(index = 2, expectedNote = treatment3.note)
+    }
+
 
     fun `Given a fresh inserted treatment, then the save button should be disabled, but be enabled when changing some property`() {
         val driver = treatmentDriver()
 
-        mainDriver().createClientAndTreatment(client, treatmentMini)
+        mainDriver().createClientAndTreatment(client, treatment)
         assertThat("Not any changes, therefor save button should be disabled!",
                 not(driver.saveButton.isEnabled))
 
@@ -133,8 +149,10 @@ class TreatmentUiTest : UiTest() {
 
     fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
         val driver = treatmentDriver()
-        clientDriver().saveNewClient(client)
+        saveClient(client)
+
         driver.openNewButton.click()
+
         assertThat(driver.saveButton.isEnabled)
     }
 
@@ -142,6 +160,3 @@ class TreatmentUiTest : UiTest() {
 
 }
 
-data class TreatmentMini(val number: Int, val note: String)
-
-fun Treatment.toMini() = TreatmentMini(number, note)

@@ -109,7 +109,6 @@ class SwingTreatmentView @Inject constructor(
     }
 
     override fun isModified(): Boolean {
-        println("t.date=${treatment.date}, inp.date=${inpDate.readDateTime()}")
         return ComparisonChain.start()
                 .compare(treatment.date, inpDate.readDateTime())
                 .compare(treatment.note, inpNote.text)

@@ -141,23 +141,17 @@ class ClientViewController @Inject constructor(
         view.detailView.writeClient(event.client)
     }
 
+
     @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
         log.trace("onDeleteClientEvent(event)")
-        val selected = dialogs.show(
-                title = "Klient l\u00f6schen",
-                message = "Willst du den Klienten '${event.client.fullName}' wirklich l\u00f6schen?",
-                type = DialogType.QUESTION,
-                buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
-        )
-        if (selected === null || selected.equals("Abbrechen")) {
-            return
-        }
 
-        clientService.delete(event.client)
+        dialogs.confirmedDelete("den Klienten '${event.client.fullName}'", {
+            clientService.delete(event.client)
 
-        if (event.client.id!!.equals(currentClient.data.id)) {
-            bus.post(ClientUnselectedEvent(event.client))
-        }
+            if (event.client.id!!.equals(currentClient.data.id)) {
+                bus.post(ClientUnselectedEvent(event.client))
+            }
+        })
     }
 
     @Subscribe fun onClientDeletedEvent(event: ClientDeletedEvent) {

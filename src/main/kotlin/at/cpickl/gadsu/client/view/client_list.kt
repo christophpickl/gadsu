@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
 }
 
 
-class ClientCell(private val client: Client) : DefaultCellView<Client>(client) {
+class ClientCell(val client: Client) : DefaultCellView<Client>(client) {
 
     private val name = JLabel(client.fullName).bold()
     private val mail = JLabel("Mail: ${client.contact.mail}")

@@ -3,7 +3,7 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ensurePersisted
-import at.cpickl.gadsu.persistence.JdbcX
+import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toSqlTimestamp
@@ -26,7 +26,7 @@ interface TreatmentRepository {
 }
 
 class TreatmentSpringJdbcRepository @Inject constructor(
-        private val jdbcx: JdbcX,
+        private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
         ) : TreatmentRepository {
     companion object {

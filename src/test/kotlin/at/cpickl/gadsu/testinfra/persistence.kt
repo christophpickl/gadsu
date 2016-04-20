@@ -4,8 +4,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSpringJdbcRepository
 import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.persistence.DatabaseManager
-import at.cpickl.gadsu.persistence.JdbcX
-import at.cpickl.gadsu.persistence.SpringJdbcX
+import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
@@ -32,7 +32,7 @@ abstract class HsqldbTest {
     private val allTables = arrayOf("treatment", "client")
 
     private var dataSource: EmbeddedDatabase? = null
-    private var jdbcx: SpringJdbcX? = null
+    private var jdbcx: SpringJdbcx? = null
 
     // MINOR delete mock, and use testable implementations instead
     protected var idGenerator: IdGenerator = mock(IdGenerator::class.java)
@@ -49,7 +49,7 @@ abstract class HsqldbTest {
 //            ScriptUtils.executeSqlScript(dataSource!!.connection, ClassPathResource("/gadsu/persistence/$it"))
 //        }
 
-        jdbcx = SpringJdbcX(dataSource)
+        jdbcx = SpringJdbcx(dataSource)
     }
 
     @BeforeMethod
@@ -62,14 +62,14 @@ abstract class HsqldbTest {
         dataSource?.shutdown()
     }
 
-    protected fun jdbcx(): SpringJdbcX = jdbcx!!
+    protected fun jdbcx(): SpringJdbcx = jdbcx!!
 
     protected fun whenGenerateIdReturnTestUuid(vararg ids: String = arrayOf(TEST_UUID1)) {
         var mockStub = `when`(idGenerator.generate())
         ids.forEach { mockStub = mockStub.thenReturn(it) }
     }
 
-    protected fun nullJdbcx() = mock(JdbcX::class.java)
+    protected fun nullJdbcx() = mock(Jdbcx::class.java)
 
     protected fun assertEmptyTable(tableName: String) {
         assertThat("Expected table '$tableName' to be empty.", jdbcx().countTableEntries(tableName), equalTo(0))
@@ -87,7 +87,7 @@ abstract class HsqldbTest {
 
 }
 
-fun SpringJdbcX.countTableEntries(tableName: String): Int {
+fun SpringJdbcx.countTableEntries(tableName: String): Int {
     var count: Int? = null
     jdbc.query("SELECT COUNT(*) AS cnt FROM $tableName") { rs -> count = rs.getInt("cnt") }
     return count!!

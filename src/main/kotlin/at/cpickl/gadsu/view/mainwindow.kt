@@ -66,7 +66,8 @@ class SwingMainWindow @Inject constructor(
             size = defaultSize
             setLocationRelativeTo(null)
         }
-        setVisible(true)
+        log.debug("Going to show window with size: {}", size)
+        isVisible = true
     }
 
     override fun close() {

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper
 import javax.sql.DataSource
 
 
-interface JdbcX {
+interface Jdbcx {
 
     val jdbc: JdbcTemplate
 
@@ -28,7 +28,7 @@ interface JdbcX {
 
 }
 
-class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
+class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
 
     private val log = LoggerFactory.getLogger(javaClass)
     override val jdbc = JdbcTemplate(dataSource)
@@ -56,7 +56,7 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
     }
 
     override fun deleteSingle(sql: String, vararg args: Any?) {
-        log.trace("deleteSingle(sql='{}', args)", sql, args)
+        log.trace("deleteSingle(sql='{}', args={})", sql, args)
         encapsulateException {
             val affectedRows = jdbc.update(sql, *args)
             if (affectedRows != 1) {
@@ -75,6 +75,7 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
 
     override fun transactionSafe(function: () -> Unit) {
         log.trace("transactionSafe(function)")
+
         val wasAutoCommit = dataSource.connection.autoCommit
         dataSource.connection.autoCommit = false
         try {
@@ -83,11 +84,11 @@ class SpringJdbcX(private val dataSource: DataSource) : JdbcX {
             try {
                 function()
                 dataSource.connection.commit()
-                log.trace("Transaction committed.")
+                log.trace("Transaction committed successfully.")
                 committed = true
             } finally {
                 if (committed === false) {
-                    log.trace("Rolling back transaction!")
+                    log.warn("Rolling back transaction!")
                     dataSource.connection.rollback()
                 }
             }

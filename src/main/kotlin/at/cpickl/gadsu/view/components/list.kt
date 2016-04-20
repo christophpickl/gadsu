@@ -53,6 +53,7 @@ fun <T> JList<T>.elementAtPoint(point: Point): Pair<Int, T>? {
     log.trace("elementAtIndex(point={})", point)
     val index = myLocationToIndex(point)
     if (index === -1) {
+        log.warn("Could not determine index for point: {}", point)
         return null
     }
     return Pair(index, model.getElementAt(index))

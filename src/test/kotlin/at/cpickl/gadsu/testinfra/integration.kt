@@ -3,7 +3,7 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.persistence.SpringJdbcX
+import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -66,14 +66,15 @@ abstract class GuiceIntegrationTest {
 
 object IntegrationServiceLookuper {
 
-    fun lookupTreatmentService(jdbcx: SpringJdbcX,
+    fun lookupTreatmentService(jdbcx: SpringJdbcx,
                                now: DateTime = TEST_DATE,
-                               clock: Clock =  SimpleTestableClock(now),
+                               clock: Clock = SimpleTestableClock(now),
+                               bus: EventBus = EventBus(),
                                defaultGeneratedId: String = TEST_UUID1,
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
                                treatmentRepository: TreatmentRepository = TreatmentSpringJdbcRepository(jdbcx, idGenerator)
     ): TreatmentService {
-        return TreatmentServiceImpl(treatmentRepository, clock)
+        return TreatmentServiceImpl(treatmentRepository, jdbcx, bus, clock)
     }
 
 }

@@ -3,15 +3,22 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentDriver
-import at.cpickl.gadsu.treatment.TreatmentMini
 import at.cpickl.gadsu.view.MenuBarDriver
 import at.cpickl.gadsu.view.SwingMainWindow
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
 import org.testng.Assert
-import org.uispec4j.*
+import org.uispec4j.Button
+import org.uispec4j.ListBox
+import org.uispec4j.MenuItem
+import org.uispec4j.TextBox
+import org.uispec4j.Trigger
+import org.uispec4j.UIComponent
+import org.uispec4j.Window
+import org.uispec4j.interception.PopupMenuInterceptor
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 
@@ -26,10 +33,9 @@ class MainDriver(
 
     val log = LoggerFactory.getLogger(javaClass)
 
-    fun createClientAndTreatment(client: Client, treatment: TreatmentMini) {
+    fun createClientAndTreatment(client: Client, treatment: Treatment) {
         clientDriver.saveNewClient(client)
 
-        treatmentDriver.openNewButton.click()
         treatmentDriver.save(treatment)
     }
 
@@ -62,6 +68,8 @@ abstract class BaseDriver(val test: UiTest, val window: Window) {
 
 }
 
+// --------------------------------------------------------------------------- extension methods
+
 var TextBox.text: String
     get() = getText()
     set(value) {
@@ -89,4 +97,11 @@ private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger,
                 }
             })
             .run()
+}
+
+
+fun ListBox.deleteAtRow(index: Int) {
+    val popup = PopupMenuInterceptor.run(this.triggerRightClick(index))
+    val popupMenuItemDelete = popup.getSubMenu("L\u00F6schen")
+    popupMenuItemDelete.clickAndDisposeDialog("L\u00F6schen")
 }

@@ -4,7 +4,7 @@ import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.testinfra.BaseDriver
 import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
+import at.cpickl.gadsu.testinfra.deleteAtRow
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyListModel
 import org.hamcrest.MatcherAssert
@@ -12,7 +12,6 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
-import org.uispec4j.interception.PopupMenuInterceptor
 import java.io.File
 import javax.swing.ImageIcon
 import javax.swing.JLabel
@@ -96,9 +95,8 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun deleteClient(client: Client) {
         log.debug("deleteClient(client={})", client)
-        val popup = PopupMenuInterceptor.run(list.triggerRightClick(listIndexOf(client)))
-        val popupMenuItemDelete = popup.getSubMenu("L\u00F6schen")
-        popupMenuItemDelete.clickAndDisposeDialog("L\u00F6schen")
+
+        list.deleteAtRow(listIndexOf(client))
     }
 
     fun assertPanelVisible() {
@@ -122,6 +120,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private fun listIndexOfBasedOnFullname(client: Client): Int {
         log.trace("listIndexOfBasedOnFullname(client.fullName='{}')", client.fullName)
+
         for (i in 0.rangeTo(listModel.size - 1)) {
             log.trace("Checking list model client at index {}: {}", i, listModel.get(i).fullName)
             if (listModel.get(i).fullName.equals(client.fullName)) {

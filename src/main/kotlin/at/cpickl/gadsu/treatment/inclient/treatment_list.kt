@@ -12,7 +12,7 @@ import java.awt.GridBagConstraints
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class TreatmentCell(private val treatment: Treatment): DefaultCellView<Treatment>(treatment), CellView {
+class TreatmentCell(val treatment: Treatment): DefaultCellView<Treatment>(treatment), CellView {
 
     private val lblNumber = JLabel("${treatment.number}. Behandlung")
     private val lblDate = JLabel("${treatment.date.formatDateTimeLong()}")
