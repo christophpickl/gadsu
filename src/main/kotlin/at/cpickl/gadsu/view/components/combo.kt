@@ -20,6 +20,7 @@ open class MyComboBox<T : Labeled>(array: Array<T>, initValue: T) : JComboBox<T>
         setRenderer(LabeledCellRenderer(getRenderer()))
     }
 
+    @Suppress("UNCHECKED_CAST")
     var selectedItemTyped: T
         get() = selectedItem as T
         set(value) { selectedItem = value }

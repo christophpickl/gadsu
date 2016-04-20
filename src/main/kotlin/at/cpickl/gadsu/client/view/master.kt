@@ -6,7 +6,12 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.debugColor
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.SwingFactory
+import at.cpickl.gadsu.view.components.enablePopup
+import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -89,7 +94,7 @@ class SwingClientMasterView @Inject constructor(
 
     override fun initClients(clients: List<Client>) {
         log.trace("initClients(clients={})", clients)
-        clients.forEach { model.addElement(it) }
+        model.resetData(clients)
     }
 
     override fun insertClient(index: Int, client: Client) {

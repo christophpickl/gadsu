@@ -46,7 +46,7 @@ interface ClientDetailView {
 
 class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
-        treatmentTable: TreatmentsInClientView,
+        treatmentSubview: TreatmentsInClientView,
         imagePickerFactory: ImagePickerFactory,
         prefs: Prefs
 ) : GridPanel(), ClientDetailView, ModificationAware {
@@ -109,7 +109,7 @@ class SwingClientDetailView @Inject constructor(
         c.gridy++
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
-        add(treatmentTable)
+        add(treatmentSubview)
 
 
         val buttonPanel = JPanel()

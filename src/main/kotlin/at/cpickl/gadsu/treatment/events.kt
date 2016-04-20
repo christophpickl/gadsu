@@ -12,6 +12,13 @@ class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
     }
 }
 
+class DeleteTreatmentEvent(val treatment: Treatment) : UserEvent() {
+    // FIXME not yet handled in controller
+    override fun toString(): String{
+        return "DeleteTreatmentEvent(treatment=$treatment)"
+    }
+}
+
 /**
  * Return back to the client view.
  */

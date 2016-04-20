@@ -2,9 +2,19 @@ package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.image.Images
-import at.cpickl.gadsu.view.components.*
-import java.awt.*
-import javax.swing.*
+import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.MyListCellRenderer
+import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.Pad
+import at.cpickl.gadsu.view.components.bold
+import at.cpickl.gadsu.view.components.scrolled
+import java.awt.Dimension
+import java.awt.GridBagConstraints
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
@@ -17,28 +27,30 @@ fun main(args: Array<String>) {
     Framed.show(list.scrolled(), Dimension(300, 500))
 }
 
-class ClientCell(val client: Client) : GridPanel() {
-    companion object {
-        private val INSET_0 = Insets(0, 0, 0, 0)
-        private val INSET_PIC = Insets(0, 0, 0, 4)
-    }
+
+class ClientCell(private val client: Client) : DefaultCellView<Client>(client) {
+
     private val name = JLabel(client.fullName).bold()
     private val mail = JLabel("Mail: ${client.contact.mail}")
+    override val applicableForegrounds: Array<JComponent>
+
     init {
+        applicableForegrounds = arrayOf(name, mail)
+
         val mailPresent = client.contact.mail.isNotEmpty()
         val calculatedRows =
                 1 + // name
                 (if (mailPresent) 1 else 0 ) +
                 1 // ui hack to fill vertical space
 
-        border = BorderFactory.createEmptyBorder(5, 5, 5, 5)
+
         c.anchor = GridBagConstraints.NORTHWEST
-        c.insets = INSET_PIC
+        c.insets = Pad.RIGHT
         c.gridheight = calculatedRows
         add(JLabel(client.picture.toViewLilRepresentation()))
 
         c.gridheight = 1
-        c.insets = INSET_0
+        c.insets = Pad.ZERO
         c.weightx = 1.0
         c.gridx++
         c.fill = GridBagConstraints.HORIZONTAL
@@ -58,24 +70,8 @@ class ClientCell(val client: Client) : GridPanel() {
         add(fillGap)
     }
 
-    fun changeForegrounds(foreground: Color) {
-        name.foreground = foreground
-        mail.foreground = foreground
-    }
 }
 
-class ClientListCellRender : ListCellRenderer<Client> {
-    override fun getListCellRendererComponent(list: JList<out Client>, client: Client, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-        val cell = ClientCell(client)
-
-        if (isSelected) {
-            cell.changeForegrounds(UIManager.getColor("List.selectionForeground"))
-            cell.background = UIManager.getColor("List.selectionBackground")
-        } else {
-            cell.isOpaque = false
-        }
-
-        return cell
-    }
-
+class ClientListCellRender : MyListCellRenderer<Client>() {
+    override fun newCell(value: Client) = ClientCell(value)
 }

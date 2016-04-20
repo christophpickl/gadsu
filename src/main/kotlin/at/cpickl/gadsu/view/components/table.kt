@@ -1,11 +1,19 @@
 package at.cpickl.gadsu.view.components
 
 import org.slf4j.LoggerFactory
+import java.awt.Point
 import java.util.ArrayList
+import javax.swing.JList
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.AbstractTableModel
 
+
+//    private val model = MyTableModel<Treatment>(listOf(
+//            TableColumn<Treatment>("Nr", 20, { it.number }),
+//            TableColumn<Treatment>("Datum", 100, { it.date.formatDateTime() })
+//    ))
+//    private val table = MyTable<Treatment>(model, ViewNames.Treatment.TableInClientView)
 
 class TableColumn<E>(val name: String, val width: Int, val transform: (value: E) -> Any)
 
@@ -31,7 +39,18 @@ class MyTable<E>(private val _model: MyTableModel<E>, viewName: String) : JTable
 
     fun getEntityAt(row: Int): E = _model.entityAt(row)
 
+    fun elementAtPoint(point: Point): Pair<Int, E>? {
+        log.trace("elementAtIndex(point={})", point)
+        val row = rowAtPoint(point)
+        if (row == -1) {
+            return null
+        }
+        val entity = getEntityAt(row)
+        return Pair(row, entity)
+    }
+
 }
+
 class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(), IndexableModel<E> {
 
     private val data: MutableList<E> = ArrayList()
@@ -54,7 +73,7 @@ class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(),
         fireTableDataChanged()
     }
 
-    fun addElementAt(index: Int, element: E) {
+    fun add(index: Int, element: E) {
         data.add(index, element)
     }
 

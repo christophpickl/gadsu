@@ -22,13 +22,10 @@ fun <T> JList<T>.enablePopup(bus: EventBus, label: String, eventProvider: (eleme
             maybeShowPopup(e)
         }
 
+        @Suppress("UNUSED_VARIABLE")
         private fun maybeShowPopup(e: MouseEvent) {
             if (e.isPopupTrigger) {
-                val index = myLocationToIndex(e.point)
-                if (index === -1) {
-                    return
-                }
-                val element = model.getElementAt(index)
+                val (index, element) = elementAtPoint(e.point) ?: return
                 createAndShowPopup(bus, list, e.point, label, { eventProvider(element) })
             }
         }
@@ -42,7 +39,7 @@ fun SwingFactory.createAndShowPopup(invoker: Component, point: Point, label: Str
 }
 
 fun createAndShowPopup(bus: EventBus, invoker: Component, point: Point, label: String, eventFunction: () -> UserEvent) {
-    SWING_log.trace("createAndShowPopup(..)")
+    SWING_log.trace("createAndShowPopup(bus, invoker, point={}, label='{}', eventFunction)", point, label)
     val popup = JPopupMenu()
     val item = JMenuItem(label)
     item.addActionListener { bus.post(eventFunction()) }
