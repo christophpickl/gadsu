@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
 
 object Expects {
 
+    @Suppress("UNCHECKED_CAST")
     fun <E : Exception> expect(type: KClass<E>,
                action: () -> Unit,
                messageContains: String? = null,

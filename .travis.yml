@@ -1,6 +1,6 @@
 
 language: kotlin
-sudo: false
+sudo: false # route the build to the container-based infrastructure for a faster build
 
 # we need to explicitly change to java 8
 jdk:

@@ -3,14 +3,19 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.persistence.SpringJdbcX
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.TreatmentServiceImpl
+import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind
 import com.google.inject.testing.fieldbinder.BoundFieldModule
 import com.google.inject.util.Modules
+import org.joda.time.DateTime
 import org.mockito.Mockito
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -55,6 +60,20 @@ abstract class GuiceIntegrationTest {
         ).injectMembers(this)
 
         bus.register(busListener)
+    }
+
+}
+
+object IntegrationServiceLookuper {
+
+    fun lookupTreatmentService(jdbcx: SpringJdbcX,
+                               now: DateTime = TEST_DATE,
+                               clock: Clock =  SimpleTestableClock(now),
+                               defaultGeneratedId: String = TEST_UUID1,
+                               idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
+                               treatmentRepository: TreatmentRepository = TreatmentSpringJdbcRepository(jdbcx, idGenerator)
+    ): TreatmentService {
+        return TreatmentServiceImpl(treatmentRepository, clock)
     }
 
 }

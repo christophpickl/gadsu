@@ -206,7 +206,7 @@ class ClientAndTreatmentSpringJdbcRepositoryTest : HsqldbTest() {
 
         val savedClient = clientRepo.insert(unsavedClient)
         val unsavedTreatment = Treatment.unsavedValidInstance(savedClient.id!!)
-        treatmentRepo.insert(unsavedTreatment, savedClient)
+        treatmentRepo.insert(unsavedTreatment)
 
         expect(type = PersistenceException::class, causedByType = DataIntegrityViolationException::class, action = {
             clientRepo.delete(savedClient)

@@ -1,9 +1,14 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientSpringJdbcRepository
+import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.JdbcX
 import at.cpickl.gadsu.persistence.SpringJdbcX
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hsqldb.jdbc.JDBCDataSource
@@ -29,6 +34,7 @@ abstract class HsqldbTest {
     private var dataSource: EmbeddedDatabase? = null
     private var jdbcx: SpringJdbcX? = null
 
+    // MINOR delete mock, and use testable implementations instead
     protected var idGenerator: IdGenerator = mock(IdGenerator::class.java)
 
     @BeforeClass
@@ -67,6 +73,16 @@ abstract class HsqldbTest {
 
     protected fun assertEmptyTable(tableName: String) {
         assertThat("Expected table '$tableName' to be empty.", jdbcx().countTableEntries(tableName), equalTo(0))
+    }
+
+
+
+    protected fun insertClient(prototype: Client = Client.unsavedValidInstance(), id: String = TEST_UUID1): Client {
+        return ClientSpringJdbcRepository(jdbcx(), SimpleTestableIdGenerator(id)).insert(prototype)
+    }
+
+    protected fun insertTreatment(prototype: Treatment, id: String = TEST_UUID1): Treatment {
+        return TreatmentSpringJdbcRepository(jdbcx(), SimpleTestableIdGenerator(id)).insert(prototype)
     }
 
 }

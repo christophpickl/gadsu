@@ -34,7 +34,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         `when`(idGenerator.generate()).thenReturn("1").thenReturn("2")
 
         val savedClient = clientRepo.insert(unsavedClient)
-        treatmentRepo.insert(Treatment.unsavedValidInstance(savedClient.id!!), savedClient)
+        treatmentRepo.insert(Treatment.unsavedValidInstance(savedClient.id!!))
 
         testee!!.delete(savedClient)
 

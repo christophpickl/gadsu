@@ -16,11 +16,12 @@ import javax.inject.Inject
 interface TreatmentRepository {
 
     fun findAllFor(client: Client): List<Treatment>
-    fun insert(treatment: Treatment, client: Client): Treatment
+    fun insert(treatment: Treatment): Treatment
     fun update(treatment: Treatment)
     fun delete(treatment: Treatment)
 
     fun countAllFor(client: Client): Int
+    fun recalculateNumbers(pivot: Treatment)
 
 }
 
@@ -28,11 +29,10 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         private val jdbcx: JdbcX,
         private val idGenerator: IdGenerator
         ) : TreatmentRepository {
-
     companion object {
+
         val TABLE = "treatment"
     }
-
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
@@ -43,10 +43,9 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         return treatments
     }
 
-    override fun insert(treatment: Treatment, client: Client): Treatment {
-        log.debug("insert(treatment={}, client={})", treatment, client)
+    override fun insert(treatment: Treatment): Treatment {
+        log.debug("insert(treatment={})", treatment)
 
-        client.ensurePersisted()
         treatment.ensureNotPersisted()
 
         val newId = idGenerator.generate()
@@ -56,7 +55,7 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         }
 
         jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, note) VALUES(?, ?, ?, ?, ?, ?)",
-                newId, client.id, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.note)
+                newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.note)
         return treatment.copy(id = newId)
     }
 
@@ -80,6 +79,14 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         client.ensurePersisted()
 
         return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
+    }
+
+    override fun recalculateNumbers(pivot: Treatment) {
+        log.debug("recalculateNumbers(pivot={})", pivot)
+
+        val updatedRows = jdbcx.update("UPDATE $TABLE SET number = number - 1 WHERE id_client = ? AND number > ?",
+                pivot.clientId, pivot.number)
+        log.trace("Updated rows for number recalculation: {}", updatedRows)
     }
 
 }

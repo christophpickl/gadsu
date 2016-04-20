@@ -2,7 +2,6 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.AppEvent
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.client.Client
 
 
 class CreateTreatmentEvent() : UserEvent()
@@ -18,9 +17,9 @@ class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
  */
 class TreatmentBackEvent() : UserEvent()
 
-class TreatmentSaveEvent(val treatment: Treatment, val client: Client) : UserEvent() {
+class TreatmentSaveEvent(val treatment: Treatment) : UserEvent() {
     override fun toString(): String{
-        return "TreatmentSaveEvent(treatment=$treatment, client=$client)"
+        return "TreatmentSaveEvent(treatment=$treatment)"
     }
 }
 

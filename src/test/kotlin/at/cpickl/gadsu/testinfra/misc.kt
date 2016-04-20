@@ -6,6 +6,8 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.clearSeconds
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.joda.time.DateTime
 import org.testng.SkipException
 
@@ -33,6 +35,27 @@ class SimpleTestableClock(_now: DateTime? = null): Clock {
 class SimpleTestableIdGenerator(_id: String? = null) : IdGenerator {
     var id = _id ?: TEST_UUID1
     override fun generate() = id
+}
+
+class ListTestableIdGenerator(private val ids: Array<String>, private val cycleThrough: Boolean = false) : IdGenerator {
+    private var currentIndex = 0
+
+    override fun generate(): String {
+        val nextId = ids[currentIndex++]
+        if (cycleThrough && currentIndex == ids.size) {
+            currentIndex = 0 // reset generated ID
+        }
+        return nextId
+    }
+
+    fun assertAllConsumed() {
+        assertThat(currentIndex, equalTo(ids.size))
+    }
+}
+
+class SequencedTestableIdGenerator() : IdGenerator {
+    private var sequence = 1
+    override fun generate() = sequence++.toString()
 }
 
 val PROFILE_PICTURE_CLASSPATH_1 = "/gadsu_test/profile_pic-valid_man1.jpg"

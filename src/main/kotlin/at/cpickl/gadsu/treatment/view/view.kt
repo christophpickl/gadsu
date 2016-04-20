@@ -7,7 +7,16 @@ import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.components.DateAndTimePicker
+import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.ModificationAware
+import at.cpickl.gadsu.view.components.ModificationChecker
+import at.cpickl.gadsu.view.components.SwingFactory
+import at.cpickl.gadsu.view.components.newDateAndTimePicker
+import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.newPersistableEventButton
+import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
@@ -53,7 +62,7 @@ class SwingTreatmentView @Inject constructor(
     // FIXME calculate number in DB
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, {
-        TreatmentSaveEvent(readTreatment(), client)
+        TreatmentSaveEvent(readTreatment())
     })
 
     private val modificationChecker = ModificationChecker(this, btnSave)

@@ -1,6 +1,10 @@
 package at.cpickl.gadsu
 
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.treatment.Treatment
@@ -91,7 +95,7 @@ class DevelopmentController @Inject constructor(
                                 note = "my note for treatment 1 for maxiiii"
                         )
                 ).forEach {
-                    treatmentRepo.insert(it, savedClient)
+                    treatmentRepo.insert(it)
                     bus.post(TreatmentCreatedEvent(it))
                 }
             }

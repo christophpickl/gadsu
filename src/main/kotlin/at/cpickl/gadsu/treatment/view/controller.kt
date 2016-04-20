@@ -58,7 +58,7 @@ class TreatmentController @Inject constructor(
         val treatmentAfterSave: Treatment
         val treatmentToSave = event.treatment
         if (!treatmentToSave.yetPersisted) {
-            val insertedTreatment = treatmentService.insert(treatmentToSave, event.client)
+            val insertedTreatment = treatmentService.insert(treatmentToSave)
             bus.post(TreatmentCreatedEvent(insertedTreatment))
             treatmentAfterSave = insertedTreatment
         } else {

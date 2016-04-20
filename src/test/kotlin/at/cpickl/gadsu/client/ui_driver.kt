@@ -17,12 +17,21 @@ import java.io.File
 import javax.swing.ImageIcon
 import javax.swing.JLabel
 
+
 class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     val list = window.getListBox(ViewNames.Client.List)
-    val listModel = list.awtComponent.model as MyListModel<Client>
+
+    @Suppress("UNCHECKED_CAST")
+    val listModel: MyListModel<Client> get() {
+        if (list.awtComponent.model !is MyListModel<*>) {
+            throw AssertionError("Expected the client list to be of type MyListModel but was: '${list.awtComponent.model.javaClass.name}'!")
+        }
+        return list.awtComponent.model as MyListModel<Client>
+    }
+
     val createButton = window.getButton(ViewNames.Client.CreateButton)
 
     val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)
@@ -31,6 +40,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     val cancelButton = window.getButton(ViewNames.Client.CancelButton)
 
     private val imageContainer = window.getTextBox(ViewNames.Client.ImageContainer)
+
 
 
     // --------------------------------------------------------------------------- list
