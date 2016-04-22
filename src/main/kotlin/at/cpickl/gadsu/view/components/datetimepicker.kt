@@ -8,16 +8,19 @@ import javax.swing.JTextField
 
 
 class DateAndTimePicker(
+        dateButtonViewName: String,
+        datePanelViewName: String,
         modificationChecker: ModificationChecker,
-        initialDate: DateTime,
+        initialDate: DateTime?,
         swing: SwingFactory
 ) : GridPanel() {
 
     private val inpTime = JTextField() // FIXME make own time component; must also react on changes
-    private val inpDate: MyDatePicker
+    val inpDate: MyDatePicker
     init {
-        inpDate = modificationChecker.enableChangeListener(swing.newDatePicker(initialDate))
-        inpTime.text = initialDate.formatTimeWithoutSeconds()
+        inpDate = modificationChecker.enableChangeListener(swing.newDatePicker(
+                dateButtonViewName, datePanelViewName, initialDate))
+        inpTime.text = initialDate?.formatTimeWithoutSeconds()
 
         add(inpDate)
 
@@ -33,8 +36,10 @@ class DateAndTimePicker(
                 .clearSeconds()
     }
 }
-fun SwingFactory.newDateAndTimePicker(modificationChecker: ModificationChecker,
-                                         initialDate: DateTime): DateAndTimePicker {
-    return DateAndTimePicker(modificationChecker, initialDate, this)
+fun SwingFactory.newDateAndTimePicker(dateButtonViewName: String,
+                                      datePanelViewName: String,
+                                      modificationChecker: ModificationChecker,
+                                      initialDate: DateTime?): DateAndTimePicker {
+    return DateAndTimePicker(dateButtonViewName, datePanelViewName, modificationChecker, initialDate, this)
 }
 

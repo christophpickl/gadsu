@@ -2,9 +2,13 @@ package at.cpickl.gadsu.service
 
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
+import org.slf4j.LoggerFactory
 
 class ServiceModule() : AbstractModule() {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun configure() {
+        log.trace("configure()")
 
         bind(Clock::class.java).to(RealClock::class.java).`in`(Scopes.SINGLETON)
 

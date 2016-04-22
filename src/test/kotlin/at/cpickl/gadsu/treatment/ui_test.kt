@@ -6,6 +6,7 @@ import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.skip
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
+import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -72,7 +73,22 @@ class TreatmentUiTest : UiTest() {
         clientDriver().assertPanelVisible()
     }
 
-    // --------------------------------------------------------------------------- save
+    fun `Given date picker is open, when hit back, then the date select panel should not be visible anymore`() {
+        val driver = treatmentDriver()
+        saveClient(client)
+
+        driver.openNewButton.click()
+        driver.inputData.openPopupByButton({ popup, jwindow, panel ->
+            assertThat(popup.isVisible)
+            Assert.assertTrue(jwindow.isVisible, "Expected the treatment date picker popup to be invisible!")
+
+            driver.backButton.click()
+
+            Assert.assertFalse(jwindow.isVisible, "Expected the treatment date picker popup to be invisible!")
+        })
+    }
+
+    // ---------------------------------------------------------------------------
 
     //<editor-fold desc="save">
     fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
@@ -113,7 +129,9 @@ class TreatmentUiTest : UiTest() {
     }
     //</editor-fold>
 
-    // --------------------------------------------------------------------------- number
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="number generation">
 
     fun `reacalcNumber, full fledged test`() {
         skip("again a uispec4j bug with Rectangle rect = jList.getCellBounds(row, row); (ListBox#rightClick)")
@@ -154,6 +172,7 @@ class TreatmentUiTest : UiTest() {
         assertThat("Changes have been saved, therefor save button should be disabled!",
                 not(driver.saveButton.isEnabled))
     }
+    //</editor-fold>
 
     // --------------------------------------------------------------------------- check changes
 

@@ -12,6 +12,7 @@ import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
+import com.google.inject.Module
 import com.google.inject.TypeLiteral
 import com.google.inject.matcher.Matchers.any
 import com.google.inject.spi.InjectionListener
@@ -57,6 +58,11 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(AopModule())
 
         install(DevelopmentModule())
+    }
+
+    override protected fun install(module: Module) {
+        log.trace("Installing guice module: {}", module.javaClass.simpleName)
+        super.install(module)
     }
 }
 

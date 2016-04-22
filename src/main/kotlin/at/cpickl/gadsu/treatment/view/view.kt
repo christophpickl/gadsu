@@ -44,6 +44,7 @@ fun main(args: Array<String>) {
 
 interface TreatmentView : ModificationAware {
     fun wasSaved(newTreatment: Treatment)
+    fun closePreparations()
     fun asComponent(): Component
 }
 
@@ -56,7 +57,6 @@ class SwingTreatmentView @Inject constructor(
         viewName = ViewNames.Treatment.MainPanel,
         _debugColor = Color.YELLOW
 ), TreatmentView {
-
     private val log = LoggerFactory.getLogger(javaClass)
 
     // FIXME calculate number in DB
@@ -67,7 +67,10 @@ class SwingTreatmentView @Inject constructor(
 
     private val modificationChecker = ModificationChecker(this, btnSave)
 
-    private val inpDate: DateAndTimePicker = swing.newDateAndTimePicker(modificationChecker, treatment.date)
+    private val inpDate: DateAndTimePicker = swing.newDateAndTimePicker(
+            ViewNames.Treatment.InputDateButton,
+            ViewNames.Treatment.InputDatePanel,
+            modificationChecker, treatment.date)
 
     private val inpNote: JTextArea = swing.newTextArea(
             viewName = ViewNames.Treatment.InputNote,
@@ -121,6 +124,10 @@ class SwingTreatmentView @Inject constructor(
 
         btnSave.changeLabel(treatment)
         modificationChecker.trigger()
+    }
+
+    override fun closePreparations() {
+        inpDate.inpDate.hidePopup()
     }
 
     override fun asComponent() = this

@@ -21,8 +21,10 @@ class GadsuStarter {
         log.info("start(args={})", args)
 
         GlobalExceptionHandler.register()
+        log.debug("====> GUICE START")
         val guice = Guice.createInjector(GadsuModule(args))
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
+        log.debug("====> GUICE END")
         app.start()
     }
 
@@ -38,7 +40,7 @@ class GadsuGuiceStarter @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start() {
-        log.debug("start()")
+        log.info("start()")
 
         database.migrateDatabase()
         registerMacHandler()

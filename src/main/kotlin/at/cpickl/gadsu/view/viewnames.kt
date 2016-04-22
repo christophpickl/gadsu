@@ -55,6 +55,8 @@ object TreatmentViewNames {
     val SaveButton = "Treatment.SaveButton"
     val ListInClientView = "Treatment.ListInClientView"
     val InputNote = "Treatment.InputNote"
+    val InputDateButton = "Treatment.InputDateButton"
+    val InputDatePanel = "Treatment.InputDatePanel"
 }
 
 object PreferencesViewNames {
