@@ -122,29 +122,25 @@ class DateTimePicker(private val test: UiTest,
                      private val panelViewName: String) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val openButton: Button
-
-    init {
-        openButton = window.getButton(buttonViewName)
-    }
+    private val openButton = window.getButton(buttonViewName)
 
     fun openPopupByButton(function: (Window, JWindow, JDatePanelImpl) -> Unit) {
         log.debug("openPopupByButton(function)")
         WindowInterceptor
-                .init(openButton.triggerClick())
-                .process(object : WindowHandler() {
-                    override fun process(dialog: Window): Trigger {
-                        log.trace("process() date picker popup")
-                        val popupContentRaw = (dialog.awtComponent as JWindow).rootPane.contentPane.getComponent(0)
-                        if (popupContentRaw !is JDatePanelImpl) {
-                            throw AssertionError("Expected popup's content to be a JDatePanelImpl, but was: ${popupContentRaw.javaClass.name} ($popupContentRaw)")
-                        }
-                        MatcherAssert.assertThat(popupContentRaw.name, equalTo(panelViewName))
-                        function(dialog, dialog.awtComponent as JWindow, popupContentRaw)
-                        return Trigger.DO_NOTHING
+            .init(openButton.triggerClick())
+            .process(object : WindowHandler() {
+                override fun process(dialog: Window): Trigger {
+                    log.trace("process(dialog) date picker popup")
+                    val popupContentRaw = (dialog.awtComponent as JWindow).rootPane.contentPane.getComponent(0)
+                    if (popupContentRaw !is JDatePanelImpl) {
+                        throw AssertionError("Expected popup's content to be a JDatePanelImpl, but was: ${popupContentRaw.javaClass.name} ($popupContentRaw)")
                     }
-                })
-                .run()
+                    MatcherAssert.assertThat(popupContentRaw.name, equalTo(panelViewName))
+                    function(dialog, dialog.awtComponent as JWindow, popupContentRaw)
+                    return Trigger.DO_NOTHING
+                }
+            })
+            .run()
 
     }
 

@@ -53,7 +53,7 @@ class ModificationChecker(
     }
 
     private fun Component.addModificationActionListener() = ActionListener { event ->
-        log.trace("UI Component fired change event. (Event: {}, Source: {})", event, this)
+        log.trace("UI Component fired change event.")// (Event: {}, Source: {})", event, this)
         checkModificationsAndUpdateIsEnabledField()
     }
 
