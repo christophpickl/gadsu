@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientRepository
@@ -16,10 +17,10 @@ import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
@@ -29,28 +30,25 @@ open class DevelopmentController @Inject constructor(
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val treatmentRepo: TreatmentRepository,
-        private val bus: EventBus
+        private val bus: EventBus,
+        private val mainFrame: MainFrame
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
-    private val devWindow = DevWindow()
+
+    private var devFrame: DevFrame? = null
 
     @Subscribe open fun onShowDevWindowEvent(event: ShowDevWindowEvent) {
-        devWindow.start()
+        devFrame = DevFrame(mainFrame.dockPositionRight)
+        devFrame!!.start()
     }
 
     @Subscribe open fun onCurrentEvent(event: CurrentEvent) {
-        event.forClient { devWindow.updateClient(it) }
+        event.forClient { devFrame?.updateClient(it) }
     }
 
     @Subscribe open fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {
         deleteAll()
 
         arrayOf(
-                //                Client.INSERT_PROTOTYPE.copy(
-                //                        firstName = "Max",
-                //                        lastName = "Mustermann",
-                //                        gender = Gender.MALE,
-                //                        picture = Images.DEFAULT_PROFILE_MAN
                 Client(null, DUMMY_CREATED, "Max", "Mustermann",
                         Contact(
                                 mail = "max@mustermann.at",
@@ -93,7 +91,9 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
     }
 
-
+    @Subscribe open fun onQuitUserEvent(event: QuitUserEvent) {
+        devFrame?.close()
+    }
 
     private fun deleteAll() {
         clientService.findAll().forEach { // not directly supported in service, as this is a DEV feature only!

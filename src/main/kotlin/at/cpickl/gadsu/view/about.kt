@@ -55,7 +55,7 @@ open class AboutController @Inject constructor(
 
 class AboutWindow @Inject constructor(
         metaInf: MetaInf,
-        mainWindow: MainWindow?,
+        mainFrame: MainFrame?,
         bus: EventBus
 ) : JFrame() {
     init {
@@ -103,6 +103,6 @@ class AboutWindow @Inject constructor(
         contentPane.add(panel, BorderLayout.CENTER)
         pack()
         isResizable = false
-        setLocationRelativeTo(mainWindow?.asJFrame())
+        setLocationRelativeTo(mainFrame?.asJFrame())
     }
 }

@@ -4,15 +4,18 @@ import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.GadsuMenuBar
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.MyFrame
 import com.google.common.eventbus.EventBus
 import java.awt.Color
+import java.awt.Dimension
+import java.awt.Point
 import java.util.Timer
 import java.util.TimerTask
 import javax.swing.JComponent
+import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JMenu
 import javax.swing.JMenuItem
-import javax.swing.JWindow
 
 
 class Development {
@@ -51,45 +54,3 @@ class Development {
 
     }
 }
-
-class DevWindow: JWindow() {
-
-    private val txtClient = JLabel()
-
-    init {
-        val panel = GridPanel()
-        panel.add(JLabel("Development... current client: "))
-        panel.c.gridy++
-        panel.add(txtClient)
-
-        add(panel)
-
-        pack()
-    }
-
-    fun updateClient(client: Client?) {
-        txtClient.text = if (client != null) """<html><b>Name</b>: ${client.fullName}<br/><b>Note</b>: ${client.note}</html>""" else "NULL"
-
-        txtClient.background = Color.RED
-        val timer = Timer("dev-blinking", true)
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                txtClient.background = null
-            }
-        }, 3000L)
-    }
-
-    fun start() {
-        isVisible = true
-    }
-
-}
-
-var JComponent.debugColor: Color?
-    get() = null
-    set(value) {
-        if (Development.COLOR_ENABLED) {
-            background = value
-        }
-    }
-

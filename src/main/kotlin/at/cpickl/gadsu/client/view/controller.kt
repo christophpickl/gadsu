@@ -21,7 +21,7 @@ import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.forClient
-import at.cpickl.gadsu.view.MainWindow
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.components.calculateInsertIndex
@@ -37,7 +37,7 @@ open class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
-        private val window: MainWindow,
+        private val frame: MainFrame,
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val currentClient: CurrentClient,
@@ -123,7 +123,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {
-        window.changeContent(view.asComponent())
+        frame.changeContent(view.asComponent())
     }
 
     @Subscribe open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {

@@ -1,10 +1,11 @@
 package at.cpickl.gadsu
 
-import at.cpickl.gadsu.client.view.ClientView
+import at.cpickl.gadsu.development.Development
+import at.cpickl.gadsu.development.ShowDevWindowEvent
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.view.MacHandler
-import at.cpickl.gadsu.view.MainWindow
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
@@ -28,10 +29,11 @@ class GadsuStarter {
 }
 
 class GadsuGuiceStarter @Inject constructor(
-        private val window: MainWindow,
+        private val frame: MainFrame,
         private val bus: EventBus,
         private val mac: MacHandler,
-        private val database: DatabaseManager
+        private val database: DatabaseManager,
+        private val mainFrame: MainFrame
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -43,7 +45,12 @@ class GadsuGuiceStarter @Inject constructor(
 
         SwingUtilities.invokeLater {
             bus.post(AppStartupEvent())
-            window.start()
+            frame.start()
+
+            if (Development.ENABLED) {
+                bus.post(ShowDevWindowEvent())
+                mainFrame.requestFocus()
+            }
         }
     }
 

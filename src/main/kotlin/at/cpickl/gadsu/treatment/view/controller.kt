@@ -13,7 +13,7 @@ import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentViewFactory
-import at.cpickl.gadsu.view.MainWindow
+import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @Logged
 open class TreatmentController @Inject constructor(
-        private val window: MainWindow,
+        private val frame: MainFrame,
         private val treatmentViewFactory: TreatmentViewFactory,
         private val treatmentService: TreatmentService,
         private val currentClient: CurrentClient,
@@ -73,6 +73,6 @@ open class TreatmentController @Inject constructor(
         val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
 
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
-        window.changeContent(treatmentView!!.asComponent())
+        frame.changeContent(treatmentView!!.asComponent())
     }
 }

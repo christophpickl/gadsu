@@ -98,7 +98,7 @@ class ClientTabMain(
 
         form1Panel.addFormInput("Kinder", inpChildren)
         form1Panel.addFormInput("Erstellt am", outCreated)
-        form1Panel.addLastRowFilling()
+        form1Panel.addLastColumnsFilled()
 
 
         val form2Panel = FormPanel()
@@ -108,7 +108,7 @@ class ClientTabMain(
         form2Panel.addFormInput("PLZ", inpZipCode)
         form2Panel.addFormInput("Stadt", inpCity)
         form2Panel.addFormInput("Notiz", inpNote)
-        form2Panel.addLastRowFilling()
+        form2Panel.addLastColumnsFilled()
 
         addColumned(
                 Pair<Double, JComponent>(0.5, form1Panel),

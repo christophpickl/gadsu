@@ -2,7 +2,6 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.view.components.SwingFactory
 import com.google.inject.AbstractModule
-import com.google.inject.Scopes
 import org.slf4j.LoggerFactory
 
 class ViewModule : AbstractModule() {
@@ -15,8 +14,8 @@ class ViewModule : AbstractModule() {
         bind(SwingFactory::class.java)
 
         // main window
-        bind(MainWindow::class.java).to(SwingMainFrame::class.java).`in`(Scopes.SINGLETON)
-        bind(MainWindowController::class.java).asEagerSingleton()
+        bind(MainFrame::class.java).to(SwingMainFrame::class.java).asEagerSingleton()
+        bind(MainFrameController::class.java).asEagerSingleton()
 
         // mac handling
         val isMacApp = System.getProperty("gadsu.isMacApp", "").equals("true")

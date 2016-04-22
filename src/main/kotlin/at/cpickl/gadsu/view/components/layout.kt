@@ -68,6 +68,13 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
         }
     }
 
+    fun addLastRowFilled() {
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(JLabel()) // some nice UI hack ;)
+    }
+
 }
 
 open class FormPanel : GridPanel() {
@@ -94,11 +101,8 @@ open class FormPanel : GridPanel() {
         c.gridx = 0
     }
 
-    fun addLastRowFilling() {
+    fun addLastColumnsFilled() {
         c.gridwidth = 2
-        c.fill = GridBagConstraints.BOTH
-        c.weightx = 1.0
-        c.weighty = 1.0
-        add(JLabel()) // some nice UI hack ;)
+        addLastRowFilled()
     }
 }

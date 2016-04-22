@@ -4,7 +4,7 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.view.MainWindow
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
@@ -18,7 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Logged
 open class ClientImageController @Inject constructor(
         private val bus: EventBus,
-        private val window: MainWindow,
+        private val frame: MainFrame,
         private val prefs: Prefs,
         private val currentClient: CurrentClient,
         private val clientService: ClientService,
@@ -37,7 +37,7 @@ open class ClientImageController @Inject constructor(
         chooser.dialogTitle = "Bild ausw\u00e4hlen ..."
         chooser.fileFilter = FileNameExtensionFilter("Bilddateien (*.jpg)", "jpg")
 
-        val result = chooser.showOpenDialog(window.asJFrame()) // MINOR instead routing window, do it internally with a managed bean
+        val result = chooser.showOpenDialog(frame.asJFrame()) // MINOR instead routing window, do it internally with a managed bean
         if (result == JFileChooser.APPROVE_OPTION) {
             val selectedFile = chooser.selectedFile
 

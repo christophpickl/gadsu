@@ -10,26 +10,28 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
+import java.awt.Point
 import javax.inject.Inject
-import javax.swing.BorderFactory
 import javax.swing.JFrame
 import javax.swing.JPanel
 
 
 
-interface MainWindow {
+interface MainFrame {
     var descriptor: WindowDescriptor
+    val dockPositionRight: Point
 
     fun start()
     fun close()
     fun changeContent(content: Component)
     fun asJFrame(): JFrame
+    fun requestFocus()
 }
 
 class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         private val gadsuMenuBar: GadsuMenuBar
-        ) : MainWindow, MyFrame("Gadsu") {
+        ) : MainFrame, MyFrame("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val defaultSize = Dimension(600, 400)
@@ -38,13 +40,12 @@ class SwingMainFrame @Inject constructor(
 
     init {
         container.name = ViewNames.Main.ContainerPanel
+        container.border = BORDER_GAP
         container.debugColor = Color.CYAN
+        container.layout = BorderLayout()
 
         jMenuBar = gadsuMenuBar
         addCloseListener { bus.post(QuitUserEvent()) }
-
-        container.layout = BorderLayout()
-        container.border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
 
         contentPane.name = ViewNames.Main.ContentPanel
         contentPane.layout = BorderLayout()

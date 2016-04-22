@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.view.MainWindow
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.MyFrame
@@ -21,7 +21,7 @@ interface PreferencesWindow {
 }
 
 class SwingPreferencesFrame @Inject constructor(
-        private val mainWindow: MainWindow,
+        private val mainFrame: MainFrame,
         private val bus: EventBus
 ) : MyFrame("Einstellungen"), PreferencesWindow {
 
@@ -57,7 +57,7 @@ class SwingPreferencesFrame @Inject constructor(
             yetCreated = true
             size = Dimension(500, 400)
             isResizable = false
-            setLocationRelativeTo(mainWindow.asJFrame())
+            setLocationRelativeTo(mainFrame.asJFrame())
             isVisible = true
         } else {
             isVisible = true

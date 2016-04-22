@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 
 @Logged
-open class MainWindowController @Inject constructor(
-        private val window: MainWindow,
+open class MainFrameController @Inject constructor(
+        private val frame: MainFrame,
         private val clientController: ClientViewController,
         private val prefs: Prefs
 ) {
@@ -21,7 +21,7 @@ open class MainWindowController @Inject constructor(
 
     @Subscribe open fun onAppStartupEvent(@Suppress("UNUSED_PARAMETER") event: AppStartupEvent) {
         if (prefs.windowDescriptor != null) {
-            window.descriptor = prefs.windowDescriptor!!
+            frame.descriptor = prefs.windowDescriptor!!
         }
     }
 
@@ -31,7 +31,7 @@ open class MainWindowController @Inject constructor(
             return
         }
 
-        prefs.windowDescriptor = window.descriptor
-        window.close()
+        prefs.windowDescriptor = frame.descriptor
+        frame.close()
     }
 }
