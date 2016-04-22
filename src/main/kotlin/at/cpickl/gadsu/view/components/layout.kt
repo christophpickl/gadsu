@@ -82,6 +82,7 @@ open class FormPanel : GridPanel() {
     private val insetsCol2 = Insets(0, 0, 0, 0)
 
     init {
+        isOpaque = false
         c.anchor = GridBagConstraints.NORTHWEST
     }
 

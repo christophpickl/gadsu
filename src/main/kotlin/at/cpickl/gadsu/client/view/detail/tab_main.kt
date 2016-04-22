@@ -2,43 +2,103 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Labels
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
+import at.cpickl.gadsu.view.components.Labeled
 import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.MyComboBox
 import com.google.common.collect.ComparisonChain
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.Component
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JTextArea
 import javax.swing.JTextField
 
 
-class ClientPropertyTextField(
+interface ElField {
+    val formLabel: String
+    fun asComponent(): Component
+
+}
+
+class ElTextField(
         private val viewName: String,
-        val formLabel: String
-        ) : JTextField() {
+        override val formLabel: String
+) : JTextField(), ElField {
 
     init {
         name = viewName
     }
+
+    override fun asComponent() = this
+}
+
+class ElTextArea(
+        private val viewName: String,
+        override val formLabel: String
+) : JTextArea(), ElField {
+
+    init {
+        name = viewName
+    }
+
+    override fun asComponent() = this
+}
+
+class ElComboBox<T : Labeled>(private val delegate: MyComboBox<T>, override val formLabel: String) : ElField {
+
+    override fun asComponent() = delegate
+    var selectedItemTyped: T
+        get() = delegate.selectedItemTyped
+        set(value) {
+            delegate.selectedItemTyped = value
+        }
 }
 
 class Fields(private val modifications: ModificationChecker) {
-    fun newTextField(viewName: String, label: String): ClientPropertyTextField {
-        val field = ClientPropertyTextField(viewName, label)
+    fun newTextField(viewName: String, label: String): ElTextField {
+        val field = ElTextField(viewName, label)
         modifications.enableChangeListener(field)
         return field
     }
+
+    fun newTextArea(viewName: String, label: String): ElTextArea {
+        val field = ElTextArea(viewName, label)
+        modifications.enableChangeListener(field)
+        return field
+    }
+
+    fun <T: Labeled> newComboBox(values: Array<T>, initValue: T, viewName: String, label: String): ElComboBox<T> {
+        val realField = MyComboBox<T>(values, initValue)
+        val field = ElComboBox<T>(realField, label)
+        realField.name = viewName
+        modifications.enableChangeListener(realField)
+        return field
+    }
+
+//    fun newDateField(initialDate: DateTime, viewName: String, label: String): ElDateField {
+//
+//    }
 }
 
-fun FormPanel.addFormInput(field: ClientPropertyTextField) {
-    addFormInput(field.formLabel, field)
+// FIXME implement me
+//class ElDateField(private val viewName: String, override val formLabel: String) : ElField {
+//    private val delegate = SwingFactory.
+//    override fun asComponent(): Component {
+//
+//    }
+//
+//}
+
+fun FormPanel.addFormInput(field: ElField) {
+    addFormInput(field.formLabel, field.asComponent())
 }
 
 class ClientTabMain(
@@ -49,65 +109,59 @@ class ClientTabMain(
 ) : DefaultClientTab(Labels.Tabs.ClientMain) {
 
     private val log = LoggerFactory.getLogger(javaClass)
+    private val fields = Fields(modificationChecker)
 
-    val inpFirstName = modificationChecker.enableChangeListener(JTextField())
 
-    val inpLastName = modificationChecker.enableChangeListener(JTextField())
 
-    val inpGender = modificationChecker.enableChangeListener(MyComboBox<Gender>(Gender.values(), initialClient.gender))
+    val inpFirstName = fields.newTextField(ViewNames.Client.InputFirstName, "Vorname")
+    val inpLastName = fields.newTextField(ViewNames.Client.InputLastName, "Nachname")
+    val inpGender = fields.newComboBox(Gender.values(), initialClient.gender, ViewNames.Client.InputGender, "Geschlecht")
 //    var originalImage = Images.DEFAULT_PROFILE_MAN
 //    val imageContainer = JLabel(originalImage.toViewBigRepresentation())
     //        imageContainer.name = ViewNames.Client.ImageContainer
-
-    val inpBirthday = JTextField()
-    val inpCountryOfOrigin = JTextField()
-    val inpRelationship = JTextField()
-    // FIXME use this component!
-    val inpJob: ClientPropertyTextField
-    val inpChildren = JTextField()
-    val inpMail = JTextField()
-    val inpPhone = JTextField()
-    val inpStreet = JTextField()
-    val inpZipCode = JTextField()
-    val inpCity = JTextField()
-    val inpNote = JTextArea()
+    val inpBirthday = JTextField() // FIXME birthday responsible
+    val inpCountryOfOrigin = fields.newTextField(ViewNames.Client.InputCountryOfOrigin, "Herkunftsland")
+    val inpRelationship = fields.newComboBox(Relationship.values(), initialClient.relationship, ViewNames.Client.InputRelationship, "Beziehungsstatus")
+    val inpJob = fields.newTextField(ViewNames.Client.InputJob, "Beruf")
+    val inpChildren = fields.newTextField(ViewNames.Client.InputChildren, "Kinder")
+    val inpMail = fields.newTextField(ViewNames.Client.InputMail, "Mail")
+    val inpPhone = fields.newTextField(ViewNames.Client.InputPhone, "Telefon")
+    val inpStreet = fields.newTextField(ViewNames.Client.InputStreet, "Strasse")
+    val inpZipCode = fields.newTextField(ViewNames.Client.InputZipCode, "PLZ")
+    val inpCity = fields.newTextField(ViewNames.Client.InputCity, "Stadt")
+    val inpNote = fields.newTextArea(ViewNames.Client.InputNote, "Notiz")
     val outCreated = JLabel("")
 
-    private val fields = Fields(modificationChecker)
 
 //    var imageChanged = false
 
     init {
-        inpJob = fields.newTextField(ViewNames.Client.InputJob, "Beruf")
-
         debugColor = Color.ORANGE
-        inpFirstName.name = ViewNames.Client.InputFirstName
-        inpLastName.name = ViewNames.Client.InputLastName
-
 
         val form1Panel = FormPanel()
         form1Panel.debugColor = Color.CYAN
 //        form1Panel.addFormInput("", createImagePanel())
-        form1Panel.addFormInput("Vorname", inpFirstName)
-        form1Panel.addFormInput("Nachname", inpLastName)
-        form1Panel.addFormInput("Geschlecht", inpGender)
-        form1Panel.addFormInput("Geburtstag", inpBirthday)
-        form1Panel.addFormInput("Herkunftsland", inpCountryOfOrigin)
-        form1Panel.addFormInput("Beziehungsstatus", inpRelationship)
-        form1Panel.addFormInput(inpJob)
+        form1Panel.addFormInput(inpFirstName)
+        form1Panel.addFormInput(inpLastName)
 
-        form1Panel.addFormInput("Kinder", inpChildren)
+        form1Panel.addFormInput(inpGender)
+        form1Panel.addFormInput("Geburtstag", inpBirthday)
+        form1Panel.addFormInput(inpCountryOfOrigin)
+        form1Panel.addFormInput(inpRelationship)
+        form1Panel.addFormInput(inpJob)
+        form1Panel.addFormInput(inpChildren)
         form1Panel.addFormInput("Erstellt am", outCreated)
         form1Panel.addLastColumnsFilled()
 
 
         val form2Panel = FormPanel()
-        form2Panel.addFormInput("Mail", inpMail)
-        form2Panel.addFormInput("Telefon", inpPhone)
-        form2Panel.addFormInput("Strasse", inpStreet)
-        form2Panel.addFormInput("PLZ", inpZipCode)
-        form2Panel.addFormInput("Stadt", inpCity)
-        form2Panel.addFormInput("Notiz", inpNote)
+        form2Panel.addFormInput(inpMail)
+        form2Panel.addFormInput(inpPhone)
+        form2Panel.addFormInput(inpStreet)
+        form2Panel.addFormInput(inpZipCode)
+        form2Panel.addFormInput(inpCity)
+
+        form2Panel.addFormInput("Notiz", inpNote) // FIXME bigger note
         form2Panel.addLastColumnsFilled()
 
         addColumned(
@@ -130,9 +184,9 @@ class ClientTabMain(
         return ComparisonChain.start()
                 .compare(client.firstName, inpFirstName.text)
                 .compare(client.lastName, inpLastName.text)
-                //                .compare(client.birthday, inp) FIXME two fields
+                //                .compare(client.birthday, inp) FIXME two fields compare
                 .compare(client.countryOfOrigin, inpCountryOfOrigin.text)
-                //                .compare(client.relationship, inp)
+                .compare(client.relationship, inpRelationship.selectedItemTyped)
                 .compare(client.job, inpJob.text)
                 .compare(client.children, inpChildren.text)
                 .compare(client.contact.mail, inpMail.text)
@@ -149,9 +203,9 @@ class ClientTabMain(
         log.trace("updateFields(client={})", client)
         inpFirstName.text = client.firstName
         inpLastName.text = client.lastName
-        //        inpBirthday FIXME
+        //        inpBirthday FIXME set value
         inpCountryOfOrigin.text = client.countryOfOrigin
-        //        inpRelationship.selected= client.relationship
+        inpRelationship.selectedItemTyped = client.relationship
         inpJob.text = client.job
         inpChildren.text = client.children
         inpMail.text = client.contact.mail

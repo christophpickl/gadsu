@@ -36,6 +36,16 @@ object ClientViewNames {
     val OpenImageButton = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
     val ImagePickerPanel = "${ImagePrefix}.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"
     val TabbedPane = "Client.TabbedPane"
+    val InputChildren = "Client.InputChildren"
+    val InputCountryOfOrigin = "Client.InputCountryOfOrigin"
+    val InputMail = "Client.InputMail"
+    val InputPhone = "Client.InputPhone"
+    val InputStreet = "Client.InputStreet"
+    val InputZipCode = "Client.InputZipCode"
+    val InputCity = "Client.InputCity"
+    val InputGender = "Client.InputGender"
+    val InputRelationship = "Client.InputRelationship"
+    val InputNote = "Client.InputNote"
 }
 
 object TreatmentViewNames {
