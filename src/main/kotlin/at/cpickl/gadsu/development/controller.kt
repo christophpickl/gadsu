@@ -10,10 +10,13 @@ import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
+import at.cpickl.gadsu.service.CurrentTreatment
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.forClient
+import at.cpickl.gadsu.service.forTreatment
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -31,18 +34,28 @@ open class DevelopmentController @Inject constructor(
         private val clientService: ClientService,
         private val treatmentRepo: TreatmentRepository,
         private val bus: EventBus,
-        private val mainFrame: MainFrame
+        private val mainFrame: MainFrame,
+        private val currentClient: CurrentClient,
+        private val currentTreatment: CurrentTreatment
 ) {
 
     private var devFrame: DevFrame? = null
 
     @Subscribe open fun onShowDevWindowEvent(event: ShowDevWindowEvent) {
         devFrame = DevFrame(mainFrame.dockPositionRight)
+        devFrame!!.updateClient(currentClient.data)
+        devFrame!!.updateTreatment(currentTreatment.data)
         devFrame!!.start()
     }
 
     @Subscribe open fun onCurrentEvent(event: CurrentEvent) {
         event.forClient { devFrame?.updateClient(it) }
+        event.forTreatment{ devFrame?.updateTreatment(it) }
+
+    }
+
+    @Subscribe fun onAny(event: Any) {
+        devFrame?.addEvent(event)
     }
 
     @Subscribe open fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {

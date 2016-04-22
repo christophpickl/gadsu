@@ -1,19 +1,8 @@
 package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.GadsuMenuBar
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.MyFrame
 import com.google.common.eventbus.EventBus
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.Point
-import java.util.Timer
-import java.util.TimerTask
-import javax.swing.JComponent
-import javax.swing.JFrame
-import javax.swing.JLabel
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 
@@ -53,4 +42,5 @@ class Development {
         }
 
     }
+
 }

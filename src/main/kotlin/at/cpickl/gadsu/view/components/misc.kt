@@ -4,7 +4,10 @@ import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
+import java.awt.Color
 import java.awt.Font
+import java.util.Timer
+import java.util.TimerTask
 import javax.swing.JComponent
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
@@ -37,3 +40,18 @@ fun <T : JComponent> T.bold(): T {
     return this
 }
 
+fun <T : JComponent> T.italic(): T {
+    font = font.deriveFont(Font.ITALIC)
+    return this
+}
+
+
+fun JComponent.changeBackgroundForASec(tempBackground: Color) {
+    background = tempBackground
+
+    Timer("dev-blinking", true).schedule(object : TimerTask() {
+        override fun run() {
+            background = null
+        }
+    }, 1000L)
+}

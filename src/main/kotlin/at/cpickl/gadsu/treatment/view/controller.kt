@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment.view
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.CurrentTreatment
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
@@ -25,6 +26,7 @@ open class TreatmentController @Inject constructor(
         private val treatmentViewFactory: TreatmentViewFactory,
         private val treatmentService: TreatmentService,
         private val currentClient: CurrentClient,
+        private val currentTreatment: CurrentTreatment,
         private val bus: EventBus,
         private val clock: Clock
 ) {
@@ -43,7 +45,6 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
-
         val treatmentAfterSave: Treatment
         val treatmentToSave = event.treatment
         if (!treatmentToSave.yetPersisted) {
@@ -54,25 +55,33 @@ open class TreatmentController @Inject constructor(
             treatmentService.update(treatmentToSave)
             bus.post(TreatmentChangedEvent(treatmentToSave))
             treatmentAfterSave = treatmentToSave
-
         }
+
+        currentTreatment.data = treatmentAfterSave
         treatmentView!!.wasSaved(treatmentAfterSave)
     }
 
     @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
 
-        // FIXME check changes
-        treatmentView!!.closePreparations()
+        // FIXME check changes for treatment
 
+        currentTreatment.data = null
+        treatmentView!!.closePreparations()
         bus.post(ShowClientViewEvent())
     }
 
     private fun changeToTreatmentView(treatment: Treatment?) {
         val client = currentClient.data
 
-        val number = treatmentService.calculateNextNumber(client)
-        val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
+        val nullSafeTreatment: Treatment
+        if (treatment != null) {
+            nullSafeTreatment = treatment
+        } else {
+            val number = treatmentService.calculateNextNumber(client)
+             nullSafeTreatment = Treatment.insertPrototype(client.id!!, number, clock.now())
+        }
 
+        currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
         frame.changeContent(treatmentView!!.asComponent())
     }

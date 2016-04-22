@@ -13,4 +13,6 @@
   * 5h ... treatment crud
   * 10h ... client picture
   * 5h ... UI improvements
-
+  * 5h ... UI improvments (date picker)
+  * 5h ... more client fields
+  * 5h ... tests and infrastructure (UI)

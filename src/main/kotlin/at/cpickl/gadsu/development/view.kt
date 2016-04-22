@@ -1,22 +1,28 @@
 package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.service.formatDateTime
+import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.bold
+import at.cpickl.gadsu.view.components.changeBackgroundForASec
+import at.cpickl.gadsu.view.components.scrolled
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.Point
-import java.util.Timer
-import java.util.TimerTask
 import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JLabel
+import javax.swing.JTextArea
 
 
 class DevFrame(initLocation: Point): JFrame() {
 
     private val txtClient = JLabel()
+    private val txtTreatment = JLabel()
+    private val events = JTextArea()
 
     init {
         title = "Development Console"
@@ -28,15 +34,22 @@ class DevFrame(initLocation: Point): JFrame() {
         panel.c.anchor = GridBagConstraints.NORTHWEST
         panel.c.fill = GridBagConstraints.HORIZONTAL
         panel.c.weightx = 1.0
-
-        panel.add(JLabel("Current client: "))
+        panel.c.weighty = 0.0
+        panel.add(JLabel("Current client: ").bold())
 
         panel.c.gridy++
-        panel.c.fill = GridBagConstraints.BOTH
         panel.add(txtClient)
 
         panel.c.gridy++
-        panel.addLastRowFilled()
+        panel.add(JLabel("Current treatment: ").bold())
+
+        panel.c.gridy++
+        panel.add(txtTreatment)
+
+        panel.c.gridy++
+        panel.c.weighty = 1.0
+        panel.c.fill = GridBagConstraints.BOTH
+        panel.add(events.scrolled())
 
         contentPane.add(panel)
 
@@ -45,32 +58,43 @@ class DevFrame(initLocation: Point): JFrame() {
     }
 
     fun updateClient(client: Client?) {
-        val text: String
-        if (client == null) {
-            text = "NULL"
-        } else if (client === Client.INSERT_PROTOTYPE) {
-            text = "Client.INSERT_PROTOTYPE"
-        } else {
-            text = """<html><b>Name</b>: ${client.fullName}<br/><b>Note</b>: ${client.note}</html>"""
-        }
-        txtClient.text = text
-
-        txtClient.background = Color.YELLOW
-        val timer = Timer("dev-blinking", true)
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                txtClient.background = null
+        update(txtClient, client, {
+            if (it === Client.INSERT_PROTOTYPE) {
+                "Client.INSERT_PROTOTYPE"
+            } else {
+                """<html>Name: ${it.fullName}<br/>Note: ${it.note}</html>"""
             }
-        }, 1000L)
+        })
+    }
+
+    fun updateTreatment(treatment: Treatment?) {
+        update(txtTreatment, treatment, {
+            """<html>${if (!it.yetPersisted) "INSERT_PROTOTYPE<br/>" else ""}Nr: ${it.number}<br/>Datum: ${it.date.formatDateTime()}</html>"""
+        })
     }
 
     fun start() {
         isVisible = true
     }
 
+    fun addEvent(event: Any) {
+        events.text = event.toString() + "\n" + events.text
+    }
+
     fun close() {
         isVisible = false
         dispose()
+    }
+
+    private fun <T> update(txt: JLabel, value: T?, function: (T) -> String) {
+        val text: String
+        if (value == null) {
+            text = "NULL"
+        } else {
+            text = function(value)
+        }
+        txt.text = text
+        txt.changeBackgroundForASec(Color.YELLOW)
     }
 
 }

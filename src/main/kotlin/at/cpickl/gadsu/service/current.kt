@@ -143,3 +143,7 @@ class CurrentTreatment @Inject constructor(bus: EventBus) :
         val ID: String = "treatment"
     }
 }
+
+fun CurrentEvent.forTreatment(function: (Treatment?) -> Unit) {
+    if (this.id == CurrentTreatment.ID) function(this.newData as Treatment?)
+}
