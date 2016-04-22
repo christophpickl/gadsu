@@ -74,12 +74,14 @@ import org.testng.annotations.Test
     // --------------------------------------------------------------------------- property changed tests
 
     fun `Given client is set, when changing client with same id but different properties, then changed event dispatched`() {
-        testee.data = client1
+        val initialClient = client1.copy(lastName = "initial")
+        testee.data = initialClient
         busListener.clear()
 
-        val changedClient = client1.copy(lastName = "some new property")
+        val changedClient = client1.copy(lastName = "changed")
         testee.data = changedClient
-        busListener.assertContains(CurrentPropertiesChangedEvent(eventId, client1, changedClient))
+        //      but: CurrentPropertiesChangedEvent.OldData.FullName is "client1 some new property" instead of "client1 testLastName"
+        busListener.assertContains(CurrentPropertiesChangedEvent(eventId, initialClient, changedClient))
     }
 
     fun `Given client with out ID, when changing properties, then properties changed event dispatched`() {

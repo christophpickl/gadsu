@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.MyListCellRenderer
@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
     val model = MyListModel<Client>()
     val _contact = Client.INSERT_PROTOTYPE.contact
     model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Max", lastName = "Mustermann", contact = _contact.copy(mail = "max@muster.com")))
-    model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Anna", lastName = "Nym", picture = Images.DEFAULT_PROFILE_WOMAN))
+    model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_WOMAN))
     val list = JList<Client>(model)
     list.cellRenderer = ClientListCellRender()
     Framed.show(list.scrolled(), Dimension(300, 500))

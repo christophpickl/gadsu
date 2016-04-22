@@ -40,7 +40,7 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
 
         ClientSpringJdbcRepository(jdbcx(), object : IdGenerator {
             override fun generate() = client.id!!
-        }).insert(client.copy(id = null))
+        }).insertWithoutPicture(client.copy(id = null))
     }
 
     // --------------------------------------------------------------------------- insert

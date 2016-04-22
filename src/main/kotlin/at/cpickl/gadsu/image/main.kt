@@ -2,6 +2,7 @@ package at.cpickl.gadsu.image
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.client.Client
 import org.hsqldb.jdbc.JDBCBlob
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.SqlParameterValue
@@ -16,6 +17,14 @@ import javax.swing.ImageIcon
 
 private val LOG_image = LoggerFactory.getLogger("at.cpickl.gadsu.image")
 
+// --------------------------------------------------------------------------- events
+
+
+// UI request events
+class SelectImageEvent : UserEvent()
+class DeleteImageEvent(val client: Client): UserEvent()
+
+// Something was selected by the client.
 class ImageSelectedEvent(
         val viewNamePrefix: String, // in order to identify the correct one, as
         val imageFile: File

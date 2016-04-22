@@ -5,7 +5,6 @@ import com.google.inject.matcher.AbstractMatcher
 import com.google.inject.matcher.Matchers
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
-import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 
 class AopModule : AbstractModule() {
@@ -32,19 +31,14 @@ class OnSubscribeMethodMatcher : AbstractMatcher<Method>() {
 
 class LoggedAspect : MethodInterceptor {
     override fun invoke(invocation: MethodInvocation): Any? {
-        val log = LoggerFactory.getLogger(cleanClassName(invocation.`this`.javaClass))
+        val log = LOG(invocation.`this`.javaClass)
         if (log.isDebugEnabled) {
-            log.debug("{}(event={})", invocation.method.name, invocation.arguments[0])
+            // will be logged by the AllMightyEventCatcher anyway, and leads to event.toStrings from multiple subscribers!
+//            log.debug("{}(event={})", invocation.method.name, invocation.arguments[0])
+            log.debug("{}(event)", invocation.method.name, invocation.arguments)
         }
         return invocation.proceed()
     }
 
-    private fun cleanClassName(clazz: Class<Any>): String {
-        val name = clazz.name
-        if (!name.contains("$$")) {
-            return name
-        }
-        return name.substring(0, name.indexOf("$$"))
-    }
 
 }

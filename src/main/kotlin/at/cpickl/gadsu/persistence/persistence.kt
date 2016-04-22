@@ -94,11 +94,14 @@ open class DatabaseManager @Inject constructor(
 
 fun DateTime.toSqlTimestamp() = Timestamp(millis)
 
-fun Blob.toByteArray(): ByteArray {
+fun Blob?.toByteArray(): ByteArray? {
+    if (this == null) {
+        return null
+    }
     val blobLength = this.length().toInt()
     return this.getBytes(1, blobLength)
 }
 
-fun Blob.toBufferedImage(): BufferedImage {
-    return toByteArray().readBufferedImage()
+fun Blob.toBufferedImage(): BufferedImage? {
+    return toByteArray()?.readBufferedImage()
 }

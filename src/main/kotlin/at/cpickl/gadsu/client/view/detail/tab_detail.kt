@@ -8,7 +8,7 @@ import javax.swing.JLabel
 class ClientTabDetail : DefaultClientTab(Labels.Tabs.ClientDetail) {
 
     init {
-        add(JLabel("TODO"))
+        add(JLabel("Hier kommen noch gesundheits/TCM Daten rein ..."))
     }
 
     override fun isModified(client: Client): Boolean {

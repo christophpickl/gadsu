@@ -6,9 +6,11 @@ import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.SpringJdbcx
+import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
+import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hsqldb.jdbc.JDBCDataSource
@@ -35,7 +37,11 @@ abstract class HsqldbTest {
     private var jdbcx: SpringJdbcx? = null
 
     // MINOR delete mock, and use testable implementations instead
+    protected var bus = EventBus()
+    protected var clock = SimpleTestableClock()
     protected var idGenerator: IdGenerator = mock(IdGenerator::class.java)
+    protected var currentClient: CurrentClient = CurrentClient(EventBus())
+
 
     @BeforeClass
     fun initDb() {
@@ -53,7 +59,11 @@ abstract class HsqldbTest {
     }
 
     @BeforeMethod
-    fun resetDb() {
+    fun resetState() {
+        bus = EventBus()
+        clock = SimpleTestableClock()
+        currentClient = CurrentClient(bus)
+
         allTables.forEach { jdbcx!!.execute("DELETE FROM $it") }
     }
 
@@ -78,7 +88,7 @@ abstract class HsqldbTest {
 
 
     protected fun insertClient(prototype: Client = Client.unsavedValidInstance(), id: String = TEST_UUID1): Client {
-        return ClientSpringJdbcRepository(jdbcx(), SimpleTestableIdGenerator(id)).insert(prototype)
+        return ClientSpringJdbcRepository(jdbcx(), SimpleTestableIdGenerator(id)).insertWithoutPicture(prototype)
     }
 
     protected fun insertTreatment(prototype: Treatment, id: String = TEST_UUID1): Treatment {

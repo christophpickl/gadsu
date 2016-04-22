@@ -1,6 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.ClientModule
+import at.cpickl.gadsu.development.DevelopmentModule
 import at.cpickl.gadsu.image.ImageModule
 import at.cpickl.gadsu.persistence.PersistenceModule
 import at.cpickl.gadsu.preferences.PreferencesModule
@@ -23,9 +24,9 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
     override fun configure() {
         log.debug("configure()")
-        bind(DevelopmentController::class.java).asEagerSingleton()
 
         configureEventBus()
+
         installSubModules(args)
     }
 
@@ -54,6 +55,8 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(PreferencesModule(args.preferencesNode))
         install(ReportModule())
         install(AopModule())
+
+        install(DevelopmentModule())
     }
 }
 

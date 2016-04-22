@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.view.detail.ClientDetailView
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.components.GridPanel
 import com.google.inject.Inject
 import java.awt.Color

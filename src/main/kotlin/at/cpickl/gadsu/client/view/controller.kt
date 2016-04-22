@@ -14,14 +14,13 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowClientViewEvent
-import at.cpickl.gadsu.image.ImageSelectedEvent
-import at.cpickl.gadsu.image.readImageIcon
-import at.cpickl.gadsu.image.size
-import at.cpickl.gadsu.image.toMyImage
-import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
@@ -29,9 +28,9 @@ import at.cpickl.gadsu.view.components.calculateInsertIndex
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
-import org.slf4j.LoggerFactory
 
 
+// TODO split controller for master and for detail view
 @Logged
 @Suppress("UNUSED_PARAMETER")
 open class ClientViewController @Inject constructor(
@@ -42,11 +41,10 @@ open class ClientViewController @Inject constructor(
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val currentClient: CurrentClient,
-        private val dialogs: Dialogs,
-        private val prefs: Prefs
+        private val dialogs: Dialogs
 ) {
 
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LOG(javaClass)
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         view.masterView.initClients(clientRepo.findAll())
@@ -67,9 +65,8 @@ open class ClientViewController @Inject constructor(
         view.masterView.selectClient(null)
         val newCreatingClient = Client.INSERT_PROTOTYPE
 
-        view.detailView.writeClient(newCreatingClient)
-        view.detailView.focusFirst()
         currentClient.data = newCreatingClient
+        view.detailView.focusFirst()
     }
 
 
@@ -83,7 +80,6 @@ open class ClientViewController @Inject constructor(
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
 
-        view.detailView.writeClient(event.client)
         currentClient.data = event.client
     }
 
@@ -91,7 +87,6 @@ open class ClientViewController @Inject constructor(
         view.masterView.changeClient(event.client)
 //        view.masterView.selectClient(event.client) ... nope, not needed
 
-        view.detailView.writeClient(event.client)
         currentClient.data = event.client
     }
 
@@ -102,7 +97,6 @@ open class ClientViewController @Inject constructor(
         }
 
         currentClient.data = event.client
-        view.detailView.writeClient(event.client)
     }
 
     @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
@@ -115,13 +109,15 @@ open class ClientViewController @Inject constructor(
         })
     }
 
+    @Subscribe open fun onDeleteImageEvent(event: DeleteImageEvent) {
+        clientService.deleteImage(event.client)
+    }
 
     @Subscribe open fun onClientDeletedEvent(event: ClientDeletedEvent) {
         view.masterView.deleteClient(event.client)
 
         if (currentClient.data.id != null && currentClient.data.id.equals(event.client.id)) {
             val newInsert = Client.INSERT_PROTOTYPE
-            view.detailView.writeClient(newInsert)
             currentClient.data = newInsert
         }
     }
@@ -130,27 +126,8 @@ open class ClientViewController @Inject constructor(
         window.changeContent(view.asComponent())
     }
 
-    @Subscribe open fun onImageSelectedEvent(event: ImageSelectedEvent) {
-        if (!event.viewNamePrefix.equals(view.detailView.imageViewNamePrefix)) {
-            log.debug("Aborting image selection, as was not dispatched for client view.")
-            return
-        }
-        prefs.clientPictureDefaultFolder = event.imageFile.parentFile ?: event.imageFile
-
-        val file = event.imageFile
-        val icon = file.readImageIcon()
-        val size = icon.size()
-        if (size.width != size.height) {
-            dialogs.show(
-                    title = "Ung\u00fcltige Datei",
-                    message = "Das ausgew\u00e4hlte Bild muss gleiche Seitenverh\u00e4ltnisse haben. Die Bildgr\u00f6\u00dfe betr\u00e4gt: ${size.width}x${size.height}",
-                    buttonLabels = arrayOf("Okay"),
-                    type = DialogType.WARN
-            )
-            return
-        }
-
-        view.detailView.changeImage(file.toMyImage())
+    @Subscribe open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {
+        event.forClient { if (it.yetPersisted) view.masterView.changeClient(it) }
     }
 
     fun checkChanges(): ChangeBehaviour {
@@ -179,6 +156,8 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun saveClient(client: Client) {
+        log.trace("saveClient(client={})", client)
+
         if (client.firstName.isEmpty() && client.lastName.isEmpty()) {
             dialogs.show(
                     title = "Speichern abgebrochen",
@@ -189,17 +168,22 @@ open class ClientViewController @Inject constructor(
             return
         }
 
+        // TODO move to service layer
         if (client.yetPersisted) {
-            clientRepo.update(client)
+            clientRepo.updateWithoutPicture(client)
+
             bus.post(ClientUpdatedEvent(client))
             return
         }
 
-        // insert new
+        insertClient(client)
+    }
+
+    private fun insertClient(client: Client) {
         val toBeInserted = client.copy(created = clock.now())
 
         log.trace("Going to insert: {}", toBeInserted)
-        val savedClient = clientRepo.insert(toBeInserted)
+        val savedClient = clientRepo.insertWithoutPicture(toBeInserted)
         log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
 
         @Suppress("SENSELESS_COMPARISON")
@@ -207,7 +191,6 @@ open class ClientViewController @Inject constructor(
 
         bus.post(ClientCreatedEvent(savedClient))
     }
-
 
 }
 

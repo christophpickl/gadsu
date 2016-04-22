@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.development.debugColor
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints

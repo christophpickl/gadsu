@@ -2,7 +2,8 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Event
 import com.google.common.eventbus.Subscribe
-import org.hamcrest.MatcherAssert
+import org.exparity.hamcrest.BeanMatchers.theSameAs
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.slf4j.LoggerFactory
 import java.util.LinkedList
@@ -23,24 +24,32 @@ class AnyBusListener {
     }
 
     fun assertEmpty() {
-        MatcherAssert.assertThat(dispatchedEvents, Matchers.empty())
+        assertThat(dispatchedEvents, Matchers.empty())
+    }
+
+
+    fun assertHasItems(vararg expecteds: Any) {
+        assertThat(dispatchedEvents, Matchers.hasItems(*expecteds))
     }
 
     fun <E : Event> assertContains(vararg expecteds: E) {
-        MatcherAssert.assertThat("\nExpected: ${expecteds.joinToString()},\nActual: $dispatchedEvents",
+        assertThat("\nExpected: ${expecteds.joinToString()},\nActual: $dispatchedEvents",
                 dispatchedEvents, Matchers.hasSize(expecteds.size))
+
         for (i in 0.rangeTo(expecteds.size - 1)) {
-            val actual = dispatchedEvents[i]
-            val expected = expecteds[i]
+            val actualRaw = dispatchedEvents[i]
+            val expectedRaw = expecteds[i]
 
             // MINOR copy and pasted, as dont know how to properly check for class equalness with hamcrest
-            MatcherAssert.assertThat("Type mismatch! Expected: ${expected.javaClass.name}, Actual: ${actual.javaClass.name}",
-                    actual.javaClass === expected.javaClass,
+            assertThat("Type mismatch! Expected: ${expectedRaw.javaClass.name}, Actual: ${actualRaw.javaClass.name}",
+                    actualRaw.javaClass === expectedRaw.javaClass,
                     Matchers.equalTo(true))
 
-            MatcherAssert.assertThat("Expected to be equal! Expected: $expected, Actual: $actual",
-                    actual as Event,
-                    Matchers.equalTo(expected as Event))
+
+            val actual = actualRaw as Event
+            val expected = expectedRaw as Event
+            // FIXME nope, this is a generic thing here, dont do this here
+            assertThat(actual, theSameAs(expected).excludeProperty("created").excludeProperty("birthday"))
         }
     }
 }

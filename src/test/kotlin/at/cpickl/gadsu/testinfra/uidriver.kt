@@ -6,7 +6,7 @@ import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
-import at.cpickl.gadsu.view.SwingMainWindow
+import at.cpickl.gadsu.view.SwingMainFrame
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
@@ -62,7 +62,7 @@ abstract class BaseDriver(val test: UiTest, val window: Window) {
     }
 
     fun postEvent(event: Event) {
-        val swingWindow = window.awtComponent as SwingMainWindow
+        val swingWindow = window.awtComponent as SwingMainFrame
         swingWindow.bus.post(event)
     }
 
@@ -102,6 +102,6 @@ private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger,
 
 fun ListBox.deleteAtRow(index: Int) {
     val popup = PopupMenuInterceptor.run(this.triggerRightClick(index))
-    val popupMenuItemDelete = popup.getSubMenu("L\u00F6schen")
+    val popupMenuItemDelete = popup.getSubMenu("Klient L\u00F6schen")
     popupMenuItemDelete.clickAndDisposeDialog("L\u00F6schen")
 }

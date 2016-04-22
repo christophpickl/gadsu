@@ -1,10 +1,13 @@
 package at.cpickl.gadsu.client.view
 
+import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.DeleteClientEvent
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.image.DeleteImageEvent
+import at.cpickl.gadsu.image.SelectImageEvent
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyListModel
@@ -72,7 +75,12 @@ class SwingClientMasterView @Inject constructor(
                 }
             }
         }
-        list.enablePopup(bus, "L\u00f6schen", { DeleteClientEvent(it) })
+        
+        list.enablePopup(bus,
+                Pair<String, (Client) -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
+                Pair<String, (Client) -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(it) }), // FIXME dynamic entries!
+                Pair<String, (Client) -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(it) })
+        )
 
         list.cellRenderer = ClientListCellRender()
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION

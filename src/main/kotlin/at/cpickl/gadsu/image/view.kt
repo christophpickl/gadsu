@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import javax.swing.JButton
 import javax.swing.JComponent
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
 
 
 interface ImagePicker {
@@ -38,33 +36,9 @@ class SwingImagePicker @Inject constructor (
 
         val btnOpen = JButton("Bild w\u00e4hlen")
         btnOpen.name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_OPENBUTTON}"
-        btnOpen.addActionListener { onOpenFile() }
+        btnOpen.addActionListener { SelectImageEvent() }
 
         add(btnOpen)
-    }
-
-    private fun onOpenFile() {
-        log.debug("onOpenFile()")
-
-        val chooser = JFileChooser()
-        chooser.currentDirectory = parentFolder
-        chooser.dialogTitle = "Bild ausw\u00e4hlen ..."
-        chooser.fileFilter = FileNameExtensionFilter("Bilddateien (*.jpg)", "jpg")
-
-        val result = chooser.showOpenDialog(this)
-        if (result == JFileChooser.APPROVE_OPTION) {
-            val selectedFile = chooser.selectedFile
-
-            if (!selectedFile.name.toLowerCase().endsWith("jpg")) {
-                log.debug("Ignoring invalid file (this patches the JFileChooser default behaviour of allowing *.* files although extension filter is set)")
-                return
-            }
-
-            bus.post(ImageSelectedEvent(viewNamePrefix, selectedFile))
-
-        } else {
-            log.debug("Choosing an image aborted by user.")
-        }
     }
 
 

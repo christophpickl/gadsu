@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.QuitUserEvent
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
-import at.cpickl.gadsu.view.components.MyWindow
+import at.cpickl.gadsu.view.components.MyFrame
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -26,10 +26,10 @@ interface MainWindow {
     fun asJFrame(): JFrame
 }
 
-class SwingMainWindow @Inject constructor(
+class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         private val gadsuMenuBar: GadsuMenuBar
-        ) : MainWindow, MyWindow("Gadsu") {
+        ) : MainWindow, MyFrame("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val defaultSize = Dimension(600, 400)

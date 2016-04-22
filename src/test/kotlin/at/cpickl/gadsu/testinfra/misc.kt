@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.DateFormats
@@ -61,5 +61,5 @@ class SequencedTestableIdGenerator() : IdGenerator {
 val PROFILE_PICTURE_CLASSPATH_1 = "/gadsu_test/profile_pic-valid_man1.jpg"
 val PROFILE_PICTURE_CLASSPATH_2 = "/gadsu_test/profile_pic-valid_man2.jpg"
 
-fun Images.testProfilePicture1() = PROFILE_PICTURE_CLASSPATH_1.toMyImage()
-fun Images.testProfilePicture2() = PROFILE_PICTURE_CLASSPATH_2.toMyImage()
+val MyImage.Companion.TEST_CLIENT_PIC1: MyImage get() = PROFILE_PICTURE_CLASSPATH_1.toMyImage()
+val MyImage.Companion.TEST_CLIENT_PIC2: MyImage get() = PROFILE_PICTURE_CLASSPATH_2.toMyImage()

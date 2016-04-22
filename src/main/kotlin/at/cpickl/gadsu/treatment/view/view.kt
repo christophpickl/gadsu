@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent

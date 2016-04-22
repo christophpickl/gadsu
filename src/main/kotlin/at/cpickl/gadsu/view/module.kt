@@ -15,7 +15,7 @@ class ViewModule : AbstractModule() {
         bind(SwingFactory::class.java)
 
         // main window
-        bind(MainWindow::class.java).to(SwingMainWindow::class.java).`in`(Scopes.SINGLETON)
+        bind(MainWindow::class.java).to(SwingMainFrame::class.java).`in`(Scopes.SINGLETON)
         bind(MainWindowController::class.java).asEagerSingleton()
 
         // mac handling

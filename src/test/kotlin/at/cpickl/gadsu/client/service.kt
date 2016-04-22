@@ -20,16 +20,12 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private val unsavedClient = Client.unsavedValidInstance()
     // TODO use guice support for integration tests instead
 
-    private var bus = EventBus()
-    private var clock = SimpleTestableClock()
     private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var treatmentService = TreatmentServiceImpl(treatmentRepo, nullJdbcx(), EventBus(), RealClock())
 
     @BeforeMethod
     fun setUp() {
-        bus = EventBus()
-        clock = SimpleTestableClock(TEST_DATE)
         idGenerator = SequencedTestableIdGenerator()
         clientRepo = ClientSpringJdbcRepository(jdbcx(), idGenerator)
         treatmentRepo = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
@@ -37,8 +33,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     }
 
     fun deleteClientWithSomeTreatments_willSucceedAsInternallyDeletesAllTreatmentsFirst() {
-
-        val savedClient = clientRepo.insert(unsavedClient)
+        val savedClient = clientRepo.insertWithoutPicture(unsavedClient)
         treatmentRepo.insert(Treatment.unsavedValidInstance(savedClient.id!!))
 
         testee().delete(savedClient)
@@ -47,6 +42,6 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         assertEmptyTable("treatment")
     }
 
-    private fun testee() = ClientServiceImpl(clientRepo, treatmentService, jdbcx(), bus)
+    private fun testee() = ClientServiceImpl(clientRepo, treatmentService, jdbcx(), bus, currentClient)
 
 }

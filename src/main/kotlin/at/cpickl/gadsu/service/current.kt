@@ -17,7 +17,17 @@ class CurrentModule : AbstractModule() {
     }
 }
 
-abstract class AbstractChangedEvent(val id: String, val oldData: Any?, val newData: Any?) : AppEvent() {
+/**
+ * Either because the data completely changed the reference, or just property/ies changed.
+ */
+interface CurrentEvent {
+    val id: String
+    val oldData: Any?
+    val newData: Any?
+}
+
+abstract class AbstractChangedEvent(override val id: String, override val oldData: Any?, override val newData: Any?) :
+        AppEvent(), CurrentEvent {
     override fun hashCode(): Int{
         var result = id.hashCode()
         result += 31 * result + (oldData?.hashCode() ?: 0)
@@ -84,28 +94,48 @@ abstract class Current<V : HasId?>(private val id: String, private val bus: Even
                 dispatchProperties = true
             }
 
+            val oldData = _data
+            _data = value // must be done before dispatching event!
             if (dispatchChanged) {
-                bus.post(CurrentChangedEvent(id, _data, value))
+                bus.post(CurrentChangedEvent(id, oldData, value))
             }
             if (dispatchProperties) {
-                bus.post(CurrentPropertiesChangedEvent(id, _data, value))
+                bus.post(CurrentPropertiesChangedEvent(id, oldData, value))
             }
 
-            _data = value // MINOR or should this be done before dispatching event?!
         }
 
 }
 
 class CurrentClient @Inject constructor(bus: EventBus) :
-        Current<Client>(ID, bus, INITIAL_VALUE) {
+        Current<Client>(ID, bus, INITIAL_VALUE) { // MINOR use kotlin delegation (requires interface first): Client by data
     companion object {
         val ID: String = "client"
         val INITIAL_VALUE = Client.INSERT_PROTOTYPE
+
+//        // TODO refactor those three to base class!
+//        fun consumeAnyNewData(event: CurrentEvent, function: (Client) -> Unit) {
+//            if (event.id == ID) {
+//                function(event.newData as Client)
+//            }
+//        }
+//        fun consumeChangedNewData(event: CurrentChangedEvent, function: (Client) -> Unit) {
+//            if (event.id == ID) {
+//                function(event.newData as Client)
+//            }
+//        }
+//        fun consumePropertiesNewData(event: CurrentPropertiesChangedEvent, function: (Client) -> Unit) {
+//            if (event.id == ID) {
+//                function(event.newData as Client)
+//            }
+//        }
+
     }
 }
-val CurrentChangedEvent.Companion.ID_Client: String get() = CurrentClient.ID
-val CurrentPropertiesChangedEvent.Companion.ID_Client: String get() = CurrentClient.ID
 
+fun CurrentEvent.forClient(function: (Client) -> Unit) {
+    if (this.id == CurrentClient.ID) function(this.newData as Client)
+}
 
 class CurrentTreatment @Inject constructor(bus: EventBus) :
         Current<Treatment?>(ID, bus, null) {
@@ -113,5 +143,3 @@ class CurrentTreatment @Inject constructor(bus: EventBus) :
         val ID: String = "treatment"
     }
 }
-val CurrentChangedEvent.Companion.ID_Treatment: String get() = CurrentTreatment.ID
-val CurrentPropertiesChangedEvent.Companion.ID_Treatment: String get() = CurrentTreatment.ID

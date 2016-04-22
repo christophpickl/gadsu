@@ -1,8 +1,15 @@
 package at.cpickl.gadsu.service
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.util.UUID
+
+fun LOG(javaClass: Class<Any>): Logger {
+    return LoggerFactory.getLogger(javaClass.nameAopCleaned)
+}
+
+private val Class<Any>.nameAopCleaned: String get() = if (name.contains("$$")) name.substring(0, name.indexOf("$$")) else name
 
 
 interface HasId {
@@ -29,3 +36,4 @@ fun Closeable.closeQuietly() {
         LOG_Closeable.warn("Could not close '${this}'!", e)
     }
 }
+

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.Development
+import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.GADSU_DIRECTORY
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext

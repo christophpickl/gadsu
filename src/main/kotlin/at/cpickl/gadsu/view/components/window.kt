@@ -7,7 +7,7 @@ import javax.swing.JFrame
 import javax.swing.WindowConstants
 
 
-open class MyWindow(private val myTitle: String) : JFrame() {
+open class MyFrame(private val myTitle: String) : JFrame() {
     private val log = LoggerFactory.getLogger(javaClass)
 
     init {

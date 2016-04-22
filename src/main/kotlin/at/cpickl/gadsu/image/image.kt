@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.image
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.client.Gender
 import sun.awt.image.ToolkitImage
 import java.awt.Dimension
 import java.awt.image.BufferedImage
@@ -9,6 +10,44 @@ import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.ImageIcon
+
+
+interface MyImage {
+    companion object {
+        val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.jpg")
+        val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.jpg")
+
+        fun byIcon(icon: ImageIcon) = icon.toMyImage()
+        fun byBuffered(buffered: BufferedImage) = buffered.toMyImage()
+        fun byFile(file: File) = file.toMyImage()
+        fun byClasspath(classpath: String) = classpath.toMyImage()
+
+    }
+
+    /**
+     * @return null if default is still set (or user cleared picture, then it will fall back to default again)
+     */
+    fun toSaveRepresentation(): ByteArray?
+
+    fun toViewBigRepresentation(): Icon
+    fun toViewMedRepresentation(): Icon
+    fun toViewLilRepresentation(): Icon
+
+}
+
+
+// extension methods
+fun ImageIcon.toMyImage(): MyImage = ImageIconImage(this)
+fun BufferedImage.toMyImage(): MyImage = ImageIconImage(ImageIcon(this))
+fun File.toMyImage(): MyImage = FileImage(this)
+fun String.toMyImage(): MyImage = ClasspathImage(this)
+
+val Gender.defaultImage: MyImage get() =
+    when(this) {
+        Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
+        Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
+        else -> MyImage.DEFAULT_PROFILE_MAN // FIXME duplicate code!
+    }
 
 enum class ImageSize(private val _dimension: Dimension) {
     /** In picture tab when changing picture.*/
@@ -26,30 +65,6 @@ enum class ImageSize(private val _dimension: Dimension) {
     fun toDimension(): Dimension = _dimension
 }
 
-
-object Images {
-    val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.jpg")
-    val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.jpg")
-}
-
-fun ImageIcon.toMyImage(): MyImage = ImageIconImage(this)
-fun BufferedImage.toMyImage(): MyImage = ImageIconImage(ImageIcon(this))
-fun File.toMyImage(): MyImage = FileImage(this)
-fun String.toMyImage(): MyImage = ClasspathImage(this)
-
-
-interface MyImage {
-
-    /**
-     * @return null if default is still set (or user cleared picture, then it will fall back to default again)
-     */
-    fun toSaveRepresentation(): ByteArray?
-
-    fun toViewBigRepresentation(): Icon
-    fun toViewMedRepresentation(): Icon
-    fun toViewLilRepresentation(): Icon
-
-}
 
 
 /**

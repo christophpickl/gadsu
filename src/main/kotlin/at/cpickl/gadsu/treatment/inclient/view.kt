@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment.inclient
 
-import at.cpickl.gadsu.debugColor
+import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.DeleteTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
@@ -57,7 +58,7 @@ class TreatmentsInClientView @Inject constructor(
         newTreatmentButton.isEnabled = false // disabled by default at startup
 
         treatmentsView.name = ViewNames.Treatment.ListInClientView
-        treatmentsView.enablePopup(bus, "L\u00f6schen", { DeleteTreatmentEvent(it) })
+        treatmentsView.enablePopup(bus, Pair<String, (Treatment) -> UserEvent>("L\u00f6schen", { DeleteTreatmentEvent(it) }))
         treatmentsView.cellRenderer = TreatmentListCellRenderer()
         treatmentsView.registerDoubleClicked { row, treatment -> bus.post(OpenTreatmentEvent(treatment)) }
         add(treatmentsView.scrolled(), BorderLayout.CENTER)

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.image.Images
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.testinfra.TEST_DATE
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.TEST_UUID2
@@ -12,7 +12,7 @@ fun Client.Companion.unsavedValidInstance() = Client.INSERT_PROTOTYPE.copy(
         firstName = "testFirstName",
         lastName = "testLastName",
         gender = Gender.MALE,
-        picture = Images.DEFAULT_PROFILE_MAN
+        picture = MyImage.DEFAULT_PROFILE_MAN
 )
 
 @Suppress("UNUSED")

@@ -13,8 +13,6 @@ import org.hamcrest.Matchers.not
 import org.slf4j.LoggerFactory
 import org.uispec4j.Window
 import java.io.File
-import javax.swing.ImageIcon
-import javax.swing.JLabel
 
 
 class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
@@ -35,10 +33,11 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)
     val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)
+    val inputJob= window.getInputTextBox(ViewNames.Client.InputJob)
     val saveButton = window.getButton(ViewNames.Client.SaveButton)
     val cancelButton = window.getButton(ViewNames.Client.CancelButton)
 
-    private val imageContainer = window.getTextBox(ViewNames.Client.ImageContainer)
+//    private val imageContainer = window.getTextBox(ViewNames.Client.ImageContainer)
 
 
 
@@ -113,10 +112,10 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     }
 
 
-    fun readImage(): ImageIcon? {
-        val label = imageContainer.awtComponent as JLabel
-        return label.icon as ImageIcon?
-    }
+//    fun readImage(): ImageIcon? {
+//        val label = imageContainer.awtComponent as JLabel
+//        return label.icon as ImageIcon?
+//    }
 
     private fun listIndexOfBasedOnFullname(client: Client): Int {
         log.trace("listIndexOfBasedOnFullname(client.fullName='{}')", client.fullName)
@@ -129,5 +128,16 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         }
         return -1
     }
+
+    fun assertNoChangesDetected() {
+        test.assertThat(test.not(saveButton.isEnabled))
+        test.assertThat(test.not(cancelButton.isEnabled))
+    }
+
+    fun assertChangesDetected() {
+        test.assertThat(saveButton.isEnabled)
+        test.assertThat(cancelButton.isEnabled)
+    }
+
 
 }

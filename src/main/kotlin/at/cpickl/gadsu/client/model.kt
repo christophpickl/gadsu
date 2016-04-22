@@ -3,13 +3,13 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
-import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.view.components.Labeled
+import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
@@ -36,7 +36,7 @@ data class Client(
 
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
-                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "", Images.DEFAULT_PROFILE_MAN)
+                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "", MyImage.DEFAULT_PROFILE_MAN)
     }
 
     override val yetPersisted: Boolean
@@ -50,6 +50,9 @@ data class Client(
             return firstName + lastName
         }
 
+    val idComparator: (Client) -> Boolean
+        get() = { that -> this.id.equals(that.id) }
+
     override fun compareTo(other: Client): Int {
         return ComparisonChain.start()
                 .compare(this.lastName, other.lastName)
@@ -57,8 +60,22 @@ data class Client(
                 .result()
     }
 
-    val idComparator: (Client) -> Boolean
-        get() = { that -> this.id.equals(that.id) }
+    fun defaultPictureBasedOnGender() =
+        when (gender) {
+            Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
+            Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
+            else -> MyImage.DEFAULT_PROFILE_MAN // MINOR add a generic user pic here
+        }
+
+    override fun toString(): String {
+        return MoreObjects.toStringHelper(javaClass)
+                .add("id", id)
+                .add("firstName", firstName)
+                .add("lastName", lastName)
+                .add("picture", picture)
+                .toString()
+    }
+
 
 }
 

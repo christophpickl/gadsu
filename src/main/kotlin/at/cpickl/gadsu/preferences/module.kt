@@ -10,7 +10,7 @@ class PreferencesModule(private val nodePrefsFqn: String?) : AbstractModule() {
     override fun configure() {
 
         bind(PreferencesController::class.java).asEagerSingleton()
-        bind(PreferencesWindow::class.java).to(SwingPreferencesWindow::class.java).`in`(Scopes.SINGLETON)
+        bind(PreferencesWindow::class.java).to(SwingPreferencesFrame::class.java).`in`(Scopes.SINGLETON)
 
         val nodeClass = if (nodePrefsFqn === null) JavaPrefs::class.java else Class.forName(nodePrefsFqn)
         bind(Prefs::class.java).toInstance(JavaPrefs(nodeClass))

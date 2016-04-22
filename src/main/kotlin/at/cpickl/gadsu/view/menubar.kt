@@ -1,16 +1,15 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.Development
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.CurrentClient
-import at.cpickl.gadsu.service.ID_Client
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.forClient
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -49,8 +48,8 @@ open class GadsuMenuBarController @Inject constructor(
     }
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
-        if (event.id == CurrentChangedEvent.ID_Client) {
-            menuBar.itemProtocol.isEnabled = event.newData is Client && event.newData.yetPersisted
+        event.forClient {
+            menuBar.itemProtocol.isEnabled = it.yetPersisted
         }
     }
 

@@ -3,7 +3,7 @@ package at.cpickl.gadsu.preferences
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.FormPanel
-import at.cpickl.gadsu.view.components.MyWindow
+import at.cpickl.gadsu.view.components.MyFrame
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -20,10 +20,10 @@ interface PreferencesWindow {
     fun readData(): PreferencesData
 }
 
-class SwingPreferencesWindow @Inject constructor(
+class SwingPreferencesFrame @Inject constructor(
         private val mainWindow: MainWindow,
         private val bus: EventBus
-) : MyWindow("Einstellungen"), PreferencesWindow {
+) : MyFrame("Einstellungen"), PreferencesWindow {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private var yetCreated: Boolean = false
