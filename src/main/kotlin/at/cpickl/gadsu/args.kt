@@ -41,7 +41,11 @@ interface ArgsParser {
 data class Args(val help: (() -> Unit)?,
                 val databaseUrl: String?,
                 val debug: Boolean,
-                val preferencesNode: String?)
+                val preferencesNode: String?) {
+    companion object {
+        val EMPTY = Args(null, null, false, null)
+    }
+}
 
 class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
 

@@ -17,7 +17,8 @@ interface WebPageOpener {
     fun open(url: URL)
 }
 
-class SwingWebPageOpener : WebPageOpener {
+@Logged
+open class SwingWebPageOpener : WebPageOpener {
     private val log = LoggerFactory.getLogger(javaClass)
 
     private var _isSupported: Boolean? = null
@@ -31,16 +32,7 @@ class SwingWebPageOpener : WebPageOpener {
             return _isSupported!!
         }
 
-    override fun open(url: URL) {
-        log.info("open(url='{}')", url)
-        if (isSupported === false) {
-            throw GadsuException("Opening links is not supported on your machine!")
-        }
-        desktop!!.browse(url.toURI())
-    }
-
-    @Subscribe fun onOpenWebpageEvent(event: OpenWebpageEvent) {
-        log.debug("onOpenWebpageEvent(event)")
+    @Subscribe open fun onOpenWebpageEvent(event: OpenWebpageEvent) {
         if (isSupported === false) {
             Dialogs(null).show(
                     title = "Ups",
@@ -51,6 +43,14 @@ class SwingWebPageOpener : WebPageOpener {
             return
         }
         open(event.url)
+    }
+
+    override fun open(url: URL) {
+        log.info("open(url='{}')", url)
+        if (isSupported === false) {
+            throw GadsuException("Opening links is not supported on your machine!")
+        }
+        desktop!!.browse(url.toURI())
     }
 
 }

@@ -10,6 +10,7 @@ import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.image.Images
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -63,8 +64,9 @@ class Development {
 class DevelopmentResetDataEvent : UserEvent()
 class DevelopmentClearDataEvent : UserEvent()
 
+@Logged
 @Suppress("UNUSED_PARAMETER")
-class DevelopmentController @Inject constructor(
+open class DevelopmentController @Inject constructor(
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val treatmentRepo: TreatmentRepository,
@@ -73,9 +75,7 @@ class DevelopmentController @Inject constructor(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {
-        log.debug("DevelopmentResetDataEvent(event)")
-
+    @Subscribe open fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {
         deleteAll()
 
         arrayOf(
@@ -122,9 +122,7 @@ class DevelopmentController @Inject constructor(
         }
     }
 
-    @Subscribe fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {
-        log.debug("onDevelopmentClearDataEvent(event={})", event)
-
+    @Subscribe open fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {
         deleteAll()
     }
 

@@ -10,6 +10,7 @@ import at.cpickl.gadsu.report.CreateProtocolEvent
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.ID_Client
+import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -30,15 +31,15 @@ class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
 }
 
 
-class GadsuMenuBarController @Inject constructor(
+@Logged
+open class GadsuMenuBarController @Inject constructor(
         private val menuBar: GadsuMenuBar,
         private val bus: EventBus,
         private val currentClient: CurrentClient
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
-        log.debug("onMenuBarEntryClickedEvent(event={})", event)
+    @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
         when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
             MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
@@ -47,9 +48,7 @@ class GadsuMenuBarController @Inject constructor(
         }
     }
 
-    @Subscribe fun onCurrentChangedEvent(event: CurrentChangedEvent) {
-        log.debug("onCurrentChangedEvent(event={})", event)
-
+    @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
         if (event.id == CurrentChangedEvent.ID_Client) {
             menuBar.itemProtocol.isEnabled = event.newData is Client && event.newData.yetPersisted
         }

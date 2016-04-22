@@ -5,6 +5,7 @@ import at.cpickl.gadsu.image.ImageModule
 import at.cpickl.gadsu.persistence.PersistenceModule
 import at.cpickl.gadsu.preferences.PreferencesModule
 import at.cpickl.gadsu.report.ReportModule
+import at.cpickl.gadsu.service.AopModule
 import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.view.ViewModule
@@ -52,6 +53,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(ImageModule())
         install(PreferencesModule(args.preferencesNode))
         install(ReportModule())
+        install(AopModule())
     }
 }
 

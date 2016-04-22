@@ -21,6 +21,7 @@ import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.MainWindow
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
@@ -31,8 +32,9 @@ import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 
 
+@Logged
 @Suppress("UNUSED_PARAMETER")
-class ClientViewController @Inject constructor(
+open class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
@@ -46,16 +48,13 @@ class ClientViewController @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Subscribe fun onAppStartupEvent(event: AppStartupEvent) {
-        log.trace("onAppStartupEvent(event)")
+    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         view.masterView.initClients(clientRepo.findAll())
 
         bus.post(ShowClientViewEvent())
     }
 
-    @Subscribe fun onCreateNewClientEvent(event: CreateNewClientEvent) {
-        log.trace("onCreateNewClientEvent(event)")
-
+    @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         if (checkChanges() === ChangeBehaviour.ABORT) {
             return
         }
@@ -74,44 +73,12 @@ class ClientViewController @Inject constructor(
     }
 
 
-    @Subscribe fun onSaveClientEvent(event: SaveClientEvent) {
-        log.trace("onSaveClientEvent(event)")
+    @Subscribe open fun onSaveClientEvent(event: SaveClientEvent) {
         val client = view.detailView.readClient()
         saveClient(client)
     }
 
-    private fun saveClient(client: Client) {
-        if (client.firstName.isEmpty() && client.lastName.isEmpty()) {
-            dialogs.show(
-                    title = "Speichern abgebrochen",
-                    message = "Es muss zumindest entweder ein Vorname oder ein Nachname eingegeben werden.",
-                    buttonLabels = arrayOf("Speichern Abbrechen"),
-                    type = DialogType.WARN
-            )
-            return
-        }
-
-        if (client.yetPersisted) {
-            clientRepo.update(client)
-            bus.post(ClientUpdatedEvent(client))
-            return
-        }
-
-        // insert new
-        val toBeInserted = client.copy(created = clock.now())
-
-        log.trace("Going to insert: {}", toBeInserted)
-        val savedClient = clientRepo.insert(toBeInserted)
-        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
-
-        @Suppress("SENSELESS_COMPARISON")
-        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
-
-        bus.post(ClientCreatedEvent(savedClient))
-    }
-
-    @Subscribe fun onClientCreatedEvent(event: ClientCreatedEvent) {
-        log.trace("onClientCreatedEvent(event)")
+    @Subscribe open fun onClientCreatedEvent(event: ClientCreatedEvent) {
         val index = view.masterView.model.calculateInsertIndex(event.client)
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
@@ -120,8 +87,7 @@ class ClientViewController @Inject constructor(
         currentClient.data = event.client
     }
 
-    @Subscribe fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
-        log.trace("onClientUpdatedEvent(event)")
+    @Subscribe open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
         view.masterView.changeClient(event.client)
 //        view.masterView.selectClient(event.client) ... nope, not needed
 
@@ -129,9 +95,7 @@ class ClientViewController @Inject constructor(
         currentClient.data = event.client
     }
 
-    @Subscribe fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        log.trace("onClientSelectedEvent(event)")
-
+    @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
         if (checkChanges() === ChangeBehaviour.ABORT) {
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
@@ -141,10 +105,7 @@ class ClientViewController @Inject constructor(
         view.detailView.writeClient(event.client)
     }
 
-
-    @Subscribe fun onDeleteClientEvent(event: DeleteClientEvent) {
-        log.trace("onDeleteClientEvent(event)")
-
+    @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
         dialogs.confirmedDelete("den Klienten '${event.client.fullName}'", {
             clientService.delete(event.client)
 
@@ -154,8 +115,8 @@ class ClientViewController @Inject constructor(
         })
     }
 
-    @Subscribe fun onClientDeletedEvent(event: ClientDeletedEvent) {
-        log.trace("onClientDeletedEvent(event)")
+
+    @Subscribe open fun onClientDeletedEvent(event: ClientDeletedEvent) {
         view.masterView.deleteClient(event.client)
 
         if (currentClient.data.id != null && currentClient.data.id.equals(event.client.id)) {
@@ -165,14 +126,11 @@ class ClientViewController @Inject constructor(
         }
     }
 
-    @Subscribe fun onShowClientViewEvent(event: ShowClientViewEvent) {
-        log.debug("onShowClientViewEvent(event={})", event)
-
+    @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {
         window.changeContent(view.asComponent())
     }
 
-    @Subscribe fun onImageSelectedEvent(event: ImageSelectedEvent) {
-        log.debug("onImageSelectedEvent(event={})", event)
+    @Subscribe open fun onImageSelectedEvent(event: ImageSelectedEvent) {
         if (!event.viewNamePrefix.equals(view.detailView.imageViewNamePrefix)) {
             log.debug("Aborting image selection, as was not dispatched for client view.")
             return
@@ -218,6 +176,36 @@ class ClientViewController @Inject constructor(
             }
             else -> throw GadsuException("Unhandled dialog option: '$result'")
         }
+    }
+
+    private fun saveClient(client: Client) {
+        if (client.firstName.isEmpty() && client.lastName.isEmpty()) {
+            dialogs.show(
+                    title = "Speichern abgebrochen",
+                    message = "Es muss zumindest entweder ein Vorname oder ein Nachname eingegeben werden.",
+                    buttonLabels = arrayOf("Speichern Abbrechen"),
+                    type = DialogType.WARN
+            )
+            return
+        }
+
+        if (client.yetPersisted) {
+            clientRepo.update(client)
+            bus.post(ClientUpdatedEvent(client))
+            return
+        }
+
+        // insert new
+        val toBeInserted = client.copy(created = clock.now())
+
+        log.trace("Going to insert: {}", toBeInserted)
+        val savedClient = clientRepo.insert(toBeInserted)
+        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
+
+        @Suppress("SENSELESS_COMPARISON")
+        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
+
+        bus.post(ClientCreatedEvent(savedClient))
     }
 
 

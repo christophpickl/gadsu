@@ -4,6 +4,7 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
@@ -44,7 +45,8 @@ enum class PersistenceErrorCode {
 /**
  * Shuts down the database connection so HSQLDB persists its data to the filesystem.
  */
-class DatabaseManager @Inject constructor(
+@Logged
+open class DatabaseManager @Inject constructor(
         private val dataSource: DataSource
 ) {
     init {
@@ -68,7 +70,7 @@ class DatabaseManager @Inject constructor(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    @Subscribe fun onQuit(event: QuitUserEvent) {
+    @Subscribe open fun onQuit(event: QuitUserEvent) {
         closeConnection()
     }
 

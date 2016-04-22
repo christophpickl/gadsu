@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment.view
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
@@ -18,7 +19,8 @@ import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-class TreatmentController @Inject constructor(
+@Logged
+open class TreatmentController @Inject constructor(
         private val window: MainWindow,
         private val treatmentViewFactory: TreatmentViewFactory,
         private val treatmentService: TreatmentService,
@@ -32,28 +34,15 @@ class TreatmentController @Inject constructor(
     private var treatmentView: TreatmentView? = null
 
 
-    @Subscribe fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
-        log.debug("onCreateTreatmentEvent(event={})", event)
+    @Subscribe open fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
         changeToTreatmentView(null)
     }
 
-    @Subscribe fun onOpenTreatmentEvent(event: OpenTreatmentEvent) {
-        log.debug("onOpenTreatmentEvent(event={})", event)
+    @Subscribe open fun onOpenTreatmentEvent(event: OpenTreatmentEvent) {
         changeToTreatmentView(event.treatment)
     }
 
-    private fun changeToTreatmentView(treatment: Treatment?) {
-        val client = currentClient.data
-
-        val number = treatmentService.calculateNextNumber(client)
-        val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
-
-        treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
-        window.changeContent(treatmentView!!.asComponent())
-    }
-
-    @Subscribe fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
-        log.info("onTreatmentSaveEvent(event={})", event)
+    @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
 
         val treatmentAfterSave: Treatment
         val treatmentToSave = event.treatment
@@ -70,11 +59,20 @@ class TreatmentController @Inject constructor(
         treatmentView!!.wasSaved(treatmentAfterSave)
     }
 
-    @Subscribe fun onTreatmentBackEvent(event: TreatmentBackEvent) {
-        log.debug("onTreatmentBackEvent(event={})", event)
+    @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
 
         // FIXME check changes
 
         bus.post(ShowClientViewEvent())
+    }
+
+    private fun changeToTreatmentView(treatment: Treatment?) {
+        val client = currentClient.data
+
+        val number = treatmentService.calculateNextNumber(client)
+        val nullSafeTreatment = treatment ?: Treatment.insertPrototype(client.id!!, number, clock.now())
+
+        treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
+        window.changeContent(treatmentView!!.asComponent())
     }
 }

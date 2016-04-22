@@ -16,7 +16,8 @@
 * in UI auf max length (durch DB limits) setzen (eigene textfeld/textarea komponente mit konstruktor)
 * reset prefs feature
 * add DB constraint that firstName+lastName combination is unique!
-
+* JTextField().putClientProperty("JTextField.variant", "search")
+        
 ## Low
 
 * check there are no snapshots during release.sh

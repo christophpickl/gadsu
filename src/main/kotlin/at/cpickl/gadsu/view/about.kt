@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.service.formatDateTime
@@ -36,16 +37,17 @@ class AboutModule : AbstractModule() {
     }
 }
 
-class AboutController @Inject constructor(
+
+@Logged
+open class AboutController @Inject constructor(
         private val window: AboutWindow
 ) {
 
-    @Subscribe fun onAbout(@Suppress("UNUSED_PARAMETER") event: ShowAboutDialogEvent) {
+    @Subscribe open fun onAbout(@Suppress("UNUSED_PARAMETER") event: ShowAboutDialogEvent) {
         window.setVisible(true)
     }
 
-    @Suppress("unused")
-    @Subscribe fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
+    @Subscribe open fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
         window.setVisible(false)
         window.dispose()
     }

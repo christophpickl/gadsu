@@ -14,7 +14,7 @@ data class Treatment(
         val created: DateTime,
         val number: Int,
         val date: DateTime,
-        val note: String
+        val note: String // TODO exclude from toString
 ) :
         Comparable<Treatment>, HasId, Persistable {
 
