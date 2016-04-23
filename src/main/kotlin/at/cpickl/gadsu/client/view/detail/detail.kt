@@ -37,6 +37,7 @@ interface ClientDetailView {
 //    fun changeImage(newImage: MyImage)
     fun focusFirst()
     fun asComponent(): Component
+    fun closePreparations()
 }
 
 @Logged
@@ -48,21 +49,20 @@ open class SwingClientDetailView @Inject constructor(
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
 ) : GridPanel(), ClientDetailView, ModificationAware {
-
     private val log = LOG(javaClass)
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
-    private val btnCancel = JButton("Abbrechen")
 
+    private val btnCancel = JButton("Abbrechen")
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
     private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
+
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
     )
     private val tabDetail = ClientTabDetail()
     private val allTabs = arrayOf(tabMain, tabDetail)
-
     init {
         modificationChecker.disableAll()
 
@@ -76,6 +76,10 @@ open class SwingClientDetailView @Inject constructor(
         btnCancel.changeSize(newSize)
 
         initLayout()
+    }
+
+    override fun closePreparations() {
+        tabMain.inpBirthday.hidePopup()
     }
 
     private fun initLayout() {
@@ -125,12 +129,10 @@ open class SwingClientDetailView @Inject constructor(
                         zipCode = tabMain.inpZipCode.text,
                         city = tabMain.inpCity.text
                 ),
-//              FIXME  tabMain.inpBirthday.selectedDate(),
-                currentClient.data.birthday,
+                tabMain.inpBirthday.selectedDate,
                 tabMain.inpGender.selectedItemTyped,
                 tabMain.inpCountryOfOrigin.text,
-//                tabMain.inpRelationship.text,
-                currentClient.data.relationship,
+                tabMain.inpRelationship.selectedItemTyped,
                 tabMain.inpJob.text,
                 tabMain.inpChildren.text,
                 tabMain.inpNote.text,

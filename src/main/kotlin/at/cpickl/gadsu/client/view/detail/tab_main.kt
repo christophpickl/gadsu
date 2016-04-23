@@ -40,11 +40,10 @@ class ClientTabMain(
 
     val inpFirstName = fields.newTextField("Vorname", {it.firstName}, ViewNames.Client.InputFirstName)
     val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
-    val inpGender = fields.newComboBox(Gender.values(), initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
-    val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday},
-            ViewNames.Client.InputBirthdayButton, ViewNames.Client.InputBirthdayPanel, ViewNames.Client.InputBirthdayText)
+    val inpGender = fields.newComboBox(Gender.orderedValues(), initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
+    val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
     val inpCountryOfOrigin = fields.newTextField("Herkunftsland", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
-    val inpRelationship = fields.newComboBox(Relationship.values(), initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
+    val inpRelationship = fields.newComboBox(Relationship.orderedValues(), initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
     val inpJob = fields.newTextField("Beruf", {it.job}, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", {it.children}, ViewNames.Client.InputChildren)
     val inpMail = fields.newTextField("Mail", {it.contact.mail}, ViewNames.Client.InputMail)

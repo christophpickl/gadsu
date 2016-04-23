@@ -18,7 +18,7 @@ import javax.swing.JLabel
 import javax.swing.JTextArea
 
 
-class DevFrame(initLocation: Point): JFrame() {
+class DevelopmentFrame(initLocation: Point): JFrame() {
 
     private val txtClient = JLabel()
     private val txtTreatment = JLabel()
@@ -78,7 +78,7 @@ class DevFrame(initLocation: Point): JFrame() {
     }
 
     fun addEvent(event: Any) {
-        events.text = event.toString() + "\n" + events.text
+        events.text = "${events.text}${event.javaClass.simpleName} ====> $event\n"
     }
 
     fun close() {

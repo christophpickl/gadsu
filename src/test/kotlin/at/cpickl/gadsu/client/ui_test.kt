@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.testinfra.TEST_DATE2
-import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.testinfra.skip
+import at.cpickl.gadsu.testinfra.ui.UiTest
+import at.cpickl.gadsu.testinfra.ui.clickAndDisposeDialog
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.lang.reflect.Method
@@ -20,6 +20,8 @@ class ClientUiTest : UiTest() {
     fun resetState(method: Method) {
         log.debug("resetState()")
 
+        treatmentDriver.goBackIfIsTreatmentVisible()
+
         if (driver.cancelButton.awtComponent.isEnabled) {
             driver.cancelButton.click()
         }
@@ -27,6 +29,16 @@ class ClientUiTest : UiTest() {
 
         // ensure each test is using a unique client instance
         client = Client.unsavedValidInstance().copy(firstName = javaClass.simpleName, lastName = method.name)
+    }
+
+    fun `birthday date panel is closed when creating new treatment`() {
+        saveClient(client)
+        driver.inputBirthdate.openPopupByButton { context ->
+            context.assertPopupVisible(true)
+            treatmentDriver.openNewButton.click()
+            context.assertPopupVisible(false)
+        }
+
     }
 
 
@@ -37,25 +49,23 @@ class ClientUiTest : UiTest() {
     fun saveClient_sunshine() {
         assertThat(driver.saveButton.textEquals("Neu anlegen")) // sanity check
 
-        driver.inputFirstName.text = client.firstName
-        driver.inputLastName.text = client.lastName
-
-        driver.saveButton.click()
+        driver.saveFullClient(client)
         assertThat(driver.saveButton.textEquals("Speichern"))
 
+        driver.assertViewContains(client)
         driver.assertListContains(client)
         driver.assertListSelected(client)
     }
 
     fun updateClient_shouldUpdateInListAsWell() {
-        driver.fillForm(client)
+        driver.fillNames(client)
         driver.saveButton.click()
 
         driver.assertListContains(client)
         driver.assertListSelected(client)
 
         val updatedClient = client.copy(firstName = "initial first name will be updated")
-        driver.fillForm(updatedClient)
+        driver.fillNames(updatedClient)
         driver.saveButton.click()
 
         driver.assertListContains(updatedClient)
@@ -100,7 +110,7 @@ class ClientUiTest : UiTest() {
 
 //    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
-        driver.saveNewClient(client)
+        driver.saveBasicClient(client)
         driver.deleteClient(client)
 
         driver.assertListNotContains(client)
@@ -114,7 +124,7 @@ class ClientUiTest : UiTest() {
 
     @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
-        driver.saveNewClient(client)
+        driver.saveBasicClient(client)
         driver.assertListSelected(client)
 
         driver.createButton.click()
@@ -160,14 +170,14 @@ class ClientUiTest : UiTest() {
     }
 
     fun checkUnsavedChanges_createButton_existingClient() {
-        driver.saveNewClient(client)
+        driver.saveBasicClient(client)
         driver.inputFirstName.text = "something else"
 
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
     fun checkUnsavedChanges_selectDifferentInList_forNewClient() {
-        driver.saveNewClient(client)
+        driver.saveBasicClient(client)
 
         driver.createButton.click()
         driver.inputFirstName.text = "foo"
@@ -183,6 +193,11 @@ class ClientUiTest : UiTest() {
     fun `checkChanges, when change birthday for new client, then save should be enabled (although not saveable as no name given)`() {
         driver.inputBirthdate.changeDate(TEST_DATE2.plusDays(17))
         driver.assertChangesDetected()
+    }
+
+    fun `checkChanges for full client`() {
+        driver.saveFullClient(client)
+        driver.createButton.click() // this should NOT trigger a popup!
     }
 
     //</editor-fold>

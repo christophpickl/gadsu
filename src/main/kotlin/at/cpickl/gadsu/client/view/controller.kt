@@ -21,7 +21,8 @@ import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.forClient
-import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.ChangeMainContentEvent
+import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.components.calculateInsertIndex
@@ -37,7 +38,6 @@ open class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
-        private val frame: MainFrame,
         private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val currentClient: CurrentClient,
@@ -49,7 +49,7 @@ open class ClientViewController @Inject constructor(
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         view.masterView.initClients(clientRepo.findAll())
 
-        bus.post(ShowClientViewEvent())
+        bus.post(ChangeMainContentEvent(view))
     }
 
     @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
@@ -63,7 +63,7 @@ open class ClientViewController @Inject constructor(
         }
 
         view.masterView.selectClient(null)
-        val newCreatingClient = Client.INSERT_PROTOTYPE
+        val newCreatingClient = Client.INSERT_PROTOTYPE.copy(created = clock.now())
 
         currentClient.data = newCreatingClient
         view.detailView.focusFirst()
@@ -122,12 +122,18 @@ open class ClientViewController @Inject constructor(
         }
     }
 
-    @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {
-        frame.changeContent(view.asComponent())
-    }
-
     @Subscribe open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {
         event.forClient { if (it.yetPersisted) view.masterView.changeClient(it) }
+    }
+
+    @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {
+        bus.post(ChangeMainContentEvent(view))
+    }
+
+    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+        if (event.oldContent === view) {
+            view.closePreparations()
+        }
     }
 
     fun checkChanges(): ChangeBehaviour {
@@ -168,28 +174,7 @@ open class ClientViewController @Inject constructor(
             return
         }
 
-        // TODO move to service layer
-        if (client.yetPersisted) {
-            clientRepo.updateWithoutPicture(client)
-
-            bus.post(ClientUpdatedEvent(client))
-            return
-        }
-
-        insertClient(client)
-    }
-
-    private fun insertClient(client: Client) {
-        val toBeInserted = client.copy(created = clock.now())
-
-        log.trace("Going to insert: {}", toBeInserted)
-        val savedClient = clientRepo.insertWithoutPicture(toBeInserted)
-        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
-
-        @Suppress("SENSELESS_COMPARISON")
-        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
-
-        bus.post(ClientCreatedEvent(savedClient))
+        clientService.insertOrUpdate(client)
     }
 
 }

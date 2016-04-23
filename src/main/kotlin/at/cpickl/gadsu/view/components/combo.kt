@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view.components
 
 import java.awt.Component
+import java.util.Vector
 import javax.swing.JComboBox
 import javax.swing.JLabel
 import javax.swing.JList
@@ -12,10 +13,10 @@ interface Labeled {
 }
 
 
-open class MyComboBox<T : Labeled>(array: Array<T>, initValue: T) : JComboBox<T>(array) {
+open class MyComboBox<T : Labeled>(data: List<T>, initValue: T) : JComboBox<T>(Vector(data)) {
 
     init {
-        assert(array.contains(initValue))
+        assert(data.contains(initValue))
         selectedItem = initValue
         setRenderer(LabeledCellRenderer(getRenderer()))
     }

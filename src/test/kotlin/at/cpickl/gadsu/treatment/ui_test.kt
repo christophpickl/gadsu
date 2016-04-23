@@ -3,11 +3,10 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.testinfra.LogTestListener
-import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.skip
+import at.cpickl.gadsu.testinfra.ui.UiTest
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
-import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Listeners
 import org.testng.annotations.Test
@@ -23,9 +22,7 @@ class TreatmentUiTest : UiTest() {
 
     @BeforeMethod
     fun resetState() {
-        if (driver.windowContainsMainPanel()) {
-            driver.backButton.click() // MINOR this could lead to a "save confirmation dialog" if there have been any changes
-        }
+        driver.goBackIfIsTreatmentVisible()
         clientDriver.createButton.click() // reset client form
     }
 
@@ -82,15 +79,13 @@ class TreatmentUiTest : UiTest() {
 
         saveClient(client)
         driver.openNewButton.click()
-        driver.inputData.openPopupByButton({ popup, jwindow, panel ->
-            assertThat(popup.isVisible)
-            Assert.assertTrue(jwindow.isVisible, "Expected the treatment date picker popup to be invisible!")
-
+        driver.inputDate.openPopupByButton({ context ->
+            context.assertPopupVisible(true)
             driver.backButton.click()
-
-            Assert.assertFalse(jwindow.isVisible, "Expected the treatment date picker popup to be invisible!")
+            context.assertPopupVisible(false)
         })
     }
+
 
     // ---------------------------------------------------------------------------
 

@@ -7,20 +7,21 @@ import org.joda.time.DateTime
 import javax.swing.JTextField
 
 
+/**
+ * Value is not nullable!
+ */
 class DateAndTimePicker(
         modificationChecker: ModificationChecker,
-        initialDate: DateTime?,
-        dateButtonViewName: String,
-        datePanelViewName: String,
-        dateTextViewName: String
+        initialDate: DateTime,
+        viewNamePrefix: String
 ) : GridPanel() {
 
     private val inpTime = JTextField() // FIXME make own time component; must also react on changes
     val inpDate: MyDatePicker
     init {
-        inpDate = modificationChecker.enableChangeListener(MyDatePicker.build(initialDate,
-                dateButtonViewName, datePanelViewName, dateTextViewName))
-        inpTime.text = initialDate?.formatTimeWithoutSeconds()
+        inpDate = modificationChecker.enableChangeListener(MyDatePicker.build(initialDate, viewNamePrefix))
+        inpTime.text = initialDate.formatTimeWithoutSeconds()
+        inpDate.disableClear()
 
         add(inpDate)
 

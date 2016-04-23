@@ -2,8 +2,8 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.unsavedValidInstance
-import at.cpickl.gadsu.testinfra.BaseDriver
-import at.cpickl.gadsu.testinfra.UiTest
+import at.cpickl.gadsu.testinfra.ui.BaseDriver
+import at.cpickl.gadsu.testinfra.ui.UiTest
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.MenuItem
@@ -44,7 +44,7 @@ class MenubarUiTest : UiTest() {
     }
 
     fun `Given user is selected, generate protocol should be enabled`() {
-        clientDriver.saveNewClient(Client.unsavedValidInstance())
+        clientDriver.saveBasicClient(Client.unsavedValidInstance())
         driver.assertItemEnabled(driver.menuReportsGenerateProtocol, true)
     }
 

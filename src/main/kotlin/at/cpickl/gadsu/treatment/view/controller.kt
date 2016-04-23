@@ -14,6 +14,8 @@ import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentViewFactory
+import at.cpickl.gadsu.view.ChangeMainContentEvent
+import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -66,8 +68,13 @@ open class TreatmentController @Inject constructor(
         // FIXME check changes for treatment
 
         currentTreatment.data = null
-        treatmentView!!.closePreparations()
         bus.post(ShowClientViewEvent())
+    }
+
+    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+        if (treatmentView != null && event.oldContent === treatmentView) {
+            treatmentView!!.closePreparations()
+        }
     }
 
     private fun changeToTreatmentView(treatment: Treatment?) {
@@ -83,6 +90,6 @@ open class TreatmentController @Inject constructor(
 
         currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
-        frame.changeContent(treatmentView!!.asComponent())
+        bus.post(ChangeMainContentEvent(treatmentView!!))
     }
 }

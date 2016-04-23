@@ -1,10 +1,13 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.AppEvent
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.components.MyFrame
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
@@ -15,7 +18,18 @@ import javax.inject.Inject
 import javax.swing.JFrame
 import javax.swing.JPanel
 
+class ChangeMainContentEvent(val newContent: MainContent) : AppEvent()
+class MainContentChangedEvent(val oldContent: MainContent?, val newContent: MainContent) : AppEvent()
 
+
+interface MainContent {
+    /**
+     * To close datepicker popup.
+     */
+    fun closePreparations()
+    fun asComponent(): Component
+
+}
 
 interface MainFrame {
     var descriptor: WindowDescriptor
@@ -23,12 +37,12 @@ interface MainFrame {
 
     fun start()
     fun close()
-    fun changeContent(content: Component)
     fun asJFrame(): JFrame
     fun requestFocus()
 }
 
-class SwingMainFrame @Inject constructor(
+@Logged
+open class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         private val gadsuMenuBar: GadsuMenuBar
         ) : MainFrame, MyFrame("Gadsu") {
@@ -75,15 +89,18 @@ class SwingMainFrame @Inject constructor(
         hideAndClose()
     }
 
-    override fun changeContent(content: Component) {
-        log.trace("changeContent(content={})", content)
-        container.removeAll()
-        container.add(content, BorderLayout.CENTER)
+    @Subscribe open fun onChangeMainContentEvent(event: ChangeMainContentEvent) {
+        val newContent = event.newContent
+        val oldContent = if (container.componentCount == 0) null else container.getComponent(0) as MainContent
+        container.removeAll() // actually deletes only the single one :)
+        container.add(newContent.asComponent(), BorderLayout.CENTER)
         container.revalidate()
         container.repaint()
 
+        bus.post(MainContentChangedEvent(oldContent, newContent))
     }
 
     override fun asJFrame() = this
 
 }
+

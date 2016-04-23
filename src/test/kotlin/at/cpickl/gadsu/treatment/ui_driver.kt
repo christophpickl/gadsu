@@ -1,25 +1,21 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.testinfra.BaseDriver
-import at.cpickl.gadsu.testinfra.UiTest
-import at.cpickl.gadsu.testinfra.deleteAtRow
+import at.cpickl.gadsu.testinfra.ui.BaseDriver
+import at.cpickl.gadsu.testinfra.ui.DateTimeSpecPicker
+import at.cpickl.gadsu.testinfra.ui.UiTest
+import at.cpickl.gadsu.testinfra.ui.deleteAtRow
 import at.cpickl.gadsu.treatment.inclient.TreatmentCell
 import at.cpickl.gadsu.view.ViewNames
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
-import org.jdatepicker.impl.JDatePanelImpl
 import org.slf4j.LoggerFactory
 import org.uispec4j.Button
 import org.uispec4j.Panel
 import org.uispec4j.TextBox
-import org.uispec4j.Trigger
 import org.uispec4j.Window
-import org.uispec4j.interception.WindowHandler
-import org.uispec4j.interception.WindowInterceptor
 import java.util.ArrayList
-import javax.swing.JWindow
 
 
 class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
@@ -35,8 +31,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     val backButton: Button get() = window.getButton(ViewNames.Treatment.BackButton)
     val mainPanel: Panel get() = window.getPanel(ViewNames.Treatment.MainPanel)
     val inputNote: TextBox get() = window.getTextBox(ViewNames.Treatment.InputNote)
-    val inputData: DateTimePicker get() = DateTimePicker(test, window,
-            ViewNames.Treatment.InputDateButton, ViewNames.Treatment.InputDatePanel)
+    val inputDate: DateTimeSpecPicker get() = DateTimeSpecPicker(test, window, ViewNames.Treatment.InputDatePrefix)
 
     fun windowContainsMainPanel() = window.findUIComponent(Panel::class.java, ViewNames.Treatment.MainPanel) != null
 
@@ -114,34 +109,11 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         test.assertThat(treatmentsList.isEmpty)
     }
 
-}
-
-class DateTimePicker(private val test: UiTest,
-                     private val window: Window,
-                     buttonViewName: String,
-                     private val panelViewName: String) {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-    private val openButton = window.getButton(buttonViewName)
-
-    fun openPopupByButton(function: (Window, JWindow, JDatePanelImpl) -> Unit) {
-        log.debug("openPopupByButton(function)")
-        WindowInterceptor
-            .init(openButton.triggerClick())
-            .process(object : WindowHandler() {
-                override fun process(dialog: Window): Trigger {
-                    log.trace("process(dialog) date picker popup")
-                    val popupContentRaw = (dialog.awtComponent as JWindow).rootPane.contentPane.getComponent(0)
-                    if (popupContentRaw !is JDatePanelImpl) {
-                        throw AssertionError("Expected popup's content to be a JDatePanelImpl, but was: ${popupContentRaw.javaClass.name} ($popupContentRaw)")
-                    }
-                    MatcherAssert.assertThat(popupContentRaw.name, equalTo(panelViewName))
-                    function(dialog, dialog.awtComponent as JWindow, popupContentRaw)
-                    return Trigger.DO_NOTHING
-                }
-            })
-            .run()
-
+    fun goBackIfIsTreatmentVisible() {
+        if (windowContainsMainPanel()) {
+            // MINOR this could lead to a "save confirmation dialog" if there have been any changes, discard if so
+            backButton.click()
+        }
     }
 
 }

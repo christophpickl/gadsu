@@ -1,9 +1,10 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.testinfra.SimpleUiTest
 import at.cpickl.gadsu.testinfra.TEST_DATE2
 import at.cpickl.gadsu.testinfra.TestViewStarter
+import at.cpickl.gadsu.testinfra.ui.DateSpecPicker
+import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import org.joda.time.DateTime
 import org.testng.annotations.Test
 import org.uispec4j.Window
@@ -14,13 +15,11 @@ import javax.swing.JPanel
 @Test(groups = arrayOf("uiTest"))
 class DatePickerUiTest : SimpleUiTest() {
     companion object {
-        private val VIEWNAME_BUTTON = "testButton"
-        private val VIEWNAME_PANEL = "testPanel"
-        private val VIEWNAME_TEXT = "testText"
+        private val VIEWNAME_PREFIX = "myTest"
     }
     private val container = JPanel()
-    private var _driver: DatePickerDriver? = null
-    private val driver: DatePickerDriver get() = _driver!!
+    private var _testee: DateSpecPicker? = null
+    private val testee: DateSpecPicker get() = _testee!!
 
     init {
         container.layout = BorderLayout()
@@ -32,22 +31,22 @@ class DatePickerUiTest : SimpleUiTest() {
     }
 
     override fun postInit(window: Window) {
-        _driver = DatePickerDriver(this, window, VIEWNAME_BUTTON, VIEWNAME_PANEL, VIEWNAME_TEXT)
+        _testee = DateSpecPicker(this, window, VIEWNAME_PREFIX)
     }
 
     fun `at startup without initial date, date picker should be nulled and deselected`() {
         testee(null)
-        driver.assertNothingSelected()
+        testee.assertNothingSelected()
     }
 
     fun `at startup with initial date, date picker should have selected that value`() {
         testee(TEST_DATE2)
-        driver.assertSelected(TEST_DATE2.clearTime())
+        testee.assertSelected(TEST_DATE2.clearTime())
     }
 
     private fun testee(initial: DateTime?): MyDatePicker {
         container.removeAll()
-        val testee =  MyDatePicker.build(initial, VIEWNAME_BUTTON, VIEWNAME_PANEL, VIEWNAME_TEXT)
+        val testee =  MyDatePicker.build(initial, VIEWNAME_PREFIX)
         container.add(testee, BorderLayout.CENTER)
         return testee
     }

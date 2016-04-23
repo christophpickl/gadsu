@@ -2,25 +2,26 @@ package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.view.detail.ClientDetailView
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.view.MainContent
 import at.cpickl.gadsu.view.components.GridPanel
 import com.google.inject.Inject
+import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
 
 
-interface ClientView {
+interface ClientView : MainContent {
     val masterView: ClientMasterView
     val detailView: ClientDetailView
-
-    fun asComponent(): Component
 }
 
 class SwingClientView @Inject constructor(
         override val masterView: ClientMasterView,
         override val detailView: ClientDetailView
 ) : GridPanel(), ClientView {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     init {
         debugColor = Color.YELLOW
@@ -37,6 +38,11 @@ class SwingClientView @Inject constructor(
         c.weightx = 1.0
         c.insets = Insets(0, 10, 0, 0)
         add(detailView.asComponent())
+    }
+
+    override fun closePreparations() {
+        log.trace("closePreparations()")
+        detailView.closePreparations()
     }
 
     override fun asComponent() = this

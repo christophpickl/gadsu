@@ -46,9 +46,7 @@ object ClientViewNames {
     val InputGender = "Client.InputGender"
     val InputRelationship = "Client.InputRelationship"
     val InputNote = "Client.InputNote"
-    val InputBirthdayButton = "Client.InputBirthdayButton"
-    val InputBirthdayPanel = "Client.InputBirthdayPanel"
-    val InputBirthdayText = "Client.InputBirthdayText"
+    val InputBirthdayPrefix = "Client.InputBirthday" // will be added something like ".XXX"
 }
 
 object TreatmentViewNames {
@@ -58,9 +56,8 @@ object TreatmentViewNames {
     val SaveButton = "Treatment.SaveButton"
     val ListInClientView = "Treatment.ListInClientView"
     val InputNote = "Treatment.InputNote"
-    val InputDateButton = "Treatment.InputDateButton"
-    val InputDatePanel = "Treatment.InputDatePanel"
-    val InputDateText = "Treatment.InputDateText"
+    val InputDatePrefix = "Treatment.InputDatePrefix" // will be added something like ".XXX"
+
 }
 
 object PreferencesViewNames {

@@ -89,8 +89,18 @@ class ClientSpringJdbcRepository @Inject constructor(
         log.debug("update(client={})", client)
         client.ensurePersisted()
 
-        jdbcx.updateSingle("UPDATE $TABLE SET firstName = ?, lastName = ? WHERE id = ?",
-                client.firstName, client.lastName, client.id!!)
+        jdbcx.updateSingle("""
+                UPDATE $TABLE SET
+                    firstName = ?, lastName = ?, birthday = ?,
+                    gender_enum = ?, countryOfOrigin = ?, mail = ?, phone = ?, street = ?,
+                    zipCode = ?, city = ?, relationship_enum = ?, job = ?, children = ?,
+                    note = ?
+                WHERE id = ?""",
+                client.firstName, client.lastName, client.birthday?.toSqlTimestamp(),
+                client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
+                client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
+                client.note,
+                client.id!!)
     }
 
     override fun changePicture(client: Client) {

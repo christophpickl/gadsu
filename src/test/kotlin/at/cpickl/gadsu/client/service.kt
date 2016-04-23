@@ -3,8 +3,6 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
-import at.cpickl.gadsu.testinfra.SimpleTestableClock
-import at.cpickl.gadsu.testinfra.TEST_DATE
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
 import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
@@ -42,6 +40,6 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         assertEmptyTable("treatment")
     }
 
-    private fun testee() = ClientServiceImpl(clientRepo, treatmentService, jdbcx(), bus, currentClient)
+    private fun testee() = ClientServiceImpl(clientRepo, treatmentService, jdbcx(), bus, clock, currentClient)
 
 }

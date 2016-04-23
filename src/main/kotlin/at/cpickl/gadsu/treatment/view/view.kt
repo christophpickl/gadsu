@@ -6,6 +6,7 @@ import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import at.cpickl.gadsu.view.Labels
+import at.cpickl.gadsu.view.MainContent
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DateAndTimePicker
 import at.cpickl.gadsu.view.components.Framed
@@ -22,7 +23,6 @@ import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
-import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JLabel
@@ -41,10 +41,8 @@ fun main(args: Array<String>) {
     })
 }
 
-interface TreatmentView : ModificationAware {
+interface TreatmentView : ModificationAware, MainContent {
     fun wasSaved(newTreatment: Treatment)
-    fun closePreparations()
-    fun asComponent(): Component
 }
 
 
@@ -69,9 +67,7 @@ class SwingTreatmentView @Inject constructor(
     private val inpDate: DateAndTimePicker = DateAndTimePicker(
             modificationChecker,
             treatment.date,
-            ViewNames.Treatment.InputDateButton,
-            ViewNames.Treatment.InputDatePanel,
-            ViewNames.Treatment.InputDateText
+            ViewNames.Treatment.InputDatePrefix
     )
 
     private val inpNote: JTextArea = swing.newTextArea(
@@ -115,7 +111,7 @@ class SwingTreatmentView @Inject constructor(
 
     override fun isModified(): Boolean {
         return ComparisonChain.start()
-                .compare(treatment.date, inpDate.readDateTime())
+                .compare(treatment.date, inpDate.readDateTime()) // watch out for nulls!
                 .compare(treatment.note, inpNote.text)
                 .result() != 0
     }

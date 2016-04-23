@@ -14,7 +14,7 @@ import javax.swing.JTextArea
 import javax.swing.JTextField
 
 
-private val LOG = LoggerFactory.getLogger("at.cpickl.gadsu.view")
+private val LOG_ElFIeld = LoggerFactory.getLogger(ElField::class.java)
 
 interface ElField<V> {
     val formLabel: String
@@ -27,7 +27,7 @@ private fun <V, T> ElField<V>._isModified(oldValue: T, extractValue: (V) -> T, v
     val extracted = extractValue(value)
     val modified = !Objects.equals(extracted, oldValue)
     if (modified) {
-        LOG.trace("Changes detected for form item '{}': UI-value: '{}', new value: '{}'", formLabel, oldValue, extracted)
+        LOG_ElFIeld.trace("Changes detected for form item '{}': UI-value: '{}', given value: '{}'", formLabel, oldValue, extracted)
     }
     return modified
 }
@@ -93,6 +93,9 @@ class ElDatePicker<V>(
     override fun isModified(value: V) = _isModified(selectedDate, extractValue, value)
     override fun updateValue(value: V) { selectedDate = extractValue(value) }
     override fun asComponent() = delegate
+    fun hidePopup() {
+        delegate.hidePopup()
+    }
 }
 
 class Fields<V>(private val modifications: ModificationChecker) {
@@ -115,7 +118,7 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun <T: Labeled> newComboBox(values: Array<T>, initValue: T, label: String, extractValue: (V) -> T, viewName: String): ElComboBox<V, T> {
+    fun <T: Labeled> newComboBox(values: List<T>, initValue: T, label: String, extractValue: (V) -> T, viewName: String): ElComboBox<V, T> {
         val realField = MyComboBox(values, initValue)
         val field = ElComboBox(realField, label, extractValue)
         realField.name = viewName
@@ -124,8 +127,8 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun newDatePicker(initDate: DateTime?, label: String, extractValue: (V) -> DateTime?, buttonName: String, panelName: String, textName: String): ElDatePicker<V> {
-        val realField = MyDatePicker.build(initDate, buttonName, panelName, textName)
+    fun newDatePicker(initDate: DateTime?, label: String, extractValue: (V) -> DateTime?, viewNamePrefix: String): ElDatePicker<V> {
+        val realField = MyDatePicker.build(initDate, viewNamePrefix)
         val field = ElDatePicker(realField, label, extractValue)
         modifications.enableChangeListener(realField)
         fields.add(field)

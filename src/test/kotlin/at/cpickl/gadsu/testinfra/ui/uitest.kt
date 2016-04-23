@@ -1,8 +1,9 @@
-package at.cpickl.gadsu.testinfra
+package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.testinfra.TestLogger
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
 import at.cpickl.gadsu.view.preferences.PreferencesDriver
@@ -64,7 +65,7 @@ abstract class SimpleUiTest : UISpecTestCase() {
         super.tearDown()
     }
 
-    private fun retrieveWindow():Window {
+    private fun retrieveWindow(): Window {
         // increase timeout, as it seems as app startup needs more time than default timeout
         val oldTimeout = UISpec4J.getWindowInterceptionTimeLimit()
         try {
@@ -118,7 +119,7 @@ abstract class UiTest : SimpleUiTest() {
     }
 
     protected fun saveClient(client: Client) {
-        clientDriver.saveNewClient(client)
+        clientDriver.saveBasicClient(client)
     }
 
 

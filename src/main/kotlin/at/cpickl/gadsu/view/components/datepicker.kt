@@ -18,12 +18,15 @@ import java.util.Date
 import java.util.Properties
 import javax.swing.JButton
 import javax.swing.JFormattedTextField
+import javax.swing.JLabel
+import javax.swing.JPanel
 
 
 // https://github.com/JDatePicker/JDatePicker
 // http://www.codejava.net/java-se/swing/how-to-use-jdatepicker-to-display-calendar-component
 fun main(args: Array<String>) {
-    val datePicker = MyDatePicker.build(null, "btn", "pnl", "txt")
+    val datePicker = MyDatePicker.build(null, "my")
+//    datePicker.disableClear()
     val btn = JButton("print selected date")
     btn.addActionListener {
         println("selectedDate: " + datePicker.selectedDate())
@@ -42,9 +45,7 @@ fun main(args: Array<String>) {
 //                               navigateToDate: DateTime? = null
 //) = MyDatePicker.build(navigateToDate ?: clock.now(), buttonViewName, panelViewName, textViewName)
 
-class MyDatePicker(buttonViewName: String,
-                   panelViewName: String,
-                   textViewName: String,
+class MyDatePicker(viewNamePrefix: String,
                    panel: JDatePanelImpl,
                    val model: UtilDateModel,
                    formatter: JFormattedTextField.AbstractFormatter) :
@@ -52,6 +53,17 @@ class MyDatePicker(buttonViewName: String,
     companion object {
 
         private val log = LoggerFactory.getLogger(MyDatePicker::class.java)
+
+        private val VIEWNAME_BUTTON_SUFFIX = ".OpenButton"
+        private val VIEWNAME_TEXTFIELD_SUFFIX = ".TextField"
+        private val VIEWNAME_PICKER_PANEL_SUFFIX = ".PickerPanel"
+        private val VIEWNAME_POPUP_PANEL_SUFFIX = ".PopupPanel"
+
+        fun viewNameButton(prefix: String) = prefix + VIEWNAME_BUTTON_SUFFIX
+        fun viewNameText(prefix: String) = prefix + VIEWNAME_TEXTFIELD_SUFFIX
+        fun viewNamePickerPanel(prefix: String) = prefix + VIEWNAME_PICKER_PANEL_SUFFIX
+        fun viewNamePopupPanel(prefix: String) = prefix + VIEWNAME_POPUP_PANEL_SUFFIX
+
         private val LABELS = Properties()
         init {
             LABELS.setProperty("text.today", "Heute")
@@ -59,7 +71,7 @@ class MyDatePicker(buttonViewName: String,
             LABELS.setProperty("text.year", "Jahr")
         }
 
-        fun build(initDate: DateTime?, buttonViewName: String, panelViewName: String, textViewName: String): MyDatePicker {
+        fun build(initDate: DateTime?, viewNamePrefix: String): MyDatePicker {
             log.trace("build(initDate={}, ..)", initDate)
 
             val model = UtilDateModel()
@@ -69,37 +81,68 @@ class MyDatePicker(buttonViewName: String,
                 model.isSelected = true // enter date in textfield by default
             }
             val panel = JDatePanelImpl(model, LABELS)
-            return MyDatePicker(buttonViewName, panelViewName, textViewName, panel, model, DatePickerFormatter())
+            panel.name = viewNamePopupPanel(viewNamePrefix)
+            return MyDatePicker(viewNamePrefix, panel, model, DatePickerFormatter())
         }
     }
 
+    private val log = LoggerFactory.getLogger(javaClass)
     private val hidePopupMethod: () -> Unit
+    private val disableClearFuntion: () -> Unit
+
     init {
-        name = panelViewName
+        name = viewNamePickerPanel(viewNamePrefix)
         val thiz = this
 
-        val implClazz = JDatePickerImpl::class.java
-        val fieldRef = implClazz.getDeclaredField("internalEventHandler")
-        fieldRef.isAccessible = true
-        val field = fieldRef.get(thiz) as ActionListener
+        val pickerClass = JDatePickerImpl::class.java
+        val pickerClassName = pickerClass.name
+        val panelClass = JDatePanelImpl::class.java
+        val panelClassName = panelClass.name
+//        val fieldRef = implClazz.getDeclaredField("internalEventHandler")
+//        fieldRef.isAccessible = true
+//        val field = fieldRef.get(thiz) as ActionListener
+//
+//        val buttonRef = implClazz.getDeclaredField("button")
+//        buttonRef.isAccessible = true
+//        val button = buttonRef.get(thiz) as JButton
 
-        val buttonRef = implClazz.getDeclaredField("button")
-        buttonRef.isAccessible = true
-        val button = buttonRef.get(thiz) as JButton
+        val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")
 
-        button.name = buttonViewName
+        val button = reflectivelyGetFieldAs<JButton>(pickerClassName, thiz, "button")
+        button.name = viewNameButton(viewNamePrefix)
 
-        val hidePopupRef = implClazz.getDeclaredMethod("hidePopup")
+        val hidePopupRef = pickerClass.getDeclaredMethod("hidePopup")
         hidePopupRef.isAccessible = true
         hidePopupMethod = { hidePopupRef.invoke(thiz) }
 
-        jFormattedTextField.name = textViewName
+        jFormattedTextField.name = viewNameText(viewNamePrefix)
         jFormattedTextField.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                field.actionPerformed(ActionEvent(button, 0, ""))
+                eventHandler.actionPerformed(ActionEvent(button, 0, ""))
             }
         })
 
+        val internalViewClassname = "org.jdatepicker.impl.JDatePanelImpl\$InternalView"
+        val internalView = reflectivelyGetFieldAs<JPanel>(panelClassName, panel, "internalView")
+        val southPanel = reflectivelyGetFieldAs<JPanel>(internalViewClassname, internalView, "southPanel")
+        val noneLabel = reflectivelyGetFieldAs<JLabel>(internalViewClassname, internalView, "noneLabel")
+        disableClearFuntion = { southPanel.remove(noneLabel) }
+
+        addChangeListener {
+            log.trace("Value changed to (via textfield text listening): {}", selectedDate())
+        }
+
+    }
+
+    private fun <T> reflectivelyGetFieldAs(providerType: String, providerObject: Any, fieldName: String): T {
+        val providerClass = Class.forName(providerType)
+//        println("Reflectively get field '${fieldName}' for: ${providerClass.name}\n" +
+//                providerClass.declaredFields.map { "${it.name}: ${it.type.simpleName}" }
+//                .joinToString(separator = "\n", prefix = "  - "))
+        val fieldRef = providerClass.getDeclaredField(fieldName)
+        fieldRef.isAccessible = true
+        val obj = fieldRef.get(providerObject)
+        return obj as T
     }
 
     fun changeDate(newValue: DateTime?) {
@@ -109,9 +152,12 @@ class MyDatePicker(buttonViewName: String,
 
 
     fun selectedDate(): DateTime? {
-        if (model.value !is Date) {
+        if (model.value == null) {
             log.trace("Current datepicker value is not a date but: {}", model.value?.javaClass?.name)
             return null
+        }
+        if (model.value !is Date) {
+            throw GadsuException("Expected the datepicker model value to be of type Date, but was: ${model.value.javaClass.name}")
         }
 
         return DateTime(model.value).clearTime()
@@ -127,6 +173,14 @@ class MyDatePicker(buttonViewName: String,
         jFormattedTextField.addPropertyChangeListener("value", {
             function()
         })
+    }
+
+    /**
+     * Make it non nullable, if initial date was not null from beginning
+     */
+    fun disableClear() {
+        log.trace("disableClear()")
+        disableClearFuntion.invoke()
     }
 }
 

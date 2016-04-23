@@ -39,10 +39,10 @@ open class DevelopmentController @Inject constructor(
         private val currentTreatment: CurrentTreatment
 ) {
 
-    private var devFrame: DevFrame? = null
+    private var devFrame: DevelopmentFrame? = null
 
     @Subscribe open fun onShowDevWindowEvent(event: ShowDevWindowEvent) {
-        devFrame = DevFrame(mainFrame.dockPositionRight)
+        devFrame = DevelopmentFrame(mainFrame.dockPositionRight)
         devFrame!!.updateClient(currentClient.data)
         devFrame!!.updateTreatment(currentTreatment.data)
         devFrame!!.start()
