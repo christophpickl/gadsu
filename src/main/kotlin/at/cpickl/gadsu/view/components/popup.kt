@@ -1,17 +1,76 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.client.CreateNewClientEvent
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 import java.awt.Component
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JList
 import javax.swing.JMenuItem
+import javax.swing.JPanel
 import javax.swing.JPopupMenu
 
+fun main(args: Array<String>) {
+    val dummyEvent = CreateNewClientEvent()
 
+    Framed.showWithContext( { context ->
+            context.bus.register(object: Any() {
+                @Subscribe fun onEvent(event: Any) {
+                    println("event dispatched: $event")
+                }
+            })
+            val list = JList<String>(arrayOf("erster eintrag", "zweiter eintrag"))
+
+//            list.enablePopup(context.bus, Pair("menu item 1", { element -> dummyEvent }))
+
+        val menu1 = Pair("menu item 1 just for ERSTER", { dummyEvent })
+        val menu2 = Pair("menu item 2", { dummyEvent })
+            list.enableSmartPopup(context.bus, { selectedEntry ->
+                when (selectedEntry) {
+                    "erster eintrag" ->  listOf(menu1, menu2)
+                    else -> listOf(menu2)
+                }
+            })
+            val panel = JPanel()
+            panel.add(list.scrolled())
+            panel
+    })
+}
+
+fun <T> JList<T>.enableSmartPopup(bus: EventBus, entriesFunction: (element: T) -> List<Pair<String, () -> UserEvent>>) {
+    _enablePopup(bus, entriesFunction)
+}
 fun <T> JList<T>.enablePopup(bus: EventBus, vararg entries: Pair<String, (element: T) -> UserEvent>) {
+//    val list = this
+//    addMouseListener(object : MouseAdapter() {
+//        override fun mousePressed(e: MouseEvent) {
+//            maybeShowPopup(e)
+//        }
+//
+//        override fun mouseReleased(e: MouseEvent) {
+//            maybeShowPopup(e)
+//        }
+//
+//        @Suppress("UNUSED_VARIABLE")
+//        private fun maybeShowPopup(e: MouseEvent) {
+//            if (e.isPopupTrigger) {
+//                val (index, element) = elementAtPoint(e.point) ?: return
+//
+//                val rawifiedEntries = entries.map { Pair(it.first, { it.second(element) }) }.toList()
+//                createAndShowPopup(bus, list, e.point, rawifiedEntries)
+//            }
+//        }
+//    })
+    val builderFunction = { element: T ->
+        entries.map { Pair(it.first, { it.second.invoke(element) }) }.toList()
+    }
+    _enablePopup(bus = bus, entriesFunction = builderFunction)
+}
+
+private fun <T> JList<T>._enablePopup(bus: EventBus, entriesFunction: (element: T) -> List<Pair<String, () -> UserEvent>>) { //entries: List<Pair<String, (element: T) -> UserEvent>>) {
     val list = this
     addMouseListener(object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
@@ -26,9 +85,8 @@ fun <T> JList<T>.enablePopup(bus: EventBus, vararg entries: Pair<String, (elemen
         private fun maybeShowPopup(e: MouseEvent) {
             if (e.isPopupTrigger) {
                 val (index, element) = elementAtPoint(e.point) ?: return
-
-                val rawifiedEntries = entries.map { Pair(it.first, { it.second(element) }) }.toList()
-                createAndShowPopup(bus, list, e.point, rawifiedEntries)
+                val entries = entriesFunction.invoke(element)
+                createAndShowPopup(bus, list, e.point, entries) //entries.map { Pair(it.first, {it.second.invoke(element)}) })
             }
         }
     })

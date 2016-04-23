@@ -12,7 +12,7 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.enablePopup
+import at.cpickl.gadsu.view.components.enableSmartPopup
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.eventbus.EventBus
@@ -75,13 +75,26 @@ class SwingClientMasterView @Inject constructor(
                 }
             }
         }
-        
-        list.enablePopup(bus,
-                Pair<String, (Client) -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
-                Pair<String, (Client) -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(it) }), // FIXME dynamic entries!
-                Pair<String, (Client) -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(it) })
-        )
 
+        list.enableSmartPopup(bus, { selectedClient ->
+            val list: List<Pair<String, () -> UserEvent>>
+            val menuDeleteClient = Pair<String, () -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(selectedClient) })
+
+            if (selectedClient.picture.isUnsavedDefaultPicture) {
+                list = listOf(
+                        Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() }),
+                        menuDeleteClient
+                )
+            } else {
+                list = listOf(
+                        Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
+                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient) }),
+                        menuDeleteClient
+                )
+            }
+            list
+
+        })
         list.cellRenderer = ClientListCellRender()
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.layoutOrientation = JList.VERTICAL

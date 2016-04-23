@@ -80,8 +80,7 @@ class ClientSpringJdbcRepository @Inject constructor(
                 client.note)
         return client.copy(
                 id = newId,
-                // MINOR add a 3rd default pic for unknown gender
-                picture = if (client.gender == Gender.FEMALE) MyImage.DEFAULT_PROFILE_WOMAN else MyImage.DEFAULT_PROFILE_MAN
+                picture = client.gender.defaultImage
         )
     }
 

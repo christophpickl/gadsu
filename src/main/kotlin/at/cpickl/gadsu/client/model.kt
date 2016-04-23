@@ -60,13 +60,6 @@ data class Client(
                 .result()
     }
 
-    fun defaultPictureBasedOnGender() =
-        when (gender) {
-            Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
-            Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
-            else -> MyImage.DEFAULT_PROFILE_MAN // MINOR add a generic user pic here
-        }
-
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)
                 .add("id", id)

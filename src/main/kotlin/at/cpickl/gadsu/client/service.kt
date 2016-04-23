@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
@@ -48,7 +49,14 @@ class ClientServiceImpl @Inject constructor(
         if (client.yetPersisted) {
             clientRepo.updateWithoutPicture(client)
 
-            bus.post(ClientUpdatedEvent(client))
+            val dispatchClient: Client
+            if (client.picture.isUnsavedDefaultPicture) {
+                // if showing the default picture, check the gender which might have been updated and set new default image
+                dispatchClient = client.copy(picture = client.gender.defaultImage)
+            } else {
+                dispatchClient = client
+            }
+            bus.post(ClientUpdatedEvent(dispatchClient))
             return
         }
 
@@ -68,7 +76,7 @@ class ClientServiceImpl @Inject constructor(
 
     override fun deleteImage(client: Client) {
         // the picture will not be stored anyway, but for dispatching useful
-        val changedClient = client.copy(picture = client.defaultPictureBasedOnGender())
+        val changedClient = client.copy(picture = client.gender.defaultImage)
         clientRepo.changePicture(changedClient)
         currentClient.data = changedClient
     }

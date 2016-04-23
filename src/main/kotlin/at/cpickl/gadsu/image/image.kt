@@ -16,6 +16,7 @@ interface MyImage {
     companion object {
         val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.jpg")
         val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.jpg")
+        val DEFAULT_PROFILE_ALIEN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_alien.jpg")
 
         fun byIcon(icon: ImageIcon) = icon.toMyImage()
         fun byBuffered(buffered: BufferedImage) = buffered.toMyImage()
@@ -29,9 +30,15 @@ interface MyImage {
      */
     fun toSaveRepresentation(): ByteArray?
 
+    /**
+     * Runs coherent to #toSaveRepresentation
+     */
+    val isUnsavedDefaultPicture: Boolean
+
     fun toViewBigRepresentation(): Icon
     fun toViewMedRepresentation(): Icon
     fun toViewLilRepresentation(): Icon
+
 
 }
 
@@ -46,7 +53,7 @@ val Gender.defaultImage: MyImage get() =
     when(this) {
         Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
         Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
-        else -> MyImage.DEFAULT_PROFILE_MAN // FIXME duplicate code!
+        else -> MyImage.DEFAULT_PROFILE_ALIEN
     }
 
 enum class ImageSize(private val _dimension: Dimension) {
@@ -71,10 +78,10 @@ enum class ImageSize(private val _dimension: Dimension) {
  * Default if nothing is selected.
  */
 private class DefaultImage(private val classpath: String) : MyImage {
-
     private val delegate = ClasspathImage(classpath)
 
     override fun toSaveRepresentation() = null // disable persisting default images
+    override val isUnsavedDefaultPicture = true
 
     override fun toViewBigRepresentation() = delegate.toViewBigRepresentation()
     override fun toViewMedRepresentation() = delegate.toViewMedRepresentation()
@@ -115,6 +122,7 @@ private abstract class IconifiedImage(private val original: ImageIcon) : MyImage
     }
 
     override fun toSaveRepresentation() = bytes
+    override val isUnsavedDefaultPicture = false
 
     override fun toViewBigRepresentation() = big
     override fun toViewMedRepresentation() = med
