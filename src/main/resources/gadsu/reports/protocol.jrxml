@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Protocol" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f3f5e28d-a6f8-4c35-8b5f-189f9078503c">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="40"/>
+	<property name="ireport.y" value="71"/>
 	<parameter name="client_fullName" class="java.lang.String"/>
 	<parameter name="countTreatments" class="java.lang.Integer"/>
 	<parameter name="author" class="java.lang.String"/>
 	<parameter name="printDate" class="java.lang.String"/>
+	<parameter name="client_picture" class="java.io.InputStream"/>
+	<parameter name="client_job" class="java.lang.String"/>
+	<parameter name="client_children" class="java.lang.String"/>
+	<parameter name="client_birthday" class="java.lang.String"/>
+	<parameter name="client_relationship" class="java.lang.String"/>
 	<field name="number" class="java.lang.Integer"/>
 	<field name="dateFormatted" class="java.lang.String"/>
 	<field name="note" class="java.lang.String"/>
@@ -38,10 +43,6 @@
 				<text><![CDATA[Klient:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="423" y="40" width="100" height="20" uuid="ecc29f24-207c-4840-882e-89661c1d3d5b"/>
-				<text><![CDATA[<<FOTO>>]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="60" width="123" height="20" uuid="97a08f51-1e22-4b14-9f3c-6d3c173fff21"/>
 				<textElement>
 					<font isBold="true"/>
@@ -57,7 +58,7 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Datum:]]></text>
+				<text><![CDATA[                  am:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="83" y="41" width="100" height="20" uuid="40c12964-1460-407a-8aa6-55863f935490"/>
@@ -74,24 +75,37 @@
 				<reportElement x="83" y="20" width="100" height="20" uuid="c64f47f6-6d85-4ee1-8656-ef5b9e8a247c"/>
 				<textFieldExpression><![CDATA[$P{author}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="436" y="10" width="80" height="80" uuid="5beb0027-af99-4d4f-90ae-6357670e14a8"/>
+				<imageExpression><![CDATA[$P{client_picture}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="276" y="1" width="55" height="20" uuid="e40eaeb4-4100-4692-9232-8a3cccb2b9fd">
+					<printWhenExpression><![CDATA[$P{client_job} != null]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[Beruf:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="331" y="1" width="100" height="20" uuid="408e0db7-09e1-4da1-9473-dc7afe7abd68"/>
+				<textFieldExpression><![CDATA[$P{client_job}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="276" y="20" width="55" height="20" uuid="d5c2a4f9-bebd-4f50-94ca-5dedb0743487">
+					<printWhenExpression><![CDATA[$P{client_children} != null]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[Kinder:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="331" y="21" width="100" height="20" uuid="3233dfb7-04bf-4bff-9f19-15d9a3cd827c"/>
+				<textFieldExpression><![CDATA[$P{client_children}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="114" splitType="Stretch">
-			<textField>
-				<reportElement x="61" y="43" width="160" height="20" uuid="59d10c2b-fbeb-4f67-a0ff-c2f7a2ce9af1"/>
-				<textFieldExpression><![CDATA[$F{dateFormatted}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="100" y="14" width="93" height="29" uuid="39f5dd90-bf92-4364-a88d-bd37263f931b"/>
-				<textElement>
-					<font size="15"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
-			</textField>
+		<band height="92" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="43" width="58" height="20" uuid="fca0e3e2-100f-490a-b65c-5fa2d48f9f23"/>
 				<textElement>
@@ -100,8 +114,8 @@
 				<text><![CDATA[Datum:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="63" width="555" height="51" uuid="4f384d8c-e979-4143-ae6a-bd70f7c19b16"/>
-				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+				<reportElement x="61" y="43" width="160" height="20" uuid="59d10c2b-fbeb-4f67-a0ff-c2f7a2ce9af1"/>
+				<textFieldExpression><![CDATA[$F{dateFormatted}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="14" width="100" height="29" uuid="6bd9686d-c7e6-4ae7-b20d-6a36246cba38"/>
@@ -110,6 +124,17 @@
 				</textElement>
 				<text><![CDATA[Behandlung]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="100" y="14" width="93" height="29" uuid="39f5dd90-bf92-4364-a88d-bd37263f931b"/>
+				<textElement>
+					<font size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="63" width="555" height="21" isRemoveLineWhenBlank="true" uuid="4f384d8c-e979-4143-ae6a-bd70f7c19b16"/>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

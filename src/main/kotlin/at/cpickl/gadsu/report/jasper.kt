@@ -39,7 +39,7 @@ interface JasperEngine {
     // also supports exporting as HTML :)
 }
 
-data class ReportConfig(val jrxmlClasspath: String, val parameters: Map<String, Any>, val rows: Collection<Any>)
+data class ReportConfig(val jrxmlClasspath: String, val parameters: Map<String, Any?>, val rows: Collection<Any>)
 
 class JasperEngineImpl : JasperEngine {
 
@@ -123,10 +123,10 @@ abstract class BaseReportGenerator<R : ReportWithRows>(
 
     private fun buildConfig(report: R): ReportConfig {
         val pairs = buildParameters(report)
-        val params = HashMap<String, Any>()
+        val params = HashMap<String, Any?>()
         pairs.forEach { params.put(it.first, it.second) }
         return ReportConfig(jrxmlClasspath, params, report.rows)
     }
 
-    abstract fun buildParameters(report: R): Array<Pair<String, Any>>
+    abstract fun buildParameters(report: R): Array<Pair<String, Any?>>
 }
