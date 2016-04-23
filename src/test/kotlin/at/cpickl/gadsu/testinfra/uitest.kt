@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
+import at.cpickl.gadsu.view.preferences.PreferencesDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
@@ -23,8 +24,11 @@ import java.util.prefs.Preferences
 //    }
 //}
 
+/**
+ * Independent of any gadsu specific UI stuff.
+ */
 @Test(groups = arrayOf("uiTest"))
-abstract class UiTest : UISpecTestCase() {
+abstract class SimpleUiTest : UISpecTestCase() {
     companion object {
         init {
             System.setProperty("gadsu.disableLog", "true")
@@ -32,13 +36,13 @@ abstract class UiTest : UISpecTestCase() {
             TestLogger().configureLog() // do it twice during the build, but enable once when running in IDE ;)
         }
     }
-    private val log = LoggerFactory.getLogger(javaClass)
-    private var window: Window? = null
 
-    private var mainDriver: MainDriver? = null
-    private var menuBarDriver: MenuBarDriver? = null
-    private var clientDriver: ClientDriver? = null
-    private var treatmentDriver: TreatmentDriver? = null
+    protected val log = LoggerFactory.getLogger(javaClass)
+
+    protected var window: Window? = null
+
+    abstract protected fun postInit(window: Window)
+    abstract protected fun newMainClassAdapter(): MainClassAdapter
 
     @BeforeClass
     fun initUi() {
@@ -48,37 +52,16 @@ abstract class UiTest : UISpecTestCase() {
         log.debug("Clearing preferences for node: {}", javaClass.name)
         Preferences.userNodeForPackage(javaClass).clear()
 
-        setAdapter(MainClassAdapter(Gadsu::class.java,
-                "--databaseUrl", "jdbc:hsqldb:mem:testDb",
-                "--preferences", javaClass.name))
+        setAdapter(newMainClassAdapter())
         window = retrieveWindow()
 
-        menuBarDriver = MenuBarDriver(this, window!!)
-        clientDriver = ClientDriver(this, window!!)
-        treatmentDriver = TreatmentDriver(this, window!!)
-
-        mainDriver = MainDriver(this, window!!, menuBarDriver!!, clientDriver!!, treatmentDriver!!)
+        postInit(window!!)
     }
 
     @AfterClass
-    fun destroyUi() {
+    final fun destroyUi() {
         log.debug("destroyUi()")
         super.tearDown()
-    }
-
-    fun mainDriver() = mainDriver!!
-    fun menuBarDriver() = menuBarDriver!!
-    fun clientDriver() = clientDriver!!
-    fun treatmentDriver() = treatmentDriver!!
-
-    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
-    fun assertPanelContainedInMainWindow(panelName: String) {
-        assertThat("$panelName expected to be contained in main window.",
-                window!!.containsUIComponent(Panel::class.java, panelName))
-    }
-
-    protected fun saveClient(client: Client) {
-        clientDriver().saveNewClient(client)
     }
 
     private fun retrieveWindow():Window {
@@ -91,6 +74,53 @@ abstract class UiTest : UISpecTestCase() {
             UISpec4J.setWindowInterceptionTimeLimit(oldTimeout)
         }
     }
+
+}
+
+abstract class UiTest : SimpleUiTest() {
+    private var _mainDriver: MainDriver? = null
+
+    private var _menuBarDriver: MenuBarDriver? = null
+    private var _clientDriver: ClientDriver? = null
+    private var _treatmentDriver: TreatmentDriver? = null
+    protected val mainDriver: MainDriver get() = _mainDriver!!
+
+    protected val menuBarDriver: MenuBarDriver get() = _menuBarDriver!!
+    protected val clientDriver: ClientDriver get() = _clientDriver!!
+    protected val treatmentDriver: TreatmentDriver get() = _treatmentDriver!!
+
+
+    override final fun newMainClassAdapter(): MainClassAdapter {
+        return MainClassAdapter(Gadsu::class.java,
+                "--databaseUrl", "jdbc:hsqldb:mem:testDb",
+                "--preferences", javaClass.name)
+    }
+
+    override final fun postInit(window: Window) {
+        println("postInit() this: ${javaClass.simpleName}")
+
+        _menuBarDriver = MenuBarDriver(this, window)
+        _clientDriver = ClientDriver(this, window)
+        _treatmentDriver = TreatmentDriver(this, window)
+
+        _mainDriver = MainDriver(this, window, menuBarDriver, clientDriver, treatmentDriver)
+    }
+
+    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
+    fun openPreferencesDriver(): PreferencesDriver {
+        return PreferencesDriver(this, mainDriver.openPreferencesWindow())
+    }
+
+    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
+    fun assertPanelContainedInMainWindow(panelName: String) {
+        assertThat("$panelName expected to be contained in main window.",
+                window!!.containsUIComponent(Panel::class.java, panelName))
+    }
+
+    protected fun saveClient(client: Client) {
+        clientDriver.saveNewClient(client)
+    }
+
 
 }
 

@@ -16,16 +16,17 @@ import org.testng.annotations.Test
 @Listeners(LogTestListener::class)
 class TreatmentUiTest : UiTest() {
 
+    private val driver: TreatmentDriver get() = treatmentDriver
     private var client = Client.savedValidInstance()
     private var treatment = Treatment.unsavedValidInstance(client.id!!)
 
 
     @BeforeMethod
     fun resetState() {
-        if (treatmentDriver().windowContainsMainPanel()) {
-            treatmentDriver().backButton.click() // MINOR this could lead to a "save confirmation dialog" if there have been any changes
+        if (driver.windowContainsMainPanel()) {
+            driver.backButton.click() // MINOR this could lead to a "save confirmation dialog" if there have been any changes
         }
-        clientDriver().createButton.click() // reset client form
+        clientDriver.createButton.click() // reset client form
     }
 
 
@@ -33,27 +34,27 @@ class TreatmentUiTest : UiTest() {
 
     fun `New treatment button only enabled when client is selected`() {
         assertThat("Expected new treatment button to be disabled at startup!",
-                not(treatmentDriver().openNewButton.isEnabled))
+                not(driver.openNewButton.isEnabled))
 
         saveClient(client)
 
         assertThat("Expected new treatment button to be enabled after creating a new client!",
-                treatmentDriver().openNewButton.isEnabled)
+                driver.openNewButton.isEnabled)
 
-        clientDriver().createButton.click()
+        clientDriver.createButton.click()
 
         assertThat("Expected new treatment button to be disabled when creating new client!",
-                not(treatmentDriver().openNewButton.isEnabled))
+                not(driver.openNewButton.isEnabled))
     }
 
     fun `Given client with a treatment, when hit create button, then the treatment list should be empty`() {
-        val driver = clientDriver()
+
         saveClient(client)
-        treatmentDriver().save(treatment = Treatment.uiInstance(note = "should not be here note 1"), returnToClientView = true)
+        driver.save(treatment = Treatment.uiInstance(note = "should not be here note 1"), returnToClientView = true)
 
-        driver.createButton.click()
+        clientDriver.createButton.click()
 
-        treatmentDriver().assertTreatmentsListEmpty()
+        driver.assertTreatmentsListEmpty()
     }
 
     // --------------------------------------------------------------------------- open new
@@ -61,8 +62,8 @@ class TreatmentUiTest : UiTest() {
     fun `Given user is selected, when hit new treatment button, then panel should be displayed`() {
         saveClient(client)
 
-        treatmentDriver().openNewButton.click()
-        treatmentDriver().assertPanelVisible()
+        driver.openNewButton.click()
+        driver.assertPanelVisible()
     }
 
     // --------------------------------------------------------------------------- back button
@@ -70,17 +71,16 @@ class TreatmentUiTest : UiTest() {
     fun `Given creating new treatment, hitting back button leads to client view again`() {
         saveClient(client)
 
-        treatmentDriver().openNewButton.click()
-        treatmentDriver().backButton.click()
+        driver.openNewButton.click()
+        driver.backButton.click()
 
-        clientDriver().assertPanelVisible()
+        clientDriver.assertPanelVisible()
     }
 
     fun `Given datepicker popup opened by button, when hit back, then the date select panel should not be visible anymore`() {
         skip("works perfectly isolated, but fails when whole test class is executed!")
-        val driver = treatmentDriver()
-        saveClient(client)
 
+        saveClient(client)
         driver.openNewButton.click()
         driver.inputData.openPopupByButton({ popup, jwindow, panel ->
             assertThat(popup.isVisible)
@@ -96,16 +96,13 @@ class TreatmentUiTest : UiTest() {
 
     //<editor-fold desc="save">
     fun `When creating a new treatment, then it shows up in the client view table for treatments`() {
-        val driver = treatmentDriver()
-        mainDriver().createClientAndTreatment(client, treatment)
+        mainDriver.createClientAndTreatment(client, treatment)
         driver.backButton.click()
 
         driver.assertTreatmentsInClientViewContains(1) // MINOR improve assertion
     }
 
     fun `When creating a new treatment, then the button labels change`() {
-        val driver = treatmentDriver()
-
         saveClient(client)
         driver.openNewButton.click()
         driver.assertSaveButtonLabel("Neu anlegen")
@@ -116,9 +113,7 @@ class TreatmentUiTest : UiTest() {
 
 
     fun `Given a saved treatment, when updating it,contents are stored and will show up again when doubleclicking on it in the client view`() {
-        val driver = treatmentDriver()
-
-        mainDriver().createClientAndTreatment(client, treatment)
+        mainDriver.createClientAndTreatment(client, treatment)
 
         val newNote = "some other note from test"
         driver.inputNote.text = newNote
@@ -139,7 +134,6 @@ class TreatmentUiTest : UiTest() {
 
     fun `reacalcNumber, full fledged test`() {
         skip("again a uispec4j bug with Rectangle rect = jList.getCellBounds(row, row); (ListBox#rightClick)")
-        val driver = treatmentDriver()
         saveClient(client)
 
         val treatment1 = treatment.copy(note = "note1", number = 1) // TODO somehow get back the real treatment instance via driver (has ID and number properly set!)
@@ -161,9 +155,7 @@ class TreatmentUiTest : UiTest() {
 
 
     fun `Given a fresh inserted treatment, then the save button should be disabled, but be enabled when changing some property`() {
-        val driver = treatmentDriver()
-
-        mainDriver().createClientAndTreatment(client, treatment)
+        mainDriver.createClientAndTreatment(client, treatment)
         assertThat("Not any changes, therefor save button should be disabled!",
                 not(driver.saveButton.isEnabled))
 
@@ -181,7 +173,6 @@ class TreatmentUiTest : UiTest() {
     // --------------------------------------------------------------------------- check changes
 
     fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
-        val driver = treatmentDriver()
         saveClient(client)
 
         driver.openNewButton.click()

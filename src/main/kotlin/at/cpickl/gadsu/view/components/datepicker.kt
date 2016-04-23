@@ -2,8 +2,7 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.DateFormats
-import at.cpickl.gadsu.service.RealClock
-import com.google.common.eventbus.EventBus
+import at.cpickl.gadsu.service.clearTime
 import org.jdatepicker.impl.JDatePanelImpl
 import org.jdatepicker.impl.JDatePickerImpl
 import org.jdatepicker.impl.UtilDateModel
@@ -24,7 +23,7 @@ import javax.swing.JFormattedTextField
 // https://github.com/JDatePicker/JDatePicker
 // http://www.codejava.net/java-se/swing/how-to-use-jdatepicker-to-display-calendar-component
 fun main(args: Array<String>) {
-    val datePicker = SwingFactory(EventBus(), RealClock()).newDatePicker("btn", "pnl")
+    val datePicker = MyDatePicker.build(null, "btn", "pnl", "txt")
     val btn = JButton("print selected date")
     btn.addActionListener {
         println("selectedDate: " + datePicker.selectedDate())
@@ -33,20 +32,26 @@ fun main(args: Array<String>) {
     Framed.show(arrayOf(datePicker as Component, btn))
 }
 
-/**
- * @param navigateToDate defaults to current date
- * @param preselectDate if true sets the textfield to the date (just as would have been selected manually)
- */
-fun SwingFactory.newDatePicker(buttonViewName: String,
-                               panelViewName: String,
-                               navigateToDate: DateTime? = null
-) = MyDatePicker.build(navigateToDate ?: clock.now(), buttonViewName, panelViewName)
+///**
+// * @param navigateToDate defaults to current date
+// * @param preselectDate if true sets the textfield to the date (just as would have been selected manually)
+// */
+//fun SwingFactory.newDatePicker(buttonViewName: String,
+//                               panelViewName: String,
+//                               textViewName: String,
+//                               navigateToDate: DateTime? = null
+//) = MyDatePicker.build(navigateToDate ?: clock.now(), buttonViewName, panelViewName, textViewName)
 
 class MyDatePicker(buttonViewName: String,
+                   panelViewName: String,
+                   textViewName: String,
                    panel: JDatePanelImpl,
+                   val model: UtilDateModel,
                    formatter: JFormattedTextField.AbstractFormatter) :
         JDatePickerImpl(panel, formatter) {
     companion object {
+
+        private val log = LoggerFactory.getLogger(MyDatePicker::class.java)
         private val LABELS = Properties()
         init {
             LABELS.setProperty("text.today", "Heute")
@@ -54,7 +59,9 @@ class MyDatePicker(buttonViewName: String,
             LABELS.setProperty("text.year", "Jahr")
         }
 
-        fun build(initDate: DateTime?, buttonViewName: String, panelViewName: String): MyDatePicker {
+        fun build(initDate: DateTime?, buttonViewName: String, panelViewName: String, textViewName: String): MyDatePicker {
+            log.trace("build(initDate={}, ..)", initDate)
+
             val model = UtilDateModel()
             // joda uses 1-12, java date uses 0-11
             if (initDate != null) {
@@ -62,14 +69,13 @@ class MyDatePicker(buttonViewName: String,
                 model.isSelected = true // enter date in textfield by default
             }
             val panel = JDatePanelImpl(model, LABELS)
-            panel.name = panelViewName
-            return MyDatePicker(buttonViewName, panel, DatePickerFormatter())
+            return MyDatePicker(buttonViewName, panelViewName, textViewName, panel, model, DatePickerFormatter())
         }
     }
 
-    private val log = LoggerFactory.getLogger(javaClass)
     private val hidePopupMethod: () -> Unit
     init {
+        name = panelViewName
         val thiz = this
 
         val implClazz = JDatePickerImpl::class.java
@@ -87,6 +93,7 @@ class MyDatePicker(buttonViewName: String,
         hidePopupRef.isAccessible = true
         hidePopupMethod = { hidePopupRef.invoke(thiz) }
 
+        jFormattedTextField.name = textViewName
         jFormattedTextField.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 field.actionPerformed(ActionEvent(button, 0, ""))
@@ -95,17 +102,35 @@ class MyDatePicker(buttonViewName: String,
 
     }
 
+    fun changeDate(newValue: DateTime?) {
+        log.trace("changeDate(newValue={})", newValue)
+        model.value = newValue?.toDate()
+    }
 
-    fun selectedDate(): DateTime {
-        val selectedDate = model.value as Date
-        return DateTime(selectedDate)
+
+    fun selectedDate(): DateTime? {
+        if (model.value !is Date) {
+            log.trace("Current datepicker value is not a date but: {}", model.value?.javaClass?.name)
+            return null
+        }
+
+        return DateTime(model.value).clearTime()
     }
 
     fun hidePopup() {
         log.trace("hidePopup()")
         hidePopupMethod.invoke()
     }
+
+    fun addChangeListener(function: () -> Unit) {
+        // so, after the popup opened, and something is selected, it is for sure the formatted textfield value has changed, so rely on that
+        jFormattedTextField.addPropertyChangeListener("value", {
+            function()
+        })
+    }
 }
+
+
 
 class DatePickerFormatter : JFormattedTextField.AbstractFormatter() {
 

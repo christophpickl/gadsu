@@ -13,7 +13,6 @@ import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.newDateAndTimePicker
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.scrolled
@@ -67,10 +66,13 @@ class SwingTreatmentView @Inject constructor(
 
     private val modificationChecker = ModificationChecker(this, btnSave)
 
-    private val inpDate: DateAndTimePicker = swing.newDateAndTimePicker(
+    private val inpDate: DateAndTimePicker = DateAndTimePicker(
+            modificationChecker,
+            treatment.date,
             ViewNames.Treatment.InputDateButton,
             ViewNames.Treatment.InputDatePanel,
-            modificationChecker, treatment.date)
+            ViewNames.Treatment.InputDateText
+    )
 
     private val inpNote: JTextArea = swing.newTextArea(
             viewName = ViewNames.Treatment.InputNote,
@@ -139,7 +141,7 @@ class SwingTreatmentView @Inject constructor(
                 treatment.clientId,
                 treatment.created,
                 treatment.number,
-                inpDate.readDateTime(),
+                inpDate.readDateTime()!!,
                 inpNote.text
         )
     }

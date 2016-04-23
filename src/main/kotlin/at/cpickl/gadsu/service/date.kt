@@ -25,6 +25,7 @@ fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 
 fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
+fun DateTime.clearTime() = this.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
 
 fun String.parseDateTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
 

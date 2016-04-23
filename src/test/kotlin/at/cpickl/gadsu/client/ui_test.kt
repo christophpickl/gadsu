@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.testinfra.TEST_DATE2
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.clickAndDisposeDialog
 import at.cpickl.gadsu.testinfra.skip
-import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.lang.reflect.Method
@@ -12,14 +12,13 @@ import java.lang.reflect.Method
 @Test(groups = arrayOf("uiTest"))
 class ClientUiTest : UiTest() {
 
-    private val log = LoggerFactory.getLogger(javaClass)
-
     private var client = Client.unsavedValidInstance()
+
+    private val driver: ClientDriver get() = clientDriver
 
     @BeforeMethod
     fun resetState(method: Method) {
         log.debug("resetState()")
-        val driver = clientDriver()
 
         if (driver.cancelButton.awtComponent.isEnabled) {
             driver.cancelButton.click()
@@ -36,8 +35,6 @@ class ClientUiTest : UiTest() {
     //<editor-fold desc="save">
 
     fun saveClient_sunshine() {
-        val driver = clientDriver()
-
         assertThat(driver.saveButton.textEquals("Neu anlegen")) // sanity check
 
         driver.inputFirstName.text = client.firstName
@@ -51,8 +48,6 @@ class ClientUiTest : UiTest() {
     }
 
     fun updateClient_shouldUpdateInListAsWell() {
-        val driver = clientDriver()
-
         driver.fillForm(client)
         driver.saveButton.click()
 
@@ -68,8 +63,6 @@ class ClientUiTest : UiTest() {
     }
 
     fun `Save without any name entered fails`() {
-        val driver = clientDriver()
-
         driver.inputFirstName.text = ""
         driver.inputLastName.text = ""
         driver.inputJob.text = "test first name"
@@ -86,8 +79,6 @@ class ClientUiTest : UiTest() {
 
     //<editor-fold desc="cancel">
     fun cancelInsertClient_shouldClearAllFields() {
-        val driver = clientDriver()
-
         assertThat(driver.inputFirstName.textIsEmpty())
         assertThat(driver.inputLastName.textIsEmpty())
 
@@ -109,8 +100,6 @@ class ClientUiTest : UiTest() {
 
 //    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun deleteClient_sunshine() {
-        val driver = clientDriver()
-
         driver.saveNewClient(client)
         driver.deleteClient(client)
 
@@ -125,8 +114,6 @@ class ClientUiTest : UiTest() {
 
     @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
-        val driver = clientDriver()
-
         driver.saveNewClient(client)
         driver.assertListSelected(client)
 
@@ -136,8 +123,6 @@ class ClientUiTest : UiTest() {
 
     fun `When hit create button, then the first name textfield should have focus`() {
         skip("focus works in real app, but does not work in ui test :(")
-        val driver = clientDriver()
-
         driver.createButton.click()
         driver.assertHasFocus(driver.inputFirstName)
     }
@@ -151,8 +136,6 @@ class ClientUiTest : UiTest() {
     // same applies for already saved client
     // and also when hit the cancel button
     fun buttonsDisabledIfThereAreNoChangesForEmptyClient() {
-        val driver = clientDriver()
-
         driver.assertNoChangesDetected()
 
         driver.inputFirstName.text = "changed"
@@ -164,15 +147,11 @@ class ClientUiTest : UiTest() {
     }
 
     fun checkUnsavedChanges_createButton_newClient() {
-        val driver = clientDriver()
-
         driver.inputFirstName.text = "foo"
         driver.createButton.clickAndDisposeDialog("Abbrechen")
     }
 
     fun checkUnsavedChanges_createButton_newClient_save() {
-        val driver = clientDriver()
-
         driver.inputFirstName.text = client.firstName
         driver.inputLastName.text = client.lastName
         driver.createButton.clickAndDisposeDialog("Speichern")
@@ -181,8 +160,6 @@ class ClientUiTest : UiTest() {
     }
 
     fun checkUnsavedChanges_createButton_existingClient() {
-        val driver = clientDriver()
-
         driver.saveNewClient(client)
         driver.inputFirstName.text = "something else"
 
@@ -190,8 +167,6 @@ class ClientUiTest : UiTest() {
     }
 
     fun checkUnsavedChanges_selectDifferentInList_forNewClient() {
-        val driver = clientDriver()
-
         driver.saveNewClient(client)
 
         driver.createButton.click()
@@ -201,10 +176,13 @@ class ClientUiTest : UiTest() {
     }
 
     fun checkUnsavedChanges_selectDifferentInList_existingClient() {
-        val driver = clientDriver()
-
         driver.inputFirstName.text = "foo"
         driver.createButton.clickAndDisposeDialog("Abbrechen")
+    }
+
+    fun `checkChanges, when change birthday for new client, then save should be enabled (although not saveable as no name given)`() {
+        driver.inputBirthdate.changeDate(TEST_DATE2.plusDays(17))
+        driver.assertChangesDetected()
     }
 
     //</editor-fold>
@@ -216,7 +194,6 @@ class ClientUiTest : UiTest() {
     // check changes
     fun `When changing picture, then save button should be enabled`() {
         skip("changing image has changed") // MINOR TEST reenable picture test
-        val driver = clientDriver()
         assertThat(not(driver.saveButton.isEnabled)) // sanity check
 
         driver.changeImage()

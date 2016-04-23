@@ -7,7 +7,9 @@ import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
 import at.cpickl.gadsu.view.SwingMainFrame
+import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
 import org.testng.Assert
@@ -38,6 +40,14 @@ class MainDriver(
 
         treatmentDriver.save(treatment)
     }
+
+    fun openPreferencesWindow(): Window {
+        log.debug("openPreferencesWindow()")
+        val window = WindowInterceptor.run(menuBarDriver.menuItemPreferences.triggerClick())
+        MatcherAssert.assertThat(window.getName(), Matchers.equalTo(at.cpickl.gadsu.view.ViewNames.Preferences.Window))
+        return window
+    }
+
 
     // and some via extension methods
 }

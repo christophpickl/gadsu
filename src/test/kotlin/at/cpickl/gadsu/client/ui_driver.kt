@@ -6,6 +6,7 @@ import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.UiTest
 import at.cpickl.gadsu.testinfra.deleteAtRow
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.components.DatePickerDriver
 import at.cpickl.gadsu.view.components.MyListModel
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
@@ -36,6 +37,9 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     val inputJob= window.getInputTextBox(ViewNames.Client.InputJob)
     val saveButton = window.getButton(ViewNames.Client.SaveButton)
     val cancelButton = window.getButton(ViewNames.Client.CancelButton)
+
+    val inputBirthdate: DatePickerDriver = DatePickerDriver(test, window,
+            ViewNames.Client.InputBirthdayButton, ViewNames.Client.InputBirthdayPanel, ViewNames.Client.InputBirthdayText)
 
 //    private val imageContainer = window.getTextBox(ViewNames.Client.ImageContainer)
 
@@ -135,9 +139,8 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     }
 
     fun assertChangesDetected() {
-        test.assertThat(saveButton.isEnabled)
+        test.assertThat("Expected client save button to be enabled!", saveButton.isEnabled)
         test.assertThat(cancelButton.isEnabled)
     }
-
 
 }

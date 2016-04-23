@@ -47,6 +47,7 @@ class AnyBusListener {
 
 
             val actual = actualRaw as Event
+            @Suppress("NO_CAST_NEEDED")
             val expected = expectedRaw as Event
             // FIXME nope, this is a generic thing here, dont do this here
             assertThat(actual, theSameAs(expected).excludeProperty("created").excludeProperty("birthday"))
