@@ -208,7 +208,7 @@ class ClientUiTest : UiTest() {
 
     // check changes
     fun `When changing picture, then save button should be enabled`() {
-        skip("changing image has changed") // MINOR TEST reenable picture test
+        skip("changing image has changed") // MINOR @TEST - reenable picture test
         assertThat(not(driver.saveButton.isEnabled)) // sanity check
 
         driver.changeImage()
@@ -217,7 +217,7 @@ class ClientUiTest : UiTest() {
     }
 
     fun `When changing image, then image content should have been changed`() {
-        skip("image handling has changed :(") // MINOR re-enable ui test
+        skip("image handling has changed :(") // MINOR @TEST - re-enable ui test
 //        val driver = clientDriver()
 //        val oldImage = driver.readImage()
 //

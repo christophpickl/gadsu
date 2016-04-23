@@ -36,7 +36,7 @@ abstract class HsqldbTest {
     private var dataSource: EmbeddedDatabase? = null
     private var jdbcx: SpringJdbcx? = null
 
-    // MINOR delete mock, and use testable implementations instead
+    // MINOR @TEST - delete mock, and use testable implementations instead
     protected var bus = EventBus()
     protected var clock = SimpleTestableClock()
     protected var idGenerator: IdGenerator = mock(IdGenerator::class.java)

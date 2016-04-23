@@ -45,7 +45,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun save(treatment: Treatment, returnToClientView: Boolean = false) {
         openNewButton.click()
-        // TODO change date as well (DatePicker aufbrechen und in die interne reingreifen mit static casts)
+        // TODO @TEST - change date as well (DatePicker aufbrechen und in die interne reingreifen mit static casts)
         inputNote.text = treatment.note
         saveButton.click()
 
@@ -76,7 +76,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         throw AssertionError("Expecting treatments list rendered component to be a TreatmentCell, but was: ${rendering.javaClass.name} ($rendering)")
     }
 
-    // MINOR reusable for client list!
+    // MINOR @TEST - reusable for client list!
     fun treatmentsListContent(): List<Pair<Treatment, Int>> {
         val list = ArrayList<Pair<Treatment, Int>>(treatmentsList.size)
         for (row in 0.rangeTo(treatmentsList.size - 1)) {
@@ -87,7 +87,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     }
 
 
-    // MINOR make reusable for client list (client resolved via using the direct table model... different approach!)
+    // MINOR @TEST - make reusable for client list (client resolved via using the direct table model... different approach!)
     private fun findListRowForTreatmentNumber(number: Int): Pair<Treatment, Int> {
         return treatmentsListContent().firstOrNull { it.first.number == number }
                 ?: throw GadsuException("Could not find index for treatment number: $number!")
@@ -111,7 +111,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun goBackIfIsTreatmentVisible() {
         if (windowContainsMainPanel()) {
-            // MINOR this could lead to a "save confirmation dialog" if there have been any changes, discard if so
+            // MINOR @TEST - this could lead to a "save confirmation dialog" if there have been any changes, discard if so
             backButton.click()
         }
     }

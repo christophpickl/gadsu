@@ -94,7 +94,7 @@ class TreatmentUiTest : UiTest() {
         mainDriver.createClientAndTreatment(client, treatment)
         driver.backButton.click()
 
-        driver.assertTreatmentsInClientViewContains(1) // MINOR TEST improve assertion
+        driver.assertTreatmentsInClientViewContains(1) // MINOR @TEST - improve assertion
     }
 
     fun `When creating a new treatment, then the button labels change`() {
@@ -119,7 +119,7 @@ class TreatmentUiTest : UiTest() {
 
         driver.openTreatment(treatment.number)
         MatcherAssert.assertThat(driver.inputNote.text, equalTo(newNote))
-        // MINOR add some more asserts, after TreatmentMini got some more values
+        // MINOR @TEST - add some more asserts, after TreatmentMini got some more values
     }
     //</editor-fold>
 
@@ -131,14 +131,15 @@ class TreatmentUiTest : UiTest() {
         skip("again a uispec4j bug with Rectangle rect = jList.getCellBounds(row, row); (ListBox#rightClick)")
         saveClient(client)
 
-        val treatment1 = treatment.copy(note = "note1", number = 1) // TODO somehow get back the real treatment instance via driver (has ID and number properly set!)
+        // MINOR @TEST - somehow get back the real treatment instance via driver (has ID and number properly set!)
+        val treatment1 = treatment.copy(note = "note1", number = 1)
         val treatment2 = treatment.copy(note = "note2", number = 2)
         val treatment3 = treatment.copy(note = "note3", number = 3)
         driver.save(treatment = treatment1, returnToClientView = true)
         driver.save(treatment = treatment2, returnToClientView = true)
         driver.save(treatment = treatment3, returnToClientView = true)
 
-        driver.assertTreatmentsListContains(1, 2, 3) // FIXME reverse order!!!
+        driver.assertTreatmentsListContains(1, 2, 3) // FIXME @TEST - reverse order!!!
 
         driver.deleteTreatment(treatment2)
 
@@ -175,7 +176,7 @@ class TreatmentUiTest : UiTest() {
         assertThat(driver.saveButton.isEnabled)
     }
 
-    // MINOR TEST create new treatment and insert, update it, then check if updates propagated to treatment table in client view
+    // MINOR @TEST - create new treatment and insert, update it, then check if updates propagated to treatment table in client view
 
 }
 

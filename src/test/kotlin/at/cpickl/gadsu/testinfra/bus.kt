@@ -40,14 +40,14 @@ class AnyBusListener {
             val actualRaw = dispatchedEvents[i]
             val expectedRaw = expecteds[i]
 
-            // MINOR copy and pasted, as dont know how to properly check for class equalness with hamcrest
+            // MINOR @TEST - copy and pasted, as dont know how to properly check for class equalness with hamcrest
             assertThat("Type mismatch! Expected: ${expectedRaw.javaClass.name}, Actual: ${actualRaw.javaClass.name}",
                     actualRaw.javaClass === expectedRaw.javaClass,
                     Matchers.equalTo(true))
 
 
             val actual = actualRaw as Event
-            // FIXME nope, this is a generic thing here, dont do this here
+            // FIXME @TEST - nope, this is a generic thing here, dont do this here
             assertThat(actual, theSameAs(expectedRaw as Event).excludeProperty("created").excludeProperty("birthday"))
         }
     }
