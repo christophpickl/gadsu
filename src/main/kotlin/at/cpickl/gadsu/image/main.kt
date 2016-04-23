@@ -68,7 +68,7 @@ private fun _safeReadBufferedImage(function: () -> BufferedImage?): BufferedImag
         // we could do this in some background thread, but nah, its fast anyway ;)
         buffered = function()
     } catch(e: IOException) {
-        throw GadsuException("Failed to read image icon!", e) // TODO show error dialog instead
+        throw GadsuException("Failed to read image icon!", e) // TODO @EXCEPTION - show error dialog instead
     }
     return buffered ?: throw GadsuException("Reading image failed (no details available, it is just null)!")
 }

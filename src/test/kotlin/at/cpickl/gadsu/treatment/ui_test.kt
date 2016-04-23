@@ -94,7 +94,7 @@ class TreatmentUiTest : UiTest() {
         mainDriver.createClientAndTreatment(client, treatment)
         driver.backButton.click()
 
-        driver.assertTreatmentsInClientViewContains(1) // MINOR improve assertion
+        driver.assertTreatmentsInClientViewContains(1) // MINOR TEST improve assertion
     }
 
     fun `When creating a new treatment, then the button labels change`() {
@@ -175,7 +175,7 @@ class TreatmentUiTest : UiTest() {
         assertThat(driver.saveButton.isEnabled)
     }
 
-    // MINOR test create new treatment and insert, update it, then check if updates propagated to treatment table in client view
+    // MINOR TEST create new treatment and insert, update it, then check if updates propagated to treatment table in client view
 
 }
 

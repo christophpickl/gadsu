@@ -38,12 +38,12 @@ data class ClientReportData(
 )
 class TreatmentReportData(
         val number: Int,
-        val note: String, // TODO resizable wrapped textarea in jasper!
+        val note: String,
         date: DateTime
 ) {
     val dateFormatted: String
     init {
-        dateFormatted = date.formatDate() // MINOR pass regular java Date and let jasper format date
+        dateFormatted = date.formatDate() // MINOR @REPORT - pass regular java Date and let jasper format date
     }
 }
 
@@ -62,7 +62,7 @@ class JasperProtocolGenerator @Inject constructor(
     override fun buildParameters(report: ProtocolReportData) = arrayOf(
             Pair("client_fullName", report.client.fullName),
             Pair("author", report.author),
-            Pair("countTreatments", report.rows.size), // MINOR counting row items is most likely possible to do in jasper itself
+            Pair("countTreatments", report.rows.size), // MINOR @REPORT - counting row items is most likely possible to do in jasper itself
             Pair("printDate", report.printDate.formatDate())
     )
 }

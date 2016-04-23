@@ -125,7 +125,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         inputRelationship.select(client.relationship.label)
         inputGender.select(client.gender.label)
         inputBirthdate.changeDate(client.birthday)
-        // MINOR picture is not setable in client view (yet)
+        // picture is not setable in client view (yet)
     }
 
     fun deleteClient(client: Client) {

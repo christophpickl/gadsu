@@ -62,7 +62,7 @@ open class ReportController @Inject constructor(
                         TreatmentReportData(6, "final one", DateTime.now().plusDays(45))
                 )*/
         )
-        // TODO show progress dialog and run background swing worker
+        // TODO @REPORT VIEW - show progress dialog and run background swing worker
 
         protocolGenerator.view(report)
 

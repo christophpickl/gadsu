@@ -37,7 +37,7 @@ open class ClientImageController @Inject constructor(
         chooser.dialogTitle = "Bild ausw\u00e4hlen ..."
         chooser.fileFilter = FileNameExtensionFilter("Bilddateien (*.jpg)", "jpg")
 
-        val result = chooser.showOpenDialog(frame.asJFrame()) // MINOR instead routing window, do it internally with a managed bean
+        val result = chooser.showOpenDialog(frame.asJFrame())
         if (result == JFileChooser.APPROVE_OPTION) {
             val selectedFile = chooser.selectedFile
 

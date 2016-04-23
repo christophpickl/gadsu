@@ -192,7 +192,6 @@ class DatePickerFormatter : JFormattedTextField.AbstractFormatter() {
     private val formatter = DateFormats.DATE
 
     override fun stringToValue(text: String): Any {
-        // MINOR JDatePicker seems to support JodaTime (see their website)
         return formatter.parseDateTime(text).toDate()
     }
 

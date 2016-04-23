@@ -11,7 +11,6 @@ object Languages {
     val locale: Locale
 
     init {
-        // FIXME check default system property for language (luxury: configurable via preferences)
         language = overrideLang() ?: DEFAULT_LANGUAGE
         locale = language.toLocale()
     }

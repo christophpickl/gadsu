@@ -13,8 +13,11 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 ## v?.?
 
-* More client data
-* More treatment data
+## v1.2
+
+* More client fields
+* More treatment fields
+* General (UI) improvements
 
 ## v1.1
 
@@ -26,6 +29,6 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 ## v1.0
 
-* Basic client handling, with picture
+* Basic client handling (with picture)
 * Basic treatment handling
 * Rudimentary protocol generation

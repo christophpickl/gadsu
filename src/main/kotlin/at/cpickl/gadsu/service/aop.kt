@@ -19,7 +19,7 @@ class AopModule : AbstractModule() {
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Logged
-// FIXME do same for custom transactional annotation
+
 
 class OnSubscribeMethodMatcher : AbstractMatcher<Method>() {
     override fun matches(method: Method): Boolean {

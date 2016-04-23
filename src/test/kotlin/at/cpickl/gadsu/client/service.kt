@@ -16,7 +16,6 @@ import org.testng.annotations.Test
 class ClientServiceImplIntegrationTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
-    // TODO use guice support for integration tests instead
 
     private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)

@@ -16,7 +16,7 @@ class DateAndTimePicker(
         viewNamePrefix: String
 ) : GridPanel() {
 
-    private val inpTime = JTextField() // FIXME make own time component; must also react on changes
+    private val inpTime = JTextField()
     val inpDate: MyDatePicker
     init {
         inpDate = modificationChecker.enableChangeListener(MyDatePicker.build(initialDate, viewNamePrefix))

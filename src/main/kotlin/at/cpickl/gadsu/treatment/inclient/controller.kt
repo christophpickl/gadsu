@@ -55,8 +55,6 @@ open class TreatmentsInClientController @Inject constructor(
     @Subscribe open fun onDeleteTreatmentEvent(event: DeleteTreatmentEvent) {
         dialogs.confirmedDelete("die Behandlung Nr. ${event.treatment.number}", {
             service.delete(event.treatment)
-
-            // FIXME deselect??
         })
     }
 

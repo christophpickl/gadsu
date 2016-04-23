@@ -9,7 +9,6 @@ import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-// FIXME use current infrastructure (also for treatment)
 class CurrentModule : AbstractModule() {
     override fun configure() {
         bind(CurrentClient::class.java).asEagerSingleton()
@@ -112,24 +111,6 @@ class CurrentClient @Inject constructor(bus: EventBus) :
     companion object {
         val ID: String = "client"
         val INITIAL_VALUE = Client.INSERT_PROTOTYPE
-
-//        // TODO refactor those three to base class!
-//        fun consumeAnyNewData(event: CurrentEvent, function: (Client) -> Unit) {
-//            if (event.id == ID) {
-//                function(event.newData as Client)
-//            }
-//        }
-//        fun consumeChangedNewData(event: CurrentChangedEvent, function: (Client) -> Unit) {
-//            if (event.id == ID) {
-//                function(event.newData as Client)
-//            }
-//        }
-//        fun consumePropertiesNewData(event: CurrentPropertiesChangedEvent, function: (Client) -> Unit) {
-//            if (event.id == ID) {
-//                function(event.newData as Client)
-//            }
-//        }
-
     }
 }
 

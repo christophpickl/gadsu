@@ -5,6 +5,7 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.service.clearSeconds
+import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
@@ -14,11 +15,12 @@ data class Treatment(
         val created: DateTime,
         val number: Int,
         val date: DateTime,
-        val note: String // TODO exclude from toString
+        val note: String
 ) :
         Comparable<Treatment>, HasId, Persistable {
 
     companion object {
+
         // needed for static extension methods
         fun insertPrototype(clientId: String,
                             number: Int,
@@ -36,17 +38,16 @@ data class Treatment(
                     note)
         }
     }
-
     val idComparator: (Treatment) -> Boolean
         get() = { that -> this.id.equals(that.id) }
-
-
 
     init {
         if (!date.equals(date.clearSeconds())) {
             throw GadsuException("Internal state violation: Treatment.date must not have seconds or milliseconds set!")
         }
     }
+
+
 
     override val yetPersisted: Boolean
         get() = id != null
@@ -56,5 +57,15 @@ data class Treatment(
 //                .compare(this.clientId, other.clientId)
                 .compare(this.number, other.number) // application ensures this is unique within a client
                 .result()
+    }
+
+    override fun toString(): String {
+        return MoreObjects.toStringHelper(javaClass)
+                .add("id", id)
+                .add("clientId", clientId)
+                .add("number", number)
+                .add("date", date)
+                .add("created", created)
+                .toString()
     }
 }

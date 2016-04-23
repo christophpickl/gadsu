@@ -98,6 +98,6 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 }
 
 data class WindowDescriptor(val location: Point, val size: Dimension) {
-    // MINOR could be that there is some minor glitch and size calculation/prefs-storage (java.awt.Dimension[width=3,height=4])
+    // MINOR @VIEWBUG - could be that there is some minor glitch and size calculation/prefs-storage (java.awt.Dimension[width=3,height=4])
     val isValidSize = size.width > 100 && size.height > 100
 }

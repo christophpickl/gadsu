@@ -1,7 +1,5 @@
 package at.cpickl.gadsu.report
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.GadsuUserException
 import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
 import net.sf.jasperreports.engine.JasperFillManager
@@ -29,14 +27,12 @@ enum class TargetInvalidReason {
     IS_A_DIRECTORY
 }
 
-// TODO catch this exception in service layer and display dialog with mapped error message (TargetInvalidReason)
-class ReportTargetFileInvalidUserException(message: String, val target: File, val reason: TargetInvalidReason) :
-        GadsuException(message), GadsuUserException
-
-
 interface JasperEngine {
 
-    fun savePdfTo(config: ReportConfig, target: File, forceOverwrite: Boolean = false)
+    /**
+     * @param target Invoker has to take care target does not exist and parent is an existing, writable folder.
+     */
+    fun savePdfTo(config: ReportConfig, target: File)
 
     fun view(config: ReportConfig)
 
@@ -49,12 +45,10 @@ class JasperEngineImpl : JasperEngine {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun savePdfTo(config: ReportConfig, target: File, forceOverwrite: Boolean) {
-        log.debug("savePdfTo(config={}, target={}, forceOverwrite={})", config, target.absolutePath, forceOverwrite)
+    override fun savePdfTo(config: ReportConfig, target: File) {
+        log.debug("savePdfTo(config={}, target={})", config, target.absolutePath)
         val jasperPrint = generatePrintArtifact(config)
         // first generate report, then validate (and implicitly delete file when overwrite is enabled
-        validateSaveTarget(target, forceOverwrite)
-
         JasperExportManager.exportReportToPdfFile(jasperPrint, target.absolutePath)
         log.info("Successfully saved PDF file to: {}", target.absolutePath)
     }
@@ -64,24 +58,25 @@ class JasperEngineImpl : JasperEngine {
         JasperViewer.viewReport(generatePrintArtifact(config), false) // disable exit on close
     }
 
-    private fun validateSaveTarget(target: File, forceOverwrite: Boolean) {
-        if (!target.exists()) {
-            return
-        }
-        if (!forceOverwrite) {
-            throw ReportTargetFileInvalidUserException("Target already exists: ${target.absolutePath}!",
-                    target, TargetInvalidReason.ALREADY_EXISTS)
-        }
-        // force overwrite enabled, but ...
-        if (target.isDirectory) {
-            throw ReportTargetFileInvalidUserException("Target is an already existing directory: ${target.absolutePath}!",
-                    target, TargetInvalidReason.IS_A_DIRECTORY)
-        }
-        val wasDeleted = target.delete()
-        if (!wasDeleted) {
-            throw ReportException("Could not delete target file: ${target.absolutePath}!")
-        }
-    }
+    // TODO @REPORT - validate save target file in service layer
+//    private fun validateSaveTarget(target: File, forceOverwrite: Boolean) {
+//        if (!target.exists()) {
+//            return
+//        }
+//        if (!forceOverwrite) {
+//            throw ReportTargetFileInvalidUserException("Target already exists: ${target.absolutePath}!",
+//                    target, TargetInvalidReason.ALREADY_EXISTS)
+//        }
+//        // force overwrite enabled, but ...
+//        if (target.isDirectory) {
+//            throw ReportTargetFileInvalidUserException("Target is an already existing directory: ${target.absolutePath}!",
+//                    target, TargetInvalidReason.IS_A_DIRECTORY)
+//        }
+//        val wasDeleted = target.delete()
+//        if (!wasDeleted) {
+//            throw ReportException("Could not delete target file: ${target.absolutePath}!")
+//        }
+//    }
 
     private fun generatePrintArtifact(config: ReportConfig): JasperPrint {
         val templateStream = javaClass.getResourceAsStream(config.jrxmlClasspath) ?:
@@ -106,7 +101,7 @@ class JasperEngineImpl : JasperEngine {
 
 
 interface GenericReportGenerator<R : ReportWithRows> {
-    fun savePdfTo(report: R, target: File, forceOverwrite: Boolean = false)
+    fun savePdfTo(report: R, target: File)
     fun view(report: R)
 }
 
@@ -122,8 +117,8 @@ abstract class BaseReportGenerator<R : ReportWithRows>(
         engine.view(buildConfig(report))
     }
 
-    override fun savePdfTo(report: R, target: File, forceOverwrite: Boolean) {
-        engine.savePdfTo(buildConfig(report), target, forceOverwrite)
+    override fun savePdfTo(report: R, target: File) {
+        engine.savePdfTo(buildConfig(report), target)
     }
 
     private fun buildConfig(report: R): ReportConfig {

@@ -103,7 +103,6 @@ class ClientSpringJdbcRepository @Inject constructor(
     }
 
     override fun changePicture(client: Client) {
-        // TODO AOP logging for all service + repository classes
         client.ensurePersisted()
 
         jdbcx.updateSingle("UPDATE $TABLE SET picture = ? WHERE id = ?",
