@@ -27,6 +27,7 @@ class DevelopmentFrame(initLocation: Point): JFrame() {
     init {
         title = "Development Console"
         txtClient.isOpaque = true
+        txtTreatment.isOpaque = true
 
         val panel = GridPanel()
         panel.border = MyFrame.BORDER_GAP
@@ -59,11 +60,7 @@ class DevelopmentFrame(initLocation: Point): JFrame() {
 
     fun updateClient(client: Client?) {
         update(txtClient, client, {
-            if (it === Client.INSERT_PROTOTYPE) {
-                "Client.INSERT_PROTOTYPE"
-            } else {
-                """<html>Name: ${it.fullName}<br/>Note: ${it.note}</html>"""
-            }
+            """<html>${if (!it.yetPersisted) "INSERT_PROTOTYPE<br/>" else ""}Note: ${it.note}</html>"""
         })
     }
 

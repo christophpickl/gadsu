@@ -3,23 +3,32 @@
 
 ## High
 
-* integrate report generation (save PDF, view, and print report)
-* treatment CRUDs
-* protocol generation UI wizard
+### Fix Existing
+
+* [1] UI: bigger client.note textarea 
+* [2] treatment numbering revised
+* [2] global exception handler correctly
+* [2] UI: check changes for treatment
+* [4] UI: time picker component for treatment.date
+
+### Add New
+
+* check for database lock file
 
 ## Med
 
-* logo for windows icon
-* enable auto formatting in intellij
-* on press enter in input field: save
-* mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
+* [1] UI: logo for windows icon
+
+* [8] UI: mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
 * in UI auf max length (durch DB limits) setzen (eigene textfeld/textarea komponente mit konstruktor)
-* reset prefs feature
+
 * add DB constraint that firstName+lastName combination is unique!
-* JTextField().putClientProperty("JTextField.variant", "search")
         
 ## Low
 
+* [2] reset prefs feature
+* [2] REFACT: split ClientViewController for master and detail
+* [2] UI: on press enter in input field: save?
 * check there are no snapshots during release.sh
 * create native EXE for windows
 * tooltips
@@ -44,7 +53,7 @@
 * instead of polluting the code with thousands of log statements for EventBus on-listener-methods, use a more centralized (AOP-like) approach
 
 
-## Luxury
+## Luxury Ideas
 
 * automatic version check
   * during release, create some file with current version in it

@@ -99,6 +99,15 @@ class SwingClientMasterView @Inject constructor(
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.layoutOrientation = JList.VERTICAL
 
+
+//        c.fill = GridBagConstraints.HORIZONTAL
+//        c.weightx = 1.0
+//        c.weighty = 1.0
+//        val searchField = JTextField()
+//        searchField.putClientProperty("JTextField.variant", "search")
+//        add(searchField)
+//        c.gridy++
+
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0

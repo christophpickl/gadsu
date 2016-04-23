@@ -10,22 +10,22 @@ Gadsu is a Shiatsu management application for your clients, appointments, treatm
 
 # ROADMAP
 
-## v?.?
-
-* Reporting
 
 ## v?.?
 
-* Enhance client data
-* Enhance treatment data
-* Preferences window
+* More client data
+* More treatment data
 
 ## v1.1
 
-* Smart search for clients
-* Basic treatment management
+* Search for clients
+* Improved protocol report
+* Protocol generation wizard
+  * Define criteria
+  * save/view/print report
 
 ## v1.0
 
-* Basic client management (create, update, delete)
-* Application Packaging for Mac and Windows
+* Basic client handling, with picture
+* Basic treatment handling
+* Rudimentary protocol generation

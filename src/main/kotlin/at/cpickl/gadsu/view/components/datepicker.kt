@@ -142,6 +142,7 @@ class MyDatePicker(viewNamePrefix: String,
         val fieldRef = providerClass.getDeclaredField(fieldName)
         fieldRef.isAccessible = true
         val obj = fieldRef.get(providerObject)
+        @Suppress("UNCHECKED_CAST")
         return obj as T
     }
 

@@ -18,16 +18,6 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 
 
-
-// FIXME implement me
-//class ElDateField(private val viewName: String, override val formLabel: String) : ElField {
-//    private val delegate = SwingFactory.
-//    override fun asComponent(): Component {
-//
-//    }
-//
-//}
-
 class ClientTabMain(
         initialClient: Client,
         modificationChecker: ModificationChecker,
@@ -52,7 +42,6 @@ class ClientTabMain(
     val inpZipCode = fields.newTextField("PLZ", {it.contact.zipCode}, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
     val inpNote = fields.newTextArea("Notiz", {it.note}, ViewNames.Client.InputNote)
-    // FIXME bigger note
     val outCreated = JLabel("")
 
     init {

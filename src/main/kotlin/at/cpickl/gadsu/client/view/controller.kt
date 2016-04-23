@@ -31,7 +31,6 @@ import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 
 
-// TODO split controller for master and for detail view
 @Logged
 @Suppress("UNUSED_PARAMETER")
 open class ClientViewController @Inject constructor(
@@ -48,8 +47,8 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         view.masterView.initClients(clientRepo.findAll())
-
         bus.post(ChangeMainContentEvent(view))
+        bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
     }
 
     @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
