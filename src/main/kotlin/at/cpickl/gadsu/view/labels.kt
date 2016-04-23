@@ -122,15 +122,15 @@ object Labels {
 
     val Tabs_DE = object : Tabs {
         override val ClientMain = "Allgemein"
-        override val ClientDetail = "Profil"
+        override val ClientTcm = "TCM"
     }
 
     val TestLabels_EN = object : TestLabels {}
 
-//    val Tabs_EN = object : Tabs {
-//        override val ClientMain = "Main"
-//        override val ClientDetail = "Detail"
-//    }
+    val Tabs_EN = object : Tabs {
+        override val ClientMain = "Main"
+        override val ClientTcm = "TCM"
+    }
 
 }
 
@@ -143,7 +143,7 @@ interface Buttons {
 
 interface Tabs {
     val ClientMain: String
-    val ClientDetail: String
+    val ClientTcm: String
 }
 
 interface TestLabels {

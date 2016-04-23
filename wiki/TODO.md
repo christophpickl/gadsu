@@ -1,5 +1,53 @@
 
 
+
+
+
+
+MIT STEFFI
+==============================
+
+- ernaehrung: auch warm/kalt
+- behandlungsnummer
+  - loeschen oder rueckdatieren ist eher seeeehr selten
+  - die nummer X bleibt die nummer X, keine neu-nummerierung (bei loeschen oder date aendern)
+  - es entstehen also loecher!
+  - vordatieren bewirkt nix, pech gehabt :-p
+  - calculateNextNumber ==> highest number + 1 (nicht count!)
+  // wenn protokoll persistiert, und hat referenz auf behandlung... evtl nur auf "deleted" marked setzen?!
+
+
+
+@PROTOKOLL
+  - kein vollstaendiger name (anna n.; keine kontaktdaten)
+  - manche sachen im formular kann man nicht nur ja/nein beantworten, sondern auch "vielleicht"
+  - das mit meridian-auffaelligkeiten ist super die liste (kyo-jitsu)
+- idee steffi:
+	part 1: hard facts
+	part 2: TCM
+	part 3: behandlungsliste
+		
+
+
+@BEHANDLUNG
+  - befragung an klient ("wie gehts dir", wie gehts mit dinge die letztens aufgepoppt sind)
+      - veraenderung, seit letztem termin
+  - was hab ich gemacht (was werde ich machen aufgrund der ersten infos vom klienten)
+     + plus auch zu jedem punkt, was ich machen werde, eine bemerkung was mir aufgefallen ist
+  - feedback/resumee vom klienten (zur behandlung)
+  - feedback von mir/was ist mir aufgefallen
+
+
+!!! more client fields (TCM, anamnese bogen hernehmen)
+!!! @treatment: check changes on navigate away (eigentlich eh nur back button, aber auch quit button), auch fuer date-time input
+!! rechts neben "Neue Behandlung", einen button machen "Behandlung oeffnen" (nur enabled wen CurrentTreatment was drinnen ist)
+!! custom list cell renderer (fuer client und treatment)
+  - UI tests greifen dann "untenrum" auf die daten zu fuer mehr zugriffsflaeche
+! die string laengen in der DB in der UI enforcen
+!! das treatment numbering nochmal durchdenken, kann naemlich sein dass man im nachhinein das datum weiter vor gibt... eigentlich ist number nur die reihenfolge sortiert nach date!
+- use powermock (as much is final in kotlin)
+
+
 # T-O-D-O
 
 ## High
@@ -48,7 +96,7 @@
 * @ClientServiceImplIntegrationTest use guice support for integration tests instead
 * @Languages check default system property for language (luxury: configurable via preferences)
 * JDatePicker seems to support JodaTime (see their website)
-
+* read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
 
 ## Luxury Ideas
 
@@ -60,3 +108,5 @@
   * erst spaeter, wenns termine gibt...
   * das evtl schon als plugin zur verfuegung stellen (??)
   * https://developers.google.com/google-apps/calendar/quickstart/java
+
+* encrypt database

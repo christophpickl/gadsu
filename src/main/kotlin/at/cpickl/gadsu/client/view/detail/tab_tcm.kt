@@ -5,10 +5,10 @@ import at.cpickl.gadsu.view.Labels
 import javax.swing.JLabel
 
 
-class ClientTabDetail : DefaultClientTab(Labels.Tabs.ClientDetail) {
+class ClientTabTcm : DefaultClientTab(Labels.Tabs.ClientTcm) {
 
     init {
-        add(JLabel("Hier kommen noch gesundheits/TCM Daten rein ..."))
+        add(JLabel("Hier kommen noch TCM Felder rein ..."))
     }
 
     override fun isModified(client: Client): Boolean {

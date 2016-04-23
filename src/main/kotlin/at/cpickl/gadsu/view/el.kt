@@ -5,6 +5,7 @@ import at.cpickl.gadsu.view.components.Labeled
 import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.MyComboBox
 import at.cpickl.gadsu.view.components.MyDatePicker
+import at.cpickl.gadsu.view.components.scrolled
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
@@ -57,11 +58,12 @@ class ElTextArea<V>(
 
     init {
         name = viewName
+        lineWrap = true
     }
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
     override fun updateValue(value: V) { text = extractValue(value) }
-    override fun asComponent() = this
+    override fun asComponent() = this.scrolled()
 }
 
 class ElComboBox<V, T : Labeled>(

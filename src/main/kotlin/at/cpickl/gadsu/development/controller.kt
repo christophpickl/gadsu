@@ -85,12 +85,25 @@ open class DevelopmentController @Inject constructor(
             bus.post(ClientCreatedEvent(savedClient))
 
             if (savedClient.firstName.equals("Max")) {
+                val clientId = savedClient.id!!
                 arrayOf(
                         Treatment.insertPrototype(
-                                clientId = savedClient.id!!,
+                                clientId = clientId,
                                 number = 1,
                                 date = DateTime.now(),
                                 note = "my note for treatment 1 for maxiiii"
+                        ),
+                        Treatment.insertPrototype(
+                                clientId = clientId,
+                                number = 2,
+                                date = DateTime.now().plusDays(1),
+                                note = ""
+                        ),
+                        Treatment.insertPrototype(
+                                clientId = clientId,
+                                number = 3,
+                                date = DateTime.now().plusDays(3),
+                                note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. "
                         )
                 ).forEach {
                     treatmentRepo.insert(it)

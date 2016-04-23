@@ -21,7 +21,7 @@ class ModificationChecker(
 
     fun <T : JTextComponent> enableChangeListener(delegate: T): T {
         delegate.addChangeListener { event ->
-            log.trace("JTextComponent fired change event. (Event: {}, Source: {})", event, delegate)
+//            log.trace("JTextComponent fired change event. (Event: {}, Source: {})", event, delegate)
             checkModificationsAndUpdateIsEnabledField()
         }
         return delegate

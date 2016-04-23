@@ -13,6 +13,7 @@ import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.enableSmartPopup
+import at.cpickl.gadsu.view.components.enforceWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.eventbus.EventBus
@@ -20,11 +21,12 @@ import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.Insets
+import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.ListSelectionModel
-
 
 
 interface ClientMasterView {
@@ -43,8 +45,9 @@ interface ClientMasterView {
 
 }
 
+
 class SwingClientMasterView @Inject constructor(
-        bus: EventBus,
+        private val bus: EventBus,
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
 
@@ -57,8 +60,35 @@ class SwingClientMasterView @Inject constructor(
     init {
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
+        enforceWidth(200)
+        initList()
 
+//        c.fill = GridBagConstraints.HORIZONTAL
+//        c.weightx = 1.0
+//        c.weighty = 1.0
+//        val searchField = JTextField()
+//        searchField.putClientProperty("JTextField.variant", "search")
+//        add(searchField)
+//        c.gridy++
+
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(list.scrolled())
+
+        c.fill = GridBagConstraints.HORIZONTAL
+        c.weighty = 0.0
+        c.gridy++
+        c.insets = Insets(5, 0, 0, 0)
+        add(swing.newEventButton("Neuen Klienten anlegen", ViewNames.Client.CreateButton, { CreateNewClientEvent() }))
+    }
+
+    private fun initList() {
         list.name = ViewNames.Client.List
+        list.cellRenderer = ClientListCellRender()
+        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+        list.layoutOrientation = JList.VERTICAL
+
         list.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
                 if (list.selectedIndex === -1) {
@@ -95,29 +125,6 @@ class SwingClientMasterView @Inject constructor(
             list
 
         })
-        list.cellRenderer = ClientListCellRender()
-        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
-        list.layoutOrientation = JList.VERTICAL
-
-
-//        c.fill = GridBagConstraints.HORIZONTAL
-//        c.weightx = 1.0
-//        c.weighty = 1.0
-//        val searchField = JTextField()
-//        searchField.putClientProperty("JTextField.variant", "search")
-//        add(searchField)
-//        c.gridy++
-
-        c.fill = GridBagConstraints.BOTH
-        c.weightx = 1.0
-        c.weighty = 1.0
-        add(list.scrolled())
-
-        c.fill = GridBagConstraints.HORIZONTAL
-        c.weighty = 0.0
-        c.gridy++
-        c.insets = Insets(5, 0, 0, 0)
-        add(swing.newEventButton("Neuen Klienten anlegen", ViewNames.Client.CreateButton, { CreateNewClientEvent() }))
     }
 
     override fun asComponent() = this

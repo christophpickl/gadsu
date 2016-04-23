@@ -5,6 +5,7 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.Font
 import java.util.Timer
 import java.util.TimerTask
@@ -54,4 +55,13 @@ fun JComponent.changeBackgroundForASec(tempBackground: Color) {
             background = null
         }
     }, 1000L)
+}
+
+
+fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
+    size = Dimension(myWidth, size.height)
+    maximumSize = Dimension(myWidth, Int.MAX_VALUE)
+    minimumSize = Dimension(myWidth, 50)
+    preferredSize = Dimension(myWidth, 80)
+    return this
 }

@@ -17,6 +17,8 @@ object Pad {
     val LEFT   = Insets(0, 5, 0, 0)
     val BOTTOM = Insets(0, 0, 5, 0)
     val RIGHT  = Insets(0, 0, 0, 5)
+
+    val LEFTRIGHT= Insets(0, 5, 0, 5)
 }
 
 
@@ -89,12 +91,14 @@ open class FormPanel : GridPanel() {
     fun addFormInput(label: String, input: Component) {
         c.weightx = 0.0
         c.fill = GridBagConstraints.NONE
+        c.anchor = GridBagConstraints.EAST
         c.insets = insetsCol1
-        add(JLabel(label))
+        add(JLabel(label).bold())
 
         c.gridx++
         c.weightx = 1.0
         c.fill = GridBagConstraints.HORIZONTAL
+        c.anchor = GridBagConstraints.WEST
         c.insets = insetsCol2
         add(input)
 

@@ -13,6 +13,7 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.calculateInsertIndex
 import at.cpickl.gadsu.view.components.enablePopup
+import at.cpickl.gadsu.view.components.enforceWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.registerDoubleClicked
 import at.cpickl.gadsu.view.components.scrolled
@@ -54,6 +55,7 @@ class TreatmentsInClientView @Inject constructor(
 
     init {
         debugColor = Color.RED
+        enforceWidth(250)
         layout = BorderLayout()
         newTreatmentButton.isEnabled = false // disabled by default at startup
 

@@ -16,6 +16,7 @@ import at.cpickl.gadsu.view.components.ModificationAware
 import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.changeSize
+import at.cpickl.gadsu.view.components.enforceWidth
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -26,6 +27,7 @@ import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
 
@@ -61,8 +63,8 @@ open class SwingClientDetailView @Inject constructor(
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
     )
-    private val tabDetail = ClientTabDetail()
-    private val allTabs = arrayOf(tabMain, tabDetail)
+    private val tabTcm = ClientTabTcm()
+    private val allTabs = arrayOf(tabMain, tabTcm)
     init {
         modificationChecker.disableAll()
 
@@ -100,8 +102,10 @@ open class SwingClientDetailView @Inject constructor(
         val tabbed = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
         tabbed.isOpaque = false
         tabbed.name = ViewNames.Client.TabbedPane
+        var i: Int = 0
         allTabs.forEach {
-            tabbed.addTab(it.title, it.asComponent())
+            tabbed.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", it.asComponent())
+            tabbed.setTabComponentAt(i++, JLabel(it.title, JLabel.CENTER).enforceWidth(100))
         }
         return tabbed
     }

@@ -12,9 +12,10 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.ModificationChecker
+import at.cpickl.gadsu.view.components.Pad
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import javax.swing.JComponent
+import java.awt.GridBagConstraints
 import javax.swing.JLabel
 
 
@@ -68,16 +69,35 @@ class ClientTabMain(
         form2Panel.addFormInput(inpStreet)
         form2Panel.addFormInput(inpZipCode)
         form2Panel.addFormInput(inpCity)
-
-        form2Panel.addFormInput(inpNote)
         form2Panel.addLastColumnsFilled()
 
-        addColumned(
-                Pair<Double, JComponent>(0.5, form1Panel),
-                Pair<Double, JComponent>(0.5, form2Panel),
-                Pair<Double, JComponent>(0.0, treatmentSubview)
-        )
 
+        c.fill = GridBagConstraints.BOTH
+        c.anchor = GridBagConstraints.NORTHWEST
+        c.weightx = 0.5
+        c.weighty = 0.0
+        add(form1Panel)
+
+        c.insets = Pad.LEFT
+        c.gridx++
+        add(form2Panel)
+
+        c.gridx++
+        c.fill = GridBagConstraints.VERTICAL
+        c.weightx = 0.0
+        c.weighty = 1.0
+        c.gridheight = 2
+        add(treatmentSubview)
+
+        c.insets = Pad.TOP
+        c.gridx = 0
+        c.gridy++
+        c.gridwidth = 2
+        c.gridheight = 1
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(inpNote.asComponent())
     }
 
     override fun isModified(client: Client): Boolean {

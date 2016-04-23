@@ -26,10 +26,10 @@ class SwingClientView @Inject constructor(
     init {
         debugColor = Color.YELLOW
 
-        c.weighty = 1.0
 
         c.fill = GridBagConstraints.VERTICAL
         c.weightx = 0.0
+        c.weighty = 1.0
         c.gridx = 0
         add(masterView.asComponent())
 
