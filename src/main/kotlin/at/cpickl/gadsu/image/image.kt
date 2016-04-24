@@ -22,6 +22,7 @@ interface MyImage {
         fun byBuffered(buffered: BufferedImage) = buffered.toMyImage()
         fun byFile(file: File) = file.toMyImage()
         fun byClasspath(classpath: String) = classpath.toMyImage()
+        fun byByteArray(bytes: ByteArray) = bytes.toMyImage()
 
     }
 
@@ -48,6 +49,7 @@ fun ImageIcon.toMyImage(): MyImage = ImageIconImage(this)
 fun BufferedImage.toMyImage(): MyImage = ImageIconImage(ImageIcon(this))
 fun File.toMyImage(): MyImage = FileImage(this)
 fun String.toMyImage(): MyImage = ClasspathImage(this)
+fun ByteArray.toMyImage(): MyImage = this.readBufferedImage().toMyImage()
 
 val Gender.defaultImage: MyImage get() =
     when(this) {
@@ -99,7 +101,6 @@ private class ImageIconImage(icon: ImageIcon) : IconifiedImage(icon)
  * Internally used.
  */
 private class ClasspathImage(private val classpath: String) : IconifiedImage(classpath.readImageIconFromClasspath())
-
 
 /**
  * Client selected.

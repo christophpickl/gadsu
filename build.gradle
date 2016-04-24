@@ -77,6 +77,8 @@ dependencies {
     compile 'com.google.inject.extensions:guice-assistedinject:4.0'
     compile 'com.google.guava:guava:19.0' // guice comes with 16.0.1
 
+    compile 'com.thoughtworks.xstream:xstream:1.4.9'
+
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3'

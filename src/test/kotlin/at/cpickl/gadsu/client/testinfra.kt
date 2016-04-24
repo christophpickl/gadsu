@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.testinfra.TEST_DATE
+import at.cpickl.gadsu.testinfra.TEST_DATE_1985
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.TEST_UUID2
 
@@ -12,6 +13,8 @@ fun Client.Companion.unsavedValidInstance() = Client.INSERT_PROTOTYPE.copy(
         firstName = "testFirstName",
         lastName = "testLastName",
         gender = Gender.MALE,
+        birthday = TEST_DATE_1985,
+        job = "lazy bastard",
         picture = MyImage.DEFAULT_PROFILE_MAN
 )
 

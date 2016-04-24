@@ -17,7 +17,7 @@ val TEST_DATE = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:10:20")
 val TEST_DATE_WITHOUT_SECONDS = TEST_DATE.clearSeconds()
 val TEST_DATE2 = DateFormats.DATE_TIME.parseDateTime("31.12.2002 23:59:59")
 val TEST_DATE2_WITHOUT_SECONDS = TEST_DATE2.clearSeconds()
-
+val TEST_DATE_1985 = DateFormats.DATE_TIME.parseDateTime("10.03.1985 22:50:40")
 
 fun skip(reason: String) {
     throw SkipException(reason)

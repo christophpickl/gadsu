@@ -23,8 +23,16 @@ class GadsuStarter {
         GlobalExceptionHandler.register()
         log.debug("====> GUICE START")
         val guice = Guice.createInjector(GadsuModule(args))
-        val app = guice.getInstance(GadsuGuiceStarter::class.java)
         log.debug("====> GUICE END")
+
+        if (args.action != null) {
+            log.info("User requested to start custom action '{}'.", args.action)
+            guice.getInstance(ArgsActionExecutor::class.java).execute(args.action)
+            return
+        }
+
+        val app = guice.getInstance(GadsuGuiceStarter::class.java)
+
         app.start()
     }
 

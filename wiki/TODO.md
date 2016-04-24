@@ -110,3 +110,6 @@ MIT STEFFI
   * https://developers.google.com/google-apps/calendar/quickstart/java
 
 * encrypt database
+
+* auto backup feature (save to GADSU_DIR, can be imported via CLI args)
+  * versioning! copy each db version to own package?! use dbmigrator to migrate exported data to current version! ;)

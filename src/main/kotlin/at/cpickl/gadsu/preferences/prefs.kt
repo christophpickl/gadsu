@@ -12,23 +12,25 @@ interface Prefs {
 
     var windowDescriptor: WindowDescriptor?
     var clientPictureDefaultFolder: File
+
+    fun reset()
 }
 
 class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
-
     companion object {
-        private val KEY_USERNAME = "USERNAME"
 
+        private val KEY_USERNAME = "USERNAME"
         private val KEY_WINDOW_X = "WINDOW_X"
+
         private val KEY_WINDOW_Y = "WINDOW_Y"
         private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
         private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
-
         private val KEY_CLIENT_PICTURE_DEFAULT_FOLDER = "CLIENT_PICTURE_DEFAULT_FOLDER"
+
     }
     private val log = LoggerFactory.getLogger(javaClass)
-
     private var _preferences: Preferences? = null
+
     private val preferences: Preferences
         get() {
             if (_preferences === null) {
@@ -37,7 +39,6 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             }
             return _preferences!!
         }
-
     override var preferencesData: PreferencesData?
         get() {
             log.trace("get preferencesData()")
@@ -60,7 +61,6 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.flush()
         }
 
-
     override var windowDescriptor: WindowDescriptor?
         get() {
             val x = preferences.getInt(KEY_WINDOW_X, -1)
@@ -74,12 +74,16 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         }
         set(value) {
             log.trace("set windowDescriptor(value={})", value)
-            if (value === null) {
+            if (value == null) {
                 preferences.remove(KEY_WINDOW_X)
                 preferences.remove(KEY_WINDOW_Y)
                 preferences.remove(KEY_WINDOW_WIDTH)
                 preferences.remove(KEY_WINDOW_HEIGHT)
                 preferences.flush()
+                return
+            }
+            if (value.size.width < 100 || value.size.height < 100) {
+                log.trace("ignoring invalid size for window descriptor: {}", value)
                 return
             }
             preferences.putInt(KEY_WINDOW_X, value.location.x)
@@ -89,12 +93,18 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.flush()
         }
 
+
     override var clientPictureDefaultFolder: File
         get() = File(preferences.get(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, System.getProperty("user.home")))
         set(value) {
             log.trace("set clientPictureDefaultFolder(value={})", value.absolutePath)
             preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
         }
+
+    override fun reset() {
+        log.info("reset()")
+        println("reset prefs") // FIXME implement me
+    }
 }
 
 data class WindowDescriptor(val location: Point, val size: Dimension) {
