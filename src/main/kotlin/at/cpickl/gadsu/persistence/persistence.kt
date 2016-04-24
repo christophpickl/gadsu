@@ -4,13 +4,13 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitUserEvent
 import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.sql.Blob
 import java.sql.Timestamp
@@ -51,11 +51,15 @@ open class DatabaseManager @Inject constructor(
 ) {
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
+
+            log.info("dumping env variables")
+            System.getProperties().forEach { key, value -> log.info("property: {} = {}", key, value) }
+
             log.info("Database shutdown hook is running.")
             closeConnection()
         }, "DatabaseShutdownHookThread"))
     }
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LOG(javaClass)
     private var databaseConnected: Boolean = false
 
     fun migrateDatabase() {
