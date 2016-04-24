@@ -1,13 +1,14 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
+import at.cpickl.gadsu.spReadStringOrNull
 import com.google.common.annotations.VisibleForTesting
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Field
 import java.util.Locale
 
 object Languages {
-    private val SYSTEM_PROPERTY_NAME = "gadsu.overrideLanguage"
     private val log = LoggerFactory.getLogger(javaClass)
 
     val language: Language
@@ -40,7 +41,7 @@ object Languages {
 
 
     private fun overrideLang(): Language? {
-        val overrideLang = System.getProperty(SYSTEM_PROPERTY_NAME, null) ?: return null
+        val overrideLang = GadsuSystemPropertyKeys.overrideLanguage.spReadStringOrNull() ?: return null
         return Language.byId(overrideLang) ?: throw LanguageException("Invalid override language value '$overrideLang'!")
     }
 

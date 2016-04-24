@@ -1,9 +1,15 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
+import at.cpickl.gadsu.spClear
+import at.cpickl.gadsu.spReadStringOrNull
+import at.cpickl.gadsu.spWriteString
 import at.cpickl.gadsu.testinfra.Expects
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.Assert
+import org.testng.annotations.AfterClass
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
@@ -12,10 +18,29 @@ import java.util.Locale
 @Test
 class LanguageTest {
 
+    private var oldLocale: Locale? = null
+    private var oldOverrideLanguage: String? = null
+
+    @BeforeClass
+    fun storeOldState() {
+        oldLocale = Locale.getDefault()
+        oldOverrideLanguage = GadsuSystemPropertyKeys.overrideLanguage.spReadStringOrNull()
+    }
+
     @BeforeMethod
     fun resetState() {
-        System.clearProperty("gadsu.overrideLanguage")
+        GadsuSystemPropertyKeys.overrideLanguage.spClear()
         defaultLocale(Locale.KOREAN)
+    }
+
+    @AfterClass
+    fun cleanupAfterYourself() {
+        if (oldOverrideLanguage == null) {
+            GadsuSystemPropertyKeys.overrideLanguage.spClear()
+        } else {
+            GadsuSystemPropertyKeys.overrideLanguage.spWriteString(oldOverrideLanguage!!)
+        }
+        defaultLocale(oldLocale!!)
     }
 
     @DataProvider(name = "defaultLocaleProvider")
@@ -54,13 +79,15 @@ class LanguageTest {
     private fun initLang() = Languages._initLanguage()
 
     private fun overrideLang(value: String) {
-        System.setProperty("gadsu.overrideLanguage", value)
+        GadsuSystemPropertyKeys.overrideLanguage.spWriteString(value)
     }
 
     private fun defaultLocale(locale: Locale) {
         Locale.setDefault(locale)
     }
 }
+
+
 
 @Test
 class LabelsTest {

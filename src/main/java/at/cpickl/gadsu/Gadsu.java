@@ -20,7 +20,7 @@ public class Gadsu {
             return;
         }
 
-        if (System.getProperty("gadsu.disableLog", "").equals("true")) {
+        if (System_propertiesKt.spReadBoolean(GadsuSystemPropertyKeys.INSTANCE.getDisableLog())) {
             System.out.println("Gadsu log configuration disabled. (most likely because tests come with own log config)");
         } else {
             new LogConfigurator(args.getDebug()).configureLog();

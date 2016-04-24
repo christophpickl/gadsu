@@ -1,8 +1,10 @@
 package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.Gadsu
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.spWriteTrue
 import at.cpickl.gadsu.testinfra.TestLogger
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
@@ -32,7 +34,7 @@ import java.util.prefs.Preferences
 abstract class SimpleUiTest : UISpecTestCase() {
     companion object {
         init {
-            System.setProperty("gadsu.disableLog", "true")
+            GadsuSystemPropertyKeys.disableLog.spWriteTrue()
             System.setProperty("uispec4j.test.library", "testng")
             TestLogger().configureLog() // do it twice during the build, but enable once when running in IDE ;)
         }

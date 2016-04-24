@@ -1,7 +1,9 @@
 package at.cpickl.gadsu.treatment.view
 
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.spWriteTrue
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
@@ -31,7 +33,7 @@ import javax.swing.JTextArea
 
 
 fun main(args: Array<String>) {
-    System.setProperty("gadsu.development", "true")
+    GadsuSystemPropertyKeys.development.spWriteTrue()
 
     val client = Client.INSERT_PROTOTYPE.copy(id = "myId")
     val treatment = Treatment.insertPrototype(client.id!!, 1, DateTime.now())

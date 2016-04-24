@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.development
 
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.spReadBoolean
 import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import javax.swing.JMenu
@@ -9,14 +11,14 @@ import javax.swing.JMenuItem
 
 class Development {
     companion object {
-        private val SYSPROPERTY_KEY = "gadsu.development"
+        private val systemProperty = GadsuSystemPropertyKeys.development
 
-        val ENABLED: Boolean = System.getProperty(SYSPROPERTY_KEY, "").toLowerCase().equals("true") || System.getProperty(SYSPROPERTY_KEY, "").equals("1")
+        val ENABLED: Boolean = systemProperty.spReadBoolean()
         val COLOR_ENABLED = ENABLED && false
 
         init {
             if (ENABLED) {
-                println("Development mode is enabled via '-D${SYSPROPERTY_KEY}=true'")
+                println("Development mode is enabled via '-D$systemProperty=true'")
             }
         }
 
@@ -44,3 +46,4 @@ class Development {
     }
 
 }
+

@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
+import at.cpickl.gadsu.spReadBoolean
 import at.cpickl.gadsu.view.components.SwingFactory
 import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
@@ -18,7 +20,7 @@ class ViewModule : AbstractModule() {
         bind(MainFrameController::class.java).asEagerSingleton()
 
         // mac handling
-        val isMacApp = System.getProperty("gadsu.isMacApp", "").equals("true")
+        val isMacApp = GadsuSystemPropertyKeys.isMacApp.spReadBoolean()
         log.debug("isMacApp={}", isMacApp)
         bind(MacHandler::class.java).toInstance(if (isMacApp) ReflectiveMacHandler() else DisabledMacHandler() )
 
