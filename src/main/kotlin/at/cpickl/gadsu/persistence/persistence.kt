@@ -54,8 +54,8 @@ open class DatabaseManager @Inject constructor(
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
 
-            log.info("dumping env variables")
-            System.getProperties().forEach { key, value -> log.info("property: {} = {}", key, value) }
+//            log.info("dumping env variables")
+//            System.getProperties().forEach { key, value -> log.info("property: {} = {}", key, value) }
 
             log.info("Database shutdown hook is running.")
             closeConnection()

@@ -13,7 +13,8 @@ import org.joda.time.DateTime
 import org.testng.SkipException
 
 // https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
-val IS_TREVIS: Boolean = System.getProperty("TRAVIS", "").equals("true")
+val IS_TRAVIS: Boolean = System.getProperty("user.name", "").equals("travis")
+// does NOT work!!! System.getProperty("TRAVIS", "").equals("true")
 
 val TEST_UUID1 = "11111111-1234-1234-1234-000000000000"
 val TEST_UUID2 = "22222222-1234-1234-1234-000000000000"
