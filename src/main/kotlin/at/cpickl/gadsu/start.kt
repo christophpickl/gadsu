@@ -28,6 +28,7 @@ class GadsuStarter {
         if (args.action != null) {
             log.info("User requested to start custom action '{}'.", args.action)
             guice.getInstance(ArgsActionExecutor::class.java).execute(args.action)
+            guice.getInstance(EventBus::class.java).post(QuitUserEvent())
             return
         }
 

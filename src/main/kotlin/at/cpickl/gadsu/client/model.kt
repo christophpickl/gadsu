@@ -10,6 +10,7 @@ import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.view.components.Labeled
 import com.google.common.base.MoreObjects
+import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
@@ -60,6 +61,27 @@ data class Client(
                 .result()
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is Client) return false
+        val that = other
+
+        return  Objects.equal(this.id, that.id) &&
+                Objects.equal(this.created, that.created) &&
+                Objects.equal(this.firstName, that.firstName) &&
+                Objects.equal(this.lastName, that.lastName) &&
+                Objects.equal(this.contact, that.contact) &&
+                Objects.equal(this.birthday, that.birthday) &&
+                Objects.equal(this.gender, that.gender) &&
+                Objects.equal(this.countryOfOrigin, that.countryOfOrigin) &&
+                Objects.equal(this.relationship, that.relationship) &&
+                Objects.equal(this.job, that.job) &&
+                Objects.equal(this.children, that.children) &&
+                Objects.equal(this.note, that.note) &&
+                Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
+                Objects.equal(this.created, that.created)
+    }
+
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)
                 .add("id", id)
@@ -68,7 +90,6 @@ data class Client(
                 .add("picture", picture)
                 .toString()
     }
-
 
 }
 

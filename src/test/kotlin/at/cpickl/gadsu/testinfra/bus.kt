@@ -2,9 +2,9 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Event
 import com.google.common.eventbus.Subscribe
-import org.exparity.hamcrest.BeanMatchers.theSameAs
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
 import java.util.LinkedList
 
@@ -43,12 +43,11 @@ class AnyBusListener {
             // MINOR @TEST - copy and pasted, as dont know how to properly check for class equalness with hamcrest
             assertThat("Type mismatch! Expected: ${expectedRaw.javaClass.name}, Actual: ${actualRaw.javaClass.name}",
                     actualRaw.javaClass === expectedRaw.javaClass,
-                    Matchers.equalTo(true))
+                    equalTo(true))
 
 
             val actual = actualRaw as Event
-            // FIXME @TEST - nope, this is a generic thing here, dont do this here
-            assertThat(actual, theSameAs(expectedRaw as Event).excludeProperty("created").excludeProperty("birthday"))
+            assertThat(actual, equalTo(expectedRaw as Event))
         }
     }
 }

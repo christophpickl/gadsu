@@ -177,6 +177,8 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private fun assertSingleFindAll(expected: Client) {
         val found = testee.findAll()
+//        val f = found[0]
+//        val r = f.equals(expected)
         assertThat(found, contains(expected))
     }
 

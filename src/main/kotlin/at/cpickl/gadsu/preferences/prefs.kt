@@ -13,7 +13,7 @@ interface Prefs {
     var windowDescriptor: WindowDescriptor?
     var clientPictureDefaultFolder: File
 
-    fun reset()
+    fun clear()
 }
 
 class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
@@ -39,6 +39,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             }
             return _preferences!!
         }
+
     override var preferencesData: PreferencesData?
         get() {
             log.trace("get preferencesData()")
@@ -82,7 +83,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
                 preferences.flush()
                 return
             }
-            if (value.size.width < 100 || value.size.height < 100) {
+            if (!value.isValidSize) {
                 log.trace("ignoring invalid size for window descriptor: {}", value)
                 return
             }
@@ -101,9 +102,9 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
         }
 
-    override fun reset() {
-        log.info("reset()")
-        println("reset prefs") // FIXME implement me
+    override fun clear() {
+        log.info("clear()")
+        preferences.clear()
     }
 }
 

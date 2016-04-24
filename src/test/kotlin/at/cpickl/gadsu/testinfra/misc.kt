@@ -6,18 +6,20 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.clearSeconds
+import at.cpickl.gadsu.service.clearTime
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.joda.time.DateTime
 import org.testng.SkipException
 
-val TEST_UUID1 =  "11111111-1234-1234-1234-000000000000"
+val TEST_UUID1 = "11111111-1234-1234-1234-000000000000"
 val TEST_UUID2 = "22222222-1234-1234-1234-000000000000"
-val TEST_DATE = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:10:20")
-val TEST_DATE_WITHOUT_SECONDS = TEST_DATE.clearSeconds()
-val TEST_DATE2 = DateFormats.DATE_TIME.parseDateTime("31.12.2002 23:59:59")
-val TEST_DATE2_WITHOUT_SECONDS = TEST_DATE2.clearSeconds()
-val TEST_DATE_1985 = DateFormats.DATE_TIME.parseDateTime("10.03.1985 22:50:40")
+val TEST_DATETIME1 = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:10:20")
+val TEST_DATETIME1_WITHOUT_SECONDS = TEST_DATETIME1.clearSeconds()
+val TEST_DATETIME2 = DateFormats.DATE_TIME.parseDateTime("31.12.2002 23:59:59")
+val TEST_DATETIME2_WITHOUT_SECONDS = TEST_DATETIME2.clearSeconds()
+
+val TEST_DATE_1985 = DateFormats.DATE.parseDateTime("10.03.1985").clearTime()
 
 fun skip(reason: String) {
     throw SkipException(reason)
@@ -26,7 +28,7 @@ fun skip(reason: String) {
 
 class SimpleTestableClock(_now: DateTime? = null): Clock {
 
-    var now = _now ?: TEST_DATE
+    var now = _now ?: TEST_DATETIME1
 
     override fun now() = now
     override fun nowWithoutSeconds() = now.clearSeconds()

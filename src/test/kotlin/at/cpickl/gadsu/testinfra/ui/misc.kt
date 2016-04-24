@@ -50,9 +50,10 @@ open class DateSpecPicker(private val test: SimpleUiTest,
 
     private val popupPanelName = MyDatePicker.viewNamePopupPanel(viewNamePrefix)
     private val pickerPanelName = MyDatePicker.viewNamePickerPanel(viewNamePrefix)
+    private val buttonName = MyDatePicker.viewNameButton(viewNamePrefix)
 
     private val picker: MyDatePicker get() = window.findSwingComponent(MyDatePicker::class.java, pickerPanelName)
-    private val openButton = window.getButton(MyDatePicker.viewNameButton(viewNamePrefix))
+    private val openButton: Button get() = window.getButton(buttonName)
     private val formattedTextField: TextBox get() = window.getTextBox(MyDatePicker.viewNameText(viewNamePrefix))
 
     fun openPopupByButton(function: (DatePickerPopupContext) -> Unit) {
@@ -61,7 +62,7 @@ open class DateSpecPicker(private val test: SimpleUiTest,
         }
     }
     fun openPopupByButton(function: (Window, JWindow, JDatePanelImpl) -> Unit) {
-        log.debug("openPopupByButton(function)")
+        log.debug("openPopupByButton(function), button.name={}", openButton.name)
         WindowInterceptor
                 .init(openButton.triggerClick())
                 .process(object : WindowHandler() {

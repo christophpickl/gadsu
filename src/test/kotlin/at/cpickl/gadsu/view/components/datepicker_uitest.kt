@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.testinfra.TEST_DATE2
+import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.DateSpecPicker
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
@@ -40,8 +40,8 @@ class DatePickerUiTest : SimpleUiTest() {
     }
 
     fun `at startup with initial date, date picker should have selected that value`() {
-        testee(TEST_DATE2)
-        testee.assertSelected(TEST_DATE2.clearTime())
+        testee(TEST_DATETIME2)
+        testee.assertSelected(TEST_DATETIME2.clearTime())
     }
 
     private fun testee(initial: DateTime?): MyDatePicker {

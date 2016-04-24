@@ -55,7 +55,7 @@ abstract class GuiceIntegrationTest {
 
         Guice.createInjector(
                 Modules.override(
-                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, preferencesNodeName))
+                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, preferencesNodeName, null))
                 ).with(BoundFieldModule.of(this))
         ).injectMembers(this)
 
@@ -67,7 +67,7 @@ abstract class GuiceIntegrationTest {
 object IntegrationServiceLookuper {
 
     fun lookupTreatmentService(jdbcx: SpringJdbcx,
-                               now: DateTime = TEST_DATE,
+                               now: DateTime = TEST_DATETIME1,
                                clock: Clock = SimpleTestableClock(now),
                                bus: EventBus = EventBus(),
                                defaultGeneratedId: String = TEST_UUID1,

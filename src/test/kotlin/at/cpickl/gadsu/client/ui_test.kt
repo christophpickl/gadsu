@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.testinfra.TEST_DATE2
+import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.testinfra.ui.clickAndDisposeDialog
@@ -191,7 +191,7 @@ class ClientUiTest : UiTest() {
     }
 
     fun `checkChanges, when change birthday for new client, then save should be enabled (although not saveable as no name given)`() {
-        driver.inputBirthdate.changeDate(TEST_DATE2.plusDays(17))
+        driver.inputBirthdate.changeDate(TEST_DATETIME2.plusDays(17))
         driver.assertChangesDetected()
     }
 

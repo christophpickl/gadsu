@@ -1,13 +1,14 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.preferences.Prefs
-import com.google.common.eventbus.EventBus
+import com.google.common.annotations.VisibleForTesting
+import com.google.common.base.Splitter
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
+class ArgsActionException(message: String) : GadsuException(message)
 
 class ArgsActionExecutor @Inject constructor(
-        private val bus: EventBus,
         resetPrefsAction: ResetPrefsArgAction,
         helpAction: HelpArgAction
 ) {
@@ -18,34 +19,45 @@ class ArgsActionExecutor @Inject constructor(
         log.debug("execute(actionUrl={})", actionUrl)
 
         val actionName = if (!actionUrl.contains(";")) actionUrl else actionUrl.substring(0, actionUrl.indexOf(";"))
-        val action = actions.firstOrNull { it.actionName.equals(actionName.toLowerCase()) } ?: throw GadsuException("Invalid action requested '${actionName}'!")
+        val action = actions.firstOrNull { it.actionName.toLowerCase().equals(actionName.toLowerCase()) } ?:
+                throw ArgsActionException("Invalid action requested '${actionName}'!")
+
+        val params = parseParams(actionUrl)
         // parse args: "action;foo=bar", watch out for "action"
-        action.execute()
-        bus.post(QuitUserEvent())
+        action.execute(params)
     }
-}
 
-abstract class BaseArgAction(override val actionName: String) : ArgAction
-
-class HelpArgAction() : BaseArgAction("help") {
-    override fun execute() {
-        println("""Available actions:
-  --action=help ... prints this help
-  --action="resetPrefs;foo=bar"... reset preferences to factory default""")
-    }
-}
-
-class ResetPrefsArgAction @Inject constructor(
-        private val prefs: Prefs
-) : BaseArgAction("resetPrefs") {
-
-    override fun execute() {
-        prefs.reset()
+    @VisibleForTesting
+    fun parseParams(actionUrl: String): Map<String, String> {
+        if (!actionUrl.contains(";")) return emptyMap()
+        val rawParams = actionUrl.substring(actionUrl.indexOf(";") + 1)
+        log.trace("Raw params: '{}'", rawParams)
+        return Splitter.on(",").trimResults().withKeyValueSeparator("=").split(rawParams)
     }
 }
 
 interface ArgAction {
     val actionName: String
+    fun execute(params: Map<String, String>)
+}
 
-    fun execute()
+
+abstract class BaseArgAction(override val actionName: String) : ArgAction
+
+class HelpArgAction() : BaseArgAction("help") {
+    override fun execute(params: Map<String, String>) {
+        println("""Available actions:
+  --action=help ... prints this help
+  --action="clearPrefs;foo=bar"... reset preferences to factory default""")
+    }
+}
+
+class ResetPrefsArgAction @Inject constructor(
+        private val prefs: Prefs
+) : BaseArgAction("clearPrefs") {
+
+    override fun execute(params: Map<String, String>) {
+        prefs.clear()
+        println("Preferences cleared to factory defaults.")
+    }
 }
