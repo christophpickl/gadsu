@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.treatment.view.SwingTreatmentView
@@ -14,6 +15,9 @@ class TreatmentModule : AbstractModule() {
     override fun configure() {
 
         bind(TreatmentRepository::class.java).to(TreatmentSpringJdbcRepository::class.java).asEagerSingleton()
+
+
+        bind(TreatmentList::class.java).asEagerSingleton()
 
         // the table which is located in the client view
         bind(TreatmentsInClientView::class.java).asEagerSingleton()

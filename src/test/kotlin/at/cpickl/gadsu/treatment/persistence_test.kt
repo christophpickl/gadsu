@@ -137,20 +137,25 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         })
     }
 
-    // --------------------------------------------------------------------------- recalc number
+    // --------------------------------------------------------------------------- calc number
 
-    fun `recalculateNumbers, none existing, does nothing`() {
-        testee.recalculateNumbers(unsavedTreatment)
+    fun `calculateMaxNumberUsed, none existing, should return null`() {
+        assertCalculateNumber(null)
     }
 
-    fun `recalculateNumbers, 1 and 3 exists, on recalc for 2, then 3 should be updated to 2`() {
-        testee.insert(treatmentNumber1)
-        testee.insert(treatmentNumber3)
+    fun `calculateMaxNumberUsed, number 1 existing, should return 1`() {
+        insertTreatment(treatmentNumber1)
+        assertCalculateNumber(1)
+    }
 
-        testee.recalculateNumbers(treatmentNumber2)
+    fun `calculateMaxNumberUsed, with one gap, should return last`() {
+        insertTreatment(treatmentNumber1)
+        insertTreatment(treatmentNumber3)
+        assertCalculateNumber(3)
+    }
 
-        val actual = testee.findAllFor(client)
-        assertThat(actual.map { it.number }, containsInAnyOrder(1, 2))
+    private fun assertCalculateNumber(expectedNumber: Int?, givenClient: Client = client) {
+        assertThat(testee.calculateMaxNumberUsed(givenClient), equalTo(expectedNumber))
     }
 
     // --------------------------------------------------------------------------- count

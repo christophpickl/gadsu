@@ -38,7 +38,9 @@ enum class PersistenceErrorCode {
     EXPECT_DELETED_ONE,
     EXPECT_UPDATE_ONE,
 
-    UNKNOWN
+    EXPECT_QUERY_SINGLE_ONE,
+
+    UNKNOWN,
 
 }
 

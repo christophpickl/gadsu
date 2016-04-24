@@ -63,10 +63,13 @@ class ExportXstreamService : ExportService {
         return ExportData(
                 export.created,
                 export.clients.map {
-                    if (it.picture != null) { // YES, converter might have set to null (although kotlin disallowed)
-                        it
-                    } else {
+
+                    // YES, converter might have set to null (although kotlin disallowed)
+                    var maybeMyImage: MyImage? = it.picture
+                    if (maybeMyImage == null) {
                         it.copy(picture = it.gender.defaultImage)
+                    } else {
+                        it
                     }
                 },
                 export.treatments)

@@ -21,7 +21,8 @@ interface TreatmentRepository {
     fun delete(treatment: Treatment)
 
     fun countAllFor(client: Client): Int
-    fun recalculateNumbers(pivot: Treatment)
+    fun calculateMaxNumberUsed(client: Client): Int?
+
 
 }
 
@@ -32,13 +33,13 @@ class TreatmentSpringJdbcRepository @Inject constructor(
     companion object {
 
         val TABLE = "treatment"
+
     }
     private val log = LoggerFactory.getLogger(javaClass)
-
     override fun findAllFor(client: Client): List<Treatment> {
         client.ensurePersisted()
 
-        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? ORDER BY number", arrayOf(client.id), Treatment.ROW_MAPPER)
+        val treatments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? ORDER BY number DESC", arrayOf(client.id), Treatment.ROW_MAPPER)
         // because of ORDER clause, not needed: treatments.sort()
         return treatments
     }
@@ -63,7 +64,7 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         log.debug("update(treatment={})", treatment)
         treatment.ensurePersisted()
 
-        jdbcx.updateSingle("UPDATE ${TABLE} SET number = ?, date = ?, note = ? WHERE id = ?",
+        jdbcx.updateSingle("UPDATE $TABLE SET number = ?, date = ?, note = ? WHERE id = ?",
                 treatment.number, treatment.date.toSqlTimestamp(), treatment.note, treatment.id)
     }
 
@@ -81,12 +82,14 @@ class TreatmentSpringJdbcRepository @Inject constructor(
         return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
     }
 
-    override fun recalculateNumbers(pivot: Treatment) {
-        log.debug("recalculateNumbers(pivot={})", pivot)
+    override fun calculateMaxNumberUsed(client: Client): Int? {
+        log.debug("calculateMaxNumberUsed(client)")
 
-        val updatedRows = jdbcx.update("UPDATE $TABLE SET number = number - 1 WHERE id_client = ? AND number > ?",
-                pivot.clientId, pivot.number)
-        log.trace("Updated rows for number recalculation: {}", updatedRows)
+        client.ensurePersisted()
+        val found = jdbcx.queryMaybeSingle(Treatment.ROW_MAPPER,
+                "SELECT * FROM $TABLE WHERE id_client = ? ORDER BY number DESC LIMIT 1", arrayOf(client.id!!))
+                ?: return null
+        return found.number
     }
 
 }

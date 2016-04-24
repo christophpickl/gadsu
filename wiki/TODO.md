@@ -65,6 +65,7 @@ MIT STEFFI
 * [1] UI: logo for windows icon
 * in UI auf max length (durch DB limits) setzen (eigene textfeld/textarea komponente mit konstruktor)
 * add DB constraint that firstName+lastName combination is unique!
+* integrate export in UI (very basic)
 
 ## Low
 
@@ -77,7 +78,6 @@ MIT STEFFI
 * create native EXE for windows
 * tooltips
 * mnemonic and shortcut for menubar
-* export (wichtig), aber auch import (nicht sooo wichtig)
 * release files online stellen
   * requirements:
     * direct link to file
@@ -100,16 +100,14 @@ MIT STEFFI
 
 ## Luxury Ideas
 
-* automatic version check
+* automatic VERSION check
   * during release, create some file with current version in it
   * at app startup, regularly check (GET http to github repo) remote file for version match
-
-* google kalender integration
+* google CALENDER integration
   * erst spaeter, wenns termine gibt...
   * das evtl schon als plugin zur verfuegung stellen (??)
   * https://developers.google.com/google-apps/calendar/quickstart/java
-
-* encrypt database
-
-* auto backup feature (save to GADSU_DIR, can be imported via CLI args)
+* ENCRYPT database
+* auto BACKUP feature based on export function (save to GADSU_DIR, can be imported via CLI args)
   * versioning! copy each db version to own package?! use dbmigrator to migrate exported data to current version! ;)
+* akkupunktur database (minimal set of points, simple search for indications)

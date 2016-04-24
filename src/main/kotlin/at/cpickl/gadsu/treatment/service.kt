@@ -45,7 +45,7 @@ class TreatmentServiceImpl @Inject constructor(
     }
 
     override fun delete(treatment: Treatment) {
-        _delete(treatment, true)
+        _delete(treatment)
     }
 
     override fun deleteAllFor(client: Client) {
@@ -53,20 +53,18 @@ class TreatmentServiceImpl @Inject constructor(
 
         jdbcx.transactionSafe {
             findAllFor(client).forEach {
-                _delete(it, false) // no need for recalculation of numbers as all of them get deleted anyway
+                _delete(it)
             }
         }
     }
 
     override fun calculateNextNumber(client: Client): Int {
-        return repository.countAllFor(client) + 1
+        val maxNumber = repository.calculateMaxNumberUsed(client) ?: 1
+        return maxNumber + 1
     }
 
-    private fun _delete(treatment: Treatment, numberRecalculationEnabled: Boolean) {
+    private fun _delete(treatment: Treatment) {
         repository.delete(treatment)
-        if (numberRecalculationEnabled) {
-            repository.recalculateNumbers(treatment)
-        }
         bus.post(TreatmentDeletedEvent(treatment))
     }
 
