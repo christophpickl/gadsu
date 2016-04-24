@@ -59,7 +59,7 @@ class TreatmentServiceImpl @Inject constructor(
     }
 
     override fun calculateNextNumber(client: Client): Int {
-        val maxNumber = repository.calculateMaxNumberUsed(client) ?: 1
+        val maxNumber = repository.calculateMaxNumberUsed(client) ?: return 1
         return maxNumber + 1
     }
 

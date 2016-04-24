@@ -32,13 +32,13 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
     fun `calculateNextNumber, 3 treatments existing, delete first, returns 3`() {
         val testee = IntegrationServiceLookuper.lookupTreatmentService(jdbcx = jdbcx(), idGenerator = SequencedTestableIdGenerator())
 
-        testee.insert(Treatment.unsavedValidInstance(savedClient.copy(note = "note1")))
-        val saved2 = testee.insert(Treatment.unsavedValidInstance(savedClient.copy(note = "note2")))
-        testee.insert(Treatment.unsavedValidInstance(savedClient.copy(note = "note3")))
+        testee.insert(Treatment.unsavedValidInstance(savedClient).copy(number = 1))
+        val saved2 = testee.insert(Treatment.unsavedValidInstance(savedClient).copy(number = 2))
+        testee.insert(Treatment.unsavedValidInstance(savedClient).copy(number = 3))
 
         testee.delete(saved2)
 
-        assertThat(testee.calculateNextNumber(savedClient), equalTo(3))
+        assertThat(testee.calculateNextNumber(savedClient), equalTo(4))
     }
 
     // delete, 1 and 3 exists, both got 1 and 2
