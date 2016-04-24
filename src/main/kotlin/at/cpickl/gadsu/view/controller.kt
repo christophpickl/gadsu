@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.view.ChangeBehaviour
 import at.cpickl.gadsu.client.view.ClientViewController
 import at.cpickl.gadsu.preferences.Prefs
@@ -25,7 +25,7 @@ open class MainFrameController @Inject constructor(
         }
     }
 
-    @Subscribe open fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
+    @Subscribe open fun onQuitEvent(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
         if (clientController.checkChanges() === ChangeBehaviour.ABORT) {
             log.debug("Quit aborted by changes detected by the client controller.")
             return

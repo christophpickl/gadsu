@@ -28,7 +28,7 @@ class GadsuStarter {
         if (args.action != null) {
             log.info("User requested to start custom action '{}'.", args.action)
             guice.getInstance(ArgsActionExecutor::class.java).execute(args.action)
-            guice.getInstance(EventBus::class.java).post(QuitUserEvent())
+            guice.getInstance(EventBus::class.java).post(QuitEvent())
             return
         }
 
@@ -74,7 +74,7 @@ class GadsuGuiceStarter @Inject constructor(
         log.debug("Enabling mac specific handlers.")
         mac.registerAbout { bus.post(ShowAboutDialogEvent()) }
         mac.registerPreferences { bus.post(ShowPreferencesEvent()) }
-        mac.registerQuit { bus.post(QuitUserEvent()) }
+        mac.registerQuit { bus.post(QuitEvent()) }
     }
 
 }

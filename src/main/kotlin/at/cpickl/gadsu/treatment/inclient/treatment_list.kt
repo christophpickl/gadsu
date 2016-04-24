@@ -7,10 +7,10 @@ import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.CellView
 import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.Pad
-import at.cpickl.gadsu.view.components.SmartList
 import at.cpickl.gadsu.view.components.bold
 import at.cpickl.gadsu.view.components.fatComponent
 import com.google.common.eventbus.EventBus
@@ -22,7 +22,7 @@ import javax.swing.JLabel
 
 class TreatmentList @Inject constructor(
         private val bus: EventBus
-) : SmartList<Treatment>(
+) : MyList<Treatment>(
         ViewNames.Treatment.ListInClientView,
         MyListModel<Treatment>(),
         TreatmentListCellRenderer(),

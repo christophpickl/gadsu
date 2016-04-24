@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.MetaInf
@@ -47,7 +47,7 @@ open class AboutController @Inject constructor(
         window.setVisible(true)
     }
 
-    @Subscribe open fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
+    @Subscribe open fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
         window.setVisible(false)
         window.dispose()
     }

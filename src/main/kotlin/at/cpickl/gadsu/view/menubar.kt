@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
@@ -81,7 +81,7 @@ class GadsuMenuBar @Inject constructor(
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()
-            menuApp.addItem("Beenden", QuitUserEvent())
+            menuApp.addItem("Beenden", QuitEvent())
         }
         add(menuApp)
     }

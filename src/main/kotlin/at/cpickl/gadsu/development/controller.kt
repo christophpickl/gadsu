@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientRepository
@@ -117,7 +117,7 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
     }
 
-    @Subscribe open fun onQuitUserEvent(event: QuitUserEvent) {
+    @Subscribe open fun onQuitEvent(event: QuitEvent) {
         devFrame?.close()
     }
 

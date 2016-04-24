@@ -21,10 +21,8 @@ import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
-import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -66,8 +64,7 @@ class SwingClientMasterView @Inject constructor(
 //        c.fill = GridBagConstraints.HORIZONTAL
 //        c.weightx = 1.0
 //        c.weighty = 1.0
-//        val searchField = JTextField()
-//        searchField.putClientProperty("JTextField.variant", "search")
+//        val searchField = SearchTextField()
 //        add(searchField)
 //        c.gridy++
 

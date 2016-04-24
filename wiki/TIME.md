@@ -16,3 +16,6 @@
   * 5h ... UI improvments (date picker)
   * 5h ... more client fields
   * 5h ... tests and infrastructure (UI)
+  * 3h ... better report
+  * 5h ... UI improvements
+  * 5h ... minor features (export, acupuncture)

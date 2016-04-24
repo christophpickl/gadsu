@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.persistence
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG
@@ -76,7 +76,7 @@ open class DatabaseManager @Inject constructor(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    @Subscribe open fun onQuit(event: QuitUserEvent) {
+    @Subscribe open fun onQuit(event: QuitEvent) {
         closeConnection()
     }
 

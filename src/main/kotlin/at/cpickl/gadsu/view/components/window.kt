@@ -26,7 +26,7 @@ open class MyFrame(private val myTitle: String) : JFrame() {
     final val dockPositionRight: Point
         get() = Point(location.x + size.width + 10, location.y)
 
-    protected fun addCloseListener(body: () -> Unit) {
+    fun addCloseListener(body: () -> Unit) {
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(event: WindowEvent) {
                 log.trace("windowClosing(event)")

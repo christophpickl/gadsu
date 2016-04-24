@@ -23,6 +23,6 @@ private fun graph(filename: String, appInjector: Injector) {
     grapher.setRankdir("TB")
     grapher.graph(appInjector)
 
-    appInjector.getInstance(EventBus::class.java).post(QuitUserEvent())
+    appInjector.getInstance(EventBus::class.java).post(QuitEvent())
     println("Successfully saved graph to file: ${target.absolutePath}")
 }

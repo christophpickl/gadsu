@@ -7,6 +7,7 @@ object ViewNames {
     val MenuBar = MenuBarViewNames
     val Client = ClientViewNames
     val Treatment = TreatmentViewNames
+    val Acupunct = AcupunctViewNames
     val Preferences = PreferencesViewNames
 }
 
@@ -58,6 +59,9 @@ object TreatmentViewNames {
     val InputNote = "Treatment.InputNote"
     val InputDatePrefix = "Treatment.InputDatePrefix" // will be added something like ".XXX"
 
+}
+object AcupunctViewNames {
+    val List = "Acupunct.List"
 }
 
 object PreferencesViewNames {

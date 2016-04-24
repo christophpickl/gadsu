@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.QuitUserEvent
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -23,7 +23,7 @@ open class PreferencesController @Inject constructor(
         prefs.preferencesData = window.readData()
     }
 
-    @Subscribe open fun onQuitUserEvent(@Suppress("UNUSED_PARAMETER") event: QuitUserEvent) {
+    @Subscribe open fun onQuitEvent(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
         prefs.preferencesData = window.readData() // store data back (again?! seems so...)
         window.close()
     }

@@ -14,4 +14,4 @@ abstract class UserEvent : Event()
 
 class AppStartupEvent : AppEvent()
 
-class QuitUserEvent : UserEvent()
+class QuitEvent : UserEvent()

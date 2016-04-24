@@ -10,7 +10,7 @@ import javax.swing.JList
 
 
 
-abstract class SmartList<T : Comparable<T>>(
+abstract class MyList<T : Comparable<T>>(
         viewName: String,
         protected val myModel: MyListModel<T>,
         myCellRenderer: MyListCellRenderer<T>,
