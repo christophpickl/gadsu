@@ -13,6 +13,7 @@ import javax.swing.JPanel
 
 object Pad {
     val ZERO   = Insets(0, 0, 0, 0)
+    val NONE   = ZERO
     val TOP    = Insets(5, 0, 0, 0)
     val LEFT   = Insets(0, 5, 0, 0)
     val BOTTOM = Insets(0, 0, 5, 0)

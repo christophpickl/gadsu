@@ -60,8 +60,8 @@ fun JComponent.changeBackgroundForASec(tempBackground: Color) {
 
 fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     size = Dimension(myWidth, size.height)
-    maximumSize = Dimension(myWidth, Int.MAX_VALUE)
-    minimumSize = Dimension(myWidth, 50)
-    preferredSize = Dimension(myWidth, 80)
+    maximumSize = Dimension(myWidth, maximumSize.height)
+    minimumSize = Dimension(myWidth, minimumSize.height)
+    preferredSize = Dimension(myWidth, preferredSize.height)
     return this
 }

@@ -7,6 +7,7 @@ import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.HtmlEditorPane
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
@@ -19,10 +20,8 @@ import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import javax.swing.JEditorPane
 import javax.swing.JFrame
 import javax.swing.JLabel
-import javax.swing.event.HyperlinkEvent
 
 fun main(args: Array<String>) {
     AboutWindow(MetaInf("1.0.0", DateTime.now()), null, EventBus()).isVisible = true
@@ -53,6 +52,7 @@ open class AboutController @Inject constructor(
     }
 }
 
+
 class AboutWindow @Inject constructor(
         metaInf: MetaInf,
         mainFrame: MainFrame?,
@@ -74,12 +74,8 @@ class AboutWindow @Inject constructor(
         title.font = title.font.deriveFont(17.0F).deriveFont(Font.BOLD)
         panel.add(title)
         panel.c.gridy++
-        val aboutText = JEditorPane()
-        aboutText.contentType = "text/html"
-
-        aboutText.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-        aboutText.font = JLabel().font.deriveFont(10.0F)
-
+        val aboutText = HtmlEditorPane()
+        aboutText.changeLabelFont(10.0F)
         aboutText.text =
                 "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
                 "Version ${metaInf.applicationVersion}<br>" +
@@ -87,14 +83,7 @@ class AboutWindow @Inject constructor(
                 "By Christoph Pickl<br>" +
                 "<br>" +
                 """Visit the <a href="https://github.com/christophpickl/gadsu">Website</a>"""
-        aboutText.isEditable = false
-        aboutText.isOpaque = false
-        // aboutText.isEnabled = false // dont do this!
-        aboutText.addHyperlinkListener { e ->
-            if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-                bus.post(OpenWebpageEvent(e.url))
-            }
-        }
+        aboutText.addOnUrlClickListener { bus.post(OpenWebpageEvent(it)) }
 
         panel.add(aboutText)
 

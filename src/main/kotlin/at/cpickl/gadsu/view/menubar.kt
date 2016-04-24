@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
@@ -78,6 +79,8 @@ class GadsuMenuBar @Inject constructor(
         val itemExport = JMenuItem("Export")
         itemExport.isEnabled = false
         menuApp.add(itemExport)
+
+        menuApp.addItem("Akupunkturpunkte", ShopAcupunctureViewEvent())
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()

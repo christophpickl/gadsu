@@ -10,8 +10,8 @@ import org.testng.annotations.Test
 
 
 object TestAcupunctures {
-    val Stomach36 = Acupunct.build(Meridian.Stomach, 36, "hals", "nacken")
-    val Heart1 = Acupunct.build(Meridian.Heart, 1, "husten")
+    val Stomach36 = Acupunct.punkt(Meridian.Stomach, 36, "note1", "hals", "nacken")
+    val Heart1 = Acupunct.punkt(Meridian.Heart, 1, "note2", "husten")
 
     val all = listOf(Stomach36, Heart1)
 }

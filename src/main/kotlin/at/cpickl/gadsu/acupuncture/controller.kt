@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
-
 open class AcupunctureController @Inject constructor(
         private val frame: AcupunctureFrame,
         private val service: AcupunctureService
@@ -21,6 +20,10 @@ open class AcupunctureController @Inject constructor(
         frame.addCloseListener {
             log.trace("frame closing")
             frame.close()
+        }
+
+        frame.list.addListSelectionListener {
+            frame.changeAcupunct(if (frame.list.selectedIndex == -1) null else frame.list.selectedValue)
         }
 
     }
