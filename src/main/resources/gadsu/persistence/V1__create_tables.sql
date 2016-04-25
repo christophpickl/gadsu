@@ -23,6 +23,17 @@ CREATE TABLE client (
   picture BLOB
 );
 
+CREATE TABLE client_tcm_data (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  id_client VARCHAR(36) NOT NULL,
+
+  key VARCHAR(128) NOT NULL,
+  val VARCHAR(512) NOT NULL,
+--   type VARCHAR(32) NOT NULL,
+
+  FOREIGN KEY (id_client) REFERENCES client(id)
+);
+
 CREATE TABLE treatment (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   id_client VARCHAR(36) NOT NULL,
@@ -34,3 +45,4 @@ CREATE TABLE treatment (
 
   FOREIGN KEY (id_client) REFERENCES client(id)
 );
+

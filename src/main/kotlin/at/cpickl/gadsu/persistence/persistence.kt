@@ -42,6 +42,8 @@ enum class PersistenceErrorCode {
 
     UNKNOWN,
 
+    UNMAPPABLE_ENUM
+
 }
 
 /**

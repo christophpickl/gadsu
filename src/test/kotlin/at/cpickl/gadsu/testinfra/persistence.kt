@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSpringJdbcRepository
+import at.cpickl.gadsu.client.tcm.ClientTcmDataSpringJdbcRepository
 import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.Jdbcx
@@ -31,7 +32,7 @@ abstract class HsqldbTest {
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf("treatment", "client")
+    private val allTables = arrayOf(TreatmentSpringJdbcRepository.TABLE, ClientTcmDataSpringJdbcRepository.TABLE, ClientSpringJdbcRepository.TABLE)
 
     private var dataSource: EmbeddedDatabase? = null
     private var jdbcx: SpringJdbcx? = null
