@@ -5,9 +5,9 @@ import at.cpickl.gadsu.service.RealClock
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.Dimension
+import java.awt.EventQueue
 import javax.swing.BoxLayout
 import javax.swing.JFrame
-import javax.swing.SwingUtilities
 import javax.swing.UIManager
 import javax.swing.WindowConstants
 
@@ -51,7 +51,8 @@ class Framed {
             frame.pack()
         }
         frame.setLocationRelativeTo(null)
-        SwingUtilities.invokeLater { frame.isVisible = true }
+        EventQueue.invokeLater { frame.isVisible = true }
+//        SwingUtilities.invokeLater { frame.isVisible = true }
     }
 }
 class FramedContext(

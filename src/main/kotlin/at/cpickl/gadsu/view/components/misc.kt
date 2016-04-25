@@ -5,8 +5,13 @@ import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.Font
+import java.awt.Point
+import java.awt.event.InputEvent
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.util.Timer
 import java.util.TimerTask
 import javax.swing.JComponent
@@ -64,4 +69,16 @@ fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     minimumSize = Dimension(myWidth, minimumSize.height)
     preferredSize = Dimension(myWidth, preferredSize.height)
     return this
+}
+
+
+fun Component.addSingleLeftClickListener(function: (Point) -> Unit) {
+    addMouseListener(object : MouseAdapter() {
+        override fun mouseClicked(e: MouseEvent) {
+            val isLeftClick = (e.modifiers and InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK
+            if (e.clickCount == 1 && isLeftClick) {
+                function.invoke(e.point)
+            }
+        }
+    })
 }

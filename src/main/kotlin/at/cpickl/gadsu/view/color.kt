@@ -10,3 +10,12 @@ Color bColor = Color.decode("FF0096");
 
 fun Color.toHexString() = Integer.toHexString(this.rgb).substring(2)
 // String hex = String.format("#%02x%02x%02x", r, g, b);
+
+
+
+fun Color.brighterIfTrue(value: Boolean): Color {
+    if (value) {
+        return brighter()
+    }
+    return this
+}
