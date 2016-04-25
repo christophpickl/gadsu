@@ -2,55 +2,28 @@ package at.cpickl.gadsu.client.props
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.PersistenceErrorCode
-import at.cpickl.gadsu.persistence.PersistenceException
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
-interface HasSqlRepresentation {
-    val sqlRepresentation: String
-}
+data class SqlProps(val data: Map<String, out SqlPropType>)
 
-enum class SleepEnum(override val sqlRepresentation: String) : HasSqlRepresentation {
-    ProblemsFallAsleep("ProblemsFallAsleep"),
-    ProblemsWakeUp("ProblemsWakeUp"),
-    TiredInTheMorning("TiredInTheMorning"),
-    TiredInTheEvening("TiredInTheEvening");
-    companion object {
-        val key = "Sleep"
-    }
-}
-
-enum class StringProps(val key: String) {
-    MoodOfToday("MoodOfToday")
-}
-
-private val allStrings: List<String> = StringProps.values().map { it.key }
-private val allEnums: Map<String, KClass<Enum<*>>> = mapOf(
-        Pair(SleepEnum.key, SleepEnum::class as KClass<Enum<*>>)
-)
-
-data class Props(val data: Map<String, out PropType>)
-
-interface PropType {
+interface SqlPropType {
     fun toSqlValue(): String
 }
-data class PropStringType(val value: String) : PropType {
+data class SqlPropStringType(val value: String) : SqlPropType {
     override fun toSqlValue() = value
 }
 // Boolean specifies if selected or not
-data class PropMultiEnumType(val values: List<String>) : PropType {
+data class SqlPropMultiEnumType(val values: List<String>) : SqlPropType {
     override fun toSqlValue() =  values/*.filterValues { it == true }.keys*/.joinToString(",")
 }
 
 
-
 interface ClientPropsRepository {
-    fun reset(clientId: String, props: Props)
+    fun reset(clientId: String, props: SqlProps)
 
-    fun readAllFor(client: Client): Props
+    fun readAllFor(client: Client): SqlProps
 }
 
 class ClientPropsSpringJdbcRepository @Inject constructor(
@@ -63,7 +36,7 @@ class ClientPropsSpringJdbcRepository @Inject constructor(
     }
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun reset(clientId: String, props: Props) {
+    override fun reset(clientId: String, props: SqlProps) {
         val countDeleted = jdbc.update("DELETE FROM $TABLE WHERE id_client = ?", clientId)
         log.trace("deleted {} props from table.", countDeleted)
 
@@ -73,42 +46,48 @@ class ClientPropsSpringJdbcRepository @Inject constructor(
         }
     }
 
-    override fun readAllFor(client: Client): Props {
-        val rawRows = jdbc.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), PropRawRow.ROW_MAPPER)
+    override fun readAllFor(client: Client): SqlProps {
+        val rawRows = jdbc.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), PropSqlRow.ROW_MAPPER)
 
-        val props = java.util.HashMap<String, PropType>()
+        val props = java.util.HashMap<String, SqlPropType>()
 
         rawRows.forEach {
+
+            val sqlProp: SqlPropType = onPropType(it.sqlKey, it, SqlPropTypeCallback)
+
+            props.put(it.sqlKey, sqlProp)
+            /*
             if (allStrings.contains(it.sqlKey)) {
-                props.put(it.sqlKey, PropStringType(it.sqlValue))
-            } else if (allEnums.contains(it.sqlKey)) {
+                props.put(it.sqlKey, SqlPropStringType(it.sqlValue))
+            } else if (allMultiEnums.contains(it.sqlKey)) {
                 // needed when uplifting to higher abstraction level
 //                val enumKlass = allEnums[it.sqlKey]
 //                enumKlass!!.java.declaredFields.filter { it.isEnumConstant }.forEach {
 //                    println(it)
-//                    it as HasSqlRepresentation
+//                    it as HasKey
 //                }
                 val enumValues = it.sqlValue.split(",")
-                props.put(it.sqlKey, PropMultiEnumType(enumValues))
+                props.put(it.sqlKey, SqlPropMultiEnumType(enumValues))
             } else {
                 throw PersistenceException("Invalid property key for data row: '${it}'!", PersistenceErrorCode.PROPS_INVALID_KEY)
             }
+            */
         }
 
-        return Props(props)
+        return SqlProps(props)
     }
 
 }
 
-data class PropRawRow(val clientId: String, val sqlKey: String, val sqlValue: String) {
+data class PropSqlRow(val clientId: String, val sqlKey: String, val sqlValue: String) {
     companion object {} // for extension methods
 }
 
 
-val PropRawRow.Companion.ROW_MAPPER: RowMapper<PropRawRow>
+val PropSqlRow.Companion.ROW_MAPPER: RowMapper<PropSqlRow>
     get() = RowMapper { rs, rowNum ->
         val clientId = rs.getString("id_client")
         val sqlKey = rs.getString("key")
         val sqlValue = rs.getString("val")
-        PropRawRow(clientId, sqlKey, sqlValue)
+        PropSqlRow(clientId, sqlKey, sqlValue)
     }

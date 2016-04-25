@@ -15,7 +15,7 @@ interface ClientService {
 
     fun findAll(): List<Client>
 
-    fun insertOrUpdate(client: Client)
+    fun insertOrUpdate(client: Client)// needed??? : Client
 
     fun savePicture(client: Client)
 
@@ -37,7 +37,10 @@ class ClientServiceImpl @Inject constructor(
 ) : ClientService {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun findAll() = clientRepo.findAll()
+    override fun findAll(): List<Client> {
+        // FIXME enhance with client props data
+        return clientRepo.findAll()
+    }
 
     override fun savePicture(client: Client) {
         clientRepo.changePicture(client)
@@ -86,6 +89,7 @@ class ClientServiceImpl @Inject constructor(
 
         log.trace("Going to insert: {}", toBeInserted)
         val savedClient = clientRepo.insertWithoutPicture(toBeInserted)
+        // FIXME also save client props
         log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
 
         @Suppress("SENSELESS_COMPARISON")

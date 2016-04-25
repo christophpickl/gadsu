@@ -15,6 +15,21 @@ import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
 
+interface Prop {
+
+}
+
+data class StringProp(val value: String) : Prop
+data class MultiEnumProp(val entries: List<String>) : Prop {
+//    val activeEntries = entries.filterValues { it == true }.keys.toList()
+}
+
+data class ClientProps(val properties: Map<String, Prop>) {
+    companion object {
+        val empty: ClientProps get() = ClientProps(emptyMap())
+    }
+}
+
 data class Client(
         override val id: String?, // it is null if not yet persisted
         val created: DateTime,
@@ -29,7 +44,8 @@ data class Client(
         val children: String,
 
         val note: String,
-        val picture: MyImage
+        val picture: MyImage,
+        val props: ClientProps
 
 ) : Comparable<Client>, HasId, Persistable {
 
@@ -37,7 +53,8 @@ data class Client(
 
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
-                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "", MyImage.DEFAULT_PROFILE_MAN)
+                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "",
+                MyImage.DEFAULT_PROFILE_MAN, ClientProps.empty)
     }
 
     override val yetPersisted: Boolean

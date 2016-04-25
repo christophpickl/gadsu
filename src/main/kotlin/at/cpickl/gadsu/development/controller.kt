@@ -3,7 +3,7 @@ package at.cpickl.gadsu.development
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientProps
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
@@ -72,7 +72,7 @@ open class DevelopmentController @Inject constructor(
                         ),
                         DateFormats.DATE.parseDateTime("26.10.1986"), Gender.MALE, "\u00d6sterreich",
                         Relationship.MARRIED, "Computermensch", "keine", "Meine supi wuzi Anmerkung.",
-                        MyImage.DEFAULT_PROFILE_MAN
+                        MyImage.DEFAULT_PROFILE_MAN, ClientProps.empty
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",
@@ -81,11 +81,10 @@ open class DevelopmentController @Inject constructor(
                         picture = MyImage.DEFAULT_PROFILE_WOMAN
                 )
         ).forEach {
-            val savedClient = clientRepo.insertWithoutPicture(it)
-            bus.post(ClientCreatedEvent(savedClient))
+            clientService.insertOrUpdate(it)
 
-            if (savedClient.firstName.equals("Max")) {
-                val clientId = savedClient.id!!
+            if (it.firstName.equals("Max")) {
+                val clientId = it.id!!
                 arrayOf(
                         Treatment.insertPrototype(
                                 clientId = clientId,

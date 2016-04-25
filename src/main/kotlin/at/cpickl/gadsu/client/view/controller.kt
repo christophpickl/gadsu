@@ -5,7 +5,6 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientDeletedEvent
-import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientUnselectedEvent
@@ -37,7 +36,6 @@ open class ClientViewController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val view: ClientView,
-        private val clientRepo: ClientRepository,
         private val clientService: ClientService,
         private val currentClient: CurrentClient,
         private val dialogs: Dialogs
@@ -46,7 +44,7 @@ open class ClientViewController @Inject constructor(
     private val log = LOG(javaClass)
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        view.masterView.initClients(clientRepo.findAll())
+        view.masterView.initClients(clientService.findAll())
         bus.post(ChangeMainContentEvent(view))
         bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
     }

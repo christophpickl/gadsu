@@ -16,7 +16,7 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 
     @BeforeMethod
     fun init() {
-        savedClient = insertClient()
+        savedClient = insertClientViaRepo()
     }
 
     fun `calculateNextNumber, 0 treatments existing, returns 1`() {

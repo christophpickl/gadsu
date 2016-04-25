@@ -88,7 +88,7 @@ abstract class HsqldbTest {
 
 
 
-    protected fun insertClient(prototype: Client = Client.unsavedValidInstance(), id: String = TEST_UUID1): Client {
+    protected fun insertClientViaRepo(prototype: Client = Client.unsavedValidInstance(), id: String = TEST_UUID1): Client {
         return ClientSpringJdbcRepository(jdbcx(), SimpleTestableIdGenerator(id)).insertWithoutPicture(prototype)
     }
 

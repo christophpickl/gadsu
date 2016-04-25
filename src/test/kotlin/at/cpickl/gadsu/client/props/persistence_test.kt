@@ -1,7 +1,10 @@
 package at.cpickl.gadsu.client.props
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.props.TestPropHelper.Companion.sqlPropMultiEnum1
+import at.cpickl.gadsu.client.props.TestPropHelper.Companion.sqlPropString1
 import at.cpickl.gadsu.client.unsavedValidInstance
+import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -14,64 +17,70 @@ class ClientPropsSpringJdbcRepositoryTest : HsqldbTest() {
 
     private var testee: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
     private var client = Client.unsavedValidInstance()
+    private var helper: TestPropHelper = TestPropHelper(nullJdbcx())
 
-    private val propString1 = Pair(StringProps.MoodOfToday.key, PropStringType("my mood of today"))
-    private val propMultiEnum1 = Pair(SleepEnum.key, PropMultiEnumType(listOf(
-            SleepEnum.ProblemsFallAsleep.sqlRepresentation,
-            SleepEnum.TiredInTheMorning.sqlRepresentation)))
 
 
     @BeforeMethod
     fun initState() {
         testee = ClientPropsSpringJdbcRepository(jdbcx())
-
         // default a client is inserted for all tests
-        client = insertClient(Client.unsavedValidInstance())
+        client = insertClientViaRepo(Client.unsavedValidInstance())
+        helper = TestPropHelper(jdbcx())
     }
 
     fun `reset, string type`() {
-        reset(propString1)
-        assertRows(PropRawRow(client.id!!, propString1.first, propString1.second.toSqlValue()))
+        reset(sqlPropString1)
+        helper.assertRows(PropSqlRow(client.id!!, sqlPropString1.first, sqlPropString1.second.toSqlValue()))
     }
 
     fun `reset, multi-enum type`() {
-        reset(propMultiEnum1)
-        assertRows(PropRawRow(client.id!!, propMultiEnum1.first, propMultiEnum1.second.toSqlValue()))
+        reset(sqlPropMultiEnum1)
+        helper.assertRows(PropSqlRow(client.id!!, sqlPropMultiEnum1.first, sqlPropMultiEnum1.second.toSqlValue()))
     }
 
     fun `read, string sunshine`() {
-        reset(propString1)
-        assertPropsEqual(testee.readAllFor(client), propString1)
+        reset(sqlPropString1)
+        helper.assertPropsEqual(testee.readAllFor(client), sqlPropString1)
     }
 
     fun `read, multi-enum sunshine`() {
-        reset(propMultiEnum1)
-        assertPropsEqual(testee.readAllFor(client), propMultiEnum1)
+        reset(sqlPropMultiEnum1)
+        helper.assertPropsEqual(testee.readAllFor(client), sqlPropMultiEnum1)
     }
 
 //    private fun assertResetAndRead() {
 //
 //    }
 
-    private fun assertPropsEqual(actual: Props, vararg pairs: Pair<String, PropType>) {
-        assertThat(actual, equalTo(Props(mapOf(*pairs))))
-    }
-
-    private fun reset(vararg entries: Pair<String, PropType>) {
-        val data = HashMap<String, PropType>()
+    private fun reset(vararg entries: Pair<String, SqlPropType>) {
+        val data = HashMap<String, SqlPropType>()
         entries.forEach { data.put(it.first, it.second) }
-        testee.reset(client.id!!, Props(data))
+        testee.reset(client.id!!, SqlProps(data))
     }
 
+}
 
-    private fun assertRows(vararg expected: PropRawRow) {
-        val rawRows = jdbcx().jdbc.query("SELECT * FROM ${ClientPropsSpringJdbcRepository.TABLE}", PropRawRow.ROW_MAPPER)
+class TestPropHelper(val jdbc: Jdbcx) {
+    companion object {
+        val sqlPropString1 = Pair(Props.Strings.MoodOfToday.key, SqlPropStringType("my mood of today"))
+        val sqlPropMultiEnum1 = Pair(Props.Enums.SleepEnum.key, SqlPropMultiEnumType(listOf(
+                Props.Enums.SleepEnum.ProblemsFallAsleep.key,
+                Props.Enums.SleepEnum.TiredInTheMorning.key)))
+    }
+
+    fun assertPropsEqual(actual: SqlProps, vararg pairs: Pair<String, SqlPropType>) {
+        assertThat(actual, equalTo(SqlProps(mapOf(*pairs))))
+    }
+
+    fun assertRows(vararg expected: PropSqlRow) {
+        val rawRows = jdbc.jdbc.query("SELECT * FROM ${ClientPropsSpringJdbcRepository.TABLE}", PropSqlRow.ROW_MAPPER)
         if (expected.isEmpty()) {
             assertThat(rawRows, emptyIterable())
         } else {
+            assertThat(rawRows, hasSize(expected.size))
             assertThat(rawRows, contains(*expected))
         }
     }
-
 }
 
