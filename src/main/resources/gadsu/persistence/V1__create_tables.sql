@@ -23,14 +23,12 @@ CREATE TABLE client (
   picture BLOB
 );
 
-CREATE TABLE client_tcm_data (
-  id VARCHAR(36) NOT NULL PRIMARY KEY,
+CREATE TABLE client_props (
   id_client VARCHAR(36) NOT NULL,
-
   key VARCHAR(128) NOT NULL,
   val VARCHAR(512) NOT NULL,
---   type VARCHAR(32) NOT NULL,
 
+  PRIMARY KEY(id_client, key),
   FOREIGN KEY (id_client) REFERENCES client(id)
 );
 

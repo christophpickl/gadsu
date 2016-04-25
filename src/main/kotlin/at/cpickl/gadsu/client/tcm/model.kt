@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.tcm
 
 
-
+/*
 data class TcmData(val clientId: String, val entries: TcmDataEntries)
 
 data class TcmDataEntries(val entries: List<TcmDataEntry<Any>>)
@@ -51,3 +51,4 @@ enum class TcmDataType() {
     //        fun bySqlValue(search: String) = values().firstOrNull { it.sqlValue.equals(search) }
     //    }
 }
+*/

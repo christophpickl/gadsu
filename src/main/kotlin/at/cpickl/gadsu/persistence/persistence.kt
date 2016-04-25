@@ -42,7 +42,7 @@ enum class PersistenceErrorCode {
 
     UNKNOWN,
 
-    UNMAPPABLE_ENUM
+    PROPS_INVALID_KEY
 
 }
 

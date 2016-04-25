@@ -5,6 +5,7 @@ import at.cpickl.gadsu.service.IdGenerator
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
+/*
 interface ClientTcmDataRepository {
 
     fun insert(data: TcmData)
@@ -38,3 +39,4 @@ class ClientTcmDataSpringJdbcRepository @Inject constructor(
 //        jdbcx.query()
     }
 }
+*/

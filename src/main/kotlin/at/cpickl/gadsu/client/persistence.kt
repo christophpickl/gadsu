@@ -49,6 +49,7 @@ class ClientSpringJdbcRepository @Inject constructor(
         val TABLE = "client"
     }
     private val log = LoggerFactory.getLogger(javaClass)
+
     override fun findAll(): List<Client> {
         log.debug("findAll()")
 
