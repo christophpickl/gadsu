@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.client.props.ClientPropsRepository
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
@@ -28,6 +29,7 @@ interface ClientService {
 
 class ClientServiceImpl @Inject constructor(
         private val clientRepo: ClientRepository,
+        private val propsRepo: ClientPropsRepository,
         private val treatmentService: TreatmentService,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,

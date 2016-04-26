@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
@@ -63,6 +64,11 @@ class ClientSpringJdbcRepository @Inject constructor(
         client.ensureNotPersisted()
 
         val newId = idGenerator.generate()
+        // MINOR copy and paste!
+        @Suppress("SENSELESS_COMPARISON") // yes, it can indeed be that way!
+        if (newId === null) {
+            throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
+        }
         val sqlInsert = """
         INSERT INTO $TABLE (
             id, firstName, lastName, created, birthday,

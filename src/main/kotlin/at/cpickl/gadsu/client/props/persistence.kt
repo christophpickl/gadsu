@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import javax.inject.Inject
 
-data class SqlProps(val data: Map<String, out SqlPropType>)
+data class SqlProps(val data: Map<String, SqlPropType>)
 
 interface SqlPropType {
     fun toSqlValue(): String
@@ -26,6 +26,7 @@ interface ClientPropsRepository {
     fun readAllFor(client: Client): SqlProps
 }
 
+// TODO rename "SpringJdbc" -> "Jdbc", and add it as suffix: "ClientPropsRepositoryJdbc"
 class ClientPropsSpringJdbcRepository @Inject constructor(
         private val jdbc: Jdbcx
         ) :

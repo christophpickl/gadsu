@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.props.ClientPropsRepository
+import at.cpickl.gadsu.client.props.ClientPropsSpringJdbcRepository
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
@@ -18,6 +20,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private val unsavedClient = Client.unsavedValidInstance()
 
     private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private var propsRepo: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
     private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var treatmentService = TreatmentServiceImpl(treatmentRepo, nullJdbcx(), EventBus(), RealClock())
 
@@ -25,6 +28,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     fun setUp() {
         idGenerator = SequencedTestableIdGenerator()
         clientRepo = ClientSpringJdbcRepository(jdbcx(), idGenerator)
+        propsRepo = ClientPropsSpringJdbcRepository(jdbcx())
         treatmentRepo = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
         treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx(), bus, clock)
     }
@@ -39,6 +43,6 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         assertEmptyTable("treatment")
     }
 
-    private fun testee() = ClientServiceImpl(clientRepo, treatmentService, jdbcx(), bus, clock, currentClient)
+    private fun testee() = ClientServiceImpl(clientRepo, propsRepo, treatmentService, jdbcx(), bus, clock, currentClient)
 
 }

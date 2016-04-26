@@ -14,6 +14,7 @@ import org.testng.annotations.Test
 
 @Test(groups = arrayOf("hsqldb", "integration"))
 class PropsServiceImplTest : HsqldbTest() {
+
     private var client = Client.unsavedValidInstance()
     private var repo: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
     private var testee: PropsService = PropsServiceImpl(repo)
@@ -44,7 +45,6 @@ class PropsServiceImplTest : HsqldbTest() {
         updateDefaultEnumProps()
 
         val actual = testee.load(client)
-        println(actual)
         assertThat(actual.properties.size, equalTo(1))
         val entry = actual.properties.iterator().next()
         assertThat(entry.key, equalTo(testProp1.first))
@@ -57,3 +57,46 @@ class PropsServiceImplTest : HsqldbTest() {
     }
 
 }
+
+
+//@Test(
+//        groups = arrayOf("hsqldb", "integration")
+//)
+/*
+class ClientServiceImplForPropsTest : HsqldbTest() {
+
+    // MINOR TEST this needs some refactoring (reuse it!), or just startup guice context and inject faked datasource
+    private var clientRepo: ClientRepository = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private var propsRepo: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
+    private propsSerice
+    private var treatmentRepo: TreatmentRepository = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private var treatmentService: TreatmentService = TreatmentServiceImpl(treatmentRepo, nullJdbcx(), bus, clock)
+    private var testee: ClientService = ClientServiceImpl(clientRepo, propsRepo, treatmentService, nullJdbcx(), bus, clock, currentClient)
+
+    private var helper = TestPropHelper(nullJdbcx())
+
+    private var client = Client.unsavedValidInstance()
+
+    @BeforeMethod
+    fun initState() {
+        idGenerator = SequencedTestableIdGenerator()
+        clientRepo = ClientSpringJdbcRepository(jdbcx(), idGenerator)
+        propsRepo = ClientPropsSpringJdbcRepository(jdbcx())
+        treatmentRepo = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
+        treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx(), bus, clock)
+        testee = ClientServiceImpl(clientRepo, propsRepo, treatmentService, jdbcx(), bus, clock, currentClient)
+        helper = TestPropHelper(jdbcx())
+    }
+
+    fun `insert client with enum prop set, should insert one sql row in table`() {
+        val givenProps = ClientProps(mapOf(
+                Pair(Props.Enums.SleepEnum.key, MultiEnumProp(listOf(Props.Enums.SleepEnum.ProblemsFallAsleep.key)))
+        ))
+//        ==> addProp(Props.Sleep.key).withValue(Props.Sleep.ProblemsFallAsleep, ...)
+        val insertClient = client.copy(props = givenProps)
+        testee.insertOrUpdate(insertClient)
+        helper.assertRows(PropSqlRow(insertClient.id!!, Props.Enums.SleepEnum.key, Props.Enums.SleepEnum.ProblemsFallAsleep.key))
+    }
+
+}
+*/

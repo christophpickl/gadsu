@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.props.PropsModule
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.client.view.ClientViewController
@@ -24,6 +25,8 @@ class ClientModule : AbstractModule() {
         bind(ClientDetailView::class.java).to(SwingClientDetailView::class.java).`in`(Scopes.SINGLETON)
 
         bind(ClientService::class.java).to(ClientServiceImpl::class.java)
+
+        install(PropsModule())
     }
 
 }
