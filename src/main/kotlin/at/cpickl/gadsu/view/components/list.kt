@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import com.google.common.eventbus.EventBus
 import org.slf4j.Logger
@@ -10,15 +11,17 @@ import javax.swing.JList
 
 
 
-abstract class MyList<T : Comparable<T>>(
+open class MyList<T : Comparable<T>>(
         viewName: String,
         protected val myModel: MyListModel<T>,
-        myCellRenderer: MyListCellRenderer<T>,
-        private val bus: EventBus
+        private val bus: EventBus,
+        myCellRenderer: MyListCellRenderer<T>? = null
 ) : JList<T>(myModel) {
 
     init {
-        cellRenderer = myCellRenderer
+        if (myCellRenderer != null) {
+            cellRenderer = myCellRenderer
+        }
         name = viewName
     }
 
@@ -49,6 +52,16 @@ abstract class MyList<T : Comparable<T>>(
 
     protected fun initSinglePopup(label: String, eventFunction: (T) -> UserEvent) {
         enablePopup(bus, Pair<String, (T) -> UserEvent>(label, { eventFunction(it) }))
+    }
+
+    fun addSelectedValues(entries: List<T>) {
+        entries.forEach {
+            val index = myModel.indexOf(it)
+            if (index == -1) {
+                throw GadsuException("Not found element in list model: '$it'")
+            }
+            addSelectionInterval(index, index)
+        }
     }
 }
 

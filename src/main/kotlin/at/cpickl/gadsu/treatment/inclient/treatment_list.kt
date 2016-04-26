@@ -25,8 +25,8 @@ class TreatmentList @Inject constructor(
 ) : MyList<Treatment>(
         ViewNames.Treatment.ListInClientView,
         MyListModel<Treatment>(),
-        TreatmentListCellRenderer(),
-        bus
+        bus,
+        TreatmentListCellRenderer()
 ) {
     init {
         initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })

@@ -136,8 +136,8 @@ class AcupunctureList @Inject constructor(
 ) : MyList<Acupunct>(
         ViewNames.Acupunct.List,
         MyListModel<Acupunct>(),
-        AcupunctListCellRenderer(),
-        bus
+        bus,
+        AcupunctListCellRenderer()
 ), SearchableList<Acupunct> {
     init {
         //        initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })

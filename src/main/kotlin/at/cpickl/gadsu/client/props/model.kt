@@ -20,12 +20,12 @@ object Props {
     }
     object Enums {
         enum class SleepEnum(override val key: String) : HasKey {
-            ProblemsFallAsleep("ProblemsFallAsleep"),
+            ProblemsFallAsleep("ProblemsFallAsleepKeeey"),
             ProblemsWakeUp("ProblemsWakeUp"),
             TiredInTheMorning("TiredInTheMorning"),
             TiredInTheEvening("TiredInTheEvening");
-            companion object {
-                val key = "Sleep"
+            companion object : HasKey {
+                override val key = "Sleep"
             }
         }
 

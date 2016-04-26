@@ -69,6 +69,7 @@ dependencies {
     // MISC
     // -------------------------------------------------------------------------
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'joda-time:joda-time:2.9.3'
     compile 'commons-cli:commons-cli:1.3.1' // parse CLI args
 
@@ -103,7 +104,6 @@ dependencies {
 
     // TEST
     // -------------------------------------------------------------------------
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testCompile 'org.hamcrest:hamcrest-core:1.3'
     testCompile 'org.hamcrest:hamcrest-library:1.3'// testng comes with hamcrest-core 1.1 via junit; must be ABOVE
     testCompile 'org.exparity:hamcrest-bean:1.0.11'

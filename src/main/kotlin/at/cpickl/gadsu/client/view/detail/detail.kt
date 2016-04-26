@@ -60,10 +60,10 @@ open class SwingClientDetailView @Inject constructor(
 
     private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
 
-    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview
+    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview)
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
-    )
-    private val tabTcm = ClientTabTcm()
+    private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker)
+
     private val allTabs = arrayOf(tabMain, tabTcm)
     init {
         modificationChecker.disableAll()
