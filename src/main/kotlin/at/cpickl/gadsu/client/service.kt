@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.client.props.ClientPropsRepository
+import at.cpickl.gadsu.client.props.PropsService
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
@@ -16,7 +16,7 @@ interface ClientService {
 
     fun findAll(): List<Client>
 
-    fun insertOrUpdate(client: Client)// needed??? : Client
+    fun insertOrUpdate(client: Client): Client // return type needed for development reset data (only?!)
 
     fun savePicture(client: Client)
 
@@ -29,7 +29,7 @@ interface ClientService {
 
 class ClientServiceImpl @Inject constructor(
         private val clientRepo: ClientRepository,
-        private val propsRepo: ClientPropsRepository,
+        private val propsService: PropsService,
         private val treatmentService: TreatmentService,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
@@ -44,15 +44,15 @@ class ClientServiceImpl @Inject constructor(
         return clientRepo.findAll()
     }
 
-    override fun savePicture(client: Client) {
-        clientRepo.changePicture(client)
-    }
-
-    override fun insertOrUpdate(client: Client) {
+    override fun insertOrUpdate(client: Client): Client {
         log.info("insertOrUpdate(client={})", client)
 
         if (client.yetPersisted) {
-            clientRepo.updateWithoutPicture(client)
+            jdbcx.transactionSafe {
+                clientRepo.updateWithoutPicture(client)
+                // TODO the propsService call is duplicate from insert
+                propsService.update(client)
+            }
 
             val dispatchClient: Client
             if (client.picture.isUnsavedDefaultPicture) {
@@ -62,16 +62,40 @@ class ClientServiceImpl @Inject constructor(
                 dispatchClient = client
             }
             bus.post(ClientUpdatedEvent(dispatchClient))
-            return
+            return dispatchClient
         }
 
-        insertClient(client)
+        return insertClient(client)
+    }
+
+    private fun insertClient(client: Client): Client {
+        val toBeInserted = client.copy(created = clock.now())
+
+        log.trace("Going to insert: {}", toBeInserted)
+
+        val savedClient = jdbcx.transactionSafeAndReturn {
+            val tmpClient = clientRepo.insertWithoutPicture(toBeInserted)
+            propsService.update(tmpClient)
+            tmpClient
+        }
+
+        @Suppress("SENSELESS_COMPARISON")
+        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
+
+        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
+        bus.post(ClientCreatedEvent(savedClient))
+        return savedClient
+    }
+
+    override fun savePicture(client: Client) {
+        clientRepo.changePicture(client)
     }
 
     override fun delete(client: Client) {
         log.debug("delete(client={})", client)
 
         jdbcx.transactionSafe {
+            // cascade delete
             treatmentService.deleteAllFor(client)
 
             clientRepo.delete(client)
@@ -84,20 +108,6 @@ class ClientServiceImpl @Inject constructor(
         val changedClient = client.copy(picture = client.gender.defaultImage)
         clientRepo.changePicture(changedClient)
         currentClient.data = changedClient
-    }
-
-    private fun insertClient(client: Client) {
-        val toBeInserted = client.copy(created = clock.now())
-
-        log.trace("Going to insert: {}", toBeInserted)
-        val savedClient = clientRepo.insertWithoutPicture(toBeInserted)
-        // FIXME also save client props
-        log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
-
-        @Suppress("SENSELESS_COMPARISON")
-        if (savedClient === null) throw GadsuException("Impossible state most likely due to wrong test mock setup! Inserted to repo: $toBeInserted")
-
-        bus.post(ClientCreatedEvent(savedClient))
     }
 
 }

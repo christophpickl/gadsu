@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client.props
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientProps
 import at.cpickl.gadsu.client.Prop
+import at.cpickl.gadsu.client.ensurePersisted
 import org.slf4j.LoggerFactory
 import java.util.HashMap
 import javax.inject.Inject
@@ -10,7 +11,7 @@ import javax.inject.Inject
 interface PropsService {
 
     fun load(client: Client): ClientProps
-    fun update(client: Client): Client
+    fun update(client: Client)
 
 }
 
@@ -32,9 +33,10 @@ class PropsServiceImpl @Inject constructor(
         return ClientProps(properties)
     }
 
-    override fun update(client: Client): Client {
+    override fun update(client: Client) {
         log.debug("update(client={})", client)
 
+        client.ensurePersisted()
         val sqlData = HashMap<String, SqlPropType>()
         val props = client.props.properties
         props.keys.forEach {
@@ -45,7 +47,6 @@ class PropsServiceImpl @Inject constructor(
         val sqlProps = SqlProps(sqlData)
 
         repository.reset(client.id!!, sqlProps)
-        return client
     }
 
 }

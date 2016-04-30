@@ -81,10 +81,10 @@ open class DevelopmentController @Inject constructor(
                         picture = MyImage.DEFAULT_PROFILE_WOMAN
                 )
         ).forEach {
-            clientService.insertOrUpdate(it)
+            val saved = clientService.insertOrUpdate(it)
 
-            if (it.firstName.equals("Max")) {
-                val clientId = it.id!!
+            if (saved.firstName.equals("Max")) {
+                val clientId = saved.id!!
                 arrayOf(
                         Treatment.insertPrototype(
                                 clientId = clientId,

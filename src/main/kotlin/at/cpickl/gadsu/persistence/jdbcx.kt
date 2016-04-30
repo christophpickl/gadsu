@@ -21,6 +21,7 @@ interface Jdbcx {
     fun deleteSingle(sql: String, vararg args: Any?)
 
     fun transactionSafe(function: () -> Unit)
+    fun <T> transactionSafeAndReturn(function: () -> T): T
     fun count(table: String, args: Array<in Any>, optionalWhereClause: String = ""): Int
     fun execute(sql: String)
 
@@ -89,8 +90,12 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
         encapsulateException { jdbc.execute(sql) }
     }
 
+    // MINOR what about nested transactions?
     override fun transactionSafe(function: () -> Unit) {
-        log.trace("transactionSafe(function)")
+        transactionSafeAndReturn { function() }
+    }
+    override fun <T> transactionSafeAndReturn(function: () -> T): T {
+        log.trace("transactionSafeAndReturn(function)")
 
         val wasAutoCommit = dataSource.connection.autoCommit
         dataSource.connection.autoCommit = false
@@ -98,10 +103,11 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
 
             var committed = false
             try {
-                function()
+                val result: T = function()
                 dataSource.connection.commit()
                 log.trace("Transaction committed successfully.")
                 committed = true
+                return result
             } finally {
                 if (committed === false) {
                     log.warn("Rolling back transaction!")

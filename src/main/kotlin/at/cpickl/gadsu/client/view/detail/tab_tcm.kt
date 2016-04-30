@@ -17,6 +17,7 @@ import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.Component
 import java.awt.GridBagConstraints
+import java.util.HashMap
 import java.util.LinkedList
 import javax.swing.ListSelectionModel
 import kotlin.reflect.KClass
@@ -49,14 +50,13 @@ fun metaFetchProp(propType: KClass<*>): MetaEnumProp {
 }
 
 
-class PropsRenderer(
-        private val client: Client,
-        private val fields: Fields<Client>) {
+class PropsRenderer(private val fields: Fields<Client>) {
 
-    fun labelAndComponentFor(propType: KClass<*>): Pair<String, Component> {
+    private val map: HashMap<KClass<*>, Component> = HashMap()
+
+    private fun labelAndComponentFor(propType: KClass<*>): Pair<String, Component> {
         val metaProp = metaFetchProp(propType)
         val label = metaProp.key // TODO lookup proper label by key
-
 
         val model = MyListModel<String>()
         model.resetData(metaProp.allOptionsKeys)
@@ -64,15 +64,30 @@ class PropsRenderer(
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         list.visibleRowCount = 3
 
-        if (client.props.properties.containsKey(metaProp.key)) {
-            val enumProp = client.props.properties[metaProp.key] as MultiEnumProp
-            list.addSelectedValues(enumProp.entries)
-        }
 
         return Pair(label, list)
     }
 
-//    fun selectedOptions(metaProp: MetaEnumProp): Map<String, Boolean> {
+    fun add(propType: KClass<*>, form: FormPanel) {
+        val pair = labelAndComponentFor(propType)
+        map.put(propType, pair.second)
+        form.addFormInput(pair.first, pair.second)
+    }
+
+    fun updateFields(client: Client) {
+        map.forEach { propType, component ->
+            val metaPropKey = (propType.companionObjectInstance!! as HasKey).key
+            val list = component as MyList<String>
+            list.clearSelection()
+            if (client.props.properties.containsKey(metaPropKey)) {
+                val enumProp = client.props.properties[metaPropKey] as MultiEnumProp
+                list.addSelectedValues(enumProp.entries)
+            }
+        }
+
+    }
+
+    //    fun selectedOptions(metaProp: MetaEnumProp): Map<String, Boolean> {
 //        val map = HashMap<String, Boolean>()
 //        metaProp.allOptionsKeys.forEach { map.put(it, false) }
 //        val enumProp = client.props.properties[metaProp.key] as MultiEnumProp
@@ -85,10 +100,10 @@ class PropsRenderer(
 
 }
 
-fun FormPanel.addProp(renderer: PropsRenderer, propType: KClass<*>) {
-    val pair = renderer.labelAndComponentFor(propType)
-    addFormInput(pair.first, pair.second)
-}
+//fun FormPanel.addProp(renderer: PropsRenderer, propType: KClass<*>) {
+//    val pair = renderer.labelAndComponentFor(propType)
+//    addFormInput(pair.first, pair.second)
+//}
 
 class ClientTabTcm(
         initialClient: Client,
@@ -98,12 +113,15 @@ class ClientTabTcm(
     private val log = LoggerFactory.getLogger(javaClass)
 
     private val fields = Fields<Client>(modificationChecker)
+    private val renderer = PropsRenderer(fields)
 
     init {
-        val renderer = PropsRenderer(initialClient, fields)
+
         val form1 = FormPanel()
 
-        form1.addProp(renderer, Props.Enums.SleepEnum::class)
+        renderer.add(Props.Enums.SleepEnum::class, form1)
+//        form1.addProp(renderer, Props.Enums.SleepEnum::class)
+        renderer.updateFields(initialClient)
 
         c.weightx = 1.0
         c.weighty = 1.0
@@ -116,6 +134,16 @@ class ClientTabTcm(
     }
 
     override fun updateFields(client: Client) {
+        renderer.updateFields(client)
+    }
 
+    fun readProps(): ClientProps {
+        return ClientProps(mapOf(
+            Pair(Props.Enums.SleepEnum.key,
+            MultiEnumProp(listOf(
+                Props.Enums.SleepEnum.ProblemsFallAsleep.key,
+                Props.Enums.SleepEnum.TiredInTheMorning.key
+            )))
+        ))
     }
 }

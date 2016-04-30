@@ -105,6 +105,7 @@ data class Client(
                 .add("firstName", firstName)
                 .add("lastName", lastName)
                 .add("picture", picture)
+                .add("props", props)
                 .toString()
     }
 

@@ -142,7 +142,7 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpNote.text,
                 currentClient.data.picture, // FIXME this will use a maybe outdated reference, as list itself can update the picture!
 //                tabMain.clientPicture
-                currentClient.data.props // FIXME not updating props via UI
+                tabTcm.readProps()
         )
     }
 
