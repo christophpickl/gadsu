@@ -6,10 +6,10 @@ import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
-import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind
@@ -72,7 +72,7 @@ object IntegrationServiceLookuper {
                                bus: EventBus = EventBus(),
                                defaultGeneratedId: String = TEST_UUID1,
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
-                               treatmentRepository: TreatmentRepository = TreatmentSpringJdbcRepository(jdbcx, idGenerator)
+                               treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator)
     ): TreatmentService {
         return TreatmentServiceImpl(treatmentRepository, jdbcx, bus, clock)
     }

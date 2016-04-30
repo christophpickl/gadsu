@@ -1,9 +1,6 @@
 package at.cpickl.gadsu.client.props
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientProps
-import at.cpickl.gadsu.client.MultiEnumProp
-import at.cpickl.gadsu.client.Prop
 import at.cpickl.gadsu.client.props.Props.Enums.SleepEnum
 import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.testinfra.HsqldbTest
@@ -16,9 +13,9 @@ import org.testng.annotations.Test
 class PropsServiceImplTest : HsqldbTest() {
 
     private var client = Client.unsavedValidInstance()
-    private var repo: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
-    private var testee: PropsService = PropsServiceImpl(repo)
-    private var helper: TestPropHelper = TestPropHelper(nullJdbcx())
+    private lateinit var repo: ClientPropsRepository
+    private lateinit var testee: PropsService
+    private lateinit var helper: TestPropHelper
 
     private val testProp1 = Pair(Props.Enums.SleepEnum.key, MultiEnumProp(listOf(
             SleepEnum.ProblemsFallAsleep.key,
@@ -30,9 +27,9 @@ class PropsServiceImplTest : HsqldbTest() {
     @BeforeMethod
     fun initState() {
         client = insertClientViaRepo(Client.unsavedValidInstance())
-        repo = ClientPropsSpringJdbcRepository(jdbcx())
+        repo = XPropsJdbcRepository(jdbcx)
         testee = PropsServiceImpl(repo)
-        helper = TestPropHelper(jdbcx())
+        helper = TestPropHelper(jdbcx)
     }
 
     fun `update, multi enum property, sunshine`() {
@@ -52,7 +49,7 @@ class PropsServiceImplTest : HsqldbTest() {
     }
 
     private fun updateDefaultEnumProps(props: ClientProps = testProps1) {
-        testee.update(client.copy(props = props))
+        //testee.update(client.copy(props = props))
 
     }
 

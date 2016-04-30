@@ -3,22 +3,15 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toByteArray
-import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.skip
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentSpringJdbcRepository
-import at.cpickl.gadsu.treatment.unsavedValidInstance
 import com.google.common.io.Files
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.springframework.dao.DataIntegrityViolationException
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -28,22 +21,19 @@ import java.io.File
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
-    private var testee = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private lateinit var testee: ClientJdbcRepository
 
     private val testPicture1 = MyImage.TEST_CLIENT_PIC1
     private val testPicture2 = MyImage.TEST_CLIENT_PIC2
 
     @BeforeMethod
     fun setUp() {
-        idGenerator = mock(IdGenerator::class.java)
-        testee = ClientSpringJdbcRepository(jdbcx(), idGenerator)
+        testee = ClientJdbcRepository(jdbcx, idGenerator)
     }
 
     // --------------------------------------------------------------------------- insert
 
     fun `insertWithoutPicture should really just insert no picture`() {
-        whenGenerateIdReturnTestUuid()
-
         val toBeSaved = unsavedClient.copy(
                 gender = Gender.FEMALE,
                 picture = MyImage.TEST_CLIENT_PIC1 // load a real image (but it wont be persisted)
@@ -56,7 +46,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
         val actualSaved = testee.insertWithoutPicture(toBeSaved)
         assertThat(actualSaved, equalTo(expected))
 
-        val result = jdbcx().query("SELECT * FROM client", Client.ROW_MAPPER)
+        val result = jdbcx.query("SELECT * FROM client", Client.ROW_MAPPER)
         assertThat(result, contains(actualSaved))
     }
 
@@ -69,8 +59,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- find
 
     fun findAll() {
-        whenGenerateIdReturnTestUuid()
-
         assertThat(testee.findAll(), empty()) // sanity check
         val actualSavedClient = testee.insertWithoutPicture(unsavedClient)
 
@@ -80,8 +68,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- update
 
     fun updateWithoutPicture_sunshine() {
-        whenGenerateIdReturnTestUuid()
-
         val savedClient = testee.insertWithoutPicture(unsavedClient.copy(gender = Gender.MALE))
         val changedClient = savedClient.copy(lastName = "something else", picture = testPicture1)
         testee.updateWithoutPicture(changedClient)
@@ -95,8 +81,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun update_changingCreated_shouldNotChangeAnything() {
-        whenGenerateIdReturnTestUuid()
-
         val savedClient = testee.insertWithoutPicture(unsavedClient)
         testee.updateWithoutPicture(savedClient.copy(created = savedClient.created.plusHours(1)))
 
@@ -106,7 +90,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- delete
 
     fun delete_sunshine() {
-        whenGenerateIdReturnTestUuid()
         val savedClient = testee.insertWithoutPicture(unsavedClient)
 
         testee.delete(savedClient)
@@ -127,14 +110,11 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- picture
 
     fun `Insert without picture, should not persist picture blob`() {
-        whenGenerateIdReturnTestUuid()
         val saved = testee.insertWithoutPicture(unsavedClient.copy(picture = testPicture1))
         assertPictureBlob(saved, null)
     }
 
     fun `Update without picture, should not persist picture blob`() {
-        whenGenerateIdReturnTestUuid()
-
         val saved = testee.insertWithoutPicture(unsavedClient)
         testee.updateWithoutPicture(saved.copy(picture = testPicture1))
 
@@ -142,7 +122,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun `Given saved client, when findAll him, then default picture is returned`() {
-        whenGenerateIdReturnTestUuid()
         testee.insertWithoutPicture(unsavedClient)
 
         Assert.assertTrue(testee.findAll()[0].picture === MyImage.DEFAULT_PROFILE_MAN,
@@ -151,7 +130,6 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     fun `Given saved client with picture, when findAll him, then both picture bytes should be equal`() {
         skip("the expected output image is slightly different :-/")
-        whenGenerateIdReturnTestUuid()
 
         testee.insertWithoutPicture(unsavedClient.copy(picture = testPicture1))
 
@@ -169,7 +147,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- internal
 
     private fun assertPictureBlob(client: Client, expected: ByteArray?) {
-        val blobBytes: ByteArray? = jdbcx().jdbc.queryForObject("SELECT picture FROM client WHERE id = '${client.id!!}'")
+        val blobBytes: ByteArray? = jdbcx.jdbc.queryForObject("SELECT picture FROM client WHERE id = '${client.id!!}'")
             { rs, rowNum -> rs.getBlob("picture").toByteArray() }
 
         assertThat(blobBytes, equalTo(expected))
@@ -184,34 +162,3 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
 }
 
-
-/**
- * Compound test.
- */
-@Test(groups = arrayOf("hsqldb", "integration"))
-class ClientAndTreatmentSpringJdbcRepositoryTest : HsqldbTest() {
-
-    private val unsavedClient = Client.unsavedValidInstance()
-    private var clientRepo = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
-    private var treatmentRepo = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
-
-    @BeforeMethod
-    fun setUp() {
-        idGenerator = mock(IdGenerator::class.java)
-        clientRepo = ClientSpringJdbcRepository(jdbcx(), idGenerator)
-        treatmentRepo = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
-    }
-
-    fun deleteClientWithSomeTreatments_repositoryWillFailAsMustBeDoneViaServiceInstead() {
-        `when`(idGenerator.generate()).thenReturn("1").thenReturn("2")
-
-        val savedClient = clientRepo.insertWithoutPicture(unsavedClient)
-        val unsavedTreatment = Treatment.unsavedValidInstance(savedClient.id!!)
-        treatmentRepo.insert(unsavedTreatment)
-
-        expect(type = PersistenceException::class, causedByType = DataIntegrityViolationException::class, action = {
-            clientRepo.delete(savedClient)
-        })
-    }
-
-}

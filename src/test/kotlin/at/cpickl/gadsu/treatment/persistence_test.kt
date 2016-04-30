@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientSpringJdbcRepository
+import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.client.savedValidInstance2
 import at.cpickl.gadsu.client.unsavedValidInstance
@@ -30,15 +30,15 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     private val treatmentNumber2 = unsavedTreatment.copy(number = 2)
     private val treatmentNumber3 = unsavedTreatment.copy(number = 3)
 
-    private var testee = TreatmentSpringJdbcRepository(nullJdbcx(), idGenerator)
+    private lateinit var testee: TreatmentJdbcRepository
 
     @BeforeMethod
     fun setUp() {
         idGenerator = SequencedTestableIdGenerator()
-        testee = TreatmentSpringJdbcRepository(jdbcx(), idGenerator)
+        testee = TreatmentJdbcRepository(jdbcx, idGenerator)
 
 
-        ClientSpringJdbcRepository(jdbcx(), object : IdGenerator {
+        ClientJdbcRepository(jdbcx, object : IdGenerator {
             override fun generate() = client.id!!
         }).insertWithoutPicture(client.copy(id = null))
     }
@@ -48,7 +48,7 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     fun insert_sunshine() {
         val expectedSaved = unsavedTreatment.copy(id = "1")
         assertThat(testee.insert(unsavedTreatment), equalTo(expectedSaved))
-        assertThat(jdbcx().query("SELECT * FROM treatment", Treatment.ROW_MAPPER), contains(expectedSaved))
+        assertThat(jdbcx.query("SELECT * FROM treatment", Treatment.ROW_MAPPER), contains(expectedSaved))
     }
 
     fun insert_notExistingClient_failBecauseOfForeignKeyReferenceViolation() {
@@ -185,3 +185,31 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
 }
+
+/**
+ * Compound test.
+ */
+@Test(groups = arrayOf("hsqldb", "integration"))
+class ClientAndTreatmentSpringJdbcRepositoryTest : HsqldbTest() {
+
+    private val unsavedClient = Client.unsavedValidInstance()
+    private lateinit var treatmentRepo: TreatmentJdbcRepository
+
+    @BeforeMethod
+    fun setUp() {
+        treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
+    }
+
+    fun deleteClientWithSomeTreatments_repositoryWillFailAsMustBeDoneViaServiceInstead() {
+        val savedClient = insertClientViaRepo(unsavedClient)
+
+        val unsavedTreatment = Treatment.unsavedValidInstance(savedClient.id!!)
+        treatmentRepo.insert(unsavedTreatment)
+
+        expect(type = PersistenceException::class, causedByType = DataIntegrityViolationException::class, action = {
+            deleteClientViaRepo(savedClient)
+        })
+    }
+
+}
+

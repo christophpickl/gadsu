@@ -1,9 +1,6 @@
 package at.cpickl.gadsu.client.props
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.client.MultiEnumProp
-import at.cpickl.gadsu.client.Prop
-import at.cpickl.gadsu.client.StringProp
 
 
 object SqlPropTypeCallback : PropTypeCallback<SqlPropType> {

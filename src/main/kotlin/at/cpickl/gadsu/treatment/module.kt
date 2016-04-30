@@ -14,7 +14,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 class TreatmentModule : AbstractModule() {
     override fun configure() {
 
-        bind(TreatmentRepository::class.java).to(TreatmentSpringJdbcRepository::class.java).asEagerSingleton()
+        bind(TreatmentRepository::class.java).to(TreatmentJdbcRepository::class.java).asEagerSingleton()
 
 
         bind(TreatmentList::class.java).asEagerSingleton()

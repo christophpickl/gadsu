@@ -15,38 +15,38 @@ import java.util.HashMap
 @Test(groups = arrayOf("hsqldb"))
 class ClientPropsSpringJdbcRepositoryTest : HsqldbTest() {
 
-    private var testee: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
-    private var client = Client.unsavedValidInstance()
-    private var helper: TestPropHelper = TestPropHelper(nullJdbcx())
+    private lateinit var insertedClient: Client
+    private lateinit var testee: ClientPropsRepository
+    private lateinit var helper: TestPropHelper
 
 
 
     @BeforeMethod
     fun initState() {
-        testee = ClientPropsSpringJdbcRepository(jdbcx())
+        testee = XPropsJdbcRepository(jdbcx)
         // default a client is inserted for all tests
-        client = insertClientViaRepo(Client.unsavedValidInstance())
-        helper = TestPropHelper(jdbcx())
+        insertedClient = insertClientViaRepo(Client.unsavedValidInstance())
+        helper = TestPropHelper(jdbcx)
     }
 
     fun `reset, string type`() {
         reset(sqlPropString1)
-        helper.assertRows(PropSqlRow(client.id!!, sqlPropString1.first, sqlPropString1.second.toSqlValue()))
+        helper.assertRows(PropSqlRow(insertedClient.id!!, sqlPropString1.first, sqlPropString1.second.toSqlValue()))
     }
 
     fun `reset, multi-enum type`() {
         reset(sqlPropMultiEnum1)
-        helper.assertRows(PropSqlRow(client.id!!, sqlPropMultiEnum1.first, sqlPropMultiEnum1.second.toSqlValue()))
+        helper.assertRows(PropSqlRow(insertedClient.id!!, sqlPropMultiEnum1.first, sqlPropMultiEnum1.second.toSqlValue()))
     }
 
     fun `read, string sunshine`() {
         reset(sqlPropString1)
-        helper.assertPropsEqual(testee.readAllFor(client), sqlPropString1)
+        helper.assertPropsEqual(testee.readAllFor(insertedClient), sqlPropString1)
     }
 
     fun `read, multi-enum sunshine`() {
         reset(sqlPropMultiEnum1)
-        helper.assertPropsEqual(testee.readAllFor(client), sqlPropMultiEnum1)
+        helper.assertPropsEqual(testee.readAllFor(insertedClient), sqlPropMultiEnum1)
     }
 
 //    private fun assertResetAndRead() {
@@ -56,7 +56,7 @@ class ClientPropsSpringJdbcRepositoryTest : HsqldbTest() {
     private fun reset(vararg entries: Pair<String, SqlPropType>) {
         val data = HashMap<String, SqlPropType>()
         entries.forEach { data.put(it.first, it.second) }
-        testee.reset(client.id!!, SqlProps(data))
+        testee.reset(insertedClient.id!!, SqlProps(data))
     }
 
 }
@@ -74,7 +74,7 @@ class TestPropHelper(val jdbc: Jdbcx) {
     }
 
     fun assertRows(vararg expected: PropSqlRow) {
-        val rawRows = jdbc.jdbc.query("SELECT * FROM ${ClientPropsSpringJdbcRepository.TABLE}", PropSqlRow.ROW_MAPPER)
+        val rawRows = jdbc.jdbc.query("SELECT * FROM ${XPropsJdbcRepository.TABLE}", PropSqlRow.ROW_MAPPER)
         if (expected.isEmpty()) {
             assertThat(rawRows, emptyIterable())
         } else {

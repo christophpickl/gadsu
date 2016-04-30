@@ -27,13 +27,13 @@ interface ClientPropsRepository {
 }
 
 // TODO rename "SpringJdbc" -> "Jdbc", and add it as suffix: "ClientPropsRepositoryJdbc"
-class ClientPropsSpringJdbcRepository @Inject constructor(
+class XPropsJdbcRepository @Inject constructor(
         private val jdbc: Jdbcx
         ) :
         ClientPropsRepository {
     companion object {
 
-        val TABLE = "client_props"
+        val TABLE = "xprops"
     }
     private val log = LoggerFactory.getLogger(javaClass)
 

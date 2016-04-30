@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
+import at.cpickl.gadsu.client.xprops.ClientXProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
@@ -14,21 +15,6 @@ import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
 
-
-interface Prop {
-
-}
-
-data class StringProp(val value: String) : Prop
-data class MultiEnumProp(val entries: List<String>) : Prop {
-//    val activeEntries = entries.filterValues { it == true }.keys.toList()
-}
-
-data class ClientProps(val properties: Map<String, Prop>) {
-    companion object {
-        val empty: ClientProps get() = ClientProps(emptyMap())
-    }
-}
 
 data class Client(
         override val id: String?, // it is null if not yet persisted
@@ -45,7 +31,7 @@ data class Client(
 
         val note: String,
         val picture: MyImage,
-        val props: ClientProps
+        val props: ClientXProps
 
 ) : Comparable<Client>, HasId, Persistable {
 
@@ -54,7 +40,7 @@ data class Client(
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "",
-                MyImage.DEFAULT_PROFILE_MAN, ClientProps.empty)
+                MyImage.DEFAULT_PROFILE_MAN, ClientXProps.empty)
     }
 
     override val yetPersisted: Boolean

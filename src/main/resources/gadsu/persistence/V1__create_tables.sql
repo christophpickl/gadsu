@@ -23,7 +23,7 @@ CREATE TABLE client (
   picture BLOB
 );
 
-CREATE TABLE client_props (
+CREATE TABLE xprops (
   id_client VARCHAR(36) NOT NULL,
   key VARCHAR(128) NOT NULL,
   val VARCHAR(512) NOT NULL,

@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.client.xprops.ClientXProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
@@ -41,7 +42,7 @@ interface ClientRepository {
 
 }
 
-class ClientSpringJdbcRepository @Inject constructor(
+class ClientJdbcRepository @Inject constructor(
         private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
@@ -163,7 +164,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("note"),
 
                 readFromBlob(rs.getBlob("picture"), gender),
-                ClientProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
+                ClientXProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
 
         )
     }

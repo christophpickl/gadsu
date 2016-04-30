@@ -16,8 +16,8 @@ import org.testng.SkipException
 val IS_TRAVIS: Boolean = System.getProperty("user.name", "").equals("travis")
 // does NOT work!!! System.getProperty("TRAVIS", "").equals("true")
 
-val TEST_UUID1 = "11111111-1234-1234-1234-000000000000"
-val TEST_UUID2 = "22222222-1234-1234-1234-000000000000"
+val TEST_UUID1 = "1"//"11111111-1234-1234-1234-000000000000"
+val TEST_UUID2 = "2"//"22222222-1234-1234-1234-000000000000"
 val TEST_DATETIME1 = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:10:20")
 val TEST_DATETIME1_WITHOUT_SECONDS = TEST_DATETIME1.clearSeconds()
 val TEST_DATETIME2 = DateFormats.DATE_TIME.parseDateTime("31.12.2002 23:59:59")

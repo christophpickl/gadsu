@@ -3,12 +3,12 @@ package at.cpickl.gadsu.development
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientProps
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.xprops.ClientXProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
@@ -72,7 +72,7 @@ open class DevelopmentController @Inject constructor(
                         ),
                         DateFormats.DATE.parseDateTime("26.10.1986"), Gender.MALE, "\u00d6sterreich",
                         Relationship.MARRIED, "Computermensch", "keine", "Meine supi wuzi Anmerkung.",
-                        MyImage.DEFAULT_PROFILE_MAN, ClientProps.empty
+                        MyImage.DEFAULT_PROFILE_MAN, ClientXProps.empty
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",

@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule
 
 class PropsModule : AbstractModule() {
     override fun configure() {
-        bind(ClientPropsRepository::class.java).to(ClientPropsSpringJdbcRepository::class.java)
+        bind(ClientPropsRepository::class.java).to(XPropsJdbcRepository::class.java)
         bind(PropsService::class.java).to(PropsServiceImpl::class.java)
     }
 }

@@ -26,7 +26,7 @@ interface TreatmentRepository {
 
 }
 
-class TreatmentSpringJdbcRepository @Inject constructor(
+class TreatmentJdbcRepository @Inject constructor(
         private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
         ) : TreatmentRepository {
