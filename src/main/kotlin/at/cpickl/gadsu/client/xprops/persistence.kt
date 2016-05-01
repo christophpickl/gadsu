@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.client.xprops.persistence
+package at.cpickl.gadsu.client.xprops
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ensurePersisted
@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import javax.inject.Inject
 
+
+data class SProp(val key: String, val value: String)
 
 interface XPropsSqlRepository {
     fun select(client: Client): List<SProp>
@@ -38,12 +40,12 @@ class XPropsSqlJdbcRepository @Inject constructor(
 
     override fun select(client: Client): List<SProp> {
         client.ensurePersisted()
-        return jdbc.query("SELECT * FROM ${TABLE} WHERE id_client = ?", arrayOf(client.id!!), ROW_MAPPER)
+        return jdbc.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), ROW_MAPPER)
     }
 
     override fun delete(client: Client) {
         client.ensurePersisted()
-        val countDeleted = jdbc.update("DELETE FROM ${TABLE} WHERE id_client = ?", client.id!!)
+        val countDeleted = jdbc.update("DELETE FROM $TABLE WHERE id_client = ?", client.id!!)
         log.trace("deleted {} props from table.", countDeleted)
     }
 
@@ -51,7 +53,7 @@ class XPropsSqlJdbcRepository @Inject constructor(
         client.ensurePersisted()
         log.trace("going to insert {} new props.", props.size)
         props.forEach {
-            jdbc.update("INSERT INTO ${TABLE} (id_client, key, val) VALUES (?, ?, ?)",
+            jdbc.update("INSERT INTO $TABLE (id_client, key, val) VALUES (?, ?, ?)",
                     client.id!!, it.key, it.value)
         }
     }

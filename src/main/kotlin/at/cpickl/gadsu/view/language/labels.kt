@@ -39,7 +39,10 @@ object Labels {
                 "Sleep_TiredInMorning" to "Am morgen muede",
                 "Sleep_TiredInEvening" to "Am abend muede",
                 "Sleep_ProblemsFallAsleep" to "Problem einschlafen",
-                "Sleep_ProblemsWakeUp" to "Problem aufwachen"
+                "Sleep_ProblemsWakeUp" to "Problem aufwachen",
+                "Hungry" to "Appetite",
+                "Hungry_BigHunger" to "viel Hunger",
+                "Hungry_LittleHunger" to "wenig Hunger"
         )
 
         override fun labelFor(key: String): String {

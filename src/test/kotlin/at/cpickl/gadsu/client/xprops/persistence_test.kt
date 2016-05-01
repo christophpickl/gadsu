@@ -2,8 +2,8 @@ package at.cpickl.gadsu.client.xprops
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.unsavedValidInstance
-import at.cpickl.gadsu.client.xprops.persistence.SProp
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.SProp
+import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains

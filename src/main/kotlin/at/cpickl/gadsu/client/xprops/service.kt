@@ -8,9 +8,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
-import at.cpickl.gadsu.client.xprops.model.XPropsRegistry
-import at.cpickl.gadsu.client.xprops.persistence.SProp
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlRepository
+import at.cpickl.gadsu.client.xprops.model.XProps
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -45,10 +43,10 @@ class XPropsServiceImpl @Inject constructor(
     }
 
     private fun buildCProp(sprop: SProp): CProp {
-        val xprop = XPropsRegistry.findByKey(sprop.key)
+        val xprop = XProps.findByKey(sprop.key)
         return xprop.onType(object: XPropTypeCallback<CProp> {
             override fun onEnum(xprop: XPropEnum): CProp {
-                val selectedOpts = sprop.value.split(",").map { XPropsRegistry.findEnumValueByKey(it) }
+                val selectedOpts = if (sprop.value.isEmpty()) emptyList() else sprop.value.split(",").map { XProps.findEnumValueByKey(it) }
                 return CPropEnum(xprop, selectedOpts)
             }
 

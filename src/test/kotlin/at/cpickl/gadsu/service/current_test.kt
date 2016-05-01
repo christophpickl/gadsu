@@ -7,7 +7,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
-import at.cpickl.gadsu.client.xprops.model.XPropsRegistry
+import at.cpickl.gadsu.client.xprops.model.XProps
 import at.cpickl.gadsu.testinfra.AnyBusListener
 import at.cpickl.gadsu.testinfra.TEST_UUID2
 import com.google.common.eventbus.EventBus
@@ -100,8 +100,8 @@ import org.testng.annotations.Test
     }
 
     fun `props change`() {
-        val wakeupClient = client1.copy(cprops = buildCPropsSingleEnum(XPropsRegistry.Sleep, XPropsRegistry.Sleep_ProblemsWakeUp))
-        val asleepClient = client1.copy(cprops = buildCPropsSingleEnum(XPropsRegistry.Sleep, XPropsRegistry.Sleep_ProblemsFallAsleep))
+        val wakeupClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.Sleep_ProblemsWakeUp))
+        val asleepClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.Sleep_ProblemsFallAsleep))
 
         testee.data = wakeupClient
         busListener.clear()

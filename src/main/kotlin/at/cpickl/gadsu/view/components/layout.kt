@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.debugColor
 import java.awt.Color
 import java.awt.Component
@@ -80,25 +82,30 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
 
 }
 
+
 open class FormPanel : GridPanel() {
     private val insetsCol1 = Insets(5, 0, 0, 4) // add a bit to the top, and 4 on the right to create a h-gap
     private val insetsCol2 = Insets(0, 0, 0, 0)
 
     init {
-        isOpaque = false
+        if (Development.COLOR_ENABLED) {
+            isOpaque = true
+        } else {
+            isTransparent = true
+        }
         c.anchor = GridBagConstraints.NORTHWEST
     }
 
-    fun addFormInput(label: String, input: Component) {
+    fun addFormInput(label: String, input: Component, fillType: GridBagFill = GridBagFill.Horizontal) {
         c.weightx = 0.0
         c.fill = GridBagConstraints.NONE
-        c.anchor = GridBagConstraints.EAST
+        c.anchor = GridBagConstraints.NORTHEAST
         c.insets = insetsCol1
         add(JLabel(label).bold())
 
         c.gridx++
         c.weightx = 1.0
-        c.fill = GridBagConstraints.HORIZONTAL
+        c.fill = fillType.swingId
         c.anchor = GridBagConstraints.WEST
         c.insets = insetsCol2
         add(input)

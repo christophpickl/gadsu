@@ -10,6 +10,7 @@ import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.components.FormPanel
 import com.google.common.eventbus.EventBus
 import java.awt.Component
+import java.awt.GridBagConstraints
 import java.util.HashMap
 
 
@@ -23,8 +24,7 @@ class CPropsRenderer(
     fun addXProp(xprop: XProp, form: FormPanel) {
         val ui = buildCPropUI(xprop)
         map.put(xprop, ui)
-        form.addFormInput(xprop.label, ui.toComponent())
-
+        form.addFormInput(xprop.label, ui.toComponent(), ui.fillType)
     }
 
     fun updateFields(client: Client) {
@@ -58,4 +58,11 @@ interface CPropView {
     fun updateValue(client: Client)
     fun toComponent(): Component
     fun toCProp(): CProp
+
+    val fillType: GridBagFill
+}
+
+enum class GridBagFill(val swingId: Int) {
+    Both(GridBagConstraints.BOTH),
+    Horizontal(GridBagConstraints.HORIZONTAL)
 }

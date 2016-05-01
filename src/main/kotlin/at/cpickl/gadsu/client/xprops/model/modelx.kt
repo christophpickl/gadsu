@@ -16,7 +16,6 @@ data class XPropEnum(
         override val label: String,
         val options: List<XPropEnumOpt>
 ) : XProp {
-
     override fun <R> onType(callback: XPropTypeCallback<R>) = callback.onEnum(this)
 }
 

@@ -3,7 +3,7 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.unsavedValidInstance
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock

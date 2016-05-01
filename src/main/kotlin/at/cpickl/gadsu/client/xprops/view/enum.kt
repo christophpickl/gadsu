@@ -10,6 +10,7 @@ import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.scrolled
 import com.google.common.eventbus.EventBus
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -25,7 +26,9 @@ class CPropEnumView(
 ): CPropView, ElFieldForProps<Client> {
 
     private val list: MyList<XPropEnumOpt>
+
     override val formLabel = xprop.label
+    override val fillType = GridBagFill.Both
 
     init {
         val model = MyListModel<XPropEnumOpt>()
@@ -34,18 +37,18 @@ class CPropEnumView(
             override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
         })
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        list.visibleRowCount = 3
+        list.visibleRowCount = 4
     }
 
-    override fun updateValue(value: Client) {
+    override fun updateValue(client: Client) {
         list.clearSelection()
-        val cprop = value.cprops.findOrNull(xprop) ?: return
+        val cprop = client.cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
     }
 
     override fun toCProp() = CPropEnum(xprop, list.selectedValuesList)
 
-    override fun toComponent() = list
+    override fun toComponent() = list.scrolled()
 
     override fun isModified(value: Client): Boolean {
         val selected = list.selectedValuesList

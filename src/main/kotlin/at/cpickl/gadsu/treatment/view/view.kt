@@ -58,8 +58,6 @@ class SwingTreatmentView @Inject constructor(
 ), TreatmentView {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // FIXME calculate number in DB
-
     private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, {
         TreatmentSaveEvent(readTreatment())
     })

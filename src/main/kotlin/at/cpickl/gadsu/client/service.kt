@@ -38,8 +38,10 @@ class ClientServiceImpl @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAll(): List<Client> {
-        // FIXME enhance with client props data
-        return clientRepo.findAll()
+        return clientRepo.findAll().map {
+            // TODO performance improvement: dont ask DB for each client, but rather exec a bulk operation
+            it.copy(cprops = xpropsService.read(it))
+        }
     }
 
     override fun insertOrUpdate(client: Client): Client {

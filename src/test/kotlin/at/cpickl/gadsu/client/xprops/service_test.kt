@@ -4,9 +4,9 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.client.xprops.model.XPropsRegistry
-import at.cpickl.gadsu.client.xprops.persistence.SProp
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlRepository
+import at.cpickl.gadsu.client.xprops.model.XProps
+import at.cpickl.gadsu.client.xprops.SProp
+import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.mockito.Mockito
@@ -20,10 +20,10 @@ class XPropsServiceImplTest {
 
     private val clientPrototype = Client.savedValidInstance()
 
-    private val testEnum = XPropsRegistry.Sleep
-    private val testOps = listOf(XPropsRegistry.Sleep_TiredInMorning, XPropsRegistry.Sleep_TiredInEvening)
+    private val testEnum = XProps.Sleep
+    private val testOps = listOf(XProps.Sleep_TiredInMorning, XProps.Sleep_TiredInEvening)
     private val testProps = CProps(mapOf(
-            testEnum to CPropEnum(XPropsRegistry.Sleep, testOps)
+            testEnum to CPropEnum(XProps.Sleep, testOps)
     ))
 
     private lateinit var repo: XPropsSqlRepository

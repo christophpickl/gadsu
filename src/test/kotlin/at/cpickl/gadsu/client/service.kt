@@ -2,8 +2,8 @@ package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlJdbcRepository
-import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository

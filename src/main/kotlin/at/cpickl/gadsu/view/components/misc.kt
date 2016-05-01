@@ -82,3 +82,7 @@ fun Component.addSingleLeftClickListener(function: (Point) -> Unit) {
         }
     })
 }
+
+var JComponent.isTransparent: Boolean
+    get() { return !isOpaque }
+    set(value) { isOpaque = !value }
