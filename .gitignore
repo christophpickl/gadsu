@@ -7,3 +7,4 @@ src/main/resources/gadsu/reports/*.jasper
 src/main/resources/gadsu/reports/*.pdf
 
 gadsu.log
+links/
