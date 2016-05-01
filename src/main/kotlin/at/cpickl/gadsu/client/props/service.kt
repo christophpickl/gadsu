@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client.props
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ensurePersisted
 import org.slf4j.LoggerFactory
 import java.util.HashMap
 import javax.inject.Inject
@@ -34,17 +33,17 @@ class PropsServiceImpl @Inject constructor(
     override fun update(client: Client) {
         log.debug("update(client={})", client)
 
-        client.ensurePersisted()
-        val sqlData = HashMap<String, SqlPropType>()
-        val props = client.props.properties
+//        client.ensurePersisted()
+//        val sqlData = HashMap<String, SqlPropType>()
+//        val props = client.props.properties
 //        props.keys.forEach {
 //            val genericProp = props[it]!!
 //            val sqlProp = transformPropToSqlProp(it, genericProp)
 //            sqlData.put(it, sqlProp)
 //        }
-        val sqlProps = SqlProps(sqlData)
-
-        repository.reset(client.id!!, sqlProps)
+//        val sqlProps = SqlProps(sqlData)
+//
+//        repository.reset(client.id!!, sqlProps)
     }
 
 }

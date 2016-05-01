@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
                         Props.Enums.SleepEnum.TiredInTheMorning.key)))))*/
         ), ModificationChecker(object : ModificationAware {
             override fun isModified() = false
-        }))
+        }), context.bus)
     })
 }
 
@@ -69,15 +69,15 @@ class PropsRenderer(private val fields: Fields<Client>) {
     }
 
     fun updateFields(client: Client) {
-        map.forEach { propType, component ->
-            val metaPropKey = (propType.companionObjectInstance!! as HasKey).key
-            val list = component as MyList<String>
-            list.clearSelection()
-            if (client.props.properties.containsKey(metaPropKey)) {
-                val enumProp = client.props.properties[metaPropKey] as MultiEnumProp
-                list.addSelectedValues(enumProp.entries)
-            }
-        }
+//        map.forEach { propType, component ->
+//            val metaPropKey = (propType.companionObjectInstance!! as HasKey).key
+//            val list = component as MyList<String>
+//            list.clearSelection()
+//            if (client.props.properties.containsKey(metaPropKey)) {
+//                val enumProp = client.props.properties[metaPropKey] as MultiEnumProp
+//                list.addSelectedValues(enumProp.entries)
+//            }
+//        }
 
     }
 

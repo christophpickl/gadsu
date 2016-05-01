@@ -1,14 +1,6 @@
 package at.cpickl.gadsu.client.props
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.props.Props.Enums.SleepEnum
-import at.cpickl.gadsu.client.unsavedValidInstance
-import at.cpickl.gadsu.testinfra.HsqldbTest
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
-
+/*
 @Test(groups = arrayOf("hsqldb", "integration"))
 class PropsServiceImplTest : HsqldbTest() {
 
@@ -54,7 +46,7 @@ class PropsServiceImplTest : HsqldbTest() {
     }
 
 }
-
+*/
 
 //@Test(
 //        groups = arrayOf("hsqldb", "integration")

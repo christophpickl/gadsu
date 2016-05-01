@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
-import at.cpickl.gadsu.client.xprops.ClientXProps
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
@@ -31,7 +31,7 @@ data class Client(
 
         val note: String,
         val picture: MyImage,
-        val props: ClientXProps
+        val cprops: CProps
 
 ) : Comparable<Client>, HasId, Persistable {
 
@@ -40,7 +40,7 @@ data class Client(
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "",
-                MyImage.DEFAULT_PROFILE_MAN, ClientXProps.empty)
+                MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 
     override val yetPersisted: Boolean
@@ -91,7 +91,7 @@ data class Client(
                 .add("firstName", firstName)
                 .add("lastName", lastName)
                 .add("picture", picture)
-                .add("props", props)
+                .add("cprops", cprops)
                 .toString()
     }
 

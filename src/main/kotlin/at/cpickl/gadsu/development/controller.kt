@@ -8,7 +8,7 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
-import at.cpickl.gadsu.client.xprops.ClientXProps
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
@@ -72,7 +72,7 @@ open class DevelopmentController @Inject constructor(
                         ),
                         DateFormats.DATE.parseDateTime("26.10.1986"), Gender.MALE, "\u00d6sterreich",
                         Relationship.MARRIED, "Computermensch", "keine", "Meine supi wuzi Anmerkung.",
-                        MyImage.DEFAULT_PROFILE_MAN, ClientXProps.empty
+                        MyImage.DEFAULT_PROFILE_MAN, CProps.empty
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",

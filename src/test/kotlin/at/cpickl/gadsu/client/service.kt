@@ -1,11 +1,10 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.client.props.ClientPropsRepository
-import at.cpickl.gadsu.client.props.PropsService
-import at.cpickl.gadsu.client.props.PropsServiceImpl
-import at.cpickl.gadsu.client.props.XPropsJdbcRepository
+import at.cpickl.gadsu.client.xprops.XPropsService
+import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
+import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlRepository
 import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -22,16 +21,16 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private val unsavedClient = Client.unsavedValidInstance()
 
     private lateinit var clientRepo: ClientRepository
-    private lateinit var propsRepo: ClientPropsRepository
-    private lateinit var propsService: PropsService
+    private lateinit var propsRepo: XPropsSqlRepository
+    private lateinit var propsService: XPropsService
     private lateinit var treatmentRepo: TreatmentRepository
     private lateinit var treatmentService: TreatmentService
 
     @BeforeMethod
     fun setUp() {
         clientRepo = ClientJdbcRepository(jdbcx, idGenerator)
-        propsRepo = XPropsJdbcRepository(jdbcx)
-        propsService = PropsServiceImpl(propsRepo)
+        propsRepo = XPropsSqlJdbcRepository(jdbcx)
+        propsService = XPropsServiceImpl(propsRepo)
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
         treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx, bus, clock)
     }

@@ -62,7 +62,7 @@ open class SwingClientDetailView @Inject constructor(
 
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview)
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
-    private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker)
+    private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
     private val allTabs = arrayOf(tabMain, tabTcm)
     init {

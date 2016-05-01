@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.client.xprops.ClientXProps
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
@@ -164,7 +164,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("note"),
 
                 readFromBlob(rs.getBlob("picture"), gender),
-                ClientXProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
+                CProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
 
         )
     }

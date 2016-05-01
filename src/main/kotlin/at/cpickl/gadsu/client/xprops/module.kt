@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.client.xprops
 
+import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.persistence.XPropsSqlRepository
 import com.google.inject.AbstractModule
 
 

@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.client.props.PropsService
+import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
@@ -14,22 +14,20 @@ import javax.inject.Inject
 
 interface ClientService {
 
+
     fun findAll(): List<Client>
-
     fun insertOrUpdate(client: Client): Client // return type needed for development reset data (only?!)
-
-    fun savePicture(client: Client)
-
     fun delete(client: Client)
 
-    fun deleteImage(client: Client)
+    fun savePicture(client: Client)
+    fun deletePicture(client: Client)
 
 }
 
 
 class ClientServiceImpl @Inject constructor(
         private val clientRepo: ClientRepository,
-        private val propsService: PropsService,
+        private val xpropsService: XPropsService,
         private val treatmentService: TreatmentService,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
@@ -50,8 +48,8 @@ class ClientServiceImpl @Inject constructor(
         if (client.yetPersisted) {
             jdbcx.transactionSafe {
                 clientRepo.updateWithoutPicture(client)
-                // TODO the propsService call is duplicate from insert
-                propsService.update(client)
+                // TODO the xpropsService call is duplicate from insert
+                xpropsService.update(client)
             }
 
             val dispatchClient: Client
@@ -75,7 +73,7 @@ class ClientServiceImpl @Inject constructor(
 
         val savedClient = jdbcx.transactionSafeAndReturn {
             val tmpClient = clientRepo.insertWithoutPicture(toBeInserted)
-            propsService.update(tmpClient)
+            xpropsService.update(tmpClient)
             tmpClient
         }
 
@@ -103,7 +101,7 @@ class ClientServiceImpl @Inject constructor(
         }
     }
 
-    override fun deleteImage(client: Client) {
+    override fun deletePicture(client: Client) {
         // the picture will not be stored anyway, but for dispatching useful
         val changedClient = client.copy(picture = client.gender.defaultImage)
         clientRepo.changePicture(changedClient)

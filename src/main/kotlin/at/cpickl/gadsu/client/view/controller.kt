@@ -107,7 +107,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onDeleteImageEvent(event: DeleteImageEvent) {
-        clientService.deleteImage(event.client)
+        clientService.deletePicture(event.client)
     }
 
     @Subscribe open fun onClientDeletedEvent(event: ClientDeletedEvent) {

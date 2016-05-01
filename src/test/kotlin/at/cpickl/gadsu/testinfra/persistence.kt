@@ -93,6 +93,10 @@ abstract class HsqldbTest {
     }
 
 
+    protected fun <T> assertEmptyRows(table: String, mapper: RowMapper<T>) {
+        assertRows(table, mapper)
+    }
+
     protected fun <T> assertRows(table: String, mapper: RowMapper<T>, vararg expected: T) {
         val rawRows = jdbcx.query("SELECT * FROM $table", mapper)
         if (expected.isEmpty()) {
