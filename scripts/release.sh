@@ -30,8 +30,9 @@ changeVersion() {
 
 source version.properties
 
+echo
 myEcho "Preparing new GADSU release"
-myEcho "=================================="
+myEcho "===================================="
 myEcho "Current version is: $version"
 
 echo
@@ -41,7 +42,7 @@ read -p "Enter next DEVELOPMENT Version: " VERSION_DEVELOPMENT
 
 echo
 myEcho "Release Summary:"
-myEcho "----------------------------------"
+myEcho "------------------------------------"
 myEcho "  Release Version: $VERSION_RELEASE"
 myEcho "  Development Version: $VERSION_DEVELOPMENT"
 myEcho "  Build Directory: $BUILD_DIR"
@@ -73,7 +74,7 @@ cd $BUILD_DIR
 
 echo
 myEcho "Checking out source to: $CHECKOUT_DIR"
-myEcho "----------------------------------"
+myEcho "------------------------------------"
 git clone $GIT_URL $CHECKOUT_DIR
 cd $CHECKOUT_DIR
 
@@ -81,7 +82,7 @@ cd $CHECKOUT_DIR
 
 echo
 myEcho "Running test build."
-myEcho "----------------------------------"
+myEcho "------------------------------------"
 ./gradlew test testUi check
 checkLastCommand
 
@@ -89,7 +90,7 @@ changeVersion $VERSION_RELEASE
 
 echo
 myEcho "Creating assemblies."
-myEcho "----------------------------------"
+myEcho "------------------------------------"
 ./gradlew createDmg fatJar -Dgadsu.enableMacBundle=true
 checkLastCommand
 
@@ -100,7 +101,7 @@ myEcho "Copied artifacts to: $ARTIFACTS_DIR"
 
 echo
 myEcho "GIT committing and tagging result"
-myEcho "----------------------------------"
+myEcho "------------------------------------"
 git add .
 git commit -m "[Auto-Release] current release version: $VERSION_RELEASE"
 checkLastCommand
@@ -121,8 +122,8 @@ ELAPSED=$(( $END - $START ))
 
 echo
 echo
-myEcho "Release $VERSION_RELEASE done."
-myEcho "=================================="
+myEcho "Release $VERSION_RELEASE SUCCESSFULL"
+myEcho "===================================="
 echo
 myEcho "Time needed: $ELAPSED seconds"
 myEcho "Copy the contents of the artifacts directory: $ARTIFACTS_DIR"
