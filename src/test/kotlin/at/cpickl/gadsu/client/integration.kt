@@ -30,7 +30,7 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
 
         bus.post(saveEvent)
 
-        // ... checking for contains, instead of hasItems, will lead to very (too!) strict assertion
+        // watch out: checking for contains, instead of hasItems, will lead to very (too!) strict assertion
         busListener.assertHasItems(
                 saveEvent, // we did it :)
                 ClientCreatedEvent(savedClient),
@@ -39,7 +39,9 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
 
         verify(mockClientRepository).insertWithoutPicture(expectedToSaveClient)
         verify(mockTreatmentRepository).findAllFor(savedClient)
-        verifyNoMoreInteractions(mockClientRepository, mockTreatmentRepository)
+        verify(mockXPropsRepository).delete(savedClient)
+        verify(mockXPropsRepository).insert(savedClient, emptyList())
+        verifyNoMoreInteractions(mockClientRepository, mockTreatmentRepository, mockXPropsRepository)
     }
 
 }

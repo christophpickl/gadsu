@@ -12,6 +12,9 @@ data class CProps(private val props: Map<XProp, CProp>) {
         return props[xprop]
     }
 
+    /**
+     * Useful when having xprop fields split among different views.
+     */
     fun combine(that: CProps): CProps {
         this.props.verifyNoIntersection(that.props)
         val map = HashMap<XProp, CProp>()
@@ -38,6 +41,8 @@ data class CProps(private val props: Map<XProp, CProp>) {
 interface CProp : XProp {
     val delegate: XProp
     val clientValue: Any
+    val isClientValueSet: Boolean
+
     fun <R> onType(callback: CPropTypeCallback<R>): R
 
 }
@@ -46,6 +51,8 @@ data class CPropEnum(
         override val delegate: XPropEnum,
         override val clientValue: List<XPropEnumOpt>
 ) : CProp, XProp by delegate {
+
+    override val isClientValueSet = clientValue.isNotEmpty()
 
     override fun <R> onType(callback: CPropTypeCallback<R>) = callback.onEnum(this)
 

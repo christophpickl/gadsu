@@ -17,7 +17,7 @@ interface TreatmentService {
 
     fun delete(treatment: Treatment)
 
-    fun deleteAllFor(client: Client)
+    fun deleteAll(client: Client)
 
     fun calculateNextNumber(client: Client): Int
 
@@ -48,7 +48,7 @@ class TreatmentServiceImpl @Inject constructor(
         _delete(treatment)
     }
 
-    override fun deleteAllFor(client: Client) {
+    override fun deleteAll(client: Client) {
         log.debug("deleteAllFor(client={})", client)
 
         jdbcx.transactionSafe {

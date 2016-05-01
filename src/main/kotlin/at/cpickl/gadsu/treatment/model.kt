@@ -21,7 +21,8 @@ data class Treatment(
 
     companion object {
 
-        // needed for static extension methods
+        // needed for static extension methods as well
+
         fun insertPrototype(clientId: String,
                             number: Int,
                             date: DateTime,

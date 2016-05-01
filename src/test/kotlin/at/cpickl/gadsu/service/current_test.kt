@@ -100,8 +100,8 @@ import org.testng.annotations.Test
     }
 
     fun `props change`() {
-        val wakeupClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.Sleep_ProblemsWakeUp))
-        val asleepClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.Sleep_ProblemsFallAsleep))
+        val wakeupClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.SleepOpts.ProblemsWakeUp.opt))
+        val asleepClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep.opt))
 
         testee.data = wakeupClient
         busListener.clear()

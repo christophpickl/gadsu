@@ -96,7 +96,8 @@ class ClientServiceImpl @Inject constructor(
 
         jdbcx.transactionSafe {
             // cascade delete
-            treatmentService.deleteAllFor(client)
+            xpropsService.deleteAll(client)
+            treatmentService.deleteAll(client)
 
             clientRepo.delete(client)
             bus.post(ClientDeletedEvent(client))

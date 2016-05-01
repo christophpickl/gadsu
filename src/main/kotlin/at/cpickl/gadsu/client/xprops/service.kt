@@ -16,6 +16,7 @@ interface XPropsService {
 
     fun read(client: Client): CProps
     fun update(client: Client)
+    fun deleteAll(client: Client)
 
 }
 
@@ -24,7 +25,6 @@ interface XPropsService {
 class XPropsServiceImpl @Inject constructor(
         private val repo: XPropsSqlRepository
 ) : XPropsService {
-
     override fun read(client: Client): CProps {
         val sqlProps = repo.select(client)
 
@@ -42,10 +42,15 @@ class XPropsServiceImpl @Inject constructor(
         repo.insert(client, sprops)
     }
 
+    override fun deleteAll(client: Client) {
+        repo.delete(client)
+    }
+
     private fun buildCProp(sprop: SProp): CProp {
         val xprop = XProps.findByKey(sprop.key)
         return xprop.onType(object: XPropTypeCallback<CProp> {
             override fun onEnum(xprop: XPropEnum): CProp {
+                // FIXME empty value should not be allowed! there is a bug somewhere in the service layer!
                 val selectedOpts = if (sprop.value.isEmpty()) emptyList() else sprop.value.split(",").map { XProps.findEnumValueByKey(it) }
                 return CPropEnum(xprop, selectedOpts)
             }

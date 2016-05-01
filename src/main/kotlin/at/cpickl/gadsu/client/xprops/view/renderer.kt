@@ -36,7 +36,10 @@ class CPropsRenderer(
     fun readCProps(): CProps {
         val cprops = HashMap<XProp, CProp>()
         map.forEach { xprop, ui ->
-            cprops.put(xprop, ui.toCProp())
+            val cprop = ui.toCProp()
+            if (cprop.isClientValueSet) {
+                cprops.put(xprop, cprop)
+            }
         }
         return CProps(cprops)
     }

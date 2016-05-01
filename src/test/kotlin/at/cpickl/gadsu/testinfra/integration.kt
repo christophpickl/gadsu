@@ -3,6 +3,7 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
@@ -16,7 +17,7 @@ import com.google.inject.testing.fieldbinder.Bind
 import com.google.inject.testing.fieldbinder.BoundFieldModule
 import com.google.inject.util.Modules
 import org.joda.time.DateTime
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.prefs.Preferences
@@ -31,8 +32,9 @@ abstract class GuiceIntegrationTest {
     private val preferencesNodeName = preferencesNode.name
 
     // https://github.com/google/guice/wiki/BoundFields
-    @Bind protected var mockClientRepository: ClientRepository = Mockito.mock(ClientRepository::class.java)
-    @Bind protected var mockTreatmentRepository: TreatmentRepository = Mockito.mock(TreatmentRepository::class.java)
+    @Bind protected lateinit var mockClientRepository: ClientRepository
+    @Bind protected lateinit var mockTreatmentRepository: TreatmentRepository
+    @Bind protected lateinit var mockXPropsRepository: XPropsSqlRepository
 
     @Bind private var _clock: Clock = SimpleTestableClock()
     protected var clock = _clock as SimpleTestableClock
@@ -50,8 +52,9 @@ abstract class GuiceIntegrationTest {
         prefs.flush()
 
         busListener = AnyBusListener()
-        mockClientRepository = Mockito.mock(ClientRepository::class.java)
-        mockTreatmentRepository = Mockito.mock(TreatmentRepository::class.java)
+        mockClientRepository = mock(ClientRepository::class.java)
+        mockTreatmentRepository = mock(TreatmentRepository::class.java)
+        mockXPropsRepository = mock(XPropsSqlRepository::class.java)
 
         Guice.createInjector(
                 Modules.override(

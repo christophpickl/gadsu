@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.client.props
+package at.cpickl.gadsu.client.xprops
 
 /*
 @Test(groups = arrayOf("hsqldb", "integration"))

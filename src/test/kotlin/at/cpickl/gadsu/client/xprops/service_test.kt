@@ -5,8 +5,6 @@ import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProps
-import at.cpickl.gadsu.client.xprops.SProp
-import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.mockito.Mockito
@@ -21,7 +19,7 @@ class XPropsServiceImplTest {
     private val clientPrototype = Client.savedValidInstance()
 
     private val testEnum = XProps.Sleep
-    private val testOps = listOf(XProps.Sleep_TiredInMorning, XProps.Sleep_TiredInEvening)
+    private val testOps = listOf(XProps.SleepOpts.TiredInMorning.opt, XProps.SleepOpts.TiredInEvening.opt)
     private val testProps = CProps(mapOf(
             testEnum to CPropEnum(XProps.Sleep, testOps)
     ))
@@ -49,11 +47,11 @@ class XPropsServiceImplTest {
     }
 
     fun `read empty sunshine`() {
-        val client = clientPrototype.copy(cprops = testProps)
+        val client = clientPrototype.copy(cprops = CProps.empty)
         `when`(repo.select(client)).thenReturn(emptyList())
 
         assertThat(testee.read(client), equalTo(CProps.empty))
-        verifyRepoSelectAll()
+        verifyRepoSelectAll(client)
     }
 
     fun `read single sunshine`() {
@@ -61,11 +59,11 @@ class XPropsServiceImplTest {
         `when`(repo.select(client)).thenReturn(listOf(SProp(testEnum.key, testOps.map { it.key }.joinToString(","))))
 
         assertThat(testee.read(client), equalTo(testProps))
-        verifyRepoSelectAll()
+        verifyRepoSelectAll(client)
     }
 
-    private fun verifyRepoSelectAll() {
-        verify(repo).select(clientPrototype)
+    private fun verifyRepoSelectAll(client: Client) {
+        verify(repo).select(client)
     }
 
 }
