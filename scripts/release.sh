@@ -105,15 +105,22 @@ myEcho "------------------------------------"
 git add .
 git commit -m "[Auto-Release] current release version: $VERSION_RELEASE"
 checkLastCommand
+
 git tag $VERSION_RELEASE
 checkLastCommand
 
+echo
+myEcho "Change version"
+myEcho "------------------------------------"
 changeVersion $VERSION_DEVELOPMENT
 
 git add .
 git commit -m "[Auto-Release] next development version: $VERSION_DEVELOPMENT"
 checkLastCommand
 
+echo
+myEcho "GIT push"
+myEcho "------------------------------------"
 git push
 checkLastCommand
 
