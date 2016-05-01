@@ -26,6 +26,13 @@ data class CProps(private val props: Map<XProp, CProp>) {
     fun <R> map(func: (CProp) -> R): List<R> {
         return props.values.map(func)
     }
+
+    override fun toString(): String {
+        val keysFlat = props.map {
+            "${it.key.key}=${it.value.clientValue}"
+        }.joinToString(", ")
+        return "CProps(props(${props.size})=$keysFlat)"
+    }
 }
 
 interface CProp : XProp {
@@ -39,5 +46,10 @@ data class CPropEnum(
         override val delegate: XPropEnum,
         override val clientValue: List<XPropEnumOpt>
 ) : CProp, XProp by delegate {
+
     override fun <R> onType(callback: CPropTypeCallback<R>) = callback.onEnum(this)
+
+    override fun toString(): String {
+        return "CPropEnum(clientValue=${clientValue.map { it.key }.joinToString(", ")})"
+    }
 }

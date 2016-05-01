@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.client.xprops.view
 
-import at.cpickl.gadsu.client.xprops.model.CProp
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
+import at.cpickl.gadsu.view.ElField
 import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
@@ -13,9 +15,17 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.ListSelectionModel
 
+interface ElFieldForProps<V> : ElField<V> {
+    fun enableFor(modifications: ModificationChecker)
+}
 
-class CPropEnumView(private val xprop: XPropEnum, bus: EventBus): CPropView {
+class CPropEnumView(
+        private val xprop: XPropEnum,
+        bus: EventBus
+): CPropView, ElFieldForProps<Client> {
+
     private val list: MyList<XPropEnumOpt>
+    override val formLabel = xprop.label
 
     init {
         val model = MyListModel<XPropEnumOpt>()
@@ -27,11 +37,9 @@ class CPropEnumView(private val xprop: XPropEnum, bus: EventBus): CPropView {
         list.visibleRowCount = 3
     }
 
-    override fun updateField(cprop: CProp?) {
+    override fun updateValue(value: Client) {
         list.clearSelection()
-        if (cprop == null) {
-            return
-        }
+        val cprop = value.cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
     }
 
@@ -39,6 +47,22 @@ class CPropEnumView(private val xprop: XPropEnum, bus: EventBus): CPropView {
 
     override fun toComponent() = list
 
+    override fun isModified(value: Client): Boolean {
+        val selected = list.selectedValuesList
+        val cprop = value.cprops.findOrNull(xprop) ?: return selected.isNotEmpty()
+
+        if (selected.isEmpty()) {
+            return false
+        }
+
+        val enumProp = cprop as CPropEnum
+        return !enumProp.clientValue.containsAll(selected) ||
+               !selected.containsAll(enumProp.clientValue)
+    }
+
+    override fun enableFor(modifications: ModificationChecker) {
+        modifications.enableChangeListener(list)
+    }
 }
 
 class XPropEnumCell(val xprop: XPropEnumOpt) : DefaultCellView<XPropEnumOpt>(xprop) {

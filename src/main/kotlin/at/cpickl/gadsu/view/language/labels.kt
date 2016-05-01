@@ -1,6 +1,10 @@
 package at.cpickl.gadsu.view.language
 
+import org.slf4j.LoggerFactory
+
 object Labels {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     val Buttons: Buttons get() = LabelsLanguageFinder.find(Buttons::class.java)
     val Tabs: Tabs get() = LabelsLanguageFinder.find(Tabs::class.java)
     val XProps: XPropsLabels get() = LabelsLanguageFinder.find(XPropsLabels::class.java)
@@ -33,11 +37,19 @@ object Labels {
         private val map: Map<String, String> = mapOf(
                 "Sleep" to "Schlaf",
                 "Sleep_TiredInMorning" to "Am morgen muede",
-                "Sleep_TiredInEvening" to "Am abend muede"
+                "Sleep_TiredInEvening" to "Am abend muede",
+                "Sleep_ProblemsFallAsleep" to "Problem einschlafen",
+                "Sleep_ProblemsWakeUp" to "Problem aufwachen"
         )
 
         override fun labelFor(key: String): String {
-            return map[key] ?: throw LanguageException("No label found for key '$key'!")
+            val found = map[key]
+            if (found == null) {
+                // throw LanguageException("No label found for key '$key'!")
+                log.error("No label registered for key '$key'!")
+                return "!$key!"
+            }
+            return found
         }
     }
 

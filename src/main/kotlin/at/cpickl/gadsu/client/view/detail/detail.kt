@@ -141,7 +141,6 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpChildren.text,
                 tabMain.inpNote.text,
                 currentClient.data.picture, // FIXME this will use a maybe outdated reference, as list itself can update the picture!
-//                tabMain.clientPicture
                 tabTcm.readProps()
         )
     }

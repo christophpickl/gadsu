@@ -24,11 +24,12 @@ class CPropsRenderer(
         val ui = buildCPropUI(xprop)
         map.put(xprop, ui)
         form.addFormInput(xprop.label, ui.toComponent())
+
     }
 
     fun updateFields(client: Client) {
         map.forEach { xprop, ui ->
-            ui.updateField(client.cprops.findOrNull(xprop))
+            ui.updateValue(client)
         }
     }
 
@@ -43,15 +44,18 @@ class CPropsRenderer(
     private fun buildCPropUI(xprop: XProp): CPropView {
         return xprop.onType(object: XPropTypeCallback<CPropView> {
             override fun onEnum(xprop: XPropEnum): CPropView {
-                return CPropEnumView(xprop, bus)
+
+                val view = CPropEnumView(xprop, bus)
+                // TODO view name
+                fields.register(view)
+                return view
             }
         })
     }
 }
 
 interface CPropView {
+    fun updateValue(client: Client)
     fun toComponent(): Component
-    fun updateField(cprop: CProp?)
-
     fun toCProp(): CProp
 }

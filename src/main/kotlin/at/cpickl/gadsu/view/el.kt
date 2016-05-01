@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.Labeled
 import at.cpickl.gadsu.view.components.ModificationChecker
@@ -21,7 +22,7 @@ interface ElField<V> {
     val formLabel: String
     fun isModified(value: V): Boolean
     fun updateValue(value: V)
-    fun asComponent(): Component
+    fun toComponent(): Component
 }
 
 private fun <V, T> ElField<V>._isModified(oldValue: T, extractValue: (V) -> T, value: V): Boolean {
@@ -47,7 +48,7 @@ class ElTextField<V>(
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
     override fun updateValue(value: V) { text = extractValue(value) }
-    override fun asComponent() = this
+    override fun toComponent() = this
 }
 
 class ElTextArea<V>(
@@ -63,7 +64,7 @@ class ElTextArea<V>(
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
     override fun updateValue(value: V) { text = extractValue(value) }
-    override fun asComponent() = this.scrolled()
+    override fun toComponent() = this.scrolled()
 }
 
 class ElComboBox<V, T : Labeled>(
@@ -80,7 +81,7 @@ class ElComboBox<V, T : Labeled>(
 
     override fun isModified(value: V) = _isModified(selectedItemTyped, extractValue, value)
     override fun updateValue(value: V) { selectedItemTyped = extractValue(value) }
-    override fun asComponent() = delegate
+    override fun toComponent() = delegate
 }
 
 class ElDatePicker<V>(
@@ -94,7 +95,7 @@ class ElDatePicker<V>(
 
     override fun isModified(value: V) = _isModified(selectedDate, extractValue, value)
     override fun updateValue(value: V) { selectedDate = extractValue(value) }
-    override fun asComponent() = delegate
+    override fun toComponent() = delegate
     fun hidePopup() {
         delegate.hidePopup()
     }
@@ -137,6 +138,12 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
+    fun register(field: ElFieldForProps<V>) {
+        field.enableFor(modifications)
+        fields.add(field)
+
+    }
+
     fun isAnyModified(value : V): Boolean {
         return fields.any {
             val modified = it.isModified(value)
@@ -156,5 +163,5 @@ class Fields<V>(private val modifications: ModificationChecker) {
 }
 
 fun <V> FormPanel.addFormInput(field: ElField<V>) {
-    addFormInput(field.formLabel, field.asComponent())
+    addFormInput(field.formLabel, field.toComponent())
 }

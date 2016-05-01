@@ -5,11 +5,10 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropsRegistry
 import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.ModificationChecker
+import at.cpickl.gadsu.view.language.Labels
 import com.google.common.eventbus.EventBus
-import org.slf4j.LoggerFactory
 import java.awt.GridBagConstraints
 
 class ClientTabTcm(
@@ -17,8 +16,6 @@ class ClientTabTcm(
         modificationChecker: ModificationChecker,
         bus: EventBus
 ) : DefaultClientTab(Labels.Tabs.ClientTcm) {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     private val fields = Fields<Client>(modificationChecker)
     private val renderer = CPropsRenderer(fields, bus)
@@ -40,7 +37,7 @@ class ClientTabTcm(
     }
 
     override fun isModified(client: Client): Boolean {
-        return false
+        return fields.isAnyModified(client)
     }
 
     override fun updateFields(client: Client) {

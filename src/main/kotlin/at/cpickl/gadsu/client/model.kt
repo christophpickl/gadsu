@@ -19,6 +19,7 @@ import org.joda.time.DateTime
 data class Client(
         override val id: String?, // it is null if not yet persisted
         val created: DateTime,
+
         val firstName: String,
         val lastName: String,
         val contact: Contact,
@@ -71,6 +72,7 @@ data class Client(
 
         return  Objects.equal(this.id, that.id) &&
                 Objects.equal(this.created, that.created) &&
+
                 Objects.equal(this.firstName, that.firstName) &&
                 Objects.equal(this.lastName, that.lastName) &&
                 Objects.equal(this.contact, that.contact) &&
@@ -80,9 +82,10 @@ data class Client(
                 Objects.equal(this.relationship, that.relationship) &&
                 Objects.equal(this.job, that.job) &&
                 Objects.equal(this.children, that.children) &&
+
                 Objects.equal(this.note, that.note) &&
                 Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
-                Objects.equal(this.created, that.created)
+                Objects.equal(this.cprops, that.cprops)
     }
 
     override fun toString(): String {

@@ -34,6 +34,15 @@ class ModificationChecker(
         return delegate
     }
 
+    fun <T : Comparable<T>> enableChangeListener(delegate: MyList<T>): MyList<T> {
+        delegate.addListSelectionListener { e ->
+            if (!e.valueIsAdjusting) {
+                checkModificationsAndUpdateIsEnabledField()
+            }
+        }
+        return delegate
+    }
+
     fun <C : Labeled> enableChangeListener(delegate: MyComboBox<C>): MyComboBox<C> {
 //        delegate.addActionListener({checkModificationsAndUpdateIsEnabledField()}) ... maybe this would work as well
         delegate.addItemListener { event ->

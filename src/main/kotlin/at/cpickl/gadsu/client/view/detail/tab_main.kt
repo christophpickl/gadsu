@@ -97,7 +97,7 @@ class ClientTabMain(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
-        add(inpNote.asComponent())
+        add(inpNote.toComponent())
     }
 
     override fun isModified(client: Client): Boolean {
