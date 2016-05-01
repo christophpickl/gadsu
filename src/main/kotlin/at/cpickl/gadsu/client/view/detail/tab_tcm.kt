@@ -5,7 +5,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropsRegistry
 import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.Labels
+import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.ModificationChecker
 import com.google.common.eventbus.EventBus

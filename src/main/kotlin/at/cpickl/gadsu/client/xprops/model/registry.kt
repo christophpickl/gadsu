@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.xprops.model
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.view.language.Labels
 import java.util.HashMap
 
 
@@ -50,7 +51,7 @@ private val xpropByKey: HashMap<String, XProp> = HashMap()
 private val xpropEnumOptByKey: HashMap<String, XPropEnumOpt> = HashMap()
 
 private fun newEnum(key: String, vararg values: XPropEnumOpt): XPropEnum {
-    val label = key
+    val label = Labels.XProps.labelFor(key)
     val xprop = XPropEnum(key, label, listOf(*values))
     if (xpropByKey.containsKey(key)) {
         throw GadsuException("Duplicate xproperty key '$key'!")
@@ -60,7 +61,7 @@ private fun newEnum(key: String, vararg values: XPropEnumOpt): XPropEnum {
 }
 
 private fun newEnumOpt(order: Int, key: String): XPropEnumOpt {
-    val label = key
+    val label = Labels.XProps.labelFor(key)
     val value = XPropEnumOpt(order, key, label)
     if (xpropEnumOptByKey.containsKey(key)) {
         throw GadsuException("Duplicate xproperty enum value key '$key'!")

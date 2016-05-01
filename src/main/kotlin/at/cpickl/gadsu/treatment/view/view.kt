@@ -7,7 +7,7 @@ import at.cpickl.gadsu.spWriteTrue
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.Labels
+import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.MainContent
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DateAndTimePicker

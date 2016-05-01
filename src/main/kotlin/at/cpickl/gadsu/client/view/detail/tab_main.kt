@@ -7,7 +7,7 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.Labels
+import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.FormPanel

@@ -2,7 +2,7 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.service.Persistable
-import at.cpickl.gadsu.view.Labels
+import at.cpickl.gadsu.view.language.Labels
 import com.google.common.eventbus.EventBus
 import java.awt.Dimension
 import javax.swing.JButton

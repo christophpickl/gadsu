@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.view
+package at.cpickl.gadsu.view.language
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.GadsuSystemPropertyKeys
@@ -7,6 +7,7 @@ import com.google.common.annotations.VisibleForTesting
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Field
 import java.util.Locale
+
 
 object Languages {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -54,17 +55,17 @@ enum class Language(val id: String) {
         override fun toLocale() = Locale.GERMAN
     },
     // FTM disabling english
-//    EN("EN") {
-//        override fun toLocale() = Locale.ENGLISH
-//    },
+    //    EN("EN") {
+    //        override fun toLocale() = Locale.ENGLISH
+    //    },
     TEST_LANG("XXX") {
         override fun toLocale() = Locale.JAPANESE
     };
 
     companion object {
-        val DEFAULT_LANGUAGE = Language.DE
+        val DEFAULT_LANGUAGE = DE
 
-        fun byId(searchId: String) = Language.values().toList().firstOrNull { it.id.equals(searchId) }
+        fun byId(searchId: String) = values().toList().firstOrNull { it.id.equals(searchId) }
     }
 
     abstract fun toLocale(): Locale
@@ -99,55 +100,11 @@ object LabelsLanguageFinder {
 
     private fun <T> _find(requestType: Class<T>, lang: Language): Field? {
         val searchName = "${requestType.simpleName}_${lang.name}"
-        log.debug("findForLanguage(requestType={}, lang={}) ... searchName='{}'", requestType.simpleName, lang, searchName)
+        log.debug("findForLanguage(requestType={}, language={}) ... searchName='{}'", requestType.simpleName, lang, searchName)
         val clazz = Labels::class.java
+//        println(clazz.declaredFields.map { it.name })
         return clazz.declaredFields.firstOrNull { it.name.equals(searchName) }
     }
 }
 
 class LanguageException(message: String, cause: Throwable? = null) : GadsuException(message, cause)
-
-object Labels {
-    val Buttons: Buttons get() = LabelsLanguageFinder.find(Buttons::class.java)
-    val Tabs: Tabs get() = LabelsLanguageFinder.find(Tabs::class.java)
-
-    val Buttons_DE = object : Buttons {
-        override val Insert = "Neu anlegen"
-        override val Update = "Speichern"
-        override val Back = "Zur\u00fcck"
-    }
-    val Buttons_EN = object : Buttons {
-        override val Insert = "Insert"
-        override val Update = "Update"
-        override val Back = "Back"
-    }
-
-    val Tabs_DE = object : Tabs {
-        override val ClientMain = "Allgemein"
-        override val ClientTcm = "TCM"
-    }
-
-    val TestLabels_EN = object : TestLabels {}
-
-    val Tabs_EN = object : Tabs {
-        override val ClientMain = "Main"
-        override val ClientTcm = "TCM"
-    }
-
-}
-
-interface Buttons {
-    val Insert: String
-    val Update: String
-    val Back: String
-}
-
-
-interface Tabs {
-    val ClientMain: String
-    val ClientTcm: String
-}
-
-interface TestLabels {
-
-}
