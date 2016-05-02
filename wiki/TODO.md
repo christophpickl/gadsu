@@ -1,15 +1,15 @@
 
 MIT STEFFI
-==============================
+============================================================
 
-- ernaehrung: auch warm/kalt
+
 - behandlungsnummer
   - loeschen oder rueckdatieren ist eher seeeehr selten
   - die nummer X bleibt die nummer X, keine neu-nummerierung (bei loeschen oder date aendern)
   - es entstehen also loecher!
   - vordatieren bewirkt nix, pech gehabt :-p
   - calculateNextNumber ==> highest number + 1 (nicht count!)
-  // wenn protokoll persistiert, und hat referenz auf behandlung... evtl nur auf "deleted" marked setzen?!
+  - // wenn protokoll persistiert, und hat referenz auf behandlung... evtl nur auf "deleted" marked setzen?!
 
 
 
@@ -43,16 +43,19 @@ MIT STEFFI
 - use powermock (as much is final in kotlin)
 
 
-# T-O-D-O
+T-O-D-O
+============================================================
 
-## High
+High
+------------------------------------------------------------
 
 * [2] treatment numbering revised
 * [2] UI: check changes for treatment
 * [2] global exception handler correctly
 
 
-## Med
+Med
+------------------------------------------------------------
 
 * [4] UI: time picker component for treatment.date (@DateAndTimePicker)
 * [1] UI: bigger client.note textarea
@@ -62,7 +65,8 @@ MIT STEFFI
 * add DB constraint that firstName+lastName combination is unique!
 * integrate export in UI (very basic)
 
-## Low
+Low
+------------------------------------------------------------
 
 * use custom AOP annotation to ensure transaction safety
 * [2] reset prefs feature
@@ -94,7 +98,8 @@ MIT STEFFI
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
 * smart enabled textfields (e.g. job, countryOfOrigin)
  
-## Luxury Ideas
+Luxury Ideas
+------------------------------------------------------------
 
 * automatic VERSION check
   * during release, create some file with current version in it

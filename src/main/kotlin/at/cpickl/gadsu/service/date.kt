@@ -2,6 +2,7 @@ package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.view.language.Languages
 import org.joda.time.DateTime
+import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
@@ -49,3 +50,23 @@ class RealClock : Clock {
 
 }
 
+// --------------------------------------------------------------------------- duration
+
+// internally, duration is stored as an Int
+fun minutes(minutes: Int) = Duration.standardMinutes(minutes.toLong())
+fun Duration.toMinutes(): Int = this.standardMinutes.toInt()
+
+/** E.g.: "45" or "1:30" */
+fun Duration.formatHourMinutes(): String {
+    val totalMinutes = this.toStandardMinutes().minutes
+
+    val hours = (totalMinutes / 60.0).toInt()
+    val minutes = totalMinutes % 60
+
+    val minutesString = if (minutes < 10) "0$minutes" else minutes.toString()
+
+    if (hours == 0) {
+        return minutesString
+    }
+    return "$hours:$minutesString"
+}

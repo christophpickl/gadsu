@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.GADSU_DIRECTORY
+import at.cpickl.gadsu.development.Development
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -108,7 +108,7 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
         arrayOf(
                 "org.apache",
                 "org.springframework",
-                "org.flywaydb",
+//                "org.flywaydb",
                 "net.sf.jasperreports"
         ).forEach { changeLevel(it, Level.WARN) }
 

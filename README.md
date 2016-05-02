@@ -1,4 +1,4 @@
-# Gadsu
+
 <!---
 [![Travis CI Status](https://travis-ci.org/christophpickl/gadsu.svg?branch=master)](https://travis-ci.org/christophpickl/gadsu) 
 [![Coverage](https://img.shields.io/codecov/c/github/christophpickl/gadsu/master.svg)](https://codecov.io/github/christophpickl/gadsu?branch=master)
@@ -12,30 +12,35 @@
 
 Gadsu is a Shiatsu management application for your clients, appointments, treatments, protocols and maybe in the future even for your invoices and more.
 
-# ROADMAP
+ROADMAP
+============================================================
 
-
-## v?.?
+v?.?
+------------------------------------------------------------
 
 * Export (import)
 
-## v1.2
+v1.2
+------------------------------------------------------------
 
 * More client/treatment/tcm fields
 * General (UI) improvements
 * Finish acupuncture db
 
-## v1.1
+v1.1
+------------------------------------------------------------
 
 * Client search
 * Improved protocol report (wizard)
 
-## v1.0
+v1.0
+------------------------------------------------------------
 
 * Basic client handling (picture, tcm properties)
 * Basic treatment handling
 * Rudimentary protocol generation
 
-## Coverage
 
-![codecov.io](https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master)
+Coverage
+============================================================
+![codecov.io](`https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master`)

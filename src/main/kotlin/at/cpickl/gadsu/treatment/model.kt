@@ -5,9 +5,11 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.service.clearSeconds
+import at.cpickl.gadsu.service.minutes
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import org.joda.time.DateTime
+import org.joda.time.Duration
 
 data class Treatment(
         override val id: String?,
@@ -15,6 +17,7 @@ data class Treatment(
         val created: DateTime,
         val number: Int,
         val date: DateTime,
+        val duration: Duration,
         val note: String
 ) :
         Comparable<Treatment>, HasId, Persistable {
@@ -22,6 +25,8 @@ data class Treatment(
     companion object {
 
         // needed for static extension methods as well
+
+        private val DEFAULT_DURATION = minutes(60)
 
         fun insertPrototype(clientId: String,
                             number: Int,
@@ -36,6 +41,7 @@ data class Treatment(
                     created,
                     number,
                     date.clearSeconds(),
+                    DEFAULT_DURATION,
                     note)
         }
     }

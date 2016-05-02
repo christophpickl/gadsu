@@ -8,6 +8,8 @@ import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.toMinutes
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
@@ -55,8 +57,8 @@ class TreatmentJdbcRepository @Inject constructor(
             throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
         }
 
-        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, note) VALUES(?, ?, ?, ?, ?, ?)",
-                newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.note)
+        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, durationInMin, note) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.duration.toMinutes(), treatment.note)
         return treatment.copy(id = newId)
     }
 
@@ -94,6 +96,8 @@ class TreatmentJdbcRepository @Inject constructor(
 
 }
 
+
+
 fun Treatment.ensurePersisted() {
     if (!yetPersisted) {
         throw PersistenceException("Treatment must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
@@ -115,6 +119,7 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 DateTime(rs.getTimestamp("created")),
                 rs.getInt("number"),
                 DateTime(rs.getTimestamp("date")),
+                minutes(rs.getInt("durationInMin")),
                 rs.getString("note")
         )
     }

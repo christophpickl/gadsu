@@ -7,7 +7,6 @@ import at.cpickl.gadsu.spWriteTrue
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.MainContent
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DateAndTimePicker
@@ -19,6 +18,7 @@ import at.cpickl.gadsu.view.components.SwingFactory
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.language.Labels
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
@@ -132,12 +132,14 @@ class SwingTreatmentView @Inject constructor(
 
     private fun readTreatment(): Treatment {
         log.trace("readTreatment()")
+        // use full-init constructor (not copy method!) so to be aware of changes
         return Treatment(
                 treatment.id,
                 treatment.clientId,
                 treatment.created,
                 treatment.number,
                 inpDate.readDateTime()!!,
+                treatment.duration, // FIXME update by some input
                 inpNote.text
         )
     }
