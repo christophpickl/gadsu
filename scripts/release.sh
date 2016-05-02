@@ -4,11 +4,13 @@ START=`date +%s`
 
 CWD=`pwd`
 
-BUILD_DIR=$CWD/../gadsu_release_build
-ARTIFACTS_DIR=$BUILD_DIR/release_artifacts
+BUILD_DIR=${CWD}/../gadsu_release_build
+ARTIFACTS_DIR=${BUILD_DIR}/release_artifacts
 # unfortunately the fatJar plugin uses the folder name as the jar filename :-/
-CHECKOUT_DIR=$BUILD_DIR/Gadsu
+CHECKOUT_DIR=${BUILD_DIR}/Gadsu
 GIT_URL=https://github.com/christophpickl/gadsu.git
+VERSION_PROPERTIES_FILE=version.properties
+VERSION_PROPERTIES_PATH="$CWD/$VERSION_PROPERTIES_FILE"
 
 myEcho() {
     echo "[RELEASE] $1"
@@ -28,7 +30,10 @@ changeVersion() {
     checkLastCommand
 }
 
-source version.properties
+# loads the 'version' property from a properties file
+version="N/A"
+source ${VERSION_PROPERTIES_PATH}
+#echo "Loaded version '$version' from: $VERSION_PROPERTIES_PATH"
 
 echo
 myEcho "Preparing new GADSU release"
@@ -52,7 +57,7 @@ echo
 
 while true; do
     read -p "[RELEASE] Do you confirm this release? [y/n] >> " yn
-    case $yn in
+    case ${yn} in
         [Yy]* ) break;;
         [Nn]* ) echo "Aborted"; exit;;
         * ) myEcho "Please answer y(es) or n(o)";;
@@ -63,20 +68,20 @@ echo
 if [ -d "$BUILD_DIR" ]; then
     echo
     myEcho "Removing old build directory at: $BUILD_DIR"
-    rm -rf $BUILD_DIR
+    rm -rf ${BUILD_DIR}
 fi
-mkdir $BUILD_DIR
-mkdir $ARTIFACTS_DIR
+mkdir ${BUILD_DIR}
+mkdir ${ARTIFACTS_DIR}
 
-cd $BUILD_DIR
+cd ${BUILD_DIR}
 
 
 
 echo
 myEcho "Checking out source to: $CHECKOUT_DIR"
 myEcho "------------------------------------"
-git clone $GIT_URL $CHECKOUT_DIR
-cd $CHECKOUT_DIR
+git clone ${GIT_URL} ${CHECKOUT_DIR}
+cd ${CHECKOUT_DIR}
 
 # check there are no snapshots
 
@@ -86,7 +91,7 @@ myEcho "------------------------------------"
 ./gradlew test testUi check
 checkLastCommand
 
-changeVersion $VERSION_RELEASE
+changeVersion ${VERSION_RELEASE}
 
 echo
 myEcho "Creating assemblies."
@@ -94,8 +99,8 @@ myEcho "------------------------------------"
 ./gradlew createDmg fatJar -Dgadsu.enableMacBundle=true
 checkLastCommand
 
-cp build/distributions/*.dmg $ARTIFACTS_DIR
-cp build/libs/*.jar $ARTIFACTS_DIR
+cp build/distributions/*.dmg ${ARTIFACTS_DIR}
+cp build/libs/*.jar ${ARTIFACTS_DIR}
 echo
 myEcho "Copied artifacts to: $ARTIFACTS_DIR"
 
@@ -106,13 +111,13 @@ git add .
 git commit -m "[Auto-Release] current release version: $VERSION_RELEASE"
 checkLastCommand
 
-git tag $VERSION_RELEASE
+git tag ${VERSION_RELEASE}
 checkLastCommand
 
 echo
 myEcho "Change version"
 myEcho "------------------------------------"
-changeVersion $VERSION_DEVELOPMENT
+changeVersion ${VERSION_DEVELOPMENT}
 
 git add .
 git commit -m "[Auto-Release] next development version: $VERSION_DEVELOPMENT"
@@ -134,7 +139,7 @@ myEcho "===================================="
 echo
 myEcho "Time needed: $ELAPSED seconds"
 myEcho "Copy the contents of the artifacts directory: $ARTIFACTS_DIR"
-ls -l $ARTIFACTS_DIR
+ls -l ${ARTIFACTS_DIR}
 echo
 
 exit 0

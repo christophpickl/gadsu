@@ -1,17 +1,13 @@
 package at.cpickl.gadsu.client.xprops.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.CProp
-import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.client.xprops.model.XProp
-import at.cpickl.gadsu.client.xprops.model.XPropEnum
-import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
+import at.cpickl.gadsu.client.xprops.model.*
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.components.FormPanel
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.GridBagConstraints
-import java.util.HashMap
+import java.util.*
 
 
 class CPropsRenderer(
@@ -58,7 +54,7 @@ class CPropsRenderer(
 }
 
 interface CPropView {
-    fun updateValue(client: Client)
+    fun updateValue(value: Client)
     fun toComponent(): Component
     fun toCProp(): CProp
 
