@@ -54,6 +54,8 @@ data class CProps(private val props: Map<XProp, CProp>) {
         }.joinToString(", ")
         return "CProps(props(${props.size})=$keysFlat)"
     }
+
+    fun isEmpty() = props.isEmpty()
 }
 
 interface CProp : XProp {

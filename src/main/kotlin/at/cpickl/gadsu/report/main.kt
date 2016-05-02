@@ -2,11 +2,15 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.xprops.model.CPropEnum
+import at.cpickl.gadsu.client.xprops.model.CPropTypeCallback
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.treatment.TreatmentService
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
@@ -28,12 +32,16 @@ class ReportModule : AbstractModule() {
  */
 class CreateProtocolEvent() : UserEvent()
 
+class CreateMultiProtocolEvent() : UserEvent()
+
+
 
 class ReportException(message: String, cause: Exception? = null) : GadsuException(message, cause)
 
 @Logged
 open class ReportController @Inject constructor(
-        private val treatmentRepo: TreatmentRepository,
+        private val clientService: ClientService,
+        private val treatmentService: TreatmentService,
         private val protocolGenerator: ProtocolGenerator,
         private val clock: Clock,
         private val currentClient: CurrentClient,
@@ -45,7 +53,7 @@ open class ReportController @Inject constructor(
     @Subscribe open fun onCreateProtocolEvent(event: CreateProtocolEvent) {
         val client = currentClient.data
 
-        val treatments = treatmentRepo.findAllFor(client)
+        val treatments = treatmentService.findAllFor(client)
 
         val report = ProtocolReportData(
                 author = preferences.get().username,
@@ -54,7 +62,8 @@ open class ReportController @Inject constructor(
                         fullName = client.fullName,
                         children = client.children,
                         job = client.job,
-                        picture = client.picture.toReportRepresentation()
+                        picture = client.picture.toReportRepresentation(),
+                        cprops = CPropsComposer.compose(client)
                 ),
                 rows = treatments.map {
                     TreatmentReportData(it.number, it.note, it.date)
@@ -67,5 +76,40 @@ open class ReportController @Inject constructor(
 //        val target = File("")
         // check if target exists
 //        protocolGenerator.savePdfTo(report, target, forceOverwrite = true)
+    }
+
+    @Subscribe open fun onCreateMultiProtocolEvent(event: CreateMultiProtocolEvent) {
+        val author = preferences.get().username
+        val printDate = clock.now()
+        val cover = MultiProtocolCoverData(printDate, author)
+
+
+        // FIXME findAllWhichHaveAtLeastOneTreatment()
+        val protocols = clientService.findAll().map {
+            val picture = null // FIXME picture in report
+            val clientData = ClientReportData(it.fullName, it.children.nullIfEmpty(), it.job.nullIfEmpty(), picture, CPropsComposer.compose(it))
+            val rows = treatmentService.findAllFor(it).map {
+                TreatmentReportData(it.number, it.note.nullIfEmpty(), it.date) // TODO actually a fixme: duration
+            }
+            ProtocolReportData(author, printDate, clientData, rows)
+            // List<ProtocolReportData>
+        }.toList()
+
+        MultiProtocolGeneratorImpl().generate("myTarget.pdf", cover, protocols)
+    }
+}
+
+object CPropsComposer {
+    fun compose(client: Client) : String? {
+        if (client.cprops.isEmpty()) {
+            return null
+        }
+        // FIXME implement CProps composer
+        return client.cprops.map { it.onType(object : CPropTypeCallback<String>{
+            override fun onEnum(cprop: CPropEnum): String {
+                return "Sein ${cprop.label} ist verbunden mit ${cprop.clientValue.map { it.label }.joinToString(", ")}."
+            }
+
+        } ) }.joinToString(" ")
     }
 }

@@ -12,6 +12,9 @@
 
 Gadsu is a Shiatsu management application for your clients, appointments, treatments, protocols and maybe in the future even for your invoices and more.
 
+![Gadsu Screenshot](https://github.com/christophpickl/gadsu/wiki/gadsu_screenshot_1.1-SS.png "Some title text")
+
+
 ROADMAP
 ============================================================
 

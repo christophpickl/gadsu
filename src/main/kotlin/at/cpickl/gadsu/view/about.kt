@@ -80,7 +80,7 @@ class AboutWindow @Inject constructor(
                 "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
                 "Version ${metaInf.applicationVersion}<br>" +
                 "(${metaInf.built.formatDateTime()})<br>" +
-                "By Christoph Pickl<br>" +
+                "by Christoph Pickl<br>" +
                 "<br>" +
                 """Visit the <a href="https://github.com/christophpickl/gadsu">Website</a>"""
         aboutText.addOnUrlClickListener { bus.post(OpenWebpageEvent(it)) }

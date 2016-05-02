@@ -46,13 +46,7 @@ object Labels {
         )
 
         override fun labelFor(key: String): String {
-            val found = map[key]
-            if (found == null) {
-                // throw LanguageException("No label found for key '$key'!")
-                log.error("No label registered for key '$key'!")
-                return "!$key!"
-            }
-            return found
+            return map[key] ?: throw LanguageException("No label found for key '$key'!")
         }
     }
 

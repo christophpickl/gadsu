@@ -15,20 +15,21 @@ fun MyImage.toReportRepresentation(): InputStream? {
 
 
 data class ProtocolReportData(
-        val author: String,
-        val printDate: DateTime,
+        override val author: String,
+        override val printDate: DateTime,
         val client: ClientReportData,
         override val rows: List<TreatmentReportData>
-) : ReportWithRows {
+) : ReportWithRows, ReportMetaData {
     companion object {
         val DUMMY = ProtocolReportData(
-                author = "Max Musti",
+                author = "Med Wurst",
                 printDate = DateTime.now(),
                 client = ClientReportData(
                         fullName = "Klient Unbekannt",
                         children = "2 Kinder",
-                        job = "Beruf",
-                        picture = MyImage.DEFAULT_PROFILE_MAN.toReportRepresentation()
+                        job = "Doktor",
+                        picture = MyImage.DEFAULT_PROFILE_MAN.toReportRepresentation(),
+                        cprops = null
                 ),
                 rows = TreatmentReportData.DUMMIES
 //                treatments.map {
@@ -36,13 +37,16 @@ data class ProtocolReportData(
 //                }.sortedBy { it.number } // we need it ascending (but internally set descendant for list view)
         )
     }
+
+
 }
 
 data class ClientReportData(
         val fullName: String,
         val children: String?,
         val job: String?,
-        val picture: InputStream?
+        val picture: InputStream?,
+        val cprops: String?
 )
 
 class TreatmentReportData(
@@ -89,7 +93,8 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("client_relationship", "rel"),
             Pair("author", report.author),
             Pair("countTreatments", report.rows.size), // MINOR @REPORT - counting row items is most likely possible to do in jasper itself
-            Pair("printDate", report.printDate.formatDate())
+            Pair("printDate", report.printDate.formatDate()),
+            Pair("cprops", report.client.cprops)
     )
 }
 

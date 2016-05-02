@@ -6,6 +6,7 @@ import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
+import at.cpickl.gadsu.report.CreateMultiProtocolEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.CurrentClient
@@ -21,7 +22,8 @@ import javax.swing.JMenuItem
 
 
 enum class MenuBarEntry {
-    REPORT_PROTOCOL
+    REPORT_PROTOCOL,
+    REPORT_MULTI_PROTOCOL
 }
 
 class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
@@ -42,7 +44,9 @@ open class GadsuMenuBarController @Inject constructor(
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
         when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
+            // TODO rethink this double dispatching. aint necessary :-/
             MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
+            MenuBarEntry.REPORT_MULTI_PROTOCOL -> bus.post(CreateMultiProtocolEvent())
 
             else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
         }
@@ -96,6 +100,7 @@ class GadsuMenuBar @Inject constructor(
         itemProtocol.name = ViewNames.MenuBar.ProtocolGenerate
         itemProtocol.addActionListener { bus.post(MenuBarEntryClickedEvent(MenuBarEntry.REPORT_PROTOCOL)) }
         menuReports.add(itemProtocol)
+        menuReports.addItem("Sammelprotokoll erstellen", MenuBarEntryClickedEvent(MenuBarEntry.REPORT_MULTI_PROTOCOL))
 
         add(menuReports)
     }
