@@ -47,9 +47,3 @@ open class MyFrame(private val myTitle: String) : JFrame() {
     }
 
 }
-
-fun JFrame.packCenterAndShow() {
-    pack()
-    setLocationRelativeTo(null)
-    setVisible(true)
-}

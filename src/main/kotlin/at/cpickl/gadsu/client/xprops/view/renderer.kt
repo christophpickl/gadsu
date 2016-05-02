@@ -1,13 +1,17 @@
 package at.cpickl.gadsu.client.xprops.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.*
+import at.cpickl.gadsu.client.xprops.model.CProp
+import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.client.xprops.model.XProp
+import at.cpickl.gadsu.client.xprops.model.XPropEnum
+import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.components.FormPanel
+import at.cpickl.gadsu.view.components.panels.FormPanel
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.GridBagConstraints
-import java.util.*
+import java.util.HashMap
 
 
 class CPropsRenderer(
@@ -62,6 +66,8 @@ interface CPropView {
 }
 
 enum class GridBagFill(val swingId: Int) {
-    Both(GridBagConstraints.BOTH),
-    Horizontal(GridBagConstraints.HORIZONTAL)
+    None(GridBagConstraints.NONE),
+    Horizontal(GridBagConstraints.HORIZONTAL),
+    Vertical(GridBagConstraints.VERTICAL),
+    Both(GridBagConstraints.BOTH)
 }

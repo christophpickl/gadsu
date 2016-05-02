@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.view.detail.ClientDetailView
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.MainContent
-import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color

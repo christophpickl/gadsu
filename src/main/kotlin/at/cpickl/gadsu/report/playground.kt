@@ -22,12 +22,12 @@ fun main(args: Array<String>) {
 // http://developers.itextpdf.com/examples/itext-action-second-edition/chapter-1
 private fun createPdf(target: String) {
     val document = Document()
-    val target = File(target)
-    PdfWriter.getInstance(document, FileOutputStream(target))
+    val targetFile = File(target)
+    PdfWriter.getInstance(document, FileOutputStream(targetFile))
     document.open()
     document.add(Paragraph("My text!"))
     document.close()
-    println("Saved pdf to: ${target.absolutePath}")
+    println("Saved pdf to: ${targetFile.absolutePath}")
 }
 
 // http://developers.itextpdf.com/examples/merging-pdf-documents

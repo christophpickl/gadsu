@@ -1,9 +1,10 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.view.logic.IndexableModel
+import at.cpickl.gadsu.view.logic.findIndexByComparator
 import org.slf4j.LoggerFactory
 import java.awt.Point
 import java.util.ArrayList
-import javax.swing.JList
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.AbstractTableModel

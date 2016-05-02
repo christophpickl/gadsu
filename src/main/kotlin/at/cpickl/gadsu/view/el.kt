@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
-import at.cpickl.gadsu.view.components.FormPanel
-import at.cpickl.gadsu.view.components.Labeled
-import at.cpickl.gadsu.view.components.ModificationChecker
-import at.cpickl.gadsu.view.components.MyComboBox
-import at.cpickl.gadsu.view.components.MyDatePicker
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.inputs.Labeled
+import at.cpickl.gadsu.view.components.inputs.MyComboBox
+import at.cpickl.gadsu.view.components.inputs.MyDatePicker
+import at.cpickl.gadsu.view.components.panels.FormPanel
+import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.scrolled
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component

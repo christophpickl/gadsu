@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted

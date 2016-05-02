@@ -10,9 +10,9 @@ import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.Pad
-import at.cpickl.gadsu.view.components.bold
-import at.cpickl.gadsu.view.components.fatComponent
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.fatComponent
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
 import javax.inject.Inject

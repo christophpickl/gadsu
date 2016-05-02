@@ -1,28 +1,15 @@
-package at.cpickl.gadsu.view.components
+package at.cpickl.gadsu.view.components.inputs
 
 import java.net.URL
 import javax.swing.JEditorPane
 import javax.swing.JLabel
-import javax.swing.JTextField
 import javax.swing.event.HyperlinkEvent
-
-class SearchTextField : JTextField() {
-
-    init {
-        putClientProperty("JTextField.variant", "search")
-    }
-
-    fun addSearchListener(function: (String) -> Unit) {
-        addChangeListener { function.invoke(text) }
-    }
-
-}
 
 
 class HtmlEditorPane : JEditorPane() {
     init {
         contentType = "text/html"
-        putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
+        putClientProperty(HONOR_DISPLAY_PROPERTIES, true);
         isEditable = false
         isOpaque = false
         // isEnabled = false // dont do this!

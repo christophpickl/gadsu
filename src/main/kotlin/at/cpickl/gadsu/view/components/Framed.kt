@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.RealClock
+import at.cpickl.gadsu.view.SwingFactory
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.Dimension
@@ -55,6 +56,7 @@ class Framed {
 //        SwingUtilities.invokeLater { frame.isVisible = true }
     }
 }
+
 class FramedContext(
         val bus: EventBus = EventBus(),
         val clock: Clock = RealClock(),

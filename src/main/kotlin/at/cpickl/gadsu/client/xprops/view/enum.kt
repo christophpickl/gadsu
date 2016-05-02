@@ -5,7 +5,12 @@ import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.view.ElField
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.MyListCellRenderer
+import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import javax.swing.JComponent
 import javax.swing.JLabel

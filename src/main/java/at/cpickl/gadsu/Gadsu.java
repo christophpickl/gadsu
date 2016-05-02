@@ -1,9 +1,7 @@
 package at.cpickl.gadsu;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 import at.cpickl.gadsu.service.LogConfigurator;
 import org.slf4j.Logger;

@@ -2,7 +2,6 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.spReadBoolean
-import at.cpickl.gadsu.view.components.SwingFactory
 import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 

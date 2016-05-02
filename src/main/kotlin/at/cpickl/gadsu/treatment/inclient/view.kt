@@ -3,13 +3,13 @@ package at.cpickl.gadsu.treatment.inclient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.SwingFactory
-import at.cpickl.gadsu.view.components.enforceWidth
 import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory

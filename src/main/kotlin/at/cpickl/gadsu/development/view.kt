@@ -3,11 +3,11 @@ package at.cpickl.gadsu.development
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.view.components.GridPanel
 import at.cpickl.gadsu.view.components.MyFrame
-import at.cpickl.gadsu.view.components.bold
-import at.cpickl.gadsu.view.components.changeBackgroundForASec
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.changeBackgroundForASec
+import at.cpickl.gadsu.view.swing.scrolled
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints

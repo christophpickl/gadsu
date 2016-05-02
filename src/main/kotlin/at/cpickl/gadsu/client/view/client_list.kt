@@ -6,9 +6,9 @@ import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.Pad
-import at.cpickl.gadsu.view.components.bold
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.scrolled
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.JComponent

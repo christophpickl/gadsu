@@ -1,8 +1,9 @@
-package at.cpickl.gadsu.view.components
+package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.view.components.Framed
 import org.jdatepicker.impl.JDatePanelImpl
 import org.jdatepicker.impl.JDatePickerImpl
 import org.jdatepicker.impl.UtilDateModel
@@ -22,6 +23,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 
+//<editor-fold desc="main">
 // https://github.com/JDatePicker/JDatePicker
 // http://www.codejava.net/java-se/swing/how-to-use-jdatepicker-to-display-calendar-component
 fun main(args: Array<String>) {
@@ -34,6 +36,7 @@ fun main(args: Array<String>) {
 
     Framed.show(arrayOf(datePicker as Component, btn))
 }
+//</editor-fold>
 
 ///**
 // * @param navigateToDate defaults to current date

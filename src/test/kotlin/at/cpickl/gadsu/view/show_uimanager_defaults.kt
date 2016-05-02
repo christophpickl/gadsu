@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import java.util.*
+import java.util.Comparator
 import javax.swing.UIManager
 
 fun main(args: Array<String>) {

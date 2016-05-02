@@ -6,8 +6,8 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.service.formatDateTime
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.HtmlEditorPane
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule

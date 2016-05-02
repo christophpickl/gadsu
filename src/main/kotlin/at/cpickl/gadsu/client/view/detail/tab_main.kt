@@ -9,15 +9,21 @@ import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.FormPanel
-import at.cpickl.gadsu.view.components.ModificationChecker
-import at.cpickl.gadsu.view.components.Pad
+import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.language.Labels
+import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.titledBorder
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
-import javax.swing.JLabel
+import javax.swing.JTextField
 
+class DisabledTextField(initialValue: String = ""): JTextField(initialValue) {
+    init {
+        isEnabled = false
+    }
+}
 
 class ClientTabMain(
         initialClient: Client,
@@ -29,6 +35,7 @@ class ClientTabMain(
 
     private val fields = Fields<Client>(modificationChecker)
 
+    // base
     val inpFirstName = fields.newTextField("Vorname", {it.firstName}, ViewNames.Client.InputFirstName)
     val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
     val inpGender = fields.newComboBox(Gender.orderedValues(), initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
@@ -37,19 +44,25 @@ class ClientTabMain(
     val inpRelationship = fields.newComboBox(Relationship.orderedValues(), initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
     val inpJob = fields.newTextField("Beruf", {it.job}, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", {it.children}, ViewNames.Client.InputChildren)
+    val outCreated = DisabledTextField()
+
+    // contact
     val inpMail = fields.newTextField("Mail", {it.contact.mail}, ViewNames.Client.InputMail)
     val inpPhone = fields.newTextField("Telefon", {it.contact.phone}, ViewNames.Client.InputPhone)
     val inpStreet = fields.newTextField("Strasse", {it.contact.street}, ViewNames.Client.InputStreet)
     val inpZipCode = fields.newTextField("PLZ", {it.contact.zipCode}, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
-    val inpNote = fields.newTextArea("Notiz", {it.note}, ViewNames.Client.InputNote)
-    val outCreated = JLabel("")
+
+    // note label will actually not be used
+    val inpNote = fields.newTextArea("NOT USED", {it.note}, ViewNames.Client.InputNote)
+
 
     init {
         debugColor = Color.ORANGE
 
-        val form1Panel = FormPanel()
-        with(form1Panel) {
+        val baseForm = FormPanel()
+        with(baseForm) {
+            titledBorder("Basisdaten")
             debugColor = Color.CYAN
             addFormInput(inpFirstName)
             addFormInput(inpLastName)
@@ -62,8 +75,10 @@ class ClientTabMain(
             addFormInput("Erstellt am", outCreated)
         }
 
-        val form2Panel = FormPanel()
-        with(form2Panel) {
+        val contactForm = FormPanel()
+        with(contactForm) {
+            titledBorder("Kontaktdaten")
+            debugColor = Color.BLUE
             addFormInput(inpMail)
             addFormInput(inpPhone)
             addFormInput(inpStreet)
@@ -75,11 +90,11 @@ class ClientTabMain(
         c.anchor = GridBagConstraints.NORTHWEST
         c.weightx = 0.5
         c.weighty = 0.0
-        add(form1Panel)
+        add(baseForm)
 
         c.insets = Pad.LEFT
         c.gridx++
-        add(form2Panel)
+        add(contactForm)
 
         c.gridx++
         c.fill = GridBagConstraints.BOTH
@@ -87,15 +102,16 @@ class ClientTabMain(
         c.weighty = 0.0
         add(treatmentSubview)
 
-        c.insets = Pad.TOP
         c.gridx = 0
         c.gridy++
         c.gridwidth = 3
+        c.insets = Pad.TOP
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
         add(inpNote.toComponent())
     }
+
 
     override fun isModified(client: Client): Boolean {
         return fields.isAnyModified(client)

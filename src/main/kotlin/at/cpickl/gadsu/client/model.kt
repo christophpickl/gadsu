@@ -9,7 +9,7 @@ import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
-import at.cpickl.gadsu.view.components.Labeled
+import at.cpickl.gadsu.view.components.inputs.Labeled
 import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain

@@ -24,7 +24,7 @@ import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
-import at.cpickl.gadsu.view.components.calculateInsertIndex
+import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject

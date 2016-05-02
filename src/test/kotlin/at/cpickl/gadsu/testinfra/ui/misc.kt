@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.service.formatDate
-import at.cpickl.gadsu.view.components.MyDatePicker
+import at.cpickl.gadsu.view.components.inputs.MyDatePicker
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.jdatepicker.impl.JDatePanelImpl

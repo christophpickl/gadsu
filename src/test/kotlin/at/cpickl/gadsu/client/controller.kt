@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.calculateInsertIndex
+import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod

@@ -2,17 +2,17 @@ package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.GridPanel
-import at.cpickl.gadsu.view.components.HtmlEditorPane
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.Pad
-import at.cpickl.gadsu.view.components.SearchTextField
-import at.cpickl.gadsu.view.components.bold
-import at.cpickl.gadsu.view.components.enforceWidth
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
+import at.cpickl.gadsu.view.components.inputs.SearchTextField
+import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.toHexString
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory

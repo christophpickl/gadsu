@@ -2,9 +2,9 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.service.Persistable
+import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.language.Labels
 import com.google.common.eventbus.EventBus
-import java.awt.Dimension
 import javax.swing.JButton
 
 
@@ -26,11 +26,3 @@ class PersistableEventButton(viewName: String, eventBuilder: () -> UserEvent, ev
 }
 fun SwingFactory.newPersistableEventButton(viewName: String, eventBuilder: () -> UserEvent) = PersistableEventButton(viewName, eventBuilder, bus)
 
-
-
-
-fun JButton.changeSize(size: Dimension) {
-    preferredSize = size
-    minimumSize = size
-    maximumSize = size
-}

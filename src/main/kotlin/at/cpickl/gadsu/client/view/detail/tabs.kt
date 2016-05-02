@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.view.components.GridPanel
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import java.awt.Component
 
 interface ClientTab {

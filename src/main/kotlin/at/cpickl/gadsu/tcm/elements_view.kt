@@ -3,7 +3,7 @@ package at.cpickl.gadsu.tcm
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.view.brighterIfTrue
 import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.addSingleLeftClickListener
+import at.cpickl.gadsu.view.swing.addSingleLeftClickListener
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -52,7 +52,7 @@ fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): HashMap<K, V> {
 
 class ElementsStarView(
         val bus: EventBus,
-        // MINOR FUTURE LUXURY pass values for each element, indicating their size from -1.0, 0.0 (normal) up to +1.0 (max size)
+        // FUTURE pass values for each element, indicating their size from -1.0, 0.0 (normal) up to +1.0 (max size)
         val CIRCLE_DIAMETER: Int = 140
 ) : JPanel() {
 

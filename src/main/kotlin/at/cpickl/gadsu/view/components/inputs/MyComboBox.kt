@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.view.components
+package at.cpickl.gadsu.view.components.inputs
 
 import java.awt.Component
 import java.util.Vector

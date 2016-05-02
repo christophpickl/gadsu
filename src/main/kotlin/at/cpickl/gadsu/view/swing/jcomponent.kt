@@ -1,9 +1,5 @@
-package at.cpickl.gadsu.view.components
+package at.cpickl.gadsu.view.swing
 
-import at.cpickl.gadsu.service.Clock
-import com.google.common.eventbus.EventBus
-import com.google.inject.Inject
-import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
@@ -16,27 +12,7 @@ import java.util.Timer
 import java.util.TimerTask
 import javax.swing.JComponent
 import javax.swing.JScrollPane
-import javax.swing.JTextArea
 
-val SWING_log = LoggerFactory.getLogger("at.cpickl.gadsu.view.components.SWING")
-
-
-class SwingFactory @Inject constructor(
-        val bus: EventBus,
-        val clock: Clock
-) {
-    val log = LoggerFactory.getLogger(javaClass)
-
-    fun newTextArea(viewName: String, initialText: String, enableOn: ModificationChecker): JTextArea {
-        val text = JTextArea()
-        text.name = viewName
-        text.text = initialText
-        enableOn.enableChangeListener(text)
-        return text
-    }
-
-    // via extension methods
-}
 
 fun JComponent.scrolled(): JScrollPane = JScrollPane(this)
 
@@ -86,3 +62,4 @@ fun Component.addSingleLeftClickListener(function: (Point) -> Unit) {
 var JComponent.isTransparent: Boolean
     get() { return !isOpaque }
     set(value) { isOpaque = !value }
+

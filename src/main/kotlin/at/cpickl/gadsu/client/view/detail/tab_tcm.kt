@@ -6,11 +6,11 @@ import at.cpickl.gadsu.client.xprops.model.XProps
 import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.components.FormPanel
-import at.cpickl.gadsu.view.components.ModificationChecker
-import at.cpickl.gadsu.view.components.Pad
-import at.cpickl.gadsu.view.components.enforceWidth
+import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.language.Labels
+import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceWidth
 import com.google.common.eventbus.EventBus
 import java.awt.Color
 import java.awt.GridBagConstraints

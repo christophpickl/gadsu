@@ -1,6 +1,9 @@
-package at.cpickl.gadsu.view.components
+package at.cpickl.gadsu.view.logic
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.view.components.MyTable
+import at.cpickl.gadsu.view.swing.elementAtPoint
+import at.cpickl.gadsu.view.swing.log
 import java.awt.event.InputEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent

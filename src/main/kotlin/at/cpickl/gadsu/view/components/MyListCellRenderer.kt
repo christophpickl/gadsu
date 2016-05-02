@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Color
 import java.awt.Component
 import javax.swing.BorderFactory
@@ -33,7 +35,7 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
     }
 
     override final fun changeToTransparent() {
-        asComponent().isOpaque = false
+        asComponent().transparent()
     }
 
     override final fun asComponent() = this
