@@ -12,6 +12,7 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
+import java.awt.GridBagConstraints
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.ListSelectionModel
@@ -73,12 +74,10 @@ class XPropEnumCell(val xprop: XPropEnumOpt) : DefaultCellView<XPropEnumOpt>(xpr
     override val applicableForegrounds: Array<JComponent> = arrayOf(txtLabel)
 
     init {
-//        c.anchor = GridBagConstraints.NORTHWEST
-//        c.weightx = 1.0
-//        c.fill = GridBagConstraints.HORIZONTAL
-//        add(txtTitle)
-//
-//        c.gridy++
+        c.anchor = GridBagConstraints.WEST
+        c.weightx = 1.0
+        c.fill = GridBagConstraints.HORIZONTAL
         add(txtLabel)
     }
+
 }

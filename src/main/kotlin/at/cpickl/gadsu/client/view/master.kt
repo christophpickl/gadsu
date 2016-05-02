@@ -10,6 +10,7 @@ import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.SelectImageEvent
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -82,7 +83,9 @@ class SwingClientMasterView @Inject constructor(
 
     private fun initList() {
         list.name = ViewNames.Client.List
-        list.cellRenderer = ClientListCellRender()
+        list.cellRenderer =  object : MyListCellRenderer<Client>() {
+            override fun newCell(value: Client) = ClientCell(value)
+        }
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.layoutOrientation = JList.VERTICAL
 
