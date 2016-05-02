@@ -10,35 +10,34 @@
 [![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](http://kotlinlang.org)
 
 
-Gadsu is a Shiatsu management application for your clients, appointments, treatments, protocols and maybe in the future even for your invoices and more.
+Gadsu is a Shiatsu management application for your clients, appointments, treatments, protocols and maybe in the future even for your invoices.
+For more detailed information visit [the Wiki](https://github.com/christophpickl/gadsu/wiki).
 
-![Gadsu Screenshot](https://github.com/christophpickl/gadsu/wiki/gadsu_screenshot_1.1-SS.png "Some title text")
+![Gadsu Screenshot](https://github.com/christophpickl/gadsu/wiki/gadsu_screenshot_1.1-SS.png "Gadsu Screenshot")
 
 
-ROADMAP
-============================================================
+## Download
 
-v?.?
-------------------------------------------------------------
+[Gadsu-1.0.jar](https://github.com/christophpickl/gadsu/releases/download/v1.0/Gadsu-1.0.jar) (33.9 MB, for Windows and Linux)
 
+[Gadsu-1.0.dmg](https://github.com/christophpickl/gadsu/releases/download/v1.0/Gadsu-1.0.dmg) (33.5 MB, for MacOS)
+
+
+##  ROADMAP
+
+### v?.?
 * Export (import)
 
-v1.2
-------------------------------------------------------------
-
+### v1.2
 * More client/treatment/tcm fields
 * General (UI) improvements
 * Finish acupuncture db
 
-v1.1
-------------------------------------------------------------
-
+### v1.1
 * Client search
 * Improved protocol report (wizard)
 
-v1.0
-------------------------------------------------------------
-
+### v1.0
 * Basic client handling (picture, tcm properties)
 * Basic treatment handling
 * Rudimentary protocol generation
