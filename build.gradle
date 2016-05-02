@@ -51,10 +51,9 @@ apply plugin: "kotlin"
 
 defaultTasks 'run'
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-}
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
 
 // =====================================================================================================================
 // DEPENDENCIES
@@ -219,7 +218,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
     task copySplashscreenForMacApp(type: Copy) {
         //    println "Copying splash screen for mac app ..."
         from 'src/main/resources/gadsu/splashscreen.jpg'
-        into 'build/macApp/' + myAppName + '.app/Contents/Resources'
+        into "build/macApp/${myAppName}.app/Contents/Resources"
     }
     createApp.dependsOn copySplashscreenForMacApp
 }
@@ -278,7 +277,6 @@ task testIt(type: Test) {
 */
 
 // check.dependsOn testUi
-
 task testUi(type: Test) {
     testLogging.showStandardStreams = false
     // systemProperty 'uispec4j.test.library', 'testng'
@@ -298,8 +296,6 @@ task testUi(type: Test) {
 //        classDumpFile = file("$buildDir/jacoco/classpathdumps-ui")
     }
 }
-
-//apply plugin: "jacoco"
 
 jacocoTestReport {
     reports {
