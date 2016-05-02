@@ -2,10 +2,28 @@ package at.cpickl.gadsu.client.xprops.model
 
 import at.cpickl.gadsu.service.verifyNoIntersection
 import java.util.HashMap
+import java.util.LinkedList
+
+class CPropsBuilder {
+    private val cprops = LinkedList<CProp>()
+
+    fun add(xprop: XPropEnum, vararg selectedOpts: IsEnumOption): CPropsBuilder {
+        cprops.add(CPropEnum(xprop, selectedOpts.map { it.opt }))
+        return this
+    }
+
+    fun build(): CProps {
+        return CProps(cprops.associate { Pair(it.delegate, it) })
+    }
+}
 
 data class CProps(private val props: Map<XProp, CProp>) {
     companion object {
         val empty: CProps get() = CProps(emptyMap())
+
+        // eg: CProps.build(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep)
+        val builder: CPropsBuilder get() = CPropsBuilder()
+
     }
 
     fun findOrNull(xprop: XProp): CProp? {

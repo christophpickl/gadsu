@@ -31,6 +31,7 @@ data class Treatment(
         fun insertPrototype(clientId: String,
                             number: Int,
                             date: DateTime,
+                            duration: Duration = DEFAULT_DURATION,
                             created: DateTime = DUMMY_CREATED, // created will be overridden anyway
                             note: String = ""
         ): Treatment {
@@ -41,7 +42,7 @@ data class Treatment(
                     created,
                     number,
                     date.clearSeconds(),
-                    DEFAULT_DURATION,
+                    duration,
                     note)
         }
     }

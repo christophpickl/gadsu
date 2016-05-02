@@ -41,15 +41,21 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
 
 
 abstract class MyListCellRenderer<T> : ListCellRenderer<T> {
+    companion object {
+        private val ALTERNATE_BG_COLOR = Color.decode("#F2F2F2")
+    }
 
     protected abstract fun newCell(value: T): CellView
 
     override fun getListCellRendererComponent(list: JList<out T>, value: T, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+        // MINOR UI improve performance (memory) by reusing existing cells and simply change its state
         val cell = newCell(value)
 
         if (isSelected) {
             cell.changeForeground(UIManager.getColor("List.selectionForeground"))
             cell.changeBackground(UIManager.getColor("List.selectionBackground"))
+        } else if (index % 2 == 1) {
+            cell.changeBackground(ALTERNATE_BG_COLOR)
         } else {
             cell.changeToTransparent()
         }

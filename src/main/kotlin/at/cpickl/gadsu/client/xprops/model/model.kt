@@ -28,7 +28,7 @@ Konstitution yin/yang, Kondition yin/yang
      */
 
     private val eager_sleep = SleepOpts.TiredInEvening
-    enum class SleepOpts(val opt: XPropEnumOpt) {
+    enum class SleepOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         TiredInMorning     (opt("Sleep_TiredInMorning")),
         TiredInEvening     (opt("Sleep_TiredInEvening")),
         ProblemsWakeUp     (opt("Sleep_ProblemsWakeUp")),
@@ -38,10 +38,14 @@ Konstitution yin/yang, Kondition yin/yang
 
 
     private val eager_hungry = HungryOpts.BigHunger
-    enum class HungryOpts(val opt: XPropEnumOpt) {
+    enum class HungryOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         BigHunger    (opt("Hungry_BigHunger")),
         LittleHunger (opt("Hungry_LittleHunger"))
     }
     val Hungry = enum("Hungry")
 
+}
+
+interface IsEnumOption {
+    val opt: XPropEnumOpt
 }

@@ -9,6 +9,7 @@ import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.client.xprops.model.XProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
@@ -17,6 +18,7 @@ import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.service.forTreatment
+import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -58,6 +60,7 @@ open class DevelopmentController @Inject constructor(
         devFrame?.addEvent(event)
     }
 
+
     @Subscribe open fun onDevelopmentResetDataEvent(event: DevelopmentResetDataEvent) {
         deleteAll()
 
@@ -78,7 +81,11 @@ open class DevelopmentController @Inject constructor(
                         firstName = "Anna",
                         lastName = "Nym",
                         gender = Gender.FEMALE,
-                        picture = MyImage.DEFAULT_PROFILE_WOMAN
+                        picture = MyImage.DEFAULT_PROFILE_WOMAN,
+                cprops = CProps.builder
+                        .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
+                        .add(XProps.Hungry, XProps.HungryOpts.BigHunger)
+                        .build()
                 )
         ).forEach {
             val saved = clientService.insertOrUpdate(it)
@@ -103,6 +110,13 @@ open class DevelopmentController @Inject constructor(
                                 number = 3,
                                 date = DateTime.now().plusDays(3),
                                 note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. "
+                        ),
+                        Treatment.insertPrototype(
+                                clientId = clientId,
+                                number = 4,
+                                date = DateTime.now().plusDays(4).plusMinutes(15),
+                                duration = minutes(30),
+                                note = "Was a quick one "
                         )
                 ).forEach {
                     treatmentRepo.insert(it)

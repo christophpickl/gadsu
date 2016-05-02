@@ -7,12 +7,12 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.FormPanel
 import at.cpickl.gadsu.view.components.ModificationChecker
 import at.cpickl.gadsu.view.components.Pad
+import at.cpickl.gadsu.view.language.Labels
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -49,30 +49,29 @@ class ClientTabMain(
         debugColor = Color.ORANGE
 
         val form1Panel = FormPanel()
-        form1Panel.debugColor = Color.CYAN
-        form1Panel.addFormInput(inpFirstName)
-        form1Panel.addFormInput(inpLastName)
-
-        form1Panel.addFormInput(inpGender)
-        form1Panel.addFormInput(inpBirthday)
-        form1Panel.addFormInput(inpCountryOfOrigin)
-        form1Panel.addFormInput(inpRelationship)
-        form1Panel.addFormInput(inpJob)
-        form1Panel.addFormInput(inpChildren)
-        form1Panel.addFormInput("Erstellt am", outCreated)
-        form1Panel.addLastColumnsFilled()
-
+        with(form1Panel) {
+            debugColor = Color.CYAN
+            addFormInput(inpFirstName)
+            addFormInput(inpLastName)
+            addFormInput(inpGender)
+            addFormInput(inpBirthday)
+            addFormInput(inpCountryOfOrigin)
+            addFormInput(inpRelationship)
+            addFormInput(inpJob)
+            addFormInput(inpChildren)
+            addFormInput("Erstellt am", outCreated)
+        }
 
         val form2Panel = FormPanel()
-        form2Panel.addFormInput(inpMail)
-        form2Panel.addFormInput(inpPhone)
-        form2Panel.addFormInput(inpStreet)
-        form2Panel.addFormInput(inpZipCode)
-        form2Panel.addFormInput(inpCity)
-        form2Panel.addLastColumnsFilled()
+        with(form2Panel) {
+            addFormInput(inpMail)
+            addFormInput(inpPhone)
+            addFormInput(inpStreet)
+            addFormInput(inpZipCode)
+            addFormInput(inpCity)
+        }
 
-
-        c.fill = GridBagConstraints.BOTH
+        c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
         c.weightx = 0.5
         c.weighty = 0.0
@@ -83,17 +82,15 @@ class ClientTabMain(
         add(form2Panel)
 
         c.gridx++
-        c.fill = GridBagConstraints.VERTICAL
+        c.fill = GridBagConstraints.BOTH
         c.weightx = 0.0
-        c.weighty = 1.0
-        c.gridheight = 2
+        c.weighty = 0.0
         add(treatmentSubview)
 
         c.insets = Pad.TOP
         c.gridx = 0
         c.gridy++
-        c.gridwidth = 2
-        c.gridheight = 1
+        c.gridwidth = 3
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
