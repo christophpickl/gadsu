@@ -92,7 +92,8 @@ MIT STEFFI
 * @Languages check default system property for language (luxury: configurable via preferences)
 * JDatePicker seems to support JodaTime (see their website)
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
-
+* smart enabled textfields (e.g. job, countryOfOrigin)
+ 
 ## Luxury Ideas
 
 * automatic VERSION check

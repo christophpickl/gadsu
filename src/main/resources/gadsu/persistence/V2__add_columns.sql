@@ -1,0 +1,2 @@
+
+ALTER TABLE treatment ADD COLUMN durationInMin INT NOT NULL

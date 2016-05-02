@@ -1,0 +1,5 @@
+
+Each database version has been introduced with a specific gadsu app version.
+
+V1 ... gadsu 1.0
+V2 ... gadsu 1.1

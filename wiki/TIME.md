@@ -21,3 +21,4 @@
   * 10h ... minor features (export, acupuncture)
   * 10h ... client xproperties
 * may 2016
+  * 5h ... project management
