@@ -5,12 +5,7 @@ import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.view.ElField
-import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.ModificationChecker
-import at.cpickl.gadsu.view.components.MyList
-import at.cpickl.gadsu.view.components.MyListCellRenderer
-import at.cpickl.gadsu.view.components.MyListModel
-import at.cpickl.gadsu.view.components.scrolled
+import at.cpickl.gadsu.view.components.*
 import com.google.common.eventbus.EventBus
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -40,9 +35,9 @@ class CPropEnumView(
         list.visibleRowCount = 4
     }
 
-    override fun updateValue(client: Client) {
+    override fun updateValue(value: Client) {
         list.clearSelection()
-        val cprop = client.cprops.findOrNull(xprop) ?: return
+        val cprop = value.cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
     }
 
