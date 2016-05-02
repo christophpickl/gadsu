@@ -20,8 +20,6 @@ JASPER GUIDE
 * declare all your parameters/field explicitly when getting a JRValidationException saying report design not valid about some not found stuff
 
  */
-
-
 enum class TargetInvalidReason {
     ALREADY_EXISTS,
     IS_A_DIRECTORY
@@ -49,6 +47,9 @@ class JasperEngineImpl : JasperEngine {
         log.debug("savePdfTo(config={}, target={})", config, target.absolutePath)
         val jasperPrint = generatePrintArtifact(config)
         // first generate report, then validate (and implicitly delete file when overwrite is enabled
+
+//        JasperExportManager.exportReportToPdfStream(jasperPrint, outStream)
+
         JasperExportManager.exportReportToPdfFile(jasperPrint, target.absolutePath)
         log.info("Successfully saved PDF file to: {}", target.absolutePath)
     }
