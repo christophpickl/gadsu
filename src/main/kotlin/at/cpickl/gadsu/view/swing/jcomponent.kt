@@ -39,6 +39,7 @@ fun JComponent.changeBackgroundForASec(tempBackground: Color) {
 }
 
 
+// MINOR this is some kind of a hacky method (height calculation does not work properly!)
 fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     size = Dimension(myWidth, size.height)
     maximumSize = Dimension(myWidth, maximumSize.height)

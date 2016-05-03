@@ -152,9 +152,10 @@ object Acupuncts {
     }
 
     val allPuncts = lazy {
-        val iAmTooStupidForKotlin = LinkedList<Acupunct>()
-        byMeridian.values.forEach { iAmTooStupidForKotlin.addAll(it) }
-        iAmTooStupidForKotlin
+        byMeridian.values.flatMap { it }
+//        val iAmTooStupidForKotlin = LinkedList<Acupunct>()
+//        byMeridian.values.forEach { iAmTooStupidForKotlin.addAll(it) }
+//        iAmTooStupidForKotlin
     }
 
     fun byMeridian(meridian: Meridian) = byMeridian[meridian]!!
