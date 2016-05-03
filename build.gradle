@@ -22,9 +22,10 @@ buildscript {
 }
 
 plugins {
-    id 'jacoco'
+    id 'jacoco' version '0.7.6.201602180812'
     // see: https://github.com/kt3k/coveralls-gradle-plugin
     id 'com.github.kt3k.coveralls' version '2.6.3'
+    id "org.standardout.versioneye" version "1.3.0"
 }
 
 repositories {
@@ -38,6 +39,11 @@ repositories {
 // =====================================================================================================================
 // MISC
 // =====================================================================================================================
+
+versioneye {
+    //exclude 'testCompile', 'testRuntime'
+    excludeGroups
+}
 
 ext {
     // projectVersion = '1.0.0-SNAPSHOT'
@@ -92,7 +98,7 @@ dependencies {
 
     // REPORTING
     compile 'net.sf.jasperreports:jasperreports:6.2.1'
-    compile 'com.lowagie:itext:2.1.7' // 4.2.2
+     compile 'com.lowagie:itext:2.1.7' // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
     compile 'com.itextpdf:itextpdf:5.5.9' // jasper comes with outdated itext (fortunately got different package name)
 
     // LOGGING

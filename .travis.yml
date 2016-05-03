@@ -14,7 +14,7 @@ before_install:
   - "sleep 3" # give xvfb some time to start
 
 script:
-  - "./gradlew test testUi jacocoTestReport"
+  - "./gradlew test testUi jacocoTestReport versioneye-update"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
