@@ -23,7 +23,9 @@ open class AcupunctureController @Inject constructor(
         }
 
         frame.list.addListSelectionListener {
-            frame.changeAcupunct(if (frame.list.selectedIndex == -1) null else frame.list.selectedValue)
+            if (!it.valueIsAdjusting) {
+                frame.changeAcupunct(if (frame.list.selectedIndex == -1) null else frame.list.selectedValue)
+            }
         }
 
     }

@@ -1,13 +1,13 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.tcm.model.StaticAcupunctureRepository
 import com.google.common.eventbus.EventBus
-
 
 
 fun main(args: Array<String>) {
     val bus = EventBus()
 
-    val repository = InMemoryAcupunctureRepository()
+    val repository = StaticAcupunctureRepository()
     val service = AcupunctureServiceImpl(repository)
 
     val list = AcupunctureList(bus)

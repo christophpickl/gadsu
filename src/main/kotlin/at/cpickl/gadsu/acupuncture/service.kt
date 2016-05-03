@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.tcm.model.Acupunct
+import at.cpickl.gadsu.tcm.model.AcupunctureRepository
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -18,9 +20,9 @@ class AcupunctureServiceImpl @Inject constructor (
     private val data: List<Acupunct>
 
     init {
-        data = repository.load() // eager loading
-
+        data = repository.loadAll() // eager loading
     }
+
     override fun all() = data
 
     override fun find(searchTerm: String): List<Acupunct> {

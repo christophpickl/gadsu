@@ -30,7 +30,6 @@ class Search<T> private constructor(
 
     init {
         restoreAllData()
-
     }
 
     private fun registerYourself() {

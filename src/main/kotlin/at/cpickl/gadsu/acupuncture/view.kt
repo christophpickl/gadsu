@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.tcm.model.Acupunct
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MyFrame
@@ -38,7 +39,7 @@ class AcupunctureFrame @Inject constructor(
     init {
         val panel = GridPanel()
         inpSearch.enforceWidth(200)
-        list.enforceWidth(200)
+        // NOOOOO! list.enforceWidth(200)
 
         // SEARCH
         panel.c.weightx = 0.0
@@ -63,6 +64,7 @@ class AcupunctureFrame @Inject constructor(
         panel.c.weightx = 0.0
         panel.c.weighty = 1.0
         panel.c.fill = GridBagConstraints.BOTH
+//        val scroll = JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
         panel.add(list.scrolled())
 
 
@@ -126,18 +128,15 @@ class AcupunctCell(val punct: Acupunct): DefaultCellView<Acupunct>(punct) {
 
 }
 
-private class AcupunctListCellRenderer : MyListCellRenderer<Acupunct>() {
-    override fun newCell(value: Acupunct) = AcupunctCell(value)
-}
-
-
 class AcupunctureList @Inject constructor(
         private val bus: EventBus
 ) : MyList<Acupunct>(
         ViewNames.Acupunct.List,
         MyListModel<Acupunct>(),
         bus,
-        AcupunctListCellRenderer()
+        object : MyListCellRenderer<Acupunct>() {
+            override fun newCell(value: Acupunct) = AcupunctCell(value)
+        }
 ), SearchableList<Acupunct> {
     init {
         //        initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })
