@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.acupuncture
 
-import at.cpickl.gadsu.tcm.Meridian
+import at.cpickl.gadsu.tcm.model.Acupunct
+import at.cpickl.gadsu.tcm.model.AcupunctureRepository
+import at.cpickl.gadsu.tcm.model.Meridian
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.slf4j.LoggerFactory
@@ -10,14 +12,14 @@ import org.testng.annotations.Test
 
 
 object TestAcupunctures {
-    val Stomach36 = Acupunct.punkt(Meridian.Stomach, 36, "note1", "hals", "nacken")
-    val Heart1 = Acupunct.punkt(Meridian.Heart, 1, "note2", "husten")
+    val Stomach36 = Acupunct.build(Meridian.Stomach, 36, "note1", "hals, nacken")
+    val Heart1 = Acupunct.build(Meridian.Heart, 1, "note2", "husten")
 
     val all = listOf(Stomach36, Heart1)
 }
 
 class TestableAcupunctureRepository : AcupunctureRepository {
-    override fun load() = TestAcupunctures.all
+    override fun loadAll() = TestAcupunctures.all
 }
 
 

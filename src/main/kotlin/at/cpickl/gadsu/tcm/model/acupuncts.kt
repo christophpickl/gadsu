@@ -23,6 +23,15 @@ data class AcupunctCoordinateImpl(override val meridian: Meridian, override val 
 
 data class Acupunct(val coordinate: AcupunctCoordinate, val note: String, val indications: List<String>) :
         Comparable<Acupunct> {
+
+    companion object {
+        fun build(meridian: Meridian, number: Int, note: String, joinedIndications: String): Acupunct {
+            val indications = Splitter.on(",").trimResults().split(joinedIndications).toList()
+            return Acupunct(AcupunctCoordinateImpl(meridian, number), note, indications)
+        }
+
+    }
+
     override fun compareTo(other: Acupunct) = this.coordinate.compareTo(other.coordinate)
 
     // delegation is not working properly due to mismatching Comparable<T> interfaces
@@ -179,7 +188,7 @@ private class AcupunctsPunctBuilder() {
         if (!map.containsKey(currentMeridian)) {
             map.put(currentMeridian, LinkedList())
         }
-        map[currentMeridian]!!.add(Acupunct(AcupunctCoordinateImpl(currentMeridian, number), note, Splitter.on(",").trimResults().split(joinedIndications).toList()))
+        map[currentMeridian]!!.add(Acupunct.build(currentMeridian, number, note, joinedIndications))
         return this
     }
 
