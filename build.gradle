@@ -23,6 +23,8 @@ buildscript {
 
 plugins {
     id 'jacoco' // version '0.7.6.201602180812', nah: "Plugin 'jacoco' is a core Gradle plugin, which cannot be specified with a version number. Such plugins are versioned as part of Gradle. Please remove the version number from the declaration."
+    // solution: jacoco { toolVersion = "0.7.6.201602180812" ...
+
     // see: https://github.com/kt3k/coveralls-gradle-plugin
     id 'com.github.kt3k.coveralls' version '2.6.3'
     id "org.standardout.versioneye" version "1.3.0"
@@ -235,6 +237,10 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 
 // run all tests:
 // >> gradle test testIt testUi
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+}
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
 // http://stackoverflow.com/questions/21009125/including-not-excluding-groups-in-testng-and-gradle
