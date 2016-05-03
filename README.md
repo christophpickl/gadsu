@@ -46,4 +46,5 @@ For more detailed information visit [the Wiki](https://github.com/christophpickl
 
 Coverage
 ============================================================
-![codecov.io](`https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master`)
+<!--- Old definition not working anymore ... ![codecov.io](`https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master`) -->
+![codecov.io](`https://codecov.io/gh/christophpickl/gadsu/branch/master/graphs/icicle.svg`)
