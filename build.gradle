@@ -41,8 +41,7 @@ repositories {
 // =====================================================================================================================
 
 versioneye {
-    //exclude 'testCompile', 'testRuntime'
-    excludeGroups
+    // is it possible to ignore certain dependencies, as i cant fix that?!
 }
 
 ext {
