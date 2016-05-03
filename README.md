@@ -7,6 +7,7 @@
 [![Travis](https://img.shields.io/travis/christophpickl/gadsu.svg)](https://travis-ci.org/christophpickl/gadsu)
 [![codecov.io](https://codecov.io/github/christophpickl/gadsu/coverage.svg?branch=master)](https://codecov.io/github/christophpickl/gadsu?branch=master)
 [![Issues](https://img.shields.io/github/issues/christophpickl/gadsu.svg)](https://github.com/christophpickl/gadsu/issues?q=is%3Aopen) 
+[![Master dependency status](https://www.versioneye.com/user/projects/57287c80a0ca35005083faff/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57287c80a0ca35005083faff)
 [![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](http://kotlinlang.org)
 
 
