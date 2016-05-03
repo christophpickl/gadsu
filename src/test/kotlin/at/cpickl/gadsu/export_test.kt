@@ -8,8 +8,8 @@ import at.cpickl.gadsu.export.ExportXstreamService
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_DATETIME1
-import at.cpickl.gadsu.testinfra.TEST_DATE_1985
 import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.savedValidInstance
 
 
 fun main(args: Array<String>) {
@@ -24,8 +24,8 @@ fun main(args: Array<String>) {
                                     picture = MyImage.TEST_CLIENT_PIC1,
                                     contact = Contact.INSERT_PROTOTYPE.copy(mail = "mail@home.at")
                             )),
-                    _treatments = listOf(Treatment.insertPrototype(
-                            "fooId", 1, TEST_DATETIME1.minusMinutes(4), TEST_DATE_1985.plusDays(1), "my treat note")))
+                    _treatments = listOf(Treatment.savedValidInstance("clientId"))
+            )
     )
 
     println("\n\nXML result:\n$xml\n\n")

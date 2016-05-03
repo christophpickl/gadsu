@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toByteArray
-import at.cpickl.gadsu.testinfra.Expects.expect
+import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
@@ -51,7 +51,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun insert_idSet_fails() {
-        expect(type = PersistenceException::class, messageContains = "Client must not have set an ID", action = {
+        Expects.expect(type = PersistenceException::class, messageContains = "Client must not have set an ID", action = {
             testee.insertWithoutPicture(unsavedClient.copy(id = TEST_UUID1))
         })
     }

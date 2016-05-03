@@ -47,7 +47,11 @@ data class ClientReportData(
         val job: String?,
         val picture: InputStream?,
         val cprops: String?
-)
+) {
+    companion object {
+        // for extensions only
+    }
+}
 
 class TreatmentReportData(
         val number: Int,

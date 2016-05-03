@@ -18,8 +18,12 @@ fun Treatment.Companion.unsavedValidInstance(clientId: String) =
 fun Treatment.Companion.unsavedValidInstance(client: Client) =
         unsavedValidInstance(client.id!!)
 
-fun Treatment.Companion.savedValidInstance(clientId: String, treatmentId: String = TEST_UUID1) =
-        unsavedValidInstance(clientId).copy(id = treatmentId)
+fun Treatment.Companion.savedValidInstance(
+        clientId: String,
+        treatmentId: String = TEST_UUID1,
+        number: Int = 1
+) =
+        unsavedValidInstance(clientId).copy(id = treatmentId, number = number)
 
 @Suppress("UNUSED")
 // add fields: date, ...

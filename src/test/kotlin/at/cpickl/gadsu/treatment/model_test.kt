@@ -1,7 +1,5 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.testinfra.TEST_DATETIME1
-import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
@@ -27,6 +25,6 @@ class TreatmentTest {
 
     private fun treatments(vararg numbers: Int) = numbers.map { treatment(it) }
 
-    private fun treatment(number: Int) = Treatment.insertPrototype("testClientId", number, TEST_DATETIME1, TEST_DATETIME2)
+    private fun treatment(number: Int) = Treatment.savedValidInstance(clientId = "clientId", number = number)
 
 }
