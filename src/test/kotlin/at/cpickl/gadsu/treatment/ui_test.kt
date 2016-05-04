@@ -131,7 +131,7 @@ class TreatmentUiTest : UiTest() {
         skip("again a uispec4j bug with Rectangle rect = jList.getCellBounds(row, row); (ListBox#rightClick)")
         saveClient(client)
 
-        // MINOR @TEST - somehow get back the real treatment instance via driver (has ID and number properly set!)
+        // ... somehow get back the real treatment instance via driver (has ID and number properly set!)
         val treatment1 = treatment.copy(note = "note1", number = 1)
         val treatment2 = treatment.copy(note = "note2", number = 2)
         val treatment3 = treatment.copy(note = "note3", number = 3)
@@ -139,7 +139,7 @@ class TreatmentUiTest : UiTest() {
         driver.save(treatment = treatment2, returnToClientView = true)
         driver.save(treatment = treatment3, returnToClientView = true)
 
-        driver.assertTreatmentsListContains(1, 2, 3) // FIXME @TEST - reverse order!!!
+        driver.assertTreatmentsListContains(1, 2, 3) // ... reverse order!!!
 
         driver.deleteTreatment(treatment2)
 

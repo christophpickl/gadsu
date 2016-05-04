@@ -35,7 +35,7 @@ n         println("test1: $helper")
 class MyTestngModule : AbstractModule() {
     override fun configure() {
 //        bind(GadsuTestHelper::class.java).to(GadsuTestHelperImpl::class.java)
-//        TODO TEST build own test infrastructure with guice, which simplifies testing (manual wiring, full control)
+//        TODO @TEST - build own test infrastructure with guice, which simplifies testing (manual wiring, full control)
         // BUT: also write infra to startup Gadsu guice context, plus override DataSource, for autowiring enabled
         // register factory
     }

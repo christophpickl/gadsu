@@ -19,7 +19,6 @@ data class XPropEnum(
     override fun <R> onType(callback: XPropTypeCallback<R>) = callback.onEnum(this)
 }
 
-// TODO rewrite, define order by order in code
 data class XPropEnumOpt(
         val order: Int,
         val key: String,

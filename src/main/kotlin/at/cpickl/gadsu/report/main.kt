@@ -69,7 +69,6 @@ open class ReportController @Inject constructor(
                     TreatmentReportData(it.number, it.note, it.date)
                 }.sortedBy { it.number } // we need it ascending (but internally set descendant for list view)
         )
-        // TODO @REPORT VIEW - show progress dialog and run background swing worker
 
         protocolGenerator.view(report)
 
@@ -83,19 +82,17 @@ open class ReportController @Inject constructor(
         val printDate = clock.now()
         val cover = MultiProtocolCoverData(printDate, author)
 
-
-        // FIXME findAllWhichHaveAtLeastOneTreatment()
         val protocols = clientService.findAll().map {
-            val picture = null // FIXME picture in report
+            val picture = it.picture.toReportRepresentation()
             val clientData = ClientReportData(it.fullName, it.children.nullIfEmpty(), it.job.nullIfEmpty(), picture, CPropsComposer.compose(it))
             val rows = treatmentService.findAllFor(it).map {
-                TreatmentReportData(it.number, it.note.nullIfEmpty(), it.date) // TODO actually a fixme: duration
+                TreatmentReportData(it.number, it.note.nullIfEmpty(), it.date)
             }
             ProtocolReportData(author, printDate, clientData, rows)
-            // List<ProtocolReportData>
-        }.toList()
+        }.filter { it.rows.isNotEmpty() }.toList()
 
         MultiProtocolGeneratorImpl().generate("myTarget.pdf", cover, protocols)
+        println("saved to: myTarget.pdf")
     }
 }
 
@@ -104,7 +101,6 @@ object CPropsComposer {
         if (client.cprops.isEmpty()) {
             return null
         }
-        // FIXME implement CProps composer
         return client.cprops.map { it.onType(object : CPropTypeCallback<String>{
             override fun onEnum(cprop: CPropEnum): String {
                 return "Sein ${cprop.label} ist verbunden mit ${cprop.clientValue.map { it.label }.joinToString(", ")}."

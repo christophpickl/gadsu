@@ -51,7 +51,7 @@ data class MultiProtocolCoverData(
 }
 
 class MultiProtocolGeneratorImpl : MultiProtocolGenerator {
-    // FIXME let it inject!
+    // TODO let it inject!
     val protocolGenerator = JasperProtocolGenerator(JasperEngineImpl())
 
     fun generate(target: String, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {

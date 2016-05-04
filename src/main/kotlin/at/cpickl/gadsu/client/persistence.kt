@@ -65,8 +65,7 @@ class ClientJdbcRepository @Inject constructor(
         client.ensureNotPersisted()
 
         val newId = idGenerator.generate()
-        // MINOR copy and paste!
-        @Suppress("SENSELESS_COMPARISON") // yes, it can indeed be that way!
+        @Suppress("SENSELESS_COMPARISON") // yes, it can indeed be that way! because of stupid mocking.
         if (newId === null) {
             throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
         }

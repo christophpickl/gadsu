@@ -79,7 +79,6 @@ class SwingTreatmentView @Inject constructor(
     private val modificationChecker = ModificationChecker(this, btnSave)
     private val fields = Fields<Treatment>(modificationChecker)
 
-    // FIXME use Fields and ElTextArea instead to be aware of changes and stuff
     private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
 

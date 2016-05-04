@@ -19,6 +19,12 @@ import javax.swing.JLabel
 import javax.swing.UIManager
 import javax.swing.WindowConstants
 
+
+fun main(args: Array<String>) {
+    PanicDialog(null, {}).showIt()
+}
+
+
 open class GadsuException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 /**
@@ -48,11 +54,6 @@ object GlobalExceptionHandler {
     }
 
 }
-
-fun main(args: Array<String>) {
-    PanicDialog(null, {}).showIt()
-}
-
 
 class PanicDialog(_owner: JFrame?, onClose: () -> Unit) : JDialog(_owner, true) {
     init {

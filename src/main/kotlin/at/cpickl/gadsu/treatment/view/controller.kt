@@ -65,7 +65,7 @@ open class TreatmentController @Inject constructor(
 
     @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
 
-        // FIXME check changes for treatment
+        // check changes for treatment
 
         currentTreatment.data = null
         bus.post(ShowClientViewEvent())

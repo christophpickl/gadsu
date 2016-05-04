@@ -30,7 +30,7 @@ open class MainFrameController @Inject constructor(
             log.debug("Quit aborted by changes detected by the client controller.")
             return
         }
-        // MINOR also check for changes in treatment controller
+        // TODO also check for changes in treatment controller
 
         prefs.windowDescriptor = frame.descriptor
         frame.close()

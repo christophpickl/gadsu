@@ -11,7 +11,6 @@ import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
@@ -21,8 +20,7 @@ open class TreatmentsInClientController @Inject constructor(
         private val service: TreatmentService,
         private val dialogs: Dialogs
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
-    private var recentClient: Client? = null // MINOR change to Current infra
+    private var recentClient: Client? = null // MINOR @REFACTOR - change to Current infra
 
     @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
         recentClient = event.client

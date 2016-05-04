@@ -86,14 +86,11 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         return list
     }
 
-
     // MINOR @TEST - make reusable for client list (client resolved via using the direct table model... different approach!)
     private fun findListRowForTreatmentNumber(number: Int): Pair<Treatment, Int> {
         return treatmentsListContent().firstOrNull { it.first.number == number }
                 ?: throw GadsuException("Could not find index for treatment number: $number!")
     }
-
-
 
     fun assertTreatmentsListContains(vararg expectedNumbers: Int) {
         val lists = treatmentsListContent()

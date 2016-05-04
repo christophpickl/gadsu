@@ -54,7 +54,7 @@ class PropsServiceImplTest : HsqldbTest() {
 /*
 class ClientServiceImplForPropsTest : HsqldbTest() {
 
-    // MINOR TEST this needs some refactoring (reuse it!), or just startup guice context and inject faked datasource
+    // MINOR @TEST - this needs some refactoring (reuse it!), or just startup guice context and inject faked datasource
     private var clientRepo: ClientRepository = ClientSpringJdbcRepository(nullJdbcx(), idGenerator)
     private var propsRepo: ClientPropsRepository = ClientPropsSpringJdbcRepository(nullJdbcx())
     private propsSerice

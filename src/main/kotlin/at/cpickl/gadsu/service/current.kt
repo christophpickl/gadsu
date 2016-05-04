@@ -107,7 +107,7 @@ abstract class Current<V : HasId?>(private val id: String, private val bus: Even
 }
 
 class CurrentClient @Inject constructor(bus: EventBus) :
-        Current<Client>(ID, bus, INITIAL_VALUE) { // MINOR use kotlin delegation (requires interface first): Client by data
+        Current<Client>(ID, bus, INITIAL_VALUE) { // MINOR @REFACTOR - use kotlin delegation (requires interface first): Client by data
     companion object {
         val ID: String = "client"
         val INITIAL_VALUE = Client.INSERT_PROTOTYPE

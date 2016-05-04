@@ -49,7 +49,7 @@ class CPropsRenderer(
             override fun onEnum(xprop: XPropEnum): CPropView {
 
                 val view = CPropEnumView(xprop, bus)
-                // TODO view name
+                // MINOR @TEST UI - view name
                 fields.register(view)
                 return view
             }

@@ -44,7 +44,7 @@ open class GadsuMenuBarController @Inject constructor(
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
         when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
-            // TODO rethink this double dispatching. aint necessary :-/
+            // TODO @REFACTOR - rethink this double dispatching. aint necessary :-/
             MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
             MenuBarEntry.REPORT_MULTI_PROTOCOL -> bus.post(CreateMultiProtocolEvent())
 

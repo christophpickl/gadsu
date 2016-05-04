@@ -28,7 +28,7 @@ object Languages {
             return overridden
         }
 
-        // TODO or check system property: user.language = en
+        // MINOR or check system property: user.language = en
         val defaultLocale = Locale.getDefault()
         val supports = Language.byId(defaultLocale.language.toUpperCase())
         if (supports != null) {

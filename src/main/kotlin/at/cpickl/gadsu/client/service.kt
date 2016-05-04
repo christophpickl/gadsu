@@ -50,7 +50,7 @@ class ClientServiceImpl @Inject constructor(
         if (client.yetPersisted) {
             jdbcx.transactionSafe {
                 clientRepo.updateWithoutPicture(client)
-                // TODO the xpropsService call is duplicate from insert
+                // TODO @REFACTOR - the xpropsService call is duplicate from insert
                 xpropsService.update(client)
             }
 

@@ -53,7 +53,7 @@ abstract class MyListCellRenderer<T> : ListCellRenderer<T> {
     protected abstract fun newCell(value: T): CellView
 
     override fun getListCellRendererComponent(list: JList<out T>, value: T, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-        // MINOR UI improve performance (memory) by reusing existing cells and simply change its state
+        // MINOR @UI - improve performance (memory) by reusing existing cells and simply change its state
         val cell = newCell(value)
 
         if (isSelected) {

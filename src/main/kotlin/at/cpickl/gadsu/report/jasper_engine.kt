@@ -63,25 +63,5 @@ class JasperEngineImpl : JasperEngine {
         val jasperReport = JasperCompileManager.compileReport(templateDesign)
         return JasperFillManager.fillReport(jasperReport, config.parameters, JRBeanCollectionDataSource(config.rows))
     }
-
-    // TODO @REPORT - validate save target file in service layer
-    //    private fun validateSaveTarget(target: File, forceOverwrite: Boolean) {
-    //        if (!target.exists()) {
-    //            return
-    //        }
-    //        if (!forceOverwrite) {
-    //            throw ReportTargetFileInvalidUserException("Target already exists: ${target.absolutePath}!",
-    //                    target, TargetInvalidReason.ALREADY_EXISTS)
-    //        }
-    //        // force overwrite enabled, but ...
-    //        if (target.isDirectory) {
-    //            throw ReportTargetFileInvalidUserException("Target is an already existing directory: ${target.absolutePath}!",
-    //                    target, TargetInvalidReason.IS_A_DIRECTORY)
-    //        }
-    //        val wasDeleted = target.delete()
-    //        if (!wasDeleted) {
-    //            throw ReportException("Could not delete target file: ${target.absolutePath}!")
-    //        }
-
 }
 

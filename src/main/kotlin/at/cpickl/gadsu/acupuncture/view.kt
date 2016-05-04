@@ -93,7 +93,7 @@ class AcupunctureFrame @Inject constructor(
         }
     }
 
-    // MINOR make reusable in MyFrame for others (controller should take over some more functionality)
+    // MINOR @REFACTOR UI - make reusable in MyFrame for others (controller should take over some more functionality)
     fun start() {
         isVisible = true
     }
