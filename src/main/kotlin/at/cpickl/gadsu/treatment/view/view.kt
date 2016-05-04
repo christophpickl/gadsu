@@ -35,11 +35,13 @@ import java.awt.Dimension
 import java.awt.FlowLayout
 import java.awt.Font
 import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
+private fun dummyLines(lineCount: Int) = 1.rangeTo(lineCount).map { "$it - eine zeile" }.joinToString("\n")
 
 fun main(args: Array<String>) {
     GadsuSystemPropertyKeys.development.spWriteTrue()
@@ -47,8 +49,8 @@ fun main(args: Array<String>) {
     val client = Client.INSERT_PROTOTYPE.copy(id = "myId", firstName = "Anna", lastName = "Nym")
     val treatment = Treatment.insertPrototype(clientId = client.id!!, number = 1, date = "31.12.2016 15:30:00".parseDateTime(),
             duration = minutes(42),
-            aboutClient = "tat ihm weh", aboutTreatment = "zeile\nzeile\nzeile\nzeile\nzeile 111\nzeile\nzeile\nzeile\nzeile2222\nzeile\nzeile\nzeile 333")
-
+            aboutClient = dummyLines(20), aboutTreatment = dummyLines(20)
+    )
     Framed.showWithContext({ context ->
         SwingTreatmentView(context.swing, client, treatment)
     }, size = Dimension(800, 600))
@@ -97,31 +99,32 @@ class SwingTreatmentView @Inject constructor(
     }
 
     private fun initComponents() {
-
-        c.weightx = 1.0
-        c.fill = GridBagConstraints.HORIZONTAL
-        c.anchor = GridBagConstraints.NORTHWEST
-        c.insets = Pad.bottom(20)
-        add(JLabel("Behandlung #${treatment.number}").withFont(Font.BOLD, 20))
-
-        c.insets = Pad.ZERO
-        c.gridx++
         c.fill = GridBagConstraints.NONE
         c.weightx = 0.0
         c.gridheight = 2
         c.anchor = GridBagConstraints.NORTH
+        c.insets = Insets(Pad.DEFAULT_SIZE, 0, 0, Pad.DEFAULT_SIZE) // top right
         add(initClientProfile())
 
-        c.gridx = 0
+        c.gridx++
+        c.gridheight = 1
+        c.weightx = 1.0
+        c.fill = GridBagConstraints.HORIZONTAL
+        c.anchor = GridBagConstraints.NORTHWEST
+        c.insets = Pad.bottom(20)
+        add(JLabel("Behandlung #${treatment.number} für ${client.firstName}").withFont(Font.BOLD, 20))
+
         c.gridy++
-        c.fill = GridBagConstraints.NONE
+        c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
         c.weightx = 0.0
         c.weighty = 0.0
-        c.gridheight = 1
+        c.insets = Pad.ZERO
         add(initDetailPanel())
 
+        c.gridx = 0
         c.gridy++
+        c.gridwidth = 2
         c.fill = GridBagConstraints.BOTH
         c.gridwidth = 2
         c.weightx = 1.0
@@ -137,6 +140,7 @@ class SwingTreatmentView @Inject constructor(
     private fun initDetailPanel(): Component {
         val panel = GridPanel()
         with(panel.c) {
+            fill = GridBagConstraints.HORIZONTAL
             panel.add(JLabel("Am "))
             gridx++
             panel.add(inpDateAndTime.toComponent())
@@ -146,6 +150,9 @@ class SwingTreatmentView @Inject constructor(
             panel.add(inpDuration)
             gridx++
             panel.add(JLabel(" Minuten."))
+            gridx++
+            weightx = 1.0 // layout hack ;)
+            panel.add(JPanel())
         }
         return panel
     }
@@ -153,18 +160,18 @@ class SwingTreatmentView @Inject constructor(
     private fun initClientProfile(): Component {
         val panel = GridPanel()
         with(panel.c) {
-            weightx = 1.0
-            weighty = 1.0
+//            weightx = 1.0
+//            weighty = 1.0
             fill = GridBagConstraints.BOTH
             panel.add(JLabel(client.picture.toViewMedRepresentation()))
 
-            gridy++
-            insets = Pad.TOP
-            fill = GridBagConstraints.NONE
-            anchor = GridBagConstraints.CENTER
-            weightx = 0.0
-            weighty = 0.0
-            panel.add(JLabel(client.firstName))
+//            gridy++
+//            insets = Pad.TOP
+//            fill = GridBagConstraints.NONE
+//            anchor = GridBagConstraints.CENTER
+//            weightx = 0.0
+//            weighty = 0.0
+//            panel.add(JLabel(client.firstName))
         }
         return panel
     }
