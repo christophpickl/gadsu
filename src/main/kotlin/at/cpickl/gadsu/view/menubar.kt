@@ -80,9 +80,10 @@ class GadsuMenuBar @Inject constructor(
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
             menuApp.addItem("Einstellungen", ShowPreferencesEvent())
         }
-        val itemExport = JMenuItem("Export")
-        itemExport.isEnabled = false
-        menuApp.add(itemExport)
+
+//        val itemExport = JMenuItem("Export")
+//        itemExport.isEnabled = false
+//        menuApp.add(itemExport)
 
         menuApp.addItem("Akupunkturpunkte", ShopAcupunctureViewEvent())
 
