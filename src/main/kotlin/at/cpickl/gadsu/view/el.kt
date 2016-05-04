@@ -38,7 +38,8 @@ class ElTextField<V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
         private val viewName: String
-) : JTextField(), ElField<V> {
+// as we use those in the grid panel only, setting columns to 100 is necessary to evenly distribute the horizontal length in multi column form panels!
+) : JTextField(100), ElField<V> {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

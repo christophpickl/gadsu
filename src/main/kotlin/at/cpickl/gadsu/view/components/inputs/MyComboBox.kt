@@ -19,6 +19,7 @@ open class MyComboBox<T : Labeled>(data: List<T>, initValue: T) : JComboBox<T>(V
         assert(data.contains(initValue))
         selectedItem = initValue
         setRenderer(LabeledCellRenderer(getRenderer()))
+//        prototypeDisplayValue = initValue // fail: trying to get proper width
     }
 
     @Suppress("UNCHECKED_CAST")

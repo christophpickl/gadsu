@@ -53,6 +53,7 @@ open class SwingMainFrame @Inject constructor(
     private var _descriptor: WindowDescriptor? = null
 
     init {
+//        background = Color.RED
         container.name = ViewNames.Main.ContainerPanel
         container.border = BORDER_GAP
         container.debugColor = Color.CYAN

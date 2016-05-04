@@ -2,10 +2,11 @@ package at.cpickl.gadsu.view.swing
 
 import javax.swing.BorderFactory
 import javax.swing.JPanel
+import javax.swing.border.TitledBorder
 
 
 fun JPanel.titledBorder(title: String) {
-    border = BorderFactory.createTitledBorder(title)
+    border = BorderFactory.createTitledBorder(null, title, TitledBorder.CENTER, TitledBorder.TOP)
 }
 
 fun JPanel.transparent(): JPanel {

@@ -5,19 +5,35 @@ import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.language.Labels
+import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.titledBorder
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.JTextField
+
+fun main(args: Array<String>) {
+    Framed.showWithContext({ context ->
+        ClientTabMain(
+            Client.INSERT_PROTOTYPE,
+            ModificationChecker(object : ModificationAware {
+                override fun isModified() = true
+            }),
+            TreatmentsInClientView(context.swing, TreatmentList(context.bus), context.bus))
+    }, Dimension(800, 600))
+}
 
 class DisabledTextField(initialValue: String = ""): JTextField(initialValue) {
     init {
@@ -85,6 +101,8 @@ class ClientTabMain(
             addFormInput(inpZipCode)
             addFormInput(inpCity)
         }
+        // this is nearly the same, as the min width of the baseForm (135 for the textfield column, and some more for the label width)
+        contactForm.enforceWidth(235)
 
         c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
@@ -92,8 +110,8 @@ class ClientTabMain(
         c.weighty = 0.0
         add(baseForm)
 
-        c.insets = Pad.LEFT
         c.gridx++
+        c.insets = Pad.LEFT
         add(contactForm)
 
         c.gridx++

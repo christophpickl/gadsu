@@ -47,6 +47,13 @@ fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     preferredSize = Dimension(myWidth, preferredSize.height)
     return this
 }
+fun <T : JComponent> T.enforceSize(myWidth: Int, myHeight: Int): T {
+    size = Dimension(myWidth, size.height)
+    maximumSize = Dimension(myWidth, myHeight)
+    minimumSize = Dimension(myWidth, myHeight)
+    preferredSize = Dimension(myWidth, myHeight)
+    return this
+}
 
 
 fun Component.addSingleLeftClickListener(function: (Point) -> Unit) {
