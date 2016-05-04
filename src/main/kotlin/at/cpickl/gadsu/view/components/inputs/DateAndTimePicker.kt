@@ -1,11 +1,9 @@
 package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.service.clearSeconds
-import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.parseDateTimeWithoutSeconds
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.logic.ModificationChecker
 import org.joda.time.DateTime
+import javax.swing.JLabel
 import javax.swing.JTextField
 
 
@@ -13,30 +11,38 @@ import javax.swing.JTextField
  * Value is not nullable!
  */
 class DateAndTimePicker(
-        modificationChecker: ModificationChecker,
         initialDate: DateTime,
-        viewNamePrefix: String
+        viewNamePrefix: String,
+        textFieldAlignment: Int = JTextField.LEFT
 ) : GridPanel() {
 
-    private val inpTime = JTextField()
-    val inpDate: MyDatePicker
+    val inpDate = MyDatePicker.build(initialDate, viewNamePrefix, textFieldAlignment)
+    val inpTime = MyTimePicker(initialDate)
+
     init {
-        inpDate = modificationChecker.enableChangeListener(MyDatePicker.build(initialDate, viewNamePrefix))
-        inpTime.text = initialDate.formatTimeWithoutSeconds()
-        inpDate.disableClear()
+        inpTime.selectedItemTyped = LabeledDateTime(initialDate)
+        inpDate.disableClear() // avoid null values!
 
         add(inpDate)
-
+        c.gridx++
+        add(JLabel(" um "))
         c.gridx++
         add(inpTime)
+        c.gridx++
+        add(JLabel("Uhr."))
     }
 
-    fun readDateTime(): DateTime? {
-        val date = inpDate.selectedDate() ?: return null
-        val time = inpTime.text.parseDateTimeWithoutSeconds()
+    fun readDateTime(): DateTime {
+        val date = inpDate.selectedDate()!!
+        val time = inpTime.selectedItemTyped.delegate
         return date
                 .withHourOfDay(time.hourOfDay)
                 .withMinuteOfHour(time.minuteOfHour)
                 .clearSeconds()
+    }
+
+    fun writeDateTime(value: DateTime) {
+        inpDate.changeDate(value)
+        inpTime.selectedItemTyped = LabeledDateTime(value)
     }
 }

@@ -1,11 +1,15 @@
 package at.cpickl.gadsu.view.components.inputs
 
+import at.cpickl.gadsu.view.components.MyListCellRenderer
+import org.slf4j.LoggerFactory
+import java.awt.Color
 import java.awt.Component
 import java.util.Vector
 import javax.swing.JComboBox
 import javax.swing.JLabel
 import javax.swing.JList
 import javax.swing.ListCellRenderer
+import javax.swing.UIManager
 
 
 interface Labeled {
@@ -14,6 +18,8 @@ interface Labeled {
 
 
 open class MyComboBox<T : Labeled>(data: List<T>, initValue: T) : JComboBox<T>(Vector(data)) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     init {
         assert(data.contains(initValue))
@@ -25,7 +31,13 @@ open class MyComboBox<T : Labeled>(data: List<T>, initValue: T) : JComboBox<T>(V
     @Suppress("UNCHECKED_CAST")
     var selectedItemTyped: T
         get() = selectedItem as T
-        set(value) { selectedItem = value }
+        set(value) {
+            selectedItem = value
+            if (!selectedItem.equals(value)) {
+                log.warn("Seems as you requested to select an item ({}) which was not contained in this combo box model: {}",
+                        value, model)
+            }
+        }
 
     //    fun setLabeledCellRenderer(): MyComboBox<T> {
     //        setRenderer(LabeledCellRenderer(getRenderer()))
@@ -42,7 +54,22 @@ class LabeledCellRenderer<L : Labeled>(private val original: ListCellRenderer<in
             list: JList<out L>, value: L, index: Int,
             isSelected: Boolean, cellHasFocus: Boolean): Component? {
         val rendering = original.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
-        (rendering as JLabel).text = value.label
+        val label = rendering as JLabel
+        label.text = value.label
+//        println("value=$value, index=$index, isSelected=$isSelected, focus=$cellHasFocus")
+
+        // alternate row background
+        if (isSelected) {
+            label.isOpaque = true
+            label.background = UIManager.getColor("List.selectionBackground")
+        } else {
+            label.isOpaque = true
+            if (index % 2 == 1) {
+                label.background = MyListCellRenderer.ALTERNATE_BG_COLOR
+            } else {
+                label.background = Color.WHITE
+            }
+        }
         return rendering
     }
 }

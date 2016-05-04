@@ -47,7 +47,7 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
 
 abstract class MyListCellRenderer<T> : ListCellRenderer<T> {
     companion object {
-        private val ALTERNATE_BG_COLOR = Colors.LIGHT_GRAY
+        val ALTERNATE_BG_COLOR = Colors.LIGHT_GRAY
     }
 
     protected abstract fun newCell(value: T): CellView

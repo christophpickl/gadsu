@@ -1,9 +1,10 @@
 package at.cpickl.gadsu.development
 
+import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
@@ -19,22 +20,22 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.service.forTreatment
 import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.parseDateTime
+import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
-import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 
 @Logged
 @Suppress("UNUSED_PARAMETER")
 open class DevelopmentController @Inject constructor(
-        private val clientRepo: ClientRepository,
         private val clientService: ClientService,
-        private val treatmentRepo: TreatmentRepository,
+        private val treatmentService: TreatmentService,
         private val bus: EventBus,
         private val mainFrame: MainFrame,
         private val currentClient: CurrentClient,
@@ -91,35 +92,40 @@ open class DevelopmentController @Inject constructor(
             val saved = clientService.insertOrUpdate(it)
 
             if (saved.firstName.equals("Max")) {
+                val firstDate = "31.12.2001 14:15:00".parseDateTime()
                 val clientId = saved.id!!
                 arrayOf(
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 1,
-                                date = DateTime.now(),
-                                note = "my note for treatment 1 for maxiiii"
+                                date = firstDate,
+                                duration = minutes(20),
+                                aboutClient = "Ihm gings ganz ganz schlecht.",
+                                aboutTreatment = "Den Herzmeridian hab ich behandelt.",
+                                aboutHomework = "Er soll mehr sport machen, eh kloa. Und weniger knoblauch essen!",
+                                note = "Aja, und der kommentar passt sonst nirgends rein ;)"
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 2,
-                                date = DateTime.now().plusDays(1),
+                                date = firstDate.plusWeeks(1),
                                 note = ""
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 3,
-                                date = DateTime.now().plusDays(3),
+                                date = firstDate.plusWeeks(2),
                                 note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. "
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 4,
-                                date = DateTime.now().plusDays(4).plusMinutes(15),
+                                date = firstDate.plusWeeks(3),
                                 duration = minutes(30),
-                                note = "Was a quick one "
+                                note = "Was a quick one"
                         )
                 ).forEach {
-                    treatmentRepo.insert(it)
+                    treatmentService.insert(it)
                     bus.post(TreatmentCreatedEvent(it))
                 }
             }
@@ -128,6 +134,14 @@ open class DevelopmentController @Inject constructor(
 
     @Subscribe open fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {
         deleteAll()
+    }
+
+    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
+        val max = clientService.findAll().first { it.firstName == "Max" }
+        bus.post(ClientSelectedEvent(max, null))
+//        currentClient.data = max
+        val treatment = treatmentService.findAllFor(max).first { it.number == 1 }
+        bus.post(OpenTreatmentEvent(treatment))
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {

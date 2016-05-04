@@ -17,7 +17,7 @@ data class Treatment(
         val created: DateTime,
         val number: Int,
         val date: DateTime,
-        val duration: Duration,
+        val duration: Duration, // in minutes
         val aboutClient: String,
         val aboutTreatment: String,
         val aboutHomework: String,
@@ -36,6 +36,9 @@ data class Treatment(
                             date: DateTime,
                             duration: Duration = DEFAULT_DURATION,
                             created: DateTime = DUMMY_CREATED, // created will be overridden anyway
+                            aboutClient: String = "",
+                            aboutTreatment: String = "",
+                            aboutHomework: String = "",
                             note: String = ""
         ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
@@ -46,9 +49,9 @@ data class Treatment(
                     number,
                     date.clearSeconds(),
                     duration,
-                    "",
-                    "",
-                    "",
+                    aboutClient,
+                    aboutTreatment,
+                    aboutHomework,
                     note)
         }
     }

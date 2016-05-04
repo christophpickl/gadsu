@@ -1,9 +1,11 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
+import at.cpickl.gadsu.view.components.inputs.DateAndTimePicker
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
 import at.cpickl.gadsu.view.components.inputs.MyDatePicker
+import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
@@ -68,6 +70,22 @@ class ElTextArea<V>(
     override fun toComponent() = this.scrolled()
 }
 
+class ElNumberField<V>(
+        override val formLabel: String,
+        private val extractValue: (V) -> Int,
+        viewName: String,
+        columns: Int = 100
+) : NumberField(columns), ElField<V> {
+    init {
+        name = viewName
+    }
+    override fun isModified(value: V) = _isModified(numberValue, extractValue, value)
+    override fun updateValue(value: V) {
+        numberValue = extractValue(value)
+    }
+    override fun toComponent() = this
+}
+
 class ElComboBox<V, T : Labeled>(
         private val delegate: MyComboBox<T>,
         override val formLabel: String,
@@ -101,6 +119,23 @@ class ElDatePicker<V>(
         delegate.hidePopup()
     }
 }
+class ElDateAndTimePicker<V>(
+        private val delegate: DateAndTimePicker,
+        override val formLabel: String,
+        private val extractValue: (V) -> DateTime
+) : ElField<V> {
+    var selectedDate: DateTime
+        get() = delegate.readDateTime()
+        set(value) = delegate.writeDateTime(value)
+
+    override fun isModified(value: V) = _isModified(selectedDate, extractValue, value)
+    override fun updateValue(value: V) { selectedDate = extractValue(value) }
+    override fun toComponent() = delegate
+    fun hidePopup() {
+        delegate.inpDate.hidePopup()
+    }
+}
+
 
 class Fields<V>(private val modifications: ModificationChecker) {
 
@@ -115,6 +150,12 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
+    fun newMinutesField(label: String, extractValue: (V) -> Int, viewName: String, columns: Int = 100): ElNumberField<V> {
+        val field = ElNumberField(label, extractValue, viewName, columns)
+        modifications.enableChangeListener(field)
+        fields.add(field)
+        return field
+    }
     fun newTextArea(label: String, extractValue: (V) -> String, viewName: String): ElTextArea<V> {
         val field = ElTextArea(label, extractValue, viewName)
         modifications.enableChangeListener(field)
@@ -138,6 +179,17 @@ class Fields<V>(private val modifications: ModificationChecker) {
         fields.add(field)
         return field
     }
+
+    fun newDateAndTimePicker(label: String, initDate: DateTime, extractValue: (V) -> DateTime, viewNamePrefix: String,
+                             dateFieldAlignment: Int = JTextField.LEFT): ElDateAndTimePicker<V> {
+        val realField = DateAndTimePicker(initDate, viewNamePrefix, dateFieldAlignment)
+        val field = ElDateAndTimePicker(realField, label, extractValue)
+        modifications.enableChangeListener(realField.inpDate)
+        modifications.enableChangeListener(realField.inpTime)
+        fields.add(field)
+        return field
+    }
+
 
     fun register(field: ElFieldForProps<V>) {
         field.enableFor(modifications)

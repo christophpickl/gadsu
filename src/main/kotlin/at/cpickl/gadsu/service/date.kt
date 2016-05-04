@@ -28,8 +28,13 @@ fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
 fun DateTime.clearTime() = this.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
 
-fun String.parseDateTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
-
+fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
+/**
+ * Format: "dd.MM.yyyy HH:mm:ss"
+ *
+ * Eg: "31.12.2001 14:21:42"
+ */
+fun String.parseDateTime() = DateFormats.DATE_TIME.parseDateTime(this)
 
 // --------------------------------------------------------------------------- clock
 

@@ -22,6 +22,7 @@ import javax.swing.JButton
 import javax.swing.JFormattedTextField
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JTextField
 
 
 //<editor-fold desc="main">
@@ -52,7 +53,8 @@ fun main(args: Array<String>) {
 class MyDatePicker(viewNamePrefix: String,
                    panel: JDatePanelImpl,
                    val model: UtilDateModel,
-                   formatter: JFormattedTextField.AbstractFormatter) :
+                   formatter: JFormattedTextField.AbstractFormatter,
+                   textFieldAlignment: Int = JTextField.LEFT) :
         JDatePickerImpl(panel, formatter) {
     companion object {
 
@@ -75,7 +77,7 @@ class MyDatePicker(viewNamePrefix: String,
             LABELS.setProperty("text.year", "Jahr")
         }
 
-        fun build(initDate: DateTime?, viewNamePrefix: String): MyDatePicker {
+        fun build(initDate: DateTime?, viewNamePrefix: String, textFieldAlignment: Int = JTextField.LEFT): MyDatePicker {
             log.trace("build(initDate={}, ..)", initDate)
 
             val model = UtilDateModel()
@@ -86,7 +88,7 @@ class MyDatePicker(viewNamePrefix: String,
             }
             val panel = JDatePanelImpl(model, LABELS)
             panel.name = viewNamePopupPanel(viewNamePrefix)
-            return MyDatePicker(viewNamePrefix, panel, model, DatePickerFormatter())
+            return MyDatePicker(viewNamePrefix, panel, model, DatePickerFormatter(), textFieldAlignment)
         }
     }
 
@@ -103,13 +105,10 @@ class MyDatePicker(viewNamePrefix: String,
         val pickerClassName = pickerClass.name
         val panelClass = JDatePanelImpl::class.java
         val panelClassName = panelClass.name
-//        val fieldRef = implClazz.getDeclaredField("internalEventHandler")
-//        fieldRef.isAccessible = true
-//        val field = fieldRef.get(thiz) as ActionListener
-//
-//        val buttonRef = implClazz.getDeclaredField("button")
-//        buttonRef.isAccessible = true
-//        val button = buttonRef.get(thiz) as JButton
+
+        val dateTextField = reflectivelyGetFieldAs<JFormattedTextField>(pickerClassName, thiz, "formattedTextField")
+        dateTextField.columns = 6
+        dateTextField.horizontalAlignment = textFieldAlignment
 
         val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")
 

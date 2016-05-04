@@ -56,8 +56,12 @@ object TreatmentViewNames {
     val BackButton = "Treatment.BackButton"
     val SaveButton = "Treatment.SaveButton"
     val ListInClientView = "Treatment.ListInClientView"
-    val InputNote = "Treatment.InputNote"
     val InputDatePrefix = "Treatment.InputDatePrefix" // will be added something like ".XXX"
+    val InputDuration = "Treatment.Duration"
+    val InputAboutClient = "Treatment.InpuAboutClient"
+    val InputAboutTreatment = "Treatment.InpuAboutTreatment"
+    val InputAboutHomework = "Treatment.InpuAboutHomework"
+    val InputNote = "Treatment.InputNote"
 
 }
 object AcupunctViewNames {
