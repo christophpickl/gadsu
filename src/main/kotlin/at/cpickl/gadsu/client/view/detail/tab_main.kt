@@ -69,7 +69,7 @@ class ClientTabMain(
     val inpZipCode = fields.newTextField("PLZ", {it.contact.zipCode}, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
 
-    // note label will actually not be used
+    // the label will not be used as we are placing it directly in a panel, rather than a FormPanel
     val inpNote = fields.newTextArea("NOT USED", {it.note}, ViewNames.Client.InputNote)
 
 

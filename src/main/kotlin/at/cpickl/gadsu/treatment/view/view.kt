@@ -86,7 +86,7 @@ class SwingTreatmentView @Inject constructor(
     private val inpAboutClient = fields.newTextArea("Feedback Klient", { it.aboutClient }, ViewNames.Treatment.InputAboutClient)
     private val inpAboutTreatment = fields.newTextArea("Mein Feedback", { it.aboutTreatment }, ViewNames.Treatment.InputAboutTreatment)
     private val inpAboutHomework = fields.newTextArea("Hausaufgabe", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Treatment.InputNote)
+    private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
     init {
         if (treatment.yetPersisted) {
@@ -192,6 +192,7 @@ class SwingTreatmentView @Inject constructor(
             addFormInput(inpAboutClient)
             addFormInput(inpAboutTreatment)
             addFormInput(inpAboutHomework)
+            addFormInput(inpNote)
         }
         return panel
     }

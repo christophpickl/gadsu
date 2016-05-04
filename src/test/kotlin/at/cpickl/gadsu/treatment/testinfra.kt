@@ -6,13 +6,13 @@ import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.TEST_DATETIME1
-import at.cpickl.gadsu.testinfra.TEST_DATETIME1_WITHOUT_SECONDS
+import at.cpickl.gadsu.testinfra.TEST_DATETIME_FOR_TREATMENT_DATE
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 
 
 @Suppress("UNUSED")
 fun Treatment.Companion.unsavedValidInstance(clientId: String) =
-        Treatment(null, clientId, TEST_DATETIME1, 1, TEST_DATETIME1_WITHOUT_SECONDS, minutes(60), "note")
+        Treatment(null, clientId, TEST_DATETIME1, 1, TEST_DATETIME_FOR_TREATMENT_DATE, minutes(60), "", "", "", "note")
 
 
 fun Treatment.Companion.unsavedValidInstance(client: Client) =
