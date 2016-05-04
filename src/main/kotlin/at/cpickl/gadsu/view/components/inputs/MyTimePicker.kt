@@ -1,26 +1,9 @@
 package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.parseTimeWithoutSeconds
+import at.cpickl.gadsu.service.timesLabeledList
 import org.joda.time.DateTime
 
-
-fun main(args: Array<String>) {
-    println(timesList().map { it.formatTimeWithoutSeconds() }.joinToString("\n"))
-}
-
-private fun timesList(): List<DateTime> {
-    var current = "00:00".parseTimeWithoutSeconds()
-    return 0.rangeTo(24 * 4 - 1).map {
-        val result = current
-        current = current.plusMinutes(15)
-        result
-    }
-}
-
-private fun mapThisShit(): List<LabeledDateTime> {
-    return timesList().map { LabeledDateTime(it) }.toList()
-}
 
 class LabeledDateTime(val delegate: DateTime) : Labeled {
     override val label: String = delegate.formatTimeWithoutSeconds()
@@ -41,7 +24,7 @@ class LabeledDateTime(val delegate: DateTime) : Labeled {
 
 }
 
-class MyTimePicker(initValue: DateTime) : MyComboBox<LabeledDateTime>(mapThisShit(), LabeledDateTime(initValue)) {
+class MyTimePicker(initValue: DateTime) : MyComboBox<LabeledDateTime>(timesLabeledList(), LabeledDateTime(initValue)) {
     init {
         maximumRowCount = 20
     }

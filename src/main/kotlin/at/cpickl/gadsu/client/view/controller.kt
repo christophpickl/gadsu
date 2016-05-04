@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientDeletedEvent
@@ -24,6 +23,9 @@ import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
+import at.cpickl.gadsu.view.logic.ChangeBehaviour
+import at.cpickl.gadsu.view.logic.ChangesChecker
+import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
 import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -43,6 +45,11 @@ open class ClientViewController @Inject constructor(
 
     private val log = LOG(javaClass)
 
+    private val changesChecker = ChangesChecker(dialogs, object : ChangesCheckerCallback {
+        override fun isModified() = view.detailView.isModified()
+        override fun save() = saveClient(view.detailView.readClient())
+    })
+
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         view.masterView.initClients(clientService.findAll())
         bus.post(ChangeMainContentEvent(view))
@@ -50,7 +57,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
-        if (checkChanges() === ChangeBehaviour.ABORT) {
+        if (changesChecker.checkChanges() === ChangeBehaviour.ABORT) {
             return
         }
 
@@ -88,7 +95,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        if (checkChanges() === ChangeBehaviour.ABORT) {
+        if (changesChecker.checkChanges() === ChangeBehaviour.ABORT) {
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
         }
@@ -133,30 +140,6 @@ open class ClientViewController @Inject constructor(
         }
     }
 
-    fun checkChanges(): ChangeBehaviour {
-        if (!view.detailView.isModified()) {
-            return ChangeBehaviour.CONTINUE
-        }
-        log.debug("Changes detected.")
-
-        val result = dialogs.show("Ungespeicherte \u00c4nderungen", "Es existieren ungespeicherte \u00c4nderungen. Wie w\u00fcnscht du mit diesen umzugehen?",
-                arrayOf("Speichern", "\u00c4nderungen verwerfen", "Abbrechen"), type = DialogType.WARN)
-
-        when (result) {
-            "Speichern" -> {
-                saveClient(view.detailView.readClient())
-                // it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
-                return ChangeBehaviour.ABORT
-            }
-            "\u00c4nderungen verwerfen" -> {
-                return ChangeBehaviour.CONTINUE
-            }
-            "Abbrechen", null -> {
-                return ChangeBehaviour.ABORT
-            }
-            else -> throw GadsuException("Unhandled dialog option: '$result'")
-        }
-    }
 
     private fun saveClient(client: Client) {
         log.trace("saveClient(client={})", client)
@@ -174,9 +157,7 @@ open class ClientViewController @Inject constructor(
         clientService.insertOrUpdate(client)
     }
 
-}
-
-enum class ChangeBehaviour {
-    CONTINUE,
-    ABORT
+    fun checkChanges(): ChangeBehaviour {
+        return changesChecker.checkChanges()
+    }
 }

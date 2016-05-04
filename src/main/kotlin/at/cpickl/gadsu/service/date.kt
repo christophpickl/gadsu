@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.view.components.inputs.LabeledDateTime
 import at.cpickl.gadsu.view.language.Languages
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -17,6 +18,23 @@ class DateFormats {
     }
 }
 
+// --------------------------------------------------------------------------- time
+
+fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
+
+//    println(timesList().map { it.formatTimeWithoutSeconds() }.joinToString("\n"))
+fun timesList(): List<DateTime> {
+    var current = "00:00".parseTimeWithoutSeconds()
+    return 0.rangeTo(24 * 4 - 1).map {
+        val result = current
+        current = current.plusMinutes(15)
+        result
+    }
+}
+
+fun timesLabeledList(): List<LabeledDateTime> {
+    return timesList().map { LabeledDateTime(it) }.toList()
+}
 
 // --------------------------------------------------------------------------- extension methods
 
@@ -26,7 +44,8 @@ fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 
 fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
-fun DateTime.clearTime() = this.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
+fun DateTime.clearTime() = this.withHourOfDay(0).clearMinutes()
 
 fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
 /**

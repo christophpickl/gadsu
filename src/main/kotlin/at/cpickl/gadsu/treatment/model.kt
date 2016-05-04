@@ -4,7 +4,9 @@ import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.Persistable
+import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.clearSeconds
+import at.cpickl.gadsu.service.isQuarterMinute
 import at.cpickl.gadsu.service.minutes
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
@@ -24,6 +26,15 @@ data class Treatment(
         val note: String
 ) :
         Comparable<Treatment>, HasId, Persistable {
+
+    init {
+        if (!date.equals(date.clearSeconds())) {
+            throw GadsuException("Internal state violation: Treatment.date must not have seconds or milliseconds set! Was: $date")
+        }
+        if (!date.minuteOfHour.isQuarterMinute()) {
+            throw GadsuException("Internal state violation: Treatment.date must have a quarter minute but was: ${date.minuteOfHour}!")
+        }
+    }
 
     companion object {
 
@@ -47,7 +58,7 @@ data class Treatment(
                     clientId,
                     created,
                     number,
-                    date.clearSeconds(),
+                    date.clearMinutes(),
                     duration,
                     aboutClient,
                     aboutTreatment,
@@ -57,13 +68,6 @@ data class Treatment(
     }
     val idComparator: (Treatment) -> Boolean
         get() = { that -> this.id.equals(that.id) }
-
-    init {
-        if (!date.equals(date.clearSeconds())) {
-            throw GadsuException("Internal state violation: Treatment.date must not have seconds or milliseconds set!")
-        }
-    }
-
 
 
     override val yetPersisted: Boolean

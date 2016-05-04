@@ -2,10 +2,10 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.client.view.ChangeBehaviour
 import at.cpickl.gadsu.client.view.ClientViewController
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.view.logic.ChangeBehaviour
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -30,6 +30,7 @@ open class MainFrameController @Inject constructor(
             log.debug("Quit aborted by changes detected by the client controller.")
             return
         }
+        // MINOR also check for changes in treatment controller
 
         prefs.windowDescriptor = frame.descriptor
         frame.close()
