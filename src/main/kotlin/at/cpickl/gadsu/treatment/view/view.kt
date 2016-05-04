@@ -25,6 +25,7 @@ import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JLabel
@@ -35,12 +36,12 @@ import javax.swing.JTextArea
 fun main(args: Array<String>) {
     GadsuSystemPropertyKeys.development.spWriteTrue()
 
-    val client = Client.INSERT_PROTOTYPE.copy(id = "myId")
+    val client = Client.INSERT_PROTOTYPE.copy(id = "myId", firstName = "Anna", lastName = "Nym")
     val treatment = Treatment.insertPrototype(client.id!!, 1, DateTime.now())
 
     Framed.showWithContext({ context ->
         SwingTreatmentView(context.swing, client, treatment)
-    })
+    }, size = Dimension(800, 600))
 }
 
 interface TreatmentView : ModificationAware, MainContent {
@@ -140,6 +141,9 @@ class SwingTreatmentView @Inject constructor(
                 treatment.number,
                 inpDate.readDateTime()!!,
                 treatment.duration, // FIXME update by some input
+                treatment.aboutClient,
+                treatment.aboutTreatment,
+                treatment.aboutHomework,
                 inpNote.text
         )
     }

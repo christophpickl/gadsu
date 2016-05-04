@@ -18,6 +18,9 @@ data class Treatment(
         val number: Int,
         val date: DateTime,
         val duration: Duration,
+        val aboutClient: String,
+        val aboutTreatment: String,
+        val aboutHomework: String,
         val note: String
 ) :
         Comparable<Treatment>, HasId, Persistable {
@@ -43,6 +46,9 @@ data class Treatment(
                     number,
                     date.clearSeconds(),
                     duration,
+                    "",
+                    "",
+                    "",
                     note)
         }
     }

@@ -57,8 +57,9 @@ class TreatmentJdbcRepository @Inject constructor(
             throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
         }
 
-        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, durationInMin, note) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.duration.toMinutes(), treatment.note)
+        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, durationInMin, aboutClient, aboutTreatment, aboutHomework, note) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.duration.toMinutes(),
+                treatment.aboutClient, treatment.aboutTreatment, treatment.aboutHomework, treatment.note)
         return treatment.copy(id = newId)
     }
 
@@ -120,6 +121,9 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 rs.getInt("number"),
                 DateTime(rs.getTimestamp("date")),
                 minutes(rs.getInt("durationInMin")),
+                rs.getString("aboutClient"),
+                rs.getString("aboutTreatment"),
+                rs.getString("aboutHomework"),
                 rs.getString("note")
         )
     }

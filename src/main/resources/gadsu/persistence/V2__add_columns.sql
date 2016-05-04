@@ -1,2 +1,7 @@
 
-ALTER TABLE treatment ADD COLUMN durationInMin INT NOT NULL
+ALTER TABLE treatment ADD (
+  COLUMN durationInMin INT NOT NULL,
+  COLUMN aboutClient VARCHAR(1024) NOT NULL,
+  COLUMN aboutTreatment VARCHAR(1024) NOT NULL,
+  COLUMN aboutHomework VARCHAR(1024) NOT NULL
+)

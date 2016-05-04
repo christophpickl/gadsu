@@ -6,7 +6,7 @@ import javax.swing.border.TitledBorder
 
 
 fun JPanel.titledBorder(title: String) {
-    border = BorderFactory.createTitledBorder(null, title, TitledBorder.CENTER, TitledBorder.TOP)
+    border = BorderFactory.createTitledBorder(null, title, TitledBorder.LEFT, TitledBorder.ABOVE_TOP)
 }
 
 fun JPanel.transparent(): JPanel {
