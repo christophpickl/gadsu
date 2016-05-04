@@ -33,6 +33,7 @@ class GadsuStarter {
         }
 
         val app = guice.getInstance(GadsuGuiceStarter::class.java)
+        GlobalExceptionHandler.mainFrame = guice.getInstance(MainFrame::class.java).asJFrame()
 
         app.start()
     }

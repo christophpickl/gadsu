@@ -53,4 +53,9 @@ open class SwingWebPageOpener : WebPageOpener {
         desktop!!.browse(url.toURI())
     }
 
+    fun silentlyTryToOpen(url: URL) {
+        if (isSupported) {
+            desktop!!.browse(url.toURI())
+        }
+    }
 }

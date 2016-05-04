@@ -18,6 +18,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
+val GADSU_LOG_FILE = File(GADSU_DIRECTORY, "gadsu.log")
+
 abstract class BaseLogConfigurator {
 
     protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
@@ -124,7 +126,7 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
 
             }
             logger.addAppender(fileAppender("Gadsu-FileAppender",
-                    File(GADSU_DIRECTORY, "gadsu.log").absolutePath,
+                    GADSU_LOG_FILE.absolutePath,
                     File(GADSU_DIRECTORY, "gadsu-%d{yyyy_MM_dd}.log.zip").absolutePath
             ))
         }

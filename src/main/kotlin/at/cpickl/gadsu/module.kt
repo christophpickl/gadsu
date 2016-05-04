@@ -36,8 +36,9 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
     private fun configureEventBus() {
         val bus = EventBus({ exception, context ->
-            log.error("Uncaught exception in event bus! context=$context", exception)
-            throw GadsuException("Some internal error occured!", exception) // TODO @EXCEPTION - this does not get propagated to the global exception handler!
+
+            log.error("Context: event={}, subscriber={}, method={}", context.event, context.subscriber, context.subscriberMethod)
+            GlobalExceptionHandler.showDialogAndDie(exception)
         })
 
         bind(EventBus::class.java).toInstance(bus)

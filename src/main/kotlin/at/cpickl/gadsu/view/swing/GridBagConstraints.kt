@@ -8,3 +8,8 @@ fun GridBagConstraints.fatComponent() {
     weightx = 1.0
     weighty = 1.0
 }
+
+fun GridBagConstraints.weightxy(value: Double) {
+    weightx = value
+    weighty = value
+}

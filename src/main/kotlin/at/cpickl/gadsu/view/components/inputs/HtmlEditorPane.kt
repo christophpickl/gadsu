@@ -6,13 +6,14 @@ import javax.swing.JLabel
 import javax.swing.event.HyperlinkEvent
 
 
-class HtmlEditorPane : JEditorPane() {
+class HtmlEditorPane(initText: String = "") : JEditorPane() {
     init {
         contentType = "text/html"
         putClientProperty(HONOR_DISPLAY_PROPERTIES, true);
         isEditable = false
         isOpaque = false
         // isEnabled = false // dont do this!
+        text = initText
     }
 
     fun addOnUrlClickListener(listener: (URL) -> Unit) {

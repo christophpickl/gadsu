@@ -6,6 +6,7 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.isTransparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe

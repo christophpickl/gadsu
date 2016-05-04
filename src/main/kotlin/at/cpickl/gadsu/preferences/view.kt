@@ -4,6 +4,7 @@ import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.panels.FormPanel
+import at.cpickl.gadsu.view.swing.addCloseListener
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
