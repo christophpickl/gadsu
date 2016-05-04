@@ -4,7 +4,6 @@ import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
@@ -21,7 +20,6 @@ import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.service.forTreatment
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime
-import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentService
@@ -137,11 +135,10 @@ open class DevelopmentController @Inject constructor(
     }
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        val max = clientService.findAll().first { it.firstName == "Max" }
-        bus.post(ClientSelectedEvent(max, null))
-//        currentClient.data = max
-        val treatment = treatmentService.findAllFor(max).first { it.number == 1 }
-        bus.post(OpenTreatmentEvent(treatment))
+//        val max = clientService.findAll().first { it.firstName == "Max" }
+//        bus.post(ClientSelectedEvent(max, null))
+//        val treatment = treatmentService.findAllFor(max).first { it.number == 1 }
+//        bus.post(OpenTreatmentEvent(treatment))
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {

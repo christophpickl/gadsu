@@ -7,7 +7,10 @@ import at.cpickl.gadsu.view.components.inputs.MyComboBox
 import at.cpickl.gadsu.view.components.inputs.MyDatePicker
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.FormPanel
+import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
+import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_SHORT
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.scrolled
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -47,6 +50,7 @@ class ElTextField<V>(
 
     init {
         name = viewName
+        enforceMaxCharacters(MAX_FIELDLENGTH_SHORT)
     }
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
@@ -63,6 +67,8 @@ class ElTextArea<V>(
     init {
         name = viewName
         lineWrap = true
+//        wrapStyleWord = true
+        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
     }
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
