@@ -102,7 +102,7 @@ class ClientTabMain(
             addFormInput(inpCity)
         }
         // this is nearly the same, as the min width of the baseForm (135 for the textfield column, and some more for the label width)
-        contactForm.enforceWidth(235)
+        contactForm.enforceWidth(200)
 
         c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST

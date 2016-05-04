@@ -6,6 +6,7 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.swing.isTransparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
@@ -53,16 +54,18 @@ open class SwingMainFrame @Inject constructor(
     private var _descriptor: WindowDescriptor? = null
 
     init {
-//        background = Color.RED
+
         container.name = ViewNames.Main.ContainerPanel
         container.border = BORDER_GAP
         container.debugColor = Color.CYAN
+        container.isTransparent = true
         container.layout = BorderLayout()
 
         jMenuBar = gadsuMenuBar
         addCloseListener { bus.post(QuitEvent()) }
 
         contentPane.name = ViewNames.Main.ContentPanel
+//        contentPane.background = Color.RED
         contentPane.layout = BorderLayout()
         contentPane.add(container, BorderLayout.CENTER)
     }

@@ -100,6 +100,7 @@ var JComponent.debugColor: Color?
     get() = null
     set(value) {
         if (Development.COLOR_ENABLED) {
+            isOpaque = true
             background = value
         }
     }

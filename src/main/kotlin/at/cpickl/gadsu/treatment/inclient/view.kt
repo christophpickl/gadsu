@@ -10,6 +10,7 @@ import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -43,6 +44,7 @@ class TreatmentsInClientView @Inject constructor(
 
     init {
         debugColor = Color.RED
+        transparent()
         enforceWidth(250)
         layout = BorderLayout()
         newTreatmentButton.isEnabled = false // disabled by default at startup

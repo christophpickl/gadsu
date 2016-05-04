@@ -18,6 +18,7 @@ import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.changeSize
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
@@ -54,7 +55,6 @@ open class SwingClientDetailView @Inject constructor(
     private val log = LOG(javaClass)
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
-
     private val btnCancel = JButton("Abbrechen")
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
@@ -112,6 +112,7 @@ open class SwingClientDetailView @Inject constructor(
 
     private fun createButtonPanel(): JPanel {
         val buttonPanel = JPanel(BorderLayout())
+        buttonPanel.transparent()
         buttonPanel.debugColor = Color.BLUE
         buttonPanel.add(btnSave, BorderLayout.WEST)
         buttonPanel.add(btnCancel, BorderLayout.EAST)

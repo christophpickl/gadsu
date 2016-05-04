@@ -11,6 +11,7 @@ import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -55,7 +56,7 @@ class ClientTabTcm(
         c.gridx++
         c.weightx = 1.0
         c.fill = GridBagConstraints.BOTH
-        add(JPanel()) // ui hack ;)
+        add(JPanel().transparent()) // ui hack ;)
     }
 
     override fun isModified(client: Client): Boolean {

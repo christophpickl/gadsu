@@ -4,6 +4,7 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.swing.transparent
 import org.jdatepicker.impl.JDatePanelImpl
 import org.jdatepicker.impl.JDatePickerImpl
 import org.jdatepicker.impl.UtilDateModel
@@ -95,6 +96,7 @@ class MyDatePicker(viewNamePrefix: String,
 
     init {
         name = viewNamePickerPanel(viewNamePrefix)
+        transparent()
         val thiz = this
 
         val pickerClass = JDatePickerImpl::class.java

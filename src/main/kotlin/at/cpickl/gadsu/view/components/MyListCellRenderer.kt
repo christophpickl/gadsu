@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Color
 import java.awt.Component
@@ -23,6 +25,7 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
     protected abstract val applicableForegrounds: Array<JComponent>
 
     init {
+        opaque()
         border = BorderFactory.createEmptyBorder(5, 5, 5, 5)
     }
 
@@ -44,7 +47,7 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
 
 abstract class MyListCellRenderer<T> : ListCellRenderer<T> {
     companion object {
-        private val ALTERNATE_BG_COLOR = Color.decode("#F2F2F2")
+        private val ALTERNATE_BG_COLOR = Colors.LIGHT_GRAY
     }
 
     protected abstract fun newCell(value: T): CellView
