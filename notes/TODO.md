@@ -1,5 +1,17 @@
 
+bug, wenn aenderung verwerfen, treatment list ist leer!
 
+
+investigate: custom hamcrest matcher for kotlin
+
+
+!! xprop list left aligned
+!! @UI: alternating BG colors
+
+- client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
+   - auch so beim namen?
+
+- when tracing in SqlJdbcX, then avoid linefeeds in log output
   
 T-O-D-O
 ============================================================

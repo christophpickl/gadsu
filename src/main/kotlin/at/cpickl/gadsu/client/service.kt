@@ -46,26 +46,10 @@ class ClientServiceImpl @Inject constructor(
 
     override fun insertOrUpdate(client: Client): Client {
         log.info("insertOrUpdate(client={})", client)
-
-        if (client.yetPersisted) {
-            jdbcx.transactionSafe {
-                clientRepo.updateWithoutPicture(client)
-                // TODO @REFACTOR - the xpropsService call is duplicate from insert
-                xpropsService.update(client)
-            }
-
-            val dispatchClient: Client
-            if (client.picture.isUnsavedDefaultPicture) {
-                // if showing the default picture, check the gender which might have been updated and set new default image
-                dispatchClient = client.copy(picture = client.gender.defaultImage)
-            } else {
-                dispatchClient = client
-            }
-            bus.post(ClientUpdatedEvent(dispatchClient))
-            return dispatchClient
+        if (!client.yetPersisted) {
+            return insertClient(client)
         }
-
-        return insertClient(client)
+        return updateClient(client)
     }
 
     private fun insertClient(client: Client): Client {
@@ -85,6 +69,23 @@ class ClientServiceImpl @Inject constructor(
         log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
         bus.post(ClientCreatedEvent(savedClient))
         return savedClient
+    }
+
+    private fun updateClient(client: Client): Client {
+        jdbcx.transactionSafe {
+            clientRepo.updateWithoutPicture(client)
+            xpropsService.update(client)
+        }
+
+        val dispatchClient: Client
+        if (client.picture.isUnsavedDefaultPicture) {
+            // if showing the default picture, check the gender which might have been updated and set new default image
+            dispatchClient = client.copy(picture = client.gender.defaultImage)
+        } else {
+            dispatchClient = client
+        }
+        bus.post(ClientUpdatedEvent(dispatchClient))
+        return dispatchClient
     }
 
     override fun savePicture(client: Client) {
