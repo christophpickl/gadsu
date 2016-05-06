@@ -8,7 +8,7 @@ import java.util.prefs.Preferences
 
 
 interface Prefs {
-    var preferencesData: PreferencesData?
+    var preferencesData: PreferencesData
 
     var windowDescriptor: WindowDescriptor?
     var clientPictureDefaultFolder: File
@@ -20,6 +20,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
     companion object {
 
         private val KEY_USERNAME = "USERNAME"
+        private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
+
         private val KEY_WINDOW_X = "WINDOW_X"
 
         private val KEY_WINDOW_Y = "WINDOW_Y"
@@ -40,25 +42,21 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             return _preferences!!
         }
 
-    override var preferencesData: PreferencesData?
+    override var preferencesData: PreferencesData
         get() {
             log.trace("get preferencesData()")
             val username = preferences.get(KEY_USERNAME, null)
             if (username === null) { // just check one of them is enough
-                return null
+                return PreferencesData.DEFAULT
             }
+            val checkUpdates = preferences.get(KEY_CHECK_UPDATES, null).toBoolean()
 
-            return PreferencesData(username)
+            return PreferencesData(username, checkUpdates)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
-            if (value === null) {
-                preferences.remove(KEY_USERNAME)
-                preferences.flush()
-                return
-            }
-
             preferences.put(KEY_USERNAME, value.username)
+            preferences.put(KEY_CHECK_UPDATES, value.checkUpdates.toString())
             preferences.flush()
         }
 

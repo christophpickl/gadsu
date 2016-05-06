@@ -9,6 +9,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
+import javax.swing.BorderFactory
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -62,5 +63,8 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
         add(JPanel().transparent()) // some nice UI hack ;)
     }
 
+    fun emptyBorderForDialogs() {
+        border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
+    }
 
 }

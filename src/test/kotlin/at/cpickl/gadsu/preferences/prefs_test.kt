@@ -1,8 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.awt.Dimension
@@ -13,7 +12,7 @@ import java.util.prefs.Preferences
 @Test class JavaPrefsTest {
 
     private val testDescriptor = WindowDescriptor(Point(1, 2), Dimension(300, 400))
-    private val testData = PreferencesData("testUsername")
+    private val testData = PreferencesData("testUsername", true)
     private val testPicFolder = File("testPicFolder/foobar/")
 
     private val prefNode = javaClass
@@ -21,9 +20,10 @@ import java.util.prefs.Preferences
 
     @BeforeMethod
     fun initTestee() {
-        Preferences.userNodeForPackage(prefNode).clear()
+        clearAllPreferences()
         prefs = JavaPrefs(prefNode)
     }
+
 
     //<editor-fold desc="windowDescriptor">
 
@@ -61,8 +61,8 @@ import java.util.prefs.Preferences
 
     //<editor-fold desc="preferencesData">
 
-    fun `preferencesData, null at startup`() {
-        assertThat(prefs.preferencesData, nullValue())
+    fun `preferencesData, default at startup`() {
+        assertDefaultPreferencesData()
     }
 
     fun `preferencesData, set and get sunshine`() {
@@ -70,10 +70,10 @@ import java.util.prefs.Preferences
         assertThat(prefs.preferencesData, equalTo(testData))
     }
 
-    fun `preferencesData, set null will override`() {
+    fun `clearPreferencesData, set null will override to default again`() {
         prefs.preferencesData = testData
-        prefs.preferencesData = null
-        assertThat(prefs.preferencesData, nullValue())
+        clearAllPreferences()
+        assertDefaultPreferencesData()
     }
 
     //</editor-fold>
@@ -82,7 +82,7 @@ import java.util.prefs.Preferences
     //<editor-fold desc="clientPicture">
 
     fun `clientPictureDefaultFolder, get user home directory at startup`() {
-        assertPrefsDefaultPicFolder()
+        assertDefaultPicFolder()
     }
 
     fun `clientPictureDefaultFolder, set and get sunshine`() {
@@ -100,13 +100,22 @@ import java.util.prefs.Preferences
         prefs.clear()
 
         assertThat(prefs.windowDescriptor, nullValue())
-        assertThat(prefs.preferencesData, nullValue())
-        assertPrefsDefaultPicFolder()
+        assertDefaultPreferencesData()
+        assertDefaultPicFolder()
     }
 
 
-    private fun assertPrefsDefaultPicFolder() {
+    private fun assertDefaultPicFolder() {
         assertThat(prefs.clientPictureDefaultFolder, equalTo(File(System.getProperty("user.home"))))
+    }
+
+    private fun assertDefaultPreferencesData() {
+        assertThat(prefs.preferencesData, sameInstance(PreferencesData.DEFAULT))
+    }
+
+
+    private fun clearAllPreferences() {
+        Preferences.userNodeForPackage(prefNode).clear()
     }
 
 }

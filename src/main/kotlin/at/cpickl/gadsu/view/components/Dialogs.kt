@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.view.MainFrame
 import com.google.inject.Inject
+import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 
@@ -21,8 +22,15 @@ class Dialogs @Inject constructor(
      * @param defaultButton if null, the first option of buttonLabels will be used
      * @return the label which was selected or null if user just hit the close button
      */
-    fun show(title: String, message: String, buttonLabels: Array<String>, defaultButton: String? = null, type: DialogType = DialogType.PLAIN): String? {
-        val selected = JOptionPane.showOptionDialog(frame?.asJFrame(), message, title,
+    fun show(title: String,
+             message: String,
+             buttonLabels: Array<String>,
+             defaultButton: String? = null,
+             type: DialogType = DialogType.PLAIN,
+             overrideOwner: JFrame? = null
+    ): String? {
+        // could enable html (<br>) in Dialogs, but would need to rewrite dialog from scratch...
+        val selected = JOptionPane.showOptionDialog(overrideOwner ?: frame?.asJFrame(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])
         if (selected === JOptionPane.CLOSED_OPTION) {
             return null

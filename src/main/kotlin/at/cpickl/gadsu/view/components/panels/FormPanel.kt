@@ -10,7 +10,7 @@ import java.awt.Insets
 import javax.swing.JLabel
 
 
-open class FormPanel : GridPanel() {
+open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST) : GridPanel() {
     private val insetsCol1 = Insets(5, 0, 0, 4) // add a bit to the top, and 4 on the right to create a h-gap
     private val insetsCol2 = Insets(0, 0, 0, 0)
     private val insetsCol2leftIncreased = insetsCol2.increaseLeft(5)
@@ -22,7 +22,7 @@ open class FormPanel : GridPanel() {
     open fun addFormInput(label: String, input: Component, fillType: GridBagFill = GridBagFill.Horizontal) {
         c.weightx = 0.0
         c.fill = GridBagConstraints.NONE
-        c.anchor = GridBagConstraints.NORTHEAST
+        c.anchor = labelAnchor
         c.insets = insetsCol1
         add(JLabel(label).bold())
 

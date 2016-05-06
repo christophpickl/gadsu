@@ -7,10 +7,14 @@ class ShowPreferencesEvent : UserEvent()
 
 class PreferencesWindowClosedEvent : UserEvent()
 
-data class PreferencesData(val username: String) {
+data class PreferencesData(
+        val username: String,
+        val checkUpdates: Boolean
+) {
     companion object {
         val DEFAULT = PreferencesData(
-                username = System.getProperty("user.name")
+                username = System.getProperty("user.name"),
+                checkUpdates = true
         )
     }
 }

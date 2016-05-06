@@ -11,6 +11,7 @@ import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.AopModule
 import at.cpickl.gadsu.service.ServiceModule
 import at.cpickl.gadsu.treatment.TreatmentModule
+import at.cpickl.gadsu.version.VersionModule
 import at.cpickl.gadsu.view.ViewModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
@@ -63,6 +64,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
         install(AopModule())
         install(DevelopmentModule())
+        install(VersionModule())
     }
 
     override protected fun install(module: Module) {

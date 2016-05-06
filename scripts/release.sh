@@ -11,6 +11,7 @@ CHECKOUT_DIR=${BUILD_DIR}/Gadsu
 GIT_URL=https://github.com/christophpickl/gadsu.git
 VERSION_PROPERTIES_FILE=version.properties
 VERSION_PROPERTIES_PATH="$CWD/$VERSION_PROPERTIES_FILE"
+VERSION_LATEST_FILE=version_latest.txt
 
 myEcho() {
     echo "[RELEASE] $1"
@@ -25,8 +26,14 @@ checkLastCommand() {
 
 changeVersion() {
     echo
-    myEcho "Changing version in [version.properties] to: $1"
-    echo "version=$1" > version.properties
+    myEcho "Changing version in [${VERSION_PROPERTIES_FILE}] to: $1"
+    echo "version=$1" > ${VERSION_PROPERTIES_FILE}
+    checkLastCommand
+}
+changeLatestVersion() {
+    echo
+    myEcho "Changing latest version in [${VERSION_LATEST_FILE}] to: $1"
+    echo "$1" > ${VERSION_LATEST_FILE}
     checkLastCommand
 }
 
@@ -83,7 +90,6 @@ myEcho "------------------------------------"
 git clone ${GIT_URL} ${CHECKOUT_DIR}
 cd ${CHECKOUT_DIR}
 
-# check there are no snapshots
 
 echo
 myEcho "Running test build."
@@ -91,7 +97,13 @@ myEcho "------------------------------------"
 ./gradlew test testUi check
 checkLastCommand
 
+
+echo
+myEcho "Change release version"
+myEcho "------------------------------------"
 changeVersion ${VERSION_RELEASE}
+changeLatestVersion ${VERSION_RELEASE}
+
 
 echo
 myEcho "Creating assemblies."
@@ -104,6 +116,7 @@ cp build/libs/*.jar ${ARTIFACTS_DIR}
 echo
 myEcho "Copied artifacts to: $ARTIFACTS_DIR"
 
+
 echo
 myEcho "GIT committing and tagging result"
 myEcho "------------------------------------"
@@ -115,7 +128,7 @@ git tag ${VERSION_RELEASE}
 checkLastCommand
 
 echo
-myEcho "Change version"
+myEcho "Change next version"
 myEcho "------------------------------------"
 changeVersion ${VERSION_DEVELOPMENT}
 

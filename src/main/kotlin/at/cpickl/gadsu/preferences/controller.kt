@@ -15,7 +15,7 @@ open class PreferencesController @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Subscribe open fun onShowPreferencesEvent(@Suppress("UNUSED_PARAMETER") event: ShowPreferencesEvent) {
-        window.initData(prefs.preferencesData ?: PreferencesData.DEFAULT)
+        window.initData(prefs.preferencesData)
         window.start()
     }
 

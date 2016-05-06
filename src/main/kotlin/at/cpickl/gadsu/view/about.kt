@@ -6,8 +6,10 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.service.formatDateTime
+import at.cpickl.gadsu.version.Version
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.enableSmallWindowStyle
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
@@ -24,7 +26,7 @@ import javax.swing.JFrame
 import javax.swing.JLabel
 
 fun main(args: Array<String>) {
-    AboutWindow(MetaInf("1.0.0", DateTime.now()), null, EventBus()).isVisible = true
+    AboutWindow(MetaInf(Version.DUMMY, DateTime.now()), null, EventBus()).isVisible = true
 }
 
 class ShowAboutDialogEvent : UserEvent() {}
@@ -43,11 +45,11 @@ open class AboutController @Inject constructor(
 ) {
 
     @Subscribe open fun onAbout(@Suppress("UNUSED_PARAMETER") event: ShowAboutDialogEvent) {
-        window.setVisible(true)
+        window.isVisible = true
     }
 
     @Subscribe open fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
-        window.setVisible(false)
+        window.isVisible = false
         window.dispose()
     }
 }
@@ -60,8 +62,8 @@ class AboutWindow @Inject constructor(
 ) : JFrame() {
     init {
         title = ""
-        // https://developer.apple.com/library/mac/technotes/tn2007/tn2196.html#//apple_ref/doc/uid/DTS10004439
-        rootPane.putClientProperty("Window.style", "small")
+        rootPane.enableSmallWindowStyle()
+        isAlwaysOnTop = true
 
         val panel = GridPanel()
         panel.border = BorderFactory.createEmptyBorder(10, 40, 10, 40)
@@ -78,7 +80,7 @@ class AboutWindow @Inject constructor(
         aboutText.changeLabelFont(10.0F)
         aboutText.text =
                 "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
-                "Version ${metaInf.applicationVersion}<br>" +
+                "Version ${metaInf.applicationVersion.toLabel()}<br>" +
                 "(${metaInf.built.formatDateTime()})<br>" +
                 "by Christoph Pickl<br>" +
                 "<br>" +

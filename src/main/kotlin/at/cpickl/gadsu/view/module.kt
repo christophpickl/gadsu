@@ -29,6 +29,9 @@ class ViewModule : AbstractModule() {
 
         // about
         install(AboutModule())
+
+        // async
+        bind(AsyncWorker::class.java).to(AsyncSwingWorker::class.java)
     }
 
 }

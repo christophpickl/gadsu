@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.version.Version
 import com.google.inject.Provider
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -37,7 +38,7 @@ class MetaInfLoader : Provider<MetaInf> {
             inStream.closeQuietly()
         }
 
-        val version = props.getProperty(PROPKEY_VERSION)
+        val version = Version.parse(props.getProperty(PROPKEY_VERSION))
         val builtString = props.getProperty(PROPKEY_BUILT_DATE)
 
         val built = if (builtString.equals("@built.date@")) DateTime.now() else DATE_FORMATTER.parseDateTime(builtString)
@@ -49,4 +50,4 @@ class MetaInfLoader : Provider<MetaInf> {
 /**
  * Programmatic representation of the metainf.properties file.
  */
-data class MetaInf(val applicationVersion: String, val built: DateTime)
+data class MetaInf(val applicationVersion: Version, val built: DateTime)
