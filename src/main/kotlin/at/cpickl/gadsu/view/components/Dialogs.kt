@@ -24,7 +24,7 @@ class Dialogs @Inject constructor(
      */
     fun show(title: String,
              message: String,
-             buttonLabels: Array<String>,
+             buttonLabels: Array<String> = arrayOf("Ok"),
              defaultButton: String? = null,
              type: DialogType = DialogType.PLAIN,
              overrideOwner: JFrame? = null

@@ -32,12 +32,13 @@ class TreatmentJdbcRepository @Inject constructor(
         private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
         ) : TreatmentRepository {
+
     companion object {
-
         val TABLE = "treatment"
-
     }
+
     private val log = LoggerFactory.getLogger(javaClass)
+
     override fun findAllFor(client: Client): List<Treatment> {
         client.ensurePersisted()
 

@@ -13,6 +13,16 @@ investigate: custom hamcrest matcher for kotlin
 
 - when tracing in SqlJdbcX, then avoid linefeeds in log output
   
+  
+  
+@rebecca
+* notiz feld labeln
+* behandlungslist labeln
+* alle textfields/areas immer TRIM
+* mehr aktionen ueber menu bar: Klient / Bild Aendern, ... 
+* BUG: treatment list selection onNew
+* datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
+
 T-O-D-O
 ============================================================
 
