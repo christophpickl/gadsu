@@ -76,10 +76,8 @@ data class Treatment(
     override fun compareTo(other: Treatment): Int {
         return ComparisonChain.start()
 //                .compare(this.clientId, other.clientId)
-
-                // application ensures the number is unique within a client; reverse other and this for DESC sorting
-                .compare(other.number, this.number)
-
+                // application ensures the number is unique within a client
+                .compare(this.number, other.number)
                 .result()
     }
 
