@@ -23,4 +23,5 @@
 * may 2016
   * 5h ... project management
   * 5h ... enhanced reporting
-  * 10h ... more fields and UI polishing
+  * 10h ... more treatment fields and UI polishing
+  * 10h ... auto update, exception handler, UI polishing

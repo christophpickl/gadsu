@@ -22,6 +22,7 @@ High
 * changes detection for treatment
 * @UI: automatically scroll to far left in textfields (on update)
 * define different DB location during development (dont cross with PROD data when working on gadsu!!!)
+* DB version upgrade nochmal testen, und auch probieren wie es mit java klassen updates geht (vor allem TCM xprops sind anfaellig drauf)
 
 Med
 ------------------------------------------------------------
@@ -34,17 +35,18 @@ Med
   * http://www.clinicsense.com/tour/
   * http://www.bodyworkbuddy.com/
 * create native EXE for windows
+* calc star sign (west and east) based on birthday
+* ENCRYPT database
 
 Low
 ------------------------------------------------------------
-
-* use custom AOP annotation to ensure transaction safety
+* @TECH: use custom AOP annotation to ensure transaction safety
 * [2] reset prefs feature
 * [2] REFACT: split ClientViewController for master and detail
 * check there are no snapshots during release.sh
 * @UI: https://tips4java.wordpress.com/2010/11/28/combo-box-popup/
 * @Languages check default system property for language (luxury: configurable via preferences)
-* JDatePicker seems to support JodaTime (see their website)
+* @UI: JDatePicker seems to support JodaTime (see their website)
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
 * enhance window descriptor:
   * make reusable for others
@@ -52,7 +54,7 @@ Low
 
 Test
 ------------------------------------------------------------
-* @Test use powermock (as much is final in kotlin)
+* use powermock (as much is final in kotlin)
 * @ClientServiceImplIntegrationTest use guice support for integration tests instead
 * investigate: http://jetbrains.github.io/spek/
 * good UI test code sample: https://github.com/UISpec4J/UISpec4J/blob/master/uispec4j/src/test/java/org/uispec4j/PanelTest.java
@@ -62,12 +64,8 @@ Test
 Luxury Ideas
 ------------------------------------------------------------
 
-* automatic VERSION check
-  * during release, create some file with current version in it
-  * at app startup, regularly check (GET http to github repo) remote file for version match
 * google CALENDER integration
   * erst spaeter, wenns termine gibt...
   * das evtl schon als plugin zur verfuegung stellen (??)
   * https://developers.google.com/google-apps/calendar/quickstart/java
-* ENCRYPT database
 * [8] UI: mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
