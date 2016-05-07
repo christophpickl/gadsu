@@ -7,6 +7,7 @@ import at.cpickl.gadsu.view.swing.increaseLeft
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
+import javax.swing.ImageIcon
 import javax.swing.JLabel
 
 
@@ -19,15 +20,21 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         c.anchor = GridBagConstraints.NORTHWEST
     }
 
-    open fun addFormInput(label: String, input: Component, fillType: GridBagFill = GridBagFill.Horizontal) {
+    open fun addFormInput(label: String, input: Component, fillType: GridBagFill = GridBagFill.Horizontal, icon: ImageIcon? = null) {
+        c.gridheight = 1
+
         c.weightx = 0.0
+        c.weighty = 0.0
         c.fill = GridBagConstraints.NONE
         c.anchor = labelAnchor
         c.insets = insetsCol1
         add(JLabel(label).bold())
 
+        addIconMaybe(icon)
+
         c.gridx++
         c.weightx = 1.0
+        c.weighty = 1.0
         c.fill = fillType.swingId
         c.anchor = GridBagConstraints.SOUTHWEST
         if (input is JLabel) {
@@ -38,7 +45,23 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         add(input)
 
         c.gridy++
+        if (icon != null) c.gridy++
         c.gridx = 0
+    }
+
+    protected open fun addIconMaybe(icon: ImageIcon?) {
+        if (icon != null) {
+            c.gridy++
+            c.insets = Pad.TOP
+            c.weighty = 0.0
+            c.weightx = 0.0
+            c.anchor = GridBagConstraints.NORTH
+            c.fill = GridBagConstraints.NONE
+            add(JLabel(icon))
+
+            c.gridheight = 2
+            c.gridy--
+        }
     }
 
     open fun addLastColumnsFilled(fillType: GridBagFill = GridBagFill.Both) {
@@ -55,12 +78,14 @@ class VFillFormPanel : FormPanel() {
     init {
         c.anchor = GridBagConstraints.NORTHWEST
     }
-    override fun addFormInput(label: String, input: Component, fillType: GridBagFill) {
+    override fun addFormInput(label: String, input: Component, fillType: GridBagFill, icon: ImageIcon?) {
         c.weightx = 0.0
         c.weighty = 0.0
         c.fill = GridBagConstraints.NONE
         c.insets = Pad.TOP
         add(JLabel(label).bold())
+
+//        addIconMaybe(icon) ... not yet supported
 
         c.gridy++
 //        c.fill = fillType.swingId

@@ -3,7 +3,6 @@ package at.cpickl.gadsu.view.components.panels
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.swing.Pad
-import at.cpickl.gadsu.view.swing.isTransparent
 import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Color
 import java.awt.Component
@@ -20,7 +19,7 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
     val c = GridBagConstraints()
 
     init {
-        isTransparent = true
+        transparent()
         if (viewName !== null) name = viewName
         if (_debugColor !== null) debugColor = _debugColor
 

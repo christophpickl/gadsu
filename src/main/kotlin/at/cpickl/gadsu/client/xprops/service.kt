@@ -9,7 +9,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
-import at.cpickl.gadsu.client.xprops.model.XProps
+import at.cpickl.gadsu.tcm.model.XProps
 import java.util.HashMap
 import javax.inject.Inject
 

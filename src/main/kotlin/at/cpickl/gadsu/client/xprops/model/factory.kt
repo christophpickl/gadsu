@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.xprops.model
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.tcm.model.XPropsFinder
 import at.cpickl.gadsu.view.language.Labels
 import org.slf4j.LoggerFactory
 import java.util.HashMap
@@ -33,9 +34,9 @@ object XPropsFactory : XPropsFinder {
     }
 
 
-    fun enum(key: String): XPropEnum {
+    fun enum(key: String, label: String): XPropEnum {
         log.trace("newEnum(key={})", key)
-        val label = Labels.XProps.labelFor(key)
+//        val label = Labels.XProps.labelFor(key) disable for the moment...
         val xprop = XPropEnum(key, label, collectedEnumOpts.sorted())
         collectedEnumOpts = LinkedList()
         if (xpropByKey.containsKey(key)) {
@@ -45,13 +46,13 @@ object XPropsFactory : XPropsFinder {
         return xprop
     }
 
-    fun opt(key: String): XPropEnumOpt {
+    fun opt(key: String, staticLabel: String? = null): XPropEnumOpt {
         log.trace("newEnumOpt(key={})", key)
         val keyPrefix = (key.substring(0, key.indexOf("_")))
         if (!keyPrefix.equals(previousEnumOptKeyPrefix)) {
             currentEnumOrder = 1
         }
-        val label = Labels.XProps.labelFor(key)
+        val label = staticLabel ?: Labels.XProps.labelFor(key)
         val value = XPropEnumOpt(currentEnumOrder++, key, label)
         if (xpropEnumOptByKey.containsKey(key)) {
             throw GadsuException("Duplicate xproperty enum value key '$key'!")

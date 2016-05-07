@@ -12,6 +12,7 @@ import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.util.HashMap
+import javax.swing.ImageIcon
 
 
 class CPropsRenderer(
@@ -24,7 +25,7 @@ class CPropsRenderer(
     fun addXProp(xprop: XProp, form: FormPanel) {
         val ui = buildCPropUI(xprop)
         map.put(xprop, ui)
-        form.addFormInput(xprop.label, ui.toComponent(), ui.fillType)
+        form.addFormInput(xprop.label, ui.toComponent(), ui.fillType, ui.icon)
     }
 
     fun updateFields(client: Client) {
@@ -48,7 +49,8 @@ class CPropsRenderer(
         return xprop.onType(object: XPropTypeCallback<CPropView> {
             override fun onEnum(xprop: XPropEnum): CPropView {
 
-                val view = CPropEnumView(xprop, bus)
+                val icon = ImageIcon(javaClass.getResource("/gadsu/images/tcm_props/${xprop.key}.png"))
+                val view = CPropEnumView(icon, xprop, bus)
                 // MINOR @TEST UI - view name
                 fields.register(view)
                 return view
@@ -63,6 +65,7 @@ interface CPropView {
     fun toCProp(): CProp
 
     val fillType: GridBagFill
+    val icon: ImageIcon?
 }
 
 enum class GridBagFill(val swingId: Int) {

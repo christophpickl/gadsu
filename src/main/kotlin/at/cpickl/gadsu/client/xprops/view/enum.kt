@@ -13,8 +13,10 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
+import javax.swing.ImageIcon
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 
 interface ElFieldForProps<V> : ElField<V> {
@@ -22,6 +24,7 @@ interface ElFieldForProps<V> : ElField<V> {
 }
 
 class CPropEnumView(
+        override val icon: ImageIcon?,
         private val xprop: XPropEnum,
         bus: EventBus
 ): CPropView, ElFieldForProps<Client> {
@@ -34,11 +37,11 @@ class CPropEnumView(
     init {
         val model = MyListModel<XPropEnumOpt>()
         model.resetData(xprop.options)
-        list = MyList<XPropEnumOpt>("FIXME_VIEWNAME", model, bus, object: MyListCellRenderer<XPropEnumOpt>() {
+        list = MyList("FIXME_VIEWNAME", model, bus, object: MyListCellRenderer<XPropEnumOpt>() {
             override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
         })
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        list.visibleRowCount = 4
+        list.visibleRowCount = 1
     }
 
     override fun updateValue(value: Client) {
@@ -49,7 +52,7 @@ class CPropEnumView(
 
     override fun toCProp() = CPropEnum(xprop, list.selectedValuesList)
 
-    override fun toComponent() = list.scrolled()
+    override fun toComponent() = list.scrolled(hPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
 
     override fun isModified(value: Client): Boolean {
         val selected = list.selectedValuesList

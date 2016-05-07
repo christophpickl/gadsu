@@ -7,7 +7,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
-import at.cpickl.gadsu.client.xprops.model.XProps
+import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.AnyBusListener
 import at.cpickl.gadsu.testinfra.TEST_UUID2
 import com.google.common.eventbus.EventBus

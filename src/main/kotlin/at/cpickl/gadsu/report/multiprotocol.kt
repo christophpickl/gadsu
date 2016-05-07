@@ -3,7 +3,7 @@ package at.cpickl.gadsu.report
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.client.xprops.model.XProps
+import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.service.formatDateTimeLong
 import com.itextpdf.text.Document
 import com.itextpdf.text.Element

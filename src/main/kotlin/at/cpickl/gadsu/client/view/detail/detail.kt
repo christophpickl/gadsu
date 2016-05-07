@@ -30,6 +30,7 @@ import java.awt.GridBagConstraints
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JScrollPane
 import javax.swing.JTabbedPane
 
 interface ClientDetailView {
@@ -104,7 +105,8 @@ open class SwingClientDetailView @Inject constructor(
         tabbed.name = ViewNames.Client.TabbedPane
         var i: Int = 0
         allTabs.forEach {
-            tabbed.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", it.asComponent())
+            val tabContent: Component = if (it.scrolled) JScrollPane(it.asComponent()).transparent() else it.asComponent()
+            tabbed.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", tabContent)
             tabbed.setTabComponentAt(i++, JLabel(it.title, JLabel.CENTER).enforceWidth(100))
         }
         return tabbed
