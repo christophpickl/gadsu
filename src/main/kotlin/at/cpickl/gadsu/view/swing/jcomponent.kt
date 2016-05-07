@@ -14,7 +14,12 @@ import javax.swing.JComponent
 import javax.swing.JScrollPane
 
 
-fun JComponent.scrolled(): JScrollPane = JScrollPane(this)
+fun JComponent.scrolled(hPolicy: Int? = null, vPolicy: Int? = null): JScrollPane {
+    return JScrollPane(this).apply {
+        if (hPolicy != null) horizontalScrollBarPolicy = hPolicy
+        if (vPolicy != null) verticalScrollBarPolicy = vPolicy
+    }
+}
 
 
 fun <T : JComponent> T.bold(): T {
@@ -71,3 +76,8 @@ var JComponent.isTransparent: Boolean
     get() { return !isOpaque }
     set(value) { isOpaque = !value }
 
+
+fun <T : JComponent> T.transparent(): T {
+    isTransparent = true
+    return this
+}

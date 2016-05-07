@@ -9,11 +9,6 @@ fun JPanel.titledBorder(title: String) {
     border = BorderFactory.createTitledBorder(null, title, TitledBorder.LEFT, TitledBorder.ABOVE_TOP)
 }
 
-fun JPanel.transparent(): JPanel {
-    isTransparent = true
-    return this
-}
-
 fun JPanel.opaque(): JPanel {
     isOpaque = true
     return this
