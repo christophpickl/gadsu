@@ -28,7 +28,7 @@ class ProtocolGeneratorTest {
 
         asserter.containsPdfStrings(
             "Shiatsu Protokoll",
-            "Vorgelegt von: ${report.author}",
+            "${report.author}",
             "${report.printDate.formatDate()}",
             "Beruf: ${report.client.job}",
             "Kinder: ${report.client.children}"
