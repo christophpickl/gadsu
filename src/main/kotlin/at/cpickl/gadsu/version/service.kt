@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.version
 
 import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.OpenWebpageEvent
+import at.cpickl.gadsu.spReadBooleanOrFalse
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
@@ -37,8 +39,12 @@ open class VersionUpdaterImpl @Inject constructor(
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         if (prefs.preferencesData.checkUpdates) {
-            log.debug("Preferences stated we should check updates on startup")
-            checkForUpdates(null) // dont display progress dialog when checking at startup
+            if (GadsuSystemPropertyKeys.disableAutoUpdate.spReadBooleanOrFalse()) {
+                log.warn("Auto update disabled (most likely because of UI test).")
+            } else {
+                log.debug("Preferences stated we should check updates on startup")
+                checkForUpdates(null) // dont display progress dialog when checking at startup
+            }
         }
     }
     private val dialogTitle = "Auto Update"

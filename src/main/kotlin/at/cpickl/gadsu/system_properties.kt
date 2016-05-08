@@ -5,6 +5,7 @@ object GadsuSystemPropertyKeys {
     val overrideLanguage = "gadsu.overrideLanguage"
     val disableLog = "gadsu.disableLog"
     val isMacApp = "gadsu.isMacApp"
+    val disableAutoUpdate = "gadsu.disableAutoUpdate"
 }
 
 
