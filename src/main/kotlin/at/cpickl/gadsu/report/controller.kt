@@ -6,6 +6,7 @@ import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.components.DialogType

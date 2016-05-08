@@ -86,11 +86,13 @@ abstract class UiTest : SimpleUiTest() {
     private var _menuBarDriver: MenuBarDriver? = null
     private var _clientDriver: ClientDriver? = null
     private var _treatmentDriver: TreatmentDriver? = null
+
     protected val mainDriver: MainDriver get() = _mainDriver!!
 
     protected val menuBarDriver: MenuBarDriver get() = _menuBarDriver!!
     protected val clientDriver: ClientDriver get() = _clientDriver!!
     protected val treatmentDriver: TreatmentDriver get() = _treatmentDriver!!
+
 
 
     override final fun newMainClassAdapter(): MainClassAdapter {

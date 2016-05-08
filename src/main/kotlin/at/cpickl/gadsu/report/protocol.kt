@@ -2,6 +2,7 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.service.nullIfEmpty
 import org.joda.time.DateTime
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -101,6 +102,4 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("cprops", report.client.cprops)
     )
 }
-
-fun String.nullIfEmpty() = if (this.isEmpty()) null else this
 

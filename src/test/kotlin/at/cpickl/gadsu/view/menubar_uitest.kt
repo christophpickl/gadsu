@@ -13,6 +13,7 @@ class MenuBarDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private val menu = window.menuBar
     private val menuReports = menu.getMenu("Berichte")
+
     val menuReportsGenerateProtocol = menuReports.getSubMenu("Protokoll erstellen")
     val menuItemPreferences: MenuItem get() = menu.getMenu("Datei").getSubMenu("Einstellungen")
 

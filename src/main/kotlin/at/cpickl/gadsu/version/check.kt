@@ -26,6 +26,7 @@ class VersionCheckerImpl @Inject constructor(
         val latestVersion = fetcher.fetch()
         if (currentVersion > latestVersion) {
             log.warn("Current version > latest version, seems as you are running a local snapshot version ;)")
+            return VersionCheckResult.UpToDate
         }
         if (currentVersion == latestVersion) {
             return VersionCheckResult.UpToDate

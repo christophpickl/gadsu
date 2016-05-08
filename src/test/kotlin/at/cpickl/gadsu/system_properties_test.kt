@@ -28,23 +28,23 @@ import org.testng.annotations.Test
     }
 
 
-    fun `spReadBoolean, not initialized, fails`() {
-        expect(GadsuException::class, {key.spReadBoolean()}, key)
+    fun `spReadBooleanOrNull, not initialized, set to null`() {
+        assertThat(key.spReadBooleanOrNull(), nullValue())
     }
 
     fun `spReadBoolean, sunshine`() {
-        setProperty("true"); assertThat(key.spReadBoolean(), equalTo(true))
-        setProperty("TrUe"); assertThat(key.spReadBoolean(), equalTo(true))
-        setProperty("1"); assertThat(key.spReadBoolean(), equalTo(true))
+        setProperty("true"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
+        setProperty("TrUe"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
+        setProperty("1"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
 
-        setProperty("false"); assertThat(key.spReadBoolean(), equalTo(false))
-        setProperty("FaLsE"); assertThat(key.spReadBoolean(), equalTo(false))
-        setProperty("0"); assertThat(key.spReadBoolean(), equalTo(false))
+        setProperty("false"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
+        setProperty("FaLsE"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
+        setProperty("0"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
     }
 
     fun `spReadBoolean, invalid value, fails`() {
         setProperty("fuchur")
-        expect(GadsuException::class, {key.spReadBoolean()}, "fuchur")
+        expect(GadsuException::class, {key.spReadBooleanOrNull()}, "fuchur")
     }
 
     fun `spWriteString`() {

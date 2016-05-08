@@ -22,7 +22,8 @@ buildscript {
 }
 
 plugins {
-    id 'jacoco' // version '0.7.6.201602180812', nah: "Plugin 'jacoco' is a core Gradle plugin, which cannot be specified with a version number. Such plugins are versioned as part of Gradle. Please remove the version number from the declaration."
+    id 'jacoco'
+    // version '0.7.6.201602180812', nah: "Plugin 'jacoco' is a core Gradle plugin, which cannot be specified with a version number. Such plugins are versioned as part of Gradle. Please remove the version number from the declaration."
     // solution: jacoco { toolVersion = "0.7.6.201602180812" ...
 
     // see: https://github.com/kt3k/coveralls-gradle-plugin
@@ -61,7 +62,6 @@ defaultTasks 'run'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-
 // =====================================================================================================================
 // DEPENDENCIES
 // =====================================================================================================================
@@ -99,7 +99,8 @@ dependencies {
 
     // REPORTING
     compile 'net.sf.jasperreports:jasperreports:6.2.1'
-     compile 'com.lowagie:itext:2.1.7' // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
+    compile 'com.lowagie:itext:2.1.7'
+    // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
     compile 'com.itextpdf:itextpdf:5.5.9' // jasper comes with outdated itext (fortunately got different package name)
 
     // LOGGING
@@ -120,6 +121,7 @@ dependencies {
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
     testCompile 'com.google.inject.extensions:guice-testlib:4.0'
+    testCompile 'org.apache.pdfbox:pdfbox:2.0.1'
 }
 
 // =====================================================================================================================

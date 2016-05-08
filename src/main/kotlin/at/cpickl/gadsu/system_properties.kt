@@ -8,8 +8,16 @@ object GadsuSystemPropertyKeys {
 }
 
 
-fun String.spReadBoolean(): Boolean {
-    val value = spReadStringOrNull()?.toLowerCase() ?: throw GadsuException("System property '$this' not set!")
+fun String.spReadBooleanOrDefault(orDefault: Boolean): Boolean {
+    return spReadBooleanOrNull() ?: orDefault
+}
+
+fun String.spReadBooleanOrFalse(): Boolean {
+    return spReadBooleanOrDefault(false)
+}
+
+fun String.spReadBooleanOrNull(): Boolean? {
+    val value = spReadStringOrNull()?.toLowerCase() ?: return null
     if (value.equals("true") || value.equals("1")) {
         return true
     }

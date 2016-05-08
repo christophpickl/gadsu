@@ -48,3 +48,5 @@ Coverage
 ============================================================
 ![Coverage Graph](https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master)
 <!--- ![codecov.io](`https://codecov.io/gh/christophpickl/gadsu/branch/master/graphs/icicle.svg`) -->
+
+[Coverage Report](https://codecov.io/gh/christophpickl/gadsu/tree/76de6ea6948c9497d2eaa46a9d9eefc33a58bb87/src/main/kotlin/at/cpickl/gadsu)

@@ -9,7 +9,6 @@ import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
@@ -20,6 +19,7 @@ import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.service.forTreatment
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime
+import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentService
@@ -43,7 +43,7 @@ open class DevelopmentController @Inject constructor(
     private var devFrame: DevelopmentFrame? = null
 
     @Subscribe open fun onShowDevWindowEvent(event: ShowDevWindowEvent) {
-        devFrame = DevelopmentFrame(mainFrame.dockPositionRight)
+        devFrame = DevelopmentFrame(mainFrame.dockPositionRight, bus)
         devFrame!!.updateClient(currentClient.data)
         devFrame!!.updateTreatment(currentTreatment.data)
         devFrame!!.start()

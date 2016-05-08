@@ -1,10 +1,6 @@
 package at.cpickl.gadsu.report
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.Gender
-import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.service.formatDateTimeLong
-import at.cpickl.gadsu.tcm.model.XProps
 import com.itextpdf.text.Document
 import com.itextpdf.text.Element
 import com.itextpdf.text.Phrase
@@ -17,25 +13,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-fun main(args: Array<String>) {
-//    val newPicture = "/gadsu/images/profile_pic-default_man.jpg".toMyImage().toReportRepresentation()
-    val dummyClient = ProtocolReportData.DUMMY.client
-    val protocols = listOf(ProtocolReportData.DUMMY.copy(
-            client = dummyClient.copy(
-                    cprops = CPropsComposer.compose(Client.INSERT_PROTOTYPE.copy(
-                            gender = Gender.MALE,
-                            cprops = CProps.builder.add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning).build()
-                    ))
-                    // "Something fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!"
-                    //                          picture = newPicture NO! does not work! :(
-            )
-    ))
-    MultiProtocolGeneratorImpl().generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
-    println("DONE")
-}
-
 interface MultiProtocolGenerator {
-
+    fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
 }
 
 interface ReportMetaData {
@@ -55,7 +34,7 @@ class MultiProtocolGeneratorImpl : MultiProtocolGenerator {
     // TODO let it inject!
     val protocolGenerator = JasperProtocolGenerator(JasperEngineImpl())
 
-    fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
+    override fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
         val protocols = mergeProtocols(protocolDatas)
         addCover(protocols, coverData, target)
     }

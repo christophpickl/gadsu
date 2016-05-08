@@ -2,7 +2,7 @@ package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.GadsuSystemPropertyKeys
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.spReadBoolean
+import at.cpickl.gadsu.spReadBooleanOrFalse
 import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import javax.swing.JMenu
@@ -13,7 +13,7 @@ class Development {
     companion object {
         private val systemProperty = GadsuSystemPropertyKeys.development
 
-        val ENABLED: Boolean = systemProperty.spReadBoolean()
+        val ENABLED: Boolean = systemProperty.spReadBooleanOrFalse()
         val COLOR_ENABLED = ENABLED && false
 
         init {
@@ -28,7 +28,6 @@ class Development {
             }
             val menuDevelopment = JMenu("Development")
             menu.add(menuDevelopment)
-
 
 
             addItemTo(menuDevelopment, "Development Window", ShowDevWindowEvent(), bus)

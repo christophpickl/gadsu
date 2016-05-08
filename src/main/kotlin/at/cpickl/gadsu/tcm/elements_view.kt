@@ -3,15 +3,12 @@ package at.cpickl.gadsu.tcm
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.view.brighterIfTrue
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.swing.addSingleLeftClickListener
 import com.google.common.eventbus.EventBus
-import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Cursor
-import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Point
@@ -21,16 +18,6 @@ import java.awt.event.MouseEvent
 import java.util.HashMap
 import java.util.LinkedHashMap
 import javax.swing.JPanel
-
-fun main(args: Array<String>) {
-    val bus = EventBus()
-    bus.register(object: Any() {
-        @Subscribe fun onAny(event: Any) {
-            println("====> Event dispatched: $event")
-        }
-    })
-    Framed.show(ElementsStarView(bus), Dimension(450, 420))
-}
 
 
 abstract class ElementsEvent : Event()
