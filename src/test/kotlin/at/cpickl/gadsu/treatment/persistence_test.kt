@@ -75,6 +75,14 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         assertThat(testee.findAllFor(client), contains(saved))
     }
 
+    @Test(dependsOnMethods = arrayOf("insert_sunshine"))
+    fun `findAllFor, returns reversed order`() {
+        insertTreatment(unsavedTreatment.copy(number = 1))
+        insertTreatment(unsavedTreatment.copy(number = 2))
+
+        assertThat(testee.findAllFor(client).map { it.number }.toList(), equalTo(listOf(2, 1)))
+    }
+
     fun findAll_notYetPersistedClient_fail() {
         Expects.expectPersistenceException(PersistenceErrorCode.EXPECTED_YET_PERSISTED, {
             testee.findAllFor(unsavedClient)

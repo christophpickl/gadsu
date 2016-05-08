@@ -9,11 +9,11 @@ import org.testng.annotations.Test
 class TreatmentTest {
 
     fun `comparable, given treatments 1, 3, 2, should return in reversed order 3, 2, 1`() {
-        assertNumbered(treatments(1, 3, 2).sorted(), 3, 2, 1)
+        assertNumbered(treatments(1, 3, 2).sorted(), 1, 2, 3)
     }
 
-    fun `comparable, given treatments 3-7-2-16, should return even with gaps 16, 7, 3, 2`() {
-        assertNumbered(treatments(3, 7, 2, 16).sorted(), 16, 7, 3, 2)
+    fun `comparable, given treatments 3-7-2-16, should return even with gaps 2, 3, 7, 16`() {
+        assertNumbered(treatments(3, 7, 2, 16).sorted(), 2, 3, 7, 16)
     }
 
     private fun assertNumbered(actual: List<Treatment>, vararg expectedNumbers: Int) {
