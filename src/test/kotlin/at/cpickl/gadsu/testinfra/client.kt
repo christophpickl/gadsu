@@ -1,10 +1,9 @@
-package at.cpickl.gadsu.client
+package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.testinfra.TEST_DATETIME1
-import at.cpickl.gadsu.testinfra.TEST_DATE_1985
-import at.cpickl.gadsu.testinfra.TEST_UUID1
-import at.cpickl.gadsu.testinfra.TEST_UUID2
 
 
 @Suppress("UNUSED")
@@ -23,3 +22,6 @@ fun Client.Companion.savedValidInstance() = unsavedValidInstance().copy(id = TES
 
 @Suppress("UNUSED")
 fun Client.Companion.savedValidInstance2() = unsavedValidInstance().copy(id = TEST_UUID2)
+
+
+fun Client.copyWithoutCprops() = this.copy(cprops = CProps.empty)

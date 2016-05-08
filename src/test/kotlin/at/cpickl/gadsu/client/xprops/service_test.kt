@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.client.xprops
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.tcm.model.XProps
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.mockito.Mockito

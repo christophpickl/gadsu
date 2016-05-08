@@ -8,7 +8,9 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
 import at.cpickl.gadsu.testinfra.TEST_UUID1
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.skip
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import com.google.common.io.Files
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*

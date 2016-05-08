@@ -1,8 +1,7 @@
 package at.cpickl.gadsu
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.testng.annotations.Test
 
 @Test class ParseArgsTest {
@@ -41,5 +40,16 @@ import org.testng.annotations.Test
         parseArgs(arrayOf("--foo"))
     }
 
+    fun `parseArgsOrHelp sunshine`() {
+        assertThat(parseArgsOrHelp(arrayOf("")), equalTo(Args.EMPTY))
+
+        // both should print a help menu on the CLI
+        assertThat(parseArgsOrHelp(arrayOf("--help")), nullValue())
+        assertThat(parseArgsOrHelp(arrayOf("--invalidArg")), nullValue())
+    }
+
+    fun `action help`() {
+        assertThat(parseArgsOrHelp(arrayOf("--action=help"))!!.action, equalTo("help"))
+    }
 
 }

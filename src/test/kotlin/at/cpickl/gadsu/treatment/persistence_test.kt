@@ -2,9 +2,6 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
-import at.cpickl.gadsu.client.savedValidInstance
-import at.cpickl.gadsu.client.savedValidInstance2
-import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.service.IdGenerator
@@ -12,6 +9,10 @@ import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
+import at.cpickl.gadsu.testinfra.expectPersistenceException
+import at.cpickl.gadsu.testinfra.savedValidInstance
+import at.cpickl.gadsu.testinfra.savedValidInstance2
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.springframework.dao.DataIntegrityViolationException

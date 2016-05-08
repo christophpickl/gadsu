@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.acupuncture
+package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.view.components.inputs.SearchTextField
 import org.slf4j.LoggerFactory

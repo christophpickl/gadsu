@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.treatment
 
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 import java.util.LinkedList
 
 
-class AnyBusListener {
+class TestBusListener {
     private val log = LoggerFactory.getLogger(javaClass)
 
     val dispatchedEvents: LinkedList<Any> = LinkedList()

@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import org.hamcrest.MatcherAssert.assertThat

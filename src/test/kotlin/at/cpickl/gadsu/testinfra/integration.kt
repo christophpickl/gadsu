@@ -43,7 +43,7 @@ abstract class GuiceIntegrationTest {
 
     @Inject protected var bus: EventBus = EventBus()
 
-    protected var busListener: AnyBusListener = AnyBusListener()
+    protected var busListener: TestBusListener = TestBusListener()
 
     @BeforeMethod
     fun init() {
@@ -51,7 +51,7 @@ abstract class GuiceIntegrationTest {
         prefs.clear()
         prefs.flush()
 
-        busListener = AnyBusListener()
+        busListener = TestBusListener()
         mockClientRepository = mock(ClientRepository::class.java)
         mockTreatmentRepository = mock(TreatmentRepository::class.java)
         mockXPropsRepository = mock(XPropsSqlRepository::class.java)

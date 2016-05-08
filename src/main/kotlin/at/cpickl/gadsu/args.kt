@@ -7,9 +7,9 @@ import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.ParseException
 
-fun main(args: Array<String>) {
-    parseArgs(arrayOf("--help")).help!!()
-}
+//fun main(args: Array<String>) {
+//    parseArgs(arrayOf("--help")).help!!()
+//}
 
 /**
  * @throws ArgsException if CLI args are somehow wrong.
@@ -28,7 +28,7 @@ fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
     }
 
     if (args.help != null) {
-        (args.help)()
+        args.help.invoke()
         return null
     }
     return args

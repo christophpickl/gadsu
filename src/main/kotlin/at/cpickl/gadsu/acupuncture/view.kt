@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.service.SearchableList
 import at.cpickl.gadsu.tcm.model.Acupunct
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DefaultCellView

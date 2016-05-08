@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.testinfra.GuiceIntegrationTest
 import at.cpickl.gadsu.testinfra.TEST_UUID1
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.mockito.Mockito.*
 import org.slf4j.LoggerFactory
 import org.testng.annotations.Test

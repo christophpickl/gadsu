@@ -14,7 +14,8 @@ class CPropsBuilder {
     }
 
     fun build(): CProps {
-        return CProps(cprops.associate { Pair(it.delegate, it) })
+        // turn List<CProp> to Map<XProp, CProp> whereas the xprop is part of the cprop
+        return CProps(cprops.associate { Pair(it.xprop, it) })
     }
 }
 
@@ -60,7 +61,7 @@ data class CProps(private val props: Map<XProp, CProp>) {
 }
 
 interface CProp : XProp {
-    val delegate: XProp
+    val xprop: XProp
     val clientValue: Any
     val isClientValueSet: Boolean
 
@@ -69,9 +70,9 @@ interface CProp : XProp {
 }
 
 data class CPropEnum(
-        override val delegate: XPropEnum,
+        override val xprop: XPropEnum,
         override val clientValue: List<XPropEnumOpt>
-) : CProp, XProp by delegate {
+) : CProp, XProp by xprop {
 
     override val isClientValueSet = clientValue.isNotEmpty()
 

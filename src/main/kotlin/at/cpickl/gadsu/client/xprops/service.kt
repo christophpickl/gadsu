@@ -32,7 +32,7 @@ class XPropsServiceImpl @Inject constructor(
         val properties: HashMap<XProp, CProp> = HashMap()
         sqlProps.forEach {
             val cprop = buildCProp(it)
-            properties.put(cprop.delegate, cprop)
+            properties.put(cprop.xprop, cprop)
         }
         return CProps(properties)
     }

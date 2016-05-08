@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.testinfra.ui.BaseDriver
 import at.cpickl.gadsu.testinfra.ui.UiTest
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.MenuItem

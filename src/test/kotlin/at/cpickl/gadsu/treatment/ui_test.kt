@@ -1,10 +1,11 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.savedValidInstance
 import at.cpickl.gadsu.testinfra.LogTestListener
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.ui.UiTest
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -181,3 +182,8 @@ class TreatmentUiTest : UiTest() {
 }
 
 
+
+
+@Suppress("UNUSED")
+        // add fields: date, ...
+fun Treatment.Companion.uiInstance(note: String) = unsavedValidInstance("id_not_used").copy(note = note)

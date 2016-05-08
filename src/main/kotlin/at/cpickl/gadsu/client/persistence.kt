@@ -170,6 +170,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
 
 
 private fun readFromBlob(blob: Blob?, gender: Gender): MyImage {
+    // MINOR TEST write a test for this
     if (blob != null) {
         val buffered = blob.toBufferedImage()
         if (buffered != null) {

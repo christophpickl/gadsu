@@ -38,7 +38,20 @@ class ClientCreatedEvent(val client: Client) : AppEvent() {
     }
 }
 
-class ClientUpdatedEvent(val client: Client) : AppEvent()
+class ClientUpdatedEvent(val client: Client) : AppEvent() {
+    override fun equals(other: Any?): Boolean{
+        if (this === other) return true
+        if (other !is ClientUpdatedEvent) return false
+        if (client != other.client) return false
+        return true
+    }
+    override fun hashCode(): Int{
+        return client.hashCode()
+    }
+    override fun toString(): String{
+        return "ClientUpdatedEvent(client=$client)"
+    }
+}
 
 class DeleteClientEvent(val client: Client) : UserEvent() {
     override fun toString(): String {

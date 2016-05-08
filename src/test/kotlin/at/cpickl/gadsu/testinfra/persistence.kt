@@ -2,9 +2,10 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
-import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
 import at.cpickl.gadsu.persistence.DatabaseManager
+import at.cpickl.gadsu.persistence.PersistenceErrorCode
+import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
@@ -29,19 +30,19 @@ abstract class HsqldbTest {
             TestLogger().configureLog()
         }
     }
+    protected val TABLE_CLIENT = ClientJdbcRepository.TABLE
+    protected val TABLE_TREATMENT = TreatmentJdbcRepository.TABLE
+    protected val TABLE_XPROPS = XPropsSqlJdbcRepository.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf(
-            TreatmentJdbcRepository.TABLE,
-            XPropsSqlJdbcRepository.TABLE,
-            ClientJdbcRepository.TABLE
-    )
+    private val allTables = arrayOf(TABLE_XPROPS, TABLE_TREATMENT, TABLE_CLIENT)
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
 
     // MINOR @TEST - delete mock, and use testable implementations instead
     protected lateinit var bus: EventBus
+    protected lateinit var busListener: TestBusListener
     protected lateinit var clock: Clock
     protected lateinit var idGenerator: IdGenerator
     protected lateinit var currentClient: CurrentClient
@@ -61,6 +62,8 @@ abstract class HsqldbTest {
     @BeforeMethod
     fun resetState() {
         bus = EventBus()
+        busListener = TestBusListener()
+        bus.register(busListener)
         clock = SimpleTestableClock()
         idGenerator = SequencedTestableIdGenerator()
         currentClient = CurrentClient(bus)
@@ -113,4 +116,14 @@ fun SpringJdbcx.countTableEntries(tableName: String): Int {
     var count: Int? = null
     jdbc.query("SELECT COUNT(*) AS cnt FROM $tableName") { rs -> count = rs.getInt("cnt") }
     return count!!
+}
+
+
+
+fun Expects.expectPersistenceException(errorCode: PersistenceErrorCode, executeAction: () -> Unit) {
+    expect(
+            type = PersistenceException::class,
+            action = executeAction,
+            exceptionAsserter = { e -> e.errorCode == errorCode }
+    )
 }

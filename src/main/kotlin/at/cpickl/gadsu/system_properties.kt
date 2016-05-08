@@ -3,14 +3,20 @@ package at.cpickl.gadsu
 object GadsuSystemPropertyKeys {
     val development = "gadsu.development"
     val overrideLanguage = "gadsu.overrideLanguage"
-    public val disableLog = "gadsu.disableLog"
+    val disableLog = "gadsu.disableLog"
     val isMacApp = "gadsu.isMacApp"
 }
 
 
 fun String.spReadBoolean(): Boolean {
-    val value = spReadString("").toLowerCase()
-    return value.equals("true") || value.equals("1")
+    val value = spReadStringOrNull()?.toLowerCase() ?: throw GadsuException("System property '$this' not set!")
+    if (value.equals("true") || value.equals("1")) {
+        return true
+    }
+    if (value.equals("false") || value.equals("0")) {
+        return false
+    }
+    throw GadsuException("Invalid system property '$this' boolean value: '$value'!")
 }
 
 fun String.spReadString(orDefault: String): String {
@@ -23,6 +29,10 @@ fun String.spReadStringOrNull(): String? {
 
 fun String.spWriteTrue() {
     System.setProperty(this, "true")
+}
+
+fun String.spWriteFalse() {
+    System.setProperty(this, "false")
 }
 
 fun String.spWriteString(value: String) {

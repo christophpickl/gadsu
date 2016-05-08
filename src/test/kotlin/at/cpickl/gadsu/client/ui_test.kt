@@ -5,6 +5,7 @@ import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.testinfra.ui.clickAndDisposeDialog
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.lang.reflect.Method

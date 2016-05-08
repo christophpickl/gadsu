@@ -9,7 +9,11 @@ import org.springframework.jdbc.core.RowMapper
 import javax.inject.Inject
 
 
-data class SProp(val key: String, val value: String)
+data class SProp(val key: String, val value: String) {
+    companion object {
+        // needed for extensions
+    }
+}
 
 interface XPropsSqlRepository {
     fun select(client: Client): List<SProp>
@@ -18,6 +22,14 @@ interface XPropsSqlRepository {
 }
 
 
+@VisibleForTesting
+val SProp.Companion.ROW_MAPPER: RowMapper<SProp>
+    get() = RowMapper { rs, rowNum ->
+        val sqlKey = rs.getString("key")
+        val sqlValue = rs.getString("val")
+        SProp(sqlKey, sqlValue)
+    }
+
 class XPropsSqlJdbcRepository @Inject constructor(
         private val jdbc: Jdbcx
 ) : XPropsSqlRepository {
@@ -25,13 +37,6 @@ class XPropsSqlJdbcRepository @Inject constructor(
     companion object {
         val TABLE = "xprops"
 
-        @VisibleForTesting
-        val ROW_MAPPER: RowMapper<SProp>
-            get() = RowMapper { rs, rowNum ->
-                val sqlKey = rs.getString("key")
-                val sqlValue = rs.getString("val")
-                SProp(sqlKey, sqlValue)
-            }
 
 
     }
@@ -40,7 +45,7 @@ class XPropsSqlJdbcRepository @Inject constructor(
 
     override fun select(client: Client): List<SProp> {
         client.ensurePersisted()
-        return jdbc.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), ROW_MAPPER)
+        return jdbc.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), SProp.ROW_MAPPER)
     }
 
     override fun delete(client: Client) {

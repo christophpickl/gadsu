@@ -121,7 +121,7 @@ enum class Gender(override val order: Int, override val sqlCode: String, overrid
     UNKNOWN(99, "?", "Unbekannt");
 
     companion object {
-        fun orderedValues():List<Gender> = orderedValuesOf(Gender.values())
+        val orderedValues:List<Gender> = orderedValuesOf(Gender.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(Gender.values(), search)
     }
 }
@@ -137,7 +137,7 @@ enum class Relationship(override val order: Int, override val sqlCode: String, o
 
 
     companion object {
-        fun orderedValues():List<Relationship> = orderedValuesOf(Relationship.values())
+        val orderedValues:List<Relationship> = orderedValuesOf(Relationship.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
     }
 }

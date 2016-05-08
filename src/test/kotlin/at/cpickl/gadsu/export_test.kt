@@ -2,14 +2,14 @@ package at.cpickl.gadsu
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.unsavedValidInstance
 import at.cpickl.gadsu.export.ExportData
 import at.cpickl.gadsu.export.ExportXstreamService
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_DATETIME1
+import at.cpickl.gadsu.testinfra.savedValidInstance
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.savedValidInstance
 
 
 fun main(args: Array<String>) {

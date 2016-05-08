@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="ut_suite" verbose="1" parallel="none">
+
+    <test name="ut_test" verbose="1">
+        <groups>
+            <run>
+                <exclude name="uiTest" />
+                <exclude name="integration" />
+            </run>
+        </groups>
+        <packages>
+            <package name="at.cpickl.gadsu.*" />
+        </packages>
+    </test>
+</suite>

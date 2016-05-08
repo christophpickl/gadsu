@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.service.SearchableService
 import at.cpickl.gadsu.tcm.model.Acupunct
 import at.cpickl.gadsu.tcm.model.AcupunctureRepository
 import org.slf4j.LoggerFactory
@@ -7,7 +8,7 @@ import javax.inject.Inject
 
 
 interface AcupunctureService : SearchableService<Acupunct> {
-
+    // all via super interface or events
 }
 
 
