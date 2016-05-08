@@ -19,7 +19,7 @@ class XPropsServiceImplTest {
     private val clientPrototype = Client.savedValidInstance()
 
     private val testEnum = XProps.Sleep
-    private val testOps = listOf(XProps.SleepOpts.TiredInMorning.opt, XProps.SleepOpts.TiredInEvening.opt)
+    private val testOps = listOf(XProps.SleepOpts.ProblemsFallAsleep.opt, XProps.SleepOpts.TiredInMorning.opt)
     private val testProps = CProps(mapOf(
             testEnum to CPropEnum(XProps.Sleep, testOps)
     ))
