@@ -9,12 +9,11 @@ import java.awt.Point
 @Test(groups = arrayOf("uiTest"))
 class PreferencesUiTest : UiTest() {
 
-    private var _driver: PreferencesDriver? = null
-    private val driver: PreferencesDriver get() = _driver!!
+    private lateinit var driver: PreferencesDriver
 
     @BeforeMethod
     fun openPreferencesWindow() {
-        _driver = openPreferencesDriver()
+        driver = openPreferencesDriver()
     }
 
     @AfterMethod
