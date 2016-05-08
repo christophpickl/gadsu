@@ -18,6 +18,10 @@ High
 * @UI: automatically scroll to far left in textfields (on update)
 * define different DB location during development (dont cross with PROD data when working on gadsu!!!)
 * bug, wenn aenderung verwerfen, treatment list ist leer!
+* git tagging in release.sh does not work!
+* automate the release more
+  * download link on github main page to current version
+  * nice would be to create a release in github, containing list of issues, and attached release files, etc.
 
 Med
 ------------------------------------------------------------
