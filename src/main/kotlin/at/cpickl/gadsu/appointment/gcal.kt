@@ -15,41 +15,82 @@ import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
+import com.google.inject.AbstractModule
+import com.google.inject.Provider
 import java.io.File
 import java.io.InputStreamReader
 import java.io.Reader
+import javax.inject.Inject
 
 // https://developers.google.com/google-apps/calendar/quickstart/java
 // https://developers.google.com/google-apps/calendar/v3/reference/
 
-class GCalService() {
+class GCalModule : AbstractModule() {
+    override fun configure() {
 
-    private val cal: Lazy<com.google.api.services.calendar.Calendar>
-        get() = lazy {
-            GCalConnector(
-                    applicationName = "gadsu",
-                    dataStore = File(GADSU_DIRECTORY, "gcal_datastore.json"),
-                    credentialsReader = InputStreamReader(javaClass.getResourceAsStream("/gadsu/gcal_client_secret.json")))
-                    .calendarService()
+        bind(GCalConnector::class.java).toInstance(GCalConnectorImpl(
+                applicationName = "gadsu",
+                dataStore = File(GADSU_DIRECTORY, "gcal_datastore.json"),
+                credentialsReader = InputStreamReader(javaClass.getResourceAsStream("/gadsu/gcal_client_secret.json"))))
+
+        bind(GCalRepositoryImpl::class.java).to(GCalRepository::class.java)
+    }
+}
+
+interface GCalRepository {
+    fun listEvents(startDate: org.joda.time.DateTime,
+                   endDate: org.joda.time.DateTime,
+                   maxResults: Int = 100
+    ): List<Event>
+}
+class CalendarIdProvider @Inject constructor(
+        private val connector: GCalConnector
+) : Provider<String> {
+
+    var calendarName: String? = null
+
+    private var cachedCalendarId: String? = null
+    override fun get(): String {
+        if (cachedCalendarId == null) {
+            if (calendarName == null) {
+
+            }
+            cachedCalendarId = transformCalendarNameToId(connector.connect(), calendarName)
         }
+        return cachedCalendarId!!
 
-    fun readFutureEvents(calendarId: String): List<Event> {
-        val now = DateTime(System.currentTimeMillis())
-        val events: List<Event> = cal.value.events().list(calendarId)
+    }
+    private fun transformCalendarNameToId(cal: com.google.api.services.calendar.Calendar, name: String): String {
+        val calendars = cal.calendarList().list().setMaxResults(100).execute().items
+        return calendars.firstOrNull { it.summary.equals(name) }?.id ?: throw GadsuException("Could not find calendar by name '$name'! " +
+                "(Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
+    }
 
-                .setMaxResults(10)
-                .setTimeMin(now)
+}
+class GCalRepositoryImpl @Inject constructor(
+        private val connector: GCalConnector,
+        private val calendarName: String // this means, changing the calendar at runtime is not support, but... not needed that urgent anyway ;)
+) : GCalRepository {
+
+
+    private lateinit var calendarId: String
+    private val cal: com.google.api.services.calendar.Calendar by lazy {
+        val connection = connector.connect()
+        calendarId = transformCalendarNameToId(connection, calendarName)
+        connection
+    }
+
+    override fun listEvents(startDate: org.joda.time.DateTime,
+                            endDate: org.joda.time.DateTime,
+                            maxResults: Int
+    ): List<Event> {
+        return cal.events().list(calendarId)
+                .setMaxResults(maxResults)
+                .setTimeMin(startDate.toGDateTime())
+                .setTimeMax(endDate.toGDateTime())
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute().items
-
-        println("Found events: ${events.size}")
-        return events
-    }
-
-    fun transformCalendarNameToId(name: String): String {
-        val calendars = cal.value.calendarList().list().setMaxResults(100).execute().items
-        return calendars.firstOrNull { it.summary.equals(name) }?.id ?: throw GadsuException("Not found calendar by name '$name'!")
     }
 
     // https://developers.google.com/google-apps/calendar/create-events
@@ -57,41 +98,58 @@ class GCalService() {
         val newEvent = Event()
                 .setSummary(summary)
                 .setDescription(description)
-                .setStart(start.toGcalDate())
-                .setEnd(start.plusMinutes(durationInMin).toGcalDate())
-        val savedEvent = cal.value.events().insert(calendarId, newEvent).execute()
+                .setStart(start.toGEventDateTime())
+                .setEnd(start.plusMinutes(durationInMin).toGEventDateTime())
+        val savedEvent = cal.events().insert(calendarId, newEvent).execute()
         println("Saved event: ${savedEvent.htmlLink}")
         println("ID: ${savedEvent.id}")
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/update#examples
     fun updateEvent(calendarId: String, eventId: String, newSummary: String) {
-        val updateEvent = cal.value.events().get(calendarId, eventId).execute()
+        val updateEvent = cal.events().get(calendarId, eventId).execute()
         updateEvent.setSummary(newSummary)
-        cal.value.events().update(calendarId, eventId, updateEvent).execute()
+        cal.events().update(calendarId, eventId, updateEvent).execute()
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/delete#examples
     fun deleteEvent(calendarId: String, eventId: String) {
-        cal.value.events().delete(calendarId, eventId).execute()
+        cal.events().delete(calendarId, eventId).execute()
     }
 }
 
-fun org.joda.time.DateTime.toGcalDate(): EventDateTime {
+fun org.joda.time.DateTime.toGDateTime(): DateTime {
+    return DateTime(this.millis)
+}
+
+fun org.joda.time.DateTime.toGEventDateTime(): EventDateTime {
     return EventDateTime().setDateTime(com.google.api.client.util.DateTime(this.millis)) // no timezone
 }
 
-private class GCalConnector constructor(
+interface GCalConnector {
+    fun connect(): com.google.api.services.calendar.Calendar
+}
+
+class GCalConnectorImpl constructor(
         private val applicationName: String,
         private val credentialsReader: Reader,
         private val dataStore: File
-) {
+) : GCalConnector {
     private val log = LOG(javaClass)
 
     private val jsonFactory = JacksonFactory.getDefaultInstance()
     private val scopes = CalendarScopes.all()
     private val dataStoreFactory = FileDataStoreFactory(dataStore)
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
+
+    private val lazyConnection: com.google.api.services.calendar.Calendar by lazy {
+        log.trace("Connecting to GMail Calendar.")
+        val credential = authorize()
+        com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential)
+                .setApplicationName(applicationName)
+                .build()
+    }
+    override fun connect(): com.google.api.services.calendar.Calendar = lazyConnection
 
     private fun authorize(): Credential {
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsReader)
@@ -101,15 +159,8 @@ private class GCalConnector constructor(
                 .setAccessType("offline")
                 .build()
         val credential = AuthorizationCodeInstalledApp(authFlow, LocalServerReceiver()).authorize("user")
-        log.debug("Credentials saved to ${dataStore.absolutePath}")
+        log.debug("Credentials saved to: ${dataStore.absolutePath}")
         return credential
-    }
-
-    fun calendarService(): com.google.api.services.calendar.Calendar {
-        log.trace("Creating new calendar service.")
-        val credential = authorize()
-        return com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential)
-                .setApplicationName(applicationName).build()
     }
 
 }
