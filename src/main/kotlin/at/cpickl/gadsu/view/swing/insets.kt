@@ -25,6 +25,18 @@ object Pad {
 }
 
 
-fun Insets.increaseLeft(increaseLeftBy: Int): Insets {
-    return Insets(top, left + increaseLeftBy, bottom, right)
+fun Insets.addTop(increase: Int): Insets {
+    return Insets(top + increase, left, bottom, right)
+}
+
+fun Insets.addLeft(increase: Int): Insets {
+    return Insets(top, left + increase, bottom, right)
+}
+
+fun Insets.addBottom(increase: Int): Insets {
+    return Insets(top, left, bottom + increase, right)
+}
+
+fun Insets.addRight(increase: Int): Insets {
+    return Insets(top, left, bottom, right + increase)
 }
