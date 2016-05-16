@@ -31,10 +31,11 @@ open class VersionUpdaterImpl @Inject constructor(
     private val log = LOG(javaClass)
 
     private val suffix = if (IS_OS_MAC) "dmg" else "jar"
+    private val dialogTitle = "Auto Update"
 
     private fun checkForUpdates(settings: AsyncDialogSettings?) {
         log.debug("validateVersion(settings)")
-        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(it) })
+        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = true) })
     }
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
@@ -47,16 +48,20 @@ open class VersionUpdaterImpl @Inject constructor(
             }
         }
     }
-    private val dialogTitle = "Auto Update"
 
     @Subscribe open fun onCheckForUpdatesEvent(event: CheckForUpdatesEvent) {
         checkForUpdates(AsyncDialogSettings(dialogTitle, "Prüfe die aktuellste Version ..."))
     }
 
-    private fun onResult(result: VersionCheckResult) {
+    private fun onResult(result: VersionCheckResult, suppressUpToDateDialog: Boolean = false) {
+        log.trace("onResult(result={}, suppressUpToDateDialog={})", result, suppressUpToDateDialog)
         when (result) {
-            is VersionCheckResult.UpToDate -> dialogs.show(dialogTitle, "Juchu, du hast die aktuellste Version installiert!",
-                    arrayOf("Ok"), null, DialogType.INFO, currentActiveJFrame())
+            is VersionCheckResult.UpToDate -> {
+                if (suppressUpToDateDialog == false) {
+                    dialogs.show(dialogTitle, "Juchu, du hast die aktuellste Version installiert!",
+                            arrayOf("Ok"), null, DialogType.INFO, currentActiveJFrame())
+                }
+            }
             is VersionCheckResult.OutDated -> {
                 val selected = dialogs.show(dialogTitle, "Es gibt eine neuere Version von Gadsu.\n" +
                         "Du benutzt zur Zeit ${result.current.toLabel()} aber es ist bereits Version ${result.latest.toLabel()} verfügbar.\n" +
