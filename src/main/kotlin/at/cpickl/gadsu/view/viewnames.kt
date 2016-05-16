@@ -6,6 +6,7 @@ object ViewNames {
     val Main = MainViewNames
     val MenuBar = MenuBarViewNames
     val Client = ClientViewNames
+    val Appointment = AppointmentViewNames
     val Treatment = TreatmentViewNames
     val Acupunct = AcupunctViewNames
     val Preferences = PreferencesViewNames
@@ -50,6 +51,9 @@ object ClientViewNames {
     val InputBirthdayPrefix = "Client.InputBirthday" // will be added something like ".XXX"
 }
 
+object AppointmentViewNames {
+    val ListInClientView = "Appointment.ListInClientView"
+}
 object TreatmentViewNames {
     val MainPanel = "Treatment.MainPanel"
     val OpenNewButton = "Treatment.OpenNewButton"

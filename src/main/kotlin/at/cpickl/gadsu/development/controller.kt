@@ -3,6 +3,9 @@ package at.cpickl.gadsu.development
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.appointments.Appointment
+import at.cpickl.gadsu.appointments.AppointmentSavedEvent
+import at.cpickl.gadsu.appointments.AppointmentService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact
@@ -34,6 +37,7 @@ import javax.inject.Inject
 open class DevelopmentController @Inject constructor(
         private val clientService: ClientService,
         private val treatmentService: TreatmentService,
+        private val appointmentService: AppointmentService,
         private val bus: EventBus,
         private val mainFrame: MainFrame,
         private val currentClient: CurrentClient,
@@ -125,6 +129,15 @@ open class DevelopmentController @Inject constructor(
                 ).forEach {
                     treatmentService.insert(it)
                     bus.post(TreatmentCreatedEvent(it))
+                }
+
+                val appDate = "15.01.2020 14:30:00".parseDateTime()
+                arrayOf(
+                    Appointment.insertPrototype(clientId, appDate),
+                    Appointment.insertPrototype(clientId, appDate.plusDays(1))
+                ).forEach {
+                    val savedApp = appointmentService.insertOrUpdate(it)
+                    bus.post(AppointmentSavedEvent(savedApp))
                 }
             }
         }

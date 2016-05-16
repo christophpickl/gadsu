@@ -15,9 +15,11 @@ import org.springframework.jdbc.core.RowMapper
 interface AppointmentRepository {
 
     fun findAllFor(client: Client): List<Appointment>
+    fun findAllStartAfter(startPivot: DateTime, client: Client): List<Appointment>
     fun insert(appointment: Appointment): Appointment
     fun update(appointment: Appointment)
     fun delete(appointment: Appointment)
+    fun deleteAll(client: Client)
 
 }
 
@@ -29,14 +31,24 @@ class AppointmentJdbcRepository @Inject constructor(
     companion object {
 
         val TABLE = "appointment"
-    }
-    private val log = LoggerFactory.getLogger(javaClass)
 
+    }
+
+    private val log = LoggerFactory.getLogger(javaClass)
     override fun findAllFor(client: Client): List<Appointment> {
-        log.debug("findAllFor(client={})", client)
+        return findFor(client, "")
+    }
+    override fun findAllStartAfter(startPivot: DateTime, client: Client): List<Appointment> {
+        return findFor(client, "AND startDate > ?", startPivot.toSqlTimestamp())
+    }
+
+    private fun findFor(client: Client, whereClause: String, vararg args: Any): List<Appointment> {
+        log.debug("findXXX(whereClause={})", whereClause)
         client.ensurePersisted()
 
-        val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ?", arrayOf(client.id!!), Appointment.ROW_MAPPER)
+        val argsMerged = args.toMutableList()
+        argsMerged.add(0, client.id!!)
+        val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? $whereClause", argsMerged.toTypedArray(), Appointment.ROW_MAPPER)
         appointments.sort()
         return appointments
     }
@@ -48,11 +60,14 @@ class AppointmentJdbcRepository @Inject constructor(
         val newId = idGenerator.generate()
         jdbcx.update(
             """INSERT INTO $TABLE (
-                id, id_client, created, startDate, endDate
+                id, id_client, created, startDate, endDate,
+                note
             ) VALUES (
-                ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?,
+                ?
             )""",
-            newId, appointment.clientId, appointment.created.toSqlTimestamp(), appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp())
+            newId, appointment.clientId, appointment.created.toSqlTimestamp(), appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp(),
+            appointment.note)
 
         return appointment.copy(id = newId)
 
@@ -65,16 +80,24 @@ class AppointmentJdbcRepository @Inject constructor(
         jdbcx.update("""
                 UPDATE $TABLE SET
                     startDate = ?,
-                    endDate = ?
+                    endDate = ?,
+                    note = ?
                 WHERE
                     id = ?
-        """, appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp(), appointment.id!!)
+        """, appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp(), appointment.note,
+                appointment.id!!)
     }
 
     override fun delete(appointment: Appointment) {
         log.debug("delete(appointment={})", appointment)
         appointment.ensurePersisted()
-        jdbcx.deleteSingle("DELETE FROM ${TABLE} WHERE id = ?", appointment.id!!)
+        jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", appointment.id!!)
+    }
+
+    override fun deleteAll(client: Client) {
+        client.ensurePersisted()
+        val deleted = jdbcx.update("DELETE FROM $TABLE where id_client = ?", client.id)
+        log.trace("Deleted {} appointments for client: {}", deleted, client)
     }
 
 }
@@ -87,6 +110,7 @@ val Appointment.Companion.ROW_MAPPER: RowMapper<Appointment>
             rs.getString("id_client"),
             DateTime(rs.getTimestamp("created")),
             DateTime(rs.getTimestamp("startDate")),
-            DateTime(rs.getTimestamp("endDate"))
+            DateTime(rs.getTimestamp("endDate")),
+            rs.getString("note")
         )
     }

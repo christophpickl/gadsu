@@ -11,7 +11,6 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
-import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -23,7 +22,7 @@ import javax.swing.JPanel
 
 fun main(args: Array<String>) {
     Framed.showWithContext({
-        val view = TreatmentsInClientView(it.swing, TreatmentList(it.bus), it.bus)
+        val view = TreatmentsInClientView(it.swing, TreatmentList(it.bus))
         view.enableData(listOf(
                 Treatment.insertPrototype("3", 3, DateTime.now().plusDays(2)),
                 Treatment.insertPrototype("2", 2, DateTime.now().plusDays(1)),
@@ -35,8 +34,7 @@ fun main(args: Array<String>) {
 
 class TreatmentsInClientView @Inject constructor(
         private val swing: SwingFactory,
-        private val treatmentsList: TreatmentList,
-        private val bus: EventBus
+        private val treatmentsList: TreatmentList
 ): JPanel() {
     private val log = LoggerFactory.getLogger(javaClass)
 

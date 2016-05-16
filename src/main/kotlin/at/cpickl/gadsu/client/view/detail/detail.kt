@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client.view.detail
 
+import at.cpickl.gadsu.appointments.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.SaveClientEvent
@@ -49,6 +50,7 @@ open class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
         private val bus: EventBus,
         private val currentClient: CurrentClient,
+        private val appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
         private val treatmentSubview: TreatmentsInClientView // passed through to TabMain
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
@@ -61,7 +63,7 @@ open class SwingClientDetailView @Inject constructor(
 
     private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
 
-    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, treatmentSubview)
+    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview)
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 

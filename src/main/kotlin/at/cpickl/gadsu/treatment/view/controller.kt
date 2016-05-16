@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 @Logged
 open class TreatmentController @Inject constructor(
-        private val frame: MainFrame,
         private val treatmentViewFactory: TreatmentViewFactory,
         private val treatmentService: TreatmentService,
         private val currentClient: CurrentClient,

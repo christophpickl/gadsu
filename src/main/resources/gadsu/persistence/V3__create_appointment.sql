@@ -9,5 +9,7 @@ CREATE TABLE appointment (
   startDate TIMESTAMP NOT NULL,
   endDate TIMESTAMP NOT NULL,
 
+  note VARCHAR(1024) NOT NULL,
+
   FOREIGN KEY (id_client) REFERENCES client(id)
 );

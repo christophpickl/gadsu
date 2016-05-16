@@ -27,44 +27,37 @@ interface CurrentEvent {
 
 abstract class AbstractChangedEvent(override val id: String, override val oldData: Any?, override val newData: Any?) :
         AppEvent(), CurrentEvent {
+
+    override fun equals(other: Any?): Boolean{
+        if (this === other) return true
+        if (other !is AbstractChangedEvent) return false
+
+        if (id != other.id) return false
+        if (oldData != other.oldData) return false
+        if (newData != other.newData) return false
+
+        return true
+    }
     override fun hashCode(): Int{
         var result = id.hashCode()
         result += 31 * result + (oldData?.hashCode() ?: 0)
         result += 31 * result + (newData?.hashCode() ?: 0)
         return result
     }
+
     override fun toString(): String{
         return "${javaClass.simpleName}(id='$id', oldData=$oldData, newData=$newData)"
     }
 }
+
 class CurrentChangedEvent(id: String, oldData: Any?, newData: Any?) : AbstractChangedEvent(id, oldData, newData) {
     companion object {
         // for extensions
-    }
-    override fun equals(other: Any?): Boolean{
-        if (this === other) return true
-        if (other !is CurrentChangedEvent) return false
-
-        if (id != other.id) return false
-        if (oldData != other.oldData) return false
-        if (newData != other.newData) return false
-
-        return true
     }
 }
 class CurrentPropertiesChangedEvent(id: String, oldData: Any?, newData: Any?) : AbstractChangedEvent(id, oldData, newData) {
     companion object {
         // for extensions
-    }
-    override fun equals(other: Any?): Boolean{
-        if (this === other) return true
-        if (other !is CurrentPropertiesChangedEvent) return false
-
-        if (id != other.id) return false
-        if (oldData != other.oldData) return false
-        if (newData != other.newData) return false
-
-        return true
     }
 }
 
@@ -114,8 +107,8 @@ class CurrentClient @Inject constructor(bus: EventBus) :
     }
 }
 
-fun CurrentEvent.forClient(function: (Client) -> Unit) {
-    if (this.id == CurrentClient.ID) function(this.newData as Client)
+fun CurrentEvent.forClient(function: (Client?) -> Unit) {
+    if (this.id == CurrentClient.ID) function(this.newData as Client?)
 }
 
 class CurrentTreatment @Inject constructor(bus: EventBus) :

@@ -10,12 +10,13 @@ data class Appointment(
         val clientId: String,
         val created: DateTime,
         val start: DateTime,
-        val end: DateTime
+        val end: DateTime,
+        val note: String
 ) : Comparable<Appointment>, HasId, Persistable {
 
     companion object {
         fun insertPrototype(clientId: String, start: DateTime): Appointment {
-            return Appointment(null, clientId, DateTime.now(), start, start.plusHours(1))
+            return Appointment(null, clientId, DateTime.now(), start, start.plusHours(1), "")
         }
     }
 

@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.appointments.AppointmentService
 import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
@@ -29,6 +30,7 @@ class ClientServiceImpl @Inject constructor(
         private val clientRepo: ClientRepository,
         private val xpropsService: XPropsService,
         private val treatmentService: TreatmentService,
+        private val appointmentService: AppointmentService,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
         private val clock: Clock,
@@ -99,6 +101,7 @@ class ClientServiceImpl @Inject constructor(
             // cascade delete
             xpropsService.deleteAll(client)
             treatmentService.deleteAll(client)
+            appointmentService.deleteAll(client)
 
             clientRepo.delete(client)
             bus.post(ClientDeletedEvent(client))

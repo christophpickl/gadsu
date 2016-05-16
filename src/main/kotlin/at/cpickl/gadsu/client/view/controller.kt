@@ -127,7 +127,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {
-        event.forClient { if (it.yetPersisted) view.masterView.changeClient(it) }
+        event.forClient { if (it != null && it.yetPersisted) view.masterView.changeClient(it) }
     }
 
     @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {

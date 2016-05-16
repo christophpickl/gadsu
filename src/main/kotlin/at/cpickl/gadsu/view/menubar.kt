@@ -58,7 +58,7 @@ open class GadsuMenuBarController @Inject constructor(
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
         event.forClient {
-            menuBar.itemProtocol.isEnabled = it.yetPersisted
+            menuBar.itemProtocol.isEnabled = it != null && it.yetPersisted
         }
     }
 

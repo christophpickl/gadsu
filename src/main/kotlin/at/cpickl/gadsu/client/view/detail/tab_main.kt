@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
+import at.cpickl.gadsu.appointments.view.AppoinmentsInClientView
+import at.cpickl.gadsu.appointments.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
@@ -12,6 +14,7 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.FormPanel
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
@@ -31,7 +34,8 @@ fun main(args: Array<String>) {
             ModificationChecker(object : ModificationAware {
                 override fun isModified() = true
             }),
-            TreatmentsInClientView(context.swing, TreatmentList(context.bus), context.bus))
+            AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
+            TreatmentsInClientView(context.swing, TreatmentList(context.bus)))
     }, Dimension(800, 600))
 }
 
@@ -44,7 +48,8 @@ class DisabledTextField(initialValue: String = ""): JTextField(initialValue) {
 class ClientTabMain(
         initialClient: Client,
         modificationChecker: ModificationChecker,
-        treatmentSubview: TreatmentsInClientView
+        appointmentsSubView: AppoinmentsInClientView,
+        treatmentsSubview: TreatmentsInClientView
 ) : DefaultClientTab(Labels.Tabs.ClientMain) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -118,7 +123,7 @@ class ClientTabMain(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 0.0
         c.weighty = 0.0
-        add(treatmentSubview)
+        add(initListsPanel(appointmentsSubView, treatmentsSubview))
 
         c.gridx = 0
         c.gridy++
@@ -130,6 +135,17 @@ class ClientTabMain(
         add(inpNote.toComponent())
     }
 
+    private fun initListsPanel(appointmentsSubView: AppoinmentsInClientView, treatmentsSubview: TreatmentsInClientView) = GridPanel().apply {
+        with (c) {
+            weightx = 1.0
+            weighty = 0.5
+            c.fill = GridBagConstraints.BOTH
+            add(appointmentsSubView)
+
+            gridy++
+            add(treatmentsSubview)
+        }
+    }
 
     override fun isModified(client: Client): Boolean {
         return fields.isAnyModified(client)

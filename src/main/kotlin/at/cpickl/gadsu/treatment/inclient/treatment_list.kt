@@ -26,7 +26,9 @@ class TreatmentList @Inject constructor(
         ViewNames.Treatment.ListInClientView,
         MyListModel<Treatment>(),
         bus,
-        TreatmentListCellRenderer()
+        object : MyListCellRenderer<Treatment>() {
+            override fun newCell(value: Treatment) = TreatmentCell(value)
+        }
 ) {
     init {
         initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })
@@ -56,6 +58,3 @@ class TreatmentCell(val treatment: Treatment): DefaultCellView<Treatment>(treatm
 
 }
 
-private class TreatmentListCellRenderer : MyListCellRenderer<Treatment>() {
-    override fun newCell(value: Treatment) = TreatmentCell(value)
-}
