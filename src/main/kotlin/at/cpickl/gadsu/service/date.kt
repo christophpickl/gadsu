@@ -15,6 +15,7 @@ class DateFormats {
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val DATE_TIME_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yy, HH:mm 'Uhr'").withLocale(Languages.locale)
 
+        val DATE_TIME_FILE: DateTimeFormatter = DateTimeFormat.forPattern("yyyy_MM_dd_HH_mm_ss")
     }
 }
 
@@ -42,6 +43,7 @@ fun DateTime.formatTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.print
 fun DateTime.formatDate() = DateFormats.DATE.print(this)
 fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
+fun DateTime.formatDateTimeFile() = DateFormats.DATE_TIME_FILE.print(this)
 
 fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
 fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
@@ -54,6 +56,7 @@ fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDat
  * Eg: "31.12.2001 14:21:42"
  */
 fun String.parseDateTime() = DateFormats.DATE_TIME.parseDateTime(this)
+fun String.parseDateTimeFile() = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 
 // --------------------------------------------------------------------------- clock
 

@@ -25,3 +25,5 @@
   * 5h ... enhanced reporting
   * 10h ... more treatment fields and UI polishing
   * 10h ... auto update, exception handler, UI polishing
+  * 10h ... gcal integration
+  * 5h ... auto backup

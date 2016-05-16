@@ -71,3 +71,17 @@ class LogTestListener :  ITestNGListener, ITestListener {
     }
 
 }
+
+class LogTestEnablerListener :  ITestNGListener, ITestListener {
+    override fun onStart(context: ITestContext) {
+        TestLogger().configureLog()
+    }
+    override fun onFinish(context: ITestContext) { }
+    override fun onTestStart(result: ITestResult) { }
+    override fun onTestSuccess(result: ITestResult) { }
+    override fun onTestSkipped(result: ITestResult) { }
+    override fun onTestFailure(result: ITestResult) { }
+    override fun onTestFailedButWithinSuccessPercentage(result: ITestResult) { }
+
+
+}

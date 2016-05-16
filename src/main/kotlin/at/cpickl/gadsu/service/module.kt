@@ -16,7 +16,9 @@ class ServiceModule() : AbstractModule() {
 
         bind(MetaInf::class.java).toProvider(MetaInfLoader::class.java).`in`(Scopes.SINGLETON)
 
-        bind(WebPageOpener::class.java).to(SwingWebPageOpener::class.java).asEagerSingleton()
+        bind(WebPageOpener::class.java).to(SwingWebPageOpener::class.java).asEagerSingleton() // talks only via event bus
+
+        bind(FileSystem::class.java).to(FileSystemImpl::class.java).`in`(Scopes.SINGLETON)
 
         install(CurrentModule())
     }
