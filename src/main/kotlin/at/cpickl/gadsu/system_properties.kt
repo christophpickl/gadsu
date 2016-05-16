@@ -8,7 +8,7 @@ object GadsuSystemPropertyKeys {
     val disableAutoUpdate = "gadsu.disableAutoUpdate"
 }
 
-
+// TODO refactor system properties handling as cleiter said
 fun String.spReadBooleanOrDefault(orDefault: Boolean): Boolean {
     return spReadBooleanOrNull() ?: orDefault
 }
