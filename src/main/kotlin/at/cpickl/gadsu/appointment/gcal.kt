@@ -28,10 +28,7 @@ import javax.inject.Inject
 class GCalModule : AbstractModule() {
     override fun configure() {
 
-        bind(GCalConnector::class.java).toInstance(GCalConnectorImpl(
-                applicationName = "gadsu",
-                dataStore = File(GADSU_DIRECTORY, "gcal_datastore.json"),
-                credentialsReader = InputStreamReader(javaClass.getResourceAsStream("/gadsu/gcal_client_secret.json"))))
+        bind(GCalConnector::class.java).toInstance(GCalConnectorImpl())
 
         bind(GCalRepositoryImpl::class.java).to(GCalRepository::class.java)
     }
@@ -55,15 +52,11 @@ class CalendarIdProvider @Inject constructor(
             if (calendarName == null) {
 
             }
-            cachedCalendarId = transformCalendarNameToId(connector.connect(), calendarName)
+            val cal = connector.connect()
+            cachedCalendarId = cal.transformCalendarNameToId(calendarName!!)
         }
         return cachedCalendarId!!
 
-    }
-    private fun transformCalendarNameToId(cal: com.google.api.services.calendar.Calendar, name: String): String {
-        val calendars = cal.calendarList().list().setMaxResults(100).execute().items
-        return calendars.firstOrNull { it.summary.equals(name) }?.id ?: throw GadsuException("Could not find calendar by name '$name'! " +
-                "(Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
     }
 
 }
@@ -76,7 +69,7 @@ class GCalRepositoryImpl @Inject constructor(
     private lateinit var calendarId: String
     private val cal: com.google.api.services.calendar.Calendar by lazy {
         val connection = connector.connect()
-        calendarId = transformCalendarNameToId(connection, calendarName)
+        calendarId = connection.transformCalendarNameToId(calendarName)
         connection
     }
 
@@ -96,10 +89,15 @@ class GCalRepositoryImpl @Inject constructor(
     // https://developers.google.com/google-apps/calendar/create-events
     fun createEvent(calendarId: String, summary: String, description: String, start: org.joda.time.DateTime, durationInMin: Int) {
         val newEvent = Event()
+//                .setId(UUID.randomUUID().toString()) // possible to set custom ID (which will be the same as the AppointmentID)
                 .setSummary(summary)
+//                .setAttendees()
+//                .setReminders()
                 .setDescription(description)
                 .setStart(start.toGEventDateTime())
                 .setEnd(start.plusMinutes(durationInMin).toGEventDateTime())
+//                .setExtendedProperties(Event.ExtendedProperties().set("MYappointmentId", "fuchur"))
+                .set("MYappointmentId", "fuchur")
         val savedEvent = cal.events().insert(calendarId, newEvent).execute()
         println("Saved event: ${savedEvent.htmlLink}")
         println("ID: ${savedEvent.id}")
@@ -131,9 +129,9 @@ interface GCalConnector {
 }
 
 class GCalConnectorImpl constructor(
-        private val applicationName: String,
-        private val credentialsReader: Reader,
-        private val dataStore: File
+        private val applicationName: String = "gadsu",
+        private val credentialsReader: Reader = InputStreamReader(GCalConnectorImpl::class.java.getResourceAsStream("/gadsu/gcal_client_secret.json")),
+        private val dataStore: File = File(GADSU_DIRECTORY, "gcal_datastore.json")
 ) : GCalConnector {
     private val log = LOG(javaClass)
 
@@ -163,4 +161,12 @@ class GCalConnectorImpl constructor(
         return credential
     }
 
+}
+
+private val log = LOG(com.google.api.services.calendar.Calendar::class.java as Class<Any>)
+fun com.google.api.services.calendar.Calendar.transformCalendarNameToId(name: String): String {
+    log.debug("transformCalendarNameToId(name={})", name)
+    val calendars = this.calendarList().list().setMaxResults(100).execute().items
+    return calendars.firstOrNull { it.summary.equals(name) }?.id ?: throw GadsuException("Could not find calendar by name '$name'! " +
+            "(Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
 }
