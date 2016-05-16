@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
+import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
@@ -32,10 +33,11 @@ abstract class HsqldbTest {
     }
     protected val TABLE_CLIENT = ClientJdbcRepository.TABLE
     protected val TABLE_TREATMENT = TreatmentJdbcRepository.TABLE
+    protected val TABLE_APPOINTMENT = AppointmentJdbcRepository.TABLE
     protected val TABLE_XPROPS = XPropsSqlJdbcRepository.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf(TABLE_XPROPS, TABLE_TREATMENT, TABLE_CLIENT)
+    private val allTables = arrayOf(TABLE_XPROPS, TABLE_APPOINTMENT, TABLE_TREATMENT, TABLE_CLIENT)
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
@@ -81,8 +83,6 @@ abstract class HsqldbTest {
         assertThat("Expected table '$tableName' to be empty.", jdbcx.countTableEntries(tableName), equalTo(0))
     }
 
-
-
     protected fun insertClientViaRepo(prototype: Client = Client.unsavedValidInstance()): Client {
         return ClientJdbcRepository(jdbcx, idGenerator).insertWithoutPicture(prototype)
     }
@@ -93,11 +93,6 @@ abstract class HsqldbTest {
 
     protected fun insertTreatment(prototype: Treatment, id: String = TEST_UUID1): Treatment {
         return TreatmentJdbcRepository(jdbcx, SimpleTestableIdGenerator(id)).insert(prototype)
-    }
-
-
-    protected fun <T> assertEmptyRows(table: String, mapper: RowMapper<T>) {
-        assertRows(table, mapper)
     }
 
     protected fun <T> assertRows(table: String, mapper: RowMapper<T>, vararg expected: T) {

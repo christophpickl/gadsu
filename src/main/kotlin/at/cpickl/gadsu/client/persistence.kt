@@ -119,8 +119,7 @@ class ClientJdbcRepository @Inject constructor(
     override fun delete(client: Client) {
         log.debug("delete(client={})", client)
         client.ensurePersisted()
-
-        jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id)
+        jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id!!)
     }
 
 }

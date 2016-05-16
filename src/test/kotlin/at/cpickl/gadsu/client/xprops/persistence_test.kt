@@ -41,7 +41,7 @@ class XPropsSqlJdbcRepositoryTest : HsqldbTest() {
     fun `delete, single prop inserted`() {
         testee.insert(client, listOf(testProp))
         testee.delete(client)
-        assertEmptyRows(table, mapper)
+        assertEmptyTable(table)
     }
 
 }

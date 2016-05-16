@@ -28,6 +28,7 @@ Med
 * [2] check for database lock file
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
 * [1] UI: logo for windows icon
+* ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * [1] add DB constraint that firstName+lastName combination is unique!
 * AOP logging for all service + repository classes
 * konkurrenz analyse
