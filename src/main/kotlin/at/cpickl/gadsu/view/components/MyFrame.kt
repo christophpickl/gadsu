@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view.components
 
-import org.slf4j.LoggerFactory
 import java.awt.Point
 import javax.swing.BorderFactory
 import javax.swing.JFrame
@@ -27,7 +26,7 @@ open class MyFrame(private val myTitle: String) : JFrame() {
     //    }
 
     protected fun hideAndClose() {
-        setVisible(false)
+        isVisible = false
         dispose()
     }
 

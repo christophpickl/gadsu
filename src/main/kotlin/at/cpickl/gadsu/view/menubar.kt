@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
@@ -15,10 +16,13 @@ import at.cpickl.gadsu.service.forClient
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
+import java.awt.Toolkit
+import java.awt.event.KeyEvent
 import javax.inject.Inject
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
+import javax.swing.KeyStroke
 
 
 enum class MenuBarEntry {
@@ -78,7 +82,11 @@ class GadsuMenuBar @Inject constructor(
 
         if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
-            menuApp.addItem("Einstellungen", ShowPreferencesEvent())
+
+            val shortcut = if (IS_OS_MAC) {
+                KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, Toolkit.getDefaultToolkit ().menuShortcutKeyMask) // CTRL for win/linux, and CMD for mac
+            } else null
+            menuApp.addItem("Einstellungen", ShowPreferencesEvent(), shortcut)
         }
 
 //        val itemExport = JMenuItem("Export")
@@ -106,9 +114,10 @@ class GadsuMenuBar @Inject constructor(
         add(menuReports)
     }
 
-    private fun JMenu.addItem(label: String, event: Any) {
+    private fun JMenu.addItem(label: String, event: Any, shortcut: KeyStroke? = null) {
         val item = JMenuItem(label)
         item.addActionListener { e -> bus.post(event) }
+        if (shortcut != null) item.accelerator = shortcut
         add(item)
     }
 

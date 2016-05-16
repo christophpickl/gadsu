@@ -26,6 +26,7 @@ High
 Med
 ------------------------------------------------------------
 * [2] check for database lock file
+* [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
 * [1] UI: logo for windows icon
 * [1] add DB constraint that firstName+lastName combination is unique!
 * AOP logging for all service + repository classes

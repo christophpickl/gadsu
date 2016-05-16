@@ -35,7 +35,7 @@ open class VersionUpdaterImpl @Inject constructor(
 
     private fun checkForUpdates(settings: AsyncDialogSettings?) {
         log.debug("validateVersion(settings)")
-        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = true) })
+        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = settings == null) })
     }
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
@@ -56,21 +56,25 @@ open class VersionUpdaterImpl @Inject constructor(
     private fun onResult(result: VersionCheckResult, suppressUpToDateDialog: Boolean = false) {
         log.trace("onResult(result={}, suppressUpToDateDialog={})", result, suppressUpToDateDialog)
         when (result) {
+
             is VersionCheckResult.UpToDate -> {
                 if (suppressUpToDateDialog == false) {
                     dialogs.show(dialogTitle, "Juchu, du hast die aktuellste Version installiert!",
                             arrayOf("Ok"), null, DialogType.INFO, currentActiveJFrame())
                 }
             }
+
             is VersionCheckResult.OutDated -> {
                 val selected = dialogs.show(dialogTitle, "Es gibt eine neuere Version von Gadsu.\n" +
                         "Du benutzt zur Zeit ${result.current.toLabel()} aber es ist bereits Version ${result.latest.toLabel()} verfügbar.\n" +
                         "Bitte lade die neueste Version herunter.",
                         arrayOf("Download starten"), null, DialogType.WARN, currentActiveJFrame())
+
                 if (selected == null) {
                     log.debug("User closed window by hitting the close button, seems as he doesnt care about using the latest version :-/")
                     return
                 }
+
                 val version = result.latest.toLabel()
                 val downloadUrl = "https://github.com/christophpickl/gadsu/releases/download/v$version/Gadsu-$version.$suffix"
                 log.info("Going to download latest gadsu version from: {}", downloadUrl)

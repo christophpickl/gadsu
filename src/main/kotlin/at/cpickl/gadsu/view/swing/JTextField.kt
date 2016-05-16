@@ -6,8 +6,14 @@ import javax.swing.JTextField
 import javax.swing.text.AbstractDocument
 import javax.swing.text.AttributeSet
 import javax.swing.text.DocumentFilter
+import javax.swing.text.JTextComponent
 import javax.swing.text.PlainDocument
 
+fun <T : JTextComponent> T.disabled(): T {
+    isEditable = false
+    isEnabled = false
+    return this
+}
 
 fun JTextField.enforceMaxCharacters(enforcedLength: Int) {
     // MINOR @UI - instead of replace, maybe delegate to original document?!

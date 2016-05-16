@@ -26,6 +26,7 @@ class FileSystemImpl : FileSystem {
 
     override fun ensureExists(directory: File) {
         if (directory.exists() == false) {
+            log.debug("Creating new directory to ensure it exists: {}", directory.absolutePath)
             val successfull = directory.mkdirs()
             if (!successfull) {
                 throw GadsuException("Could not create dirs: ${directory.absolutePath}")
@@ -53,6 +54,7 @@ class FileSystemImpl : FileSystem {
     }
 
     override fun delete(toDelete: File) {
+        log.trace("delete(toDelete={})", toDelete.absolutePath)
         if (toDelete.delete() == false) {
             throw GadsuException("Could not delete: ${toDelete.absolutePath}")
         }

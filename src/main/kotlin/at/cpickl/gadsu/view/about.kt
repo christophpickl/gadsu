@@ -24,6 +24,7 @@ import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
+import javax.swing.SwingUtilities
 
 fun main(args: Array<String>) {
     AboutWindow(MetaInf(Version.DUMMY, DateTime.now()), null, EventBus()).isVisible = true
@@ -77,7 +78,7 @@ class AboutWindow @Inject constructor(
         panel.add(title)
         panel.c.gridy++
         val aboutText = HtmlEditorPane()
-        aboutText.changeLabelFont(10.0F)
+        aboutText.changeLabelFontSize(10.0F)
         aboutText.text =
                 "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
                 "Version ${metaInf.applicationVersion.toLabel()}<br>" +
@@ -93,7 +94,7 @@ class AboutWindow @Inject constructor(
         contentPane.layout = BorderLayout()
         contentPane.add(panel, BorderLayout.CENTER)
         pack()
-        isResizable = false
-        setLocationRelativeTo(mainFrame?.asJFrame())
+        SwingUtilities.invokeLater { isResizable = false
+            setLocationRelativeTo(mainFrame?.asJFrame()) }
     }
 }

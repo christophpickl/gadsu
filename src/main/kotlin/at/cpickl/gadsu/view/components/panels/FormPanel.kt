@@ -1,12 +1,15 @@
 package at.cpickl.gadsu.view.components.panels
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.addLeft
+import at.cpickl.gadsu.view.swing.addTop
 import at.cpickl.gadsu.view.swing.bold
-import at.cpickl.gadsu.view.swing.increaseLeft
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
+import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import javax.swing.JLabel
 
@@ -14,20 +17,41 @@ import javax.swing.JLabel
 open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST) : GridPanel() {
     private val insetsCol1 = Insets(5, 0, 0, 4) // add a bit to the top, and 4 on the right to create a h-gap
     private val insetsCol2 = Insets(0, 0, 0, 0)
-    private val insetsCol2leftIncreased = insetsCol2.increaseLeft(5)
+    private val insetsCol2leftIncreased = insetsCol2.addLeft(5)
 
     init {
         c.anchor = GridBagConstraints.NORTHWEST
     }
 
-    open fun addFormInput(label: String, input: Component, fillType: GridBagFill = GridBagFill.Horizontal, icon: ImageIcon? = null) {
+    open fun addDescriptiveFormInput(
+            label: String,
+            input: Component,
+            description: String,
+            fillType: GridBagFill = GridBagFill.Horizontal,
+            icon: ImageIcon? = null,
+            addTopInset: Int = 0
+    ) {
+        addFormInput(label, input, fillType, icon, addTopInset)
+        val txtDescription = HtmlEditorPane(description).changeLabelFontSize(11.0F)
+        txtDescription.border = BorderFactory.createEmptyBorder(0, 5, 0, 0)
+        addFormInput("", txtDescription, GridBagFill.Both, null)
+    }
+
+
+    open fun addFormInput(
+            label: String,
+            input: Component,
+            fillType: GridBagFill = GridBagFill.Horizontal,
+            icon: ImageIcon? = null,
+            addTopInset: Int = 0
+    ) {
         c.gridheight = 1
 
         c.weightx = 0.0
         c.weighty = 0.0
         c.fill = GridBagConstraints.NONE
         c.anchor = labelAnchor
-        c.insets = insetsCol1
+        c.insets = insetsCol1.addTop(addTopInset)
         add(JLabel(label).bold())
 
         addIconMaybe(icon)
@@ -42,6 +66,7 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         } else {
             c.insets = insetsCol2
         }
+        c.insets = c.insets.addTop(addTopInset)
         add(input)
 
         c.gridy++
@@ -72,13 +97,19 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
 
 
 /**
- * Like Form, but vertically aligned and vertical space is evenly distributed
+ * Like Form, but vertically aligned and vertical space is evenly distributed.
+ *
+ * Used in treatment view.
  */
 class VFillFormPanel : FormPanel() {
     init {
         c.anchor = GridBagConstraints.NORTHWEST
     }
-    override fun addFormInput(label: String, input: Component, fillType: GridBagFill, icon: ImageIcon?) {
+
+    /**
+     * @param addTopInset not used in this subclass :-p
+     */
+    override fun addFormInput(label: String, input: Component, fillType: GridBagFill, icon: ImageIcon?, addTopInset: Int) {
         c.weightx = 0.0
         c.weighty = 0.0
         c.fill = GridBagConstraints.NONE

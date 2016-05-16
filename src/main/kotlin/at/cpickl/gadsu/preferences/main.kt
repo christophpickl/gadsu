@@ -5,7 +5,7 @@ import at.cpickl.gadsu.UserEvent
 
 class ShowPreferencesEvent : UserEvent()
 
-class PreferencesWindowClosedEvent : UserEvent()
+class PreferencesWindowClosedEvent(val persistData: Boolean) : UserEvent()
 
 data class PreferencesData(
         val username: String,

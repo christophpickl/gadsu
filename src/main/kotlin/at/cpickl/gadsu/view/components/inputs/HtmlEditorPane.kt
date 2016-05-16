@@ -18,14 +18,15 @@ class HtmlEditorPane(initText: String = "") : JEditorPane() {
 
     fun addOnUrlClickListener(listener: (URL) -> Unit) {
         addHyperlinkListener { e ->
-            if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+            if (HyperlinkEvent.EventType.ACTIVATED.equals(e.eventType)) {
                 listener(e.url)
             }
         }
     }
 
-    fun changeLabelFont(size: Float) {
+    fun changeLabelFontSize(size: Float): HtmlEditorPane {
         font = JLabel().font.deriveFont(size)
+        return this
     }
 
 }

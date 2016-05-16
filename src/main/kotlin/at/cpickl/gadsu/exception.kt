@@ -27,13 +27,6 @@ fun main(args: Array<String>) {
 
 open class GadsuException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
-/**
- * Marker interface marking an exception to be caught and presented to the client.
- */
-interface GadsuUserException
-
-
-
 object GlobalExceptionHandler {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -51,6 +44,22 @@ object GlobalExceptionHandler {
     fun showDialogAndDie(throwable: Throwable) {
         log.error("Uncaught exception, going to die!", throwable)
         PanicDialog(mainFrame, { System.exit(1) }).showIt()
+    }
+
+    fun exceptionSafe(action: () -> Unit) {
+        try {
+            action.invoke()
+        } catch(e: Exception) {
+            GlobalExceptionHandler.showDialogAndDie(e)
+        }
+    }
+
+
+    fun startThread(action: () -> Unit) {
+        Thread(Runnable {
+            log.trace("Started new thread.")
+            exceptionSafe(action)
+        }).start()
     }
 
 }

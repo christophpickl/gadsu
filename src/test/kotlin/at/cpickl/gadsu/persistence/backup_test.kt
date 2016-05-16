@@ -104,7 +104,7 @@ import java.io.File
         verifyNoMoreInteractions(files)
     }
 
-    private fun testee() = BackupController(clock, assist, metaInf, files)
+    private fun testee() = BackupControllerImpl(clock, assist, metaInf, files)
 
     private fun backupItem(date: DateTime) = BackupItem(date, version1)
 
