@@ -2,13 +2,11 @@ package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDateTime
-import at.cpickl.gadsu.tcm.ElementsStarView
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.changeBackgroundForASec
-import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import java.awt.Color
@@ -58,14 +56,13 @@ class DevelopmentFrame(
         panel.c.fill = GridBagConstraints.BOTH
         panel.add(events.scrolled())
 
-        panel.c.gridy++
-        panel.c.weighty = 0.0
-        panel.c.fill = GridBagConstraints.NONE
-        panel.c.anchor = GridBagConstraints.CENTER
-        panel.add(ElementsStarView(bus, 40).apply { enforceSize(200, 180) })
+//        panel.c.gridy++
+//        panel.c.weighty = 0.0
+//        panel.c.fill = GridBagConstraints.NONE
+//        panel.c.anchor = GridBagConstraints.CENTER
+//        panel.add(ElementsStarView(bus, 40).apply { enforceSize(200, 180) })
 
         contentPane.add(panel)
-
         size = Dimension(400, 600)
         location = initLocation
     }

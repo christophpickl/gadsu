@@ -24,7 +24,6 @@ import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
-import javax.swing.SwingUtilities
 
 fun main(args: Array<String>) {
     AboutWindow(MetaInf(Version.DUMMY, DateTime.now()), null, EventBus()).isVisible = true
@@ -61,40 +60,45 @@ class AboutWindow @Inject constructor(
         mainFrame: MainFrame?,
         bus: EventBus
 ) : JFrame() {
+
+    private val HGAP_WINDOW = 35
+
     init {
         title = ""
         rootPane.enableSmallWindowStyle()
         isAlwaysOnTop = true
 
         val panel = GridPanel()
-        panel.border = BorderFactory.createEmptyBorder(10, 40, 10, 40)
+
+        panel.border = BorderFactory.createEmptyBorder(10, HGAP_WINDOW, 10, HGAP_WINDOW)
         panel.c.anchor = GridBagConstraints.CENTER
         panel.c.insets = Insets(0, 0, 10, 0)
-
         panel.add(JLabel(ImageIcon(javaClass.getResource("/gadsu/logo100.png"))))
+
         panel.c.gridy++
         val title = JLabel("Gadsu")
         title.font = title.font.deriveFont(17.0F).deriveFont(Font.BOLD)
         panel.add(title)
+
         panel.c.gridy++
         val aboutText = HtmlEditorPane()
+        panel.c.weightx = 1.0
+        panel.c.fill = GridBagConstraints.HORIZONTAL
         aboutText.changeLabelFontSize(10.0F)
         aboutText.text =
-                "<div style='text-align:center;'>" + //font-family:${title.font.fontName};font-weight:normal;font-size:10pt'>" +
+                "<div style='text-align:center;'>" +
                 "Version ${metaInf.applicationVersion.toLabel()}<br>" +
                 "(${metaInf.built.formatDateTime()})<br>" +
                 "by Christoph Pickl<br>" +
                 "<br>" +
                 """Visit the <a href="https://github.com/christophpickl/gadsu">Website</a>"""
         aboutText.addOnUrlClickListener { bus.post(OpenWebpageEvent(it)) }
-
         panel.add(aboutText)
-
 
         contentPane.layout = BorderLayout()
         contentPane.add(panel, BorderLayout.CENTER)
         pack()
-        SwingUtilities.invokeLater { isResizable = false
-            setLocationRelativeTo(mainFrame?.asJFrame()) }
+        isResizable = false
+        setLocationRelativeTo(mainFrame?.asJFrame())
     }
 }
