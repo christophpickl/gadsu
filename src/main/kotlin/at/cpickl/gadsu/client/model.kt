@@ -7,8 +7,8 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.HasId
-import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
@@ -44,8 +44,7 @@ data class Client(
                 MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 
-    override val yetPersisted: Boolean
-        get() = id != null
+    override val yetPersisted: Boolean get() = id != null
 
     val fullName: String
         get() {

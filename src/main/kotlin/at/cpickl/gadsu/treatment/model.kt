@@ -2,8 +2,8 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.HasId
-import at.cpickl.gadsu.service.Persistable
 import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.clearSeconds
 import at.cpickl.gadsu.service.isQuarterMinute

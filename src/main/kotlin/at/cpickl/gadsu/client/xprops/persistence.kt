@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.client.xprops
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ensurePersisted
 import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensurePersisted
 import com.google.common.annotations.VisibleForTesting
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper

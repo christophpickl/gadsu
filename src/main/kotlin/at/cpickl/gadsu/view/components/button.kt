@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.service.Persistable
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.language.Labels
 import com.google.common.eventbus.EventBus

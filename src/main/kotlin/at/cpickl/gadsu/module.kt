@@ -1,6 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.acupuncture.AcupunctureModule
+import at.cpickl.gadsu.appointments.AppointmentModule
 import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.development.DevelopmentModule
 import at.cpickl.gadsu.export.ExportModule
@@ -55,6 +56,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
         install(ClientModule())
         install(TreatmentModule())
+        install(AppointmentModule())
 
         install(ImageModule())
         install(ExportModule())

@@ -7,8 +7,8 @@ import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
 import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.PersistenceErrorCode
-import at.cpickl.gadsu.persistence.PersistenceException
+import at.cpickl.gadsu.persistence.ensureNotPersisted
+import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toBufferedImage
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
@@ -123,17 +123,6 @@ class ClientJdbcRepository @Inject constructor(
         jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", client.id)
     }
 
-}
-
-fun Client.ensurePersisted() {
-    if (!yetPersisted) {
-        throw PersistenceException("Client must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
-    }
-}
-fun Client.ensureNotPersisted() {
-    if (yetPersisted) {
-        throw PersistenceException("Client must not have set an ID! ($this)", PersistenceErrorCode.EXPECTED_NOT_YET_PERSISTED)
-    }
 }
 
 @Suppress("UNUSED")

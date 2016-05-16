@@ -16,10 +16,6 @@ interface HasId {
     val id: String?
 }
 
-interface Persistable {
-    val yetPersisted: Boolean
-}
-
 interface IdGenerator {
     fun generate(): String
 }

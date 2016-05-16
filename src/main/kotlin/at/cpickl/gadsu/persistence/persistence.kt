@@ -17,6 +17,9 @@ import java.sql.Timestamp
 import javax.inject.Inject
 import javax.sql.DataSource
 
+interface Persistable {
+    val yetPersisted: Boolean
+}
 
 /**
  * Extend date format custom to HSQLDB timestamp.
@@ -99,6 +102,19 @@ open class DatabaseManager @Inject constructor(
 }
 
 // --------------------------------------------------------------------------- extension methods
+
+
+fun Persistable.ensurePersisted() {
+    if (!yetPersisted) {
+        throw PersistenceException("Persistable must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
+    }
+}
+
+fun Persistable.ensureNotPersisted() {
+    if (yetPersisted) {
+        throw PersistenceException("Persistable must not have set an ID! ($this)", PersistenceErrorCode.EXPECTED_NOT_YET_PERSISTED)
+    }
+}
 
 fun DateTime.toSqlTimestamp() = Timestamp(millis)
 
