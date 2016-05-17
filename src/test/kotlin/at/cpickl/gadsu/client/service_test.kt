@@ -1,5 +1,9 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
+import at.cpickl.gadsu.appointments.AppointmentRepository
+import at.cpickl.gadsu.appointments.AppointmentService
+import at.cpickl.gadsu.appointments.AppointmentServiceImpl
 import at.cpickl.gadsu.client.xprops.ROW_MAPPER
 import at.cpickl.gadsu.client.xprops.SProp
 import at.cpickl.gadsu.client.xprops.XPropsService
@@ -34,6 +38,8 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var propsService: XPropsService
     private lateinit var treatmentRepo: TreatmentRepository
     private lateinit var treatmentService: TreatmentService
+    private lateinit var appointmentRepo: AppointmentRepository
+    private lateinit var appointmentService: AppointmentService
 
     private lateinit var testee: ClientService
 
@@ -44,8 +50,11 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         propsService = XPropsServiceImpl(propsRepo)
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
         treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx, bus, clock)
+        appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)
+        appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock)
 
-        testee = ClientServiceImpl(clientRepo, propsService, treatmentService, jdbcx, bus, clock, currentClient)
+        testee = ClientServiceImpl(clientRepo, propsService, treatmentService, appointmentService,
+                jdbcx, bus, clock, currentClient)
     }
 
     fun `insert client sunshine`() {
