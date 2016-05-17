@@ -2,6 +2,7 @@ package at.cpickl.gadsu.persistence
 
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.GADSU_DIRECTORY
+import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.GlobalExceptionHandler
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.FileSystem
@@ -77,6 +78,10 @@ open class BackupControllerImpl @Inject constructor(
     }
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
+        if (GadsuSystemProperty.disableAutoBackup.isEnabledOrFalse()) {
+            log.info("Auto backup is disabled vai system property.")
+            return
+        }
         GlobalExceptionHandler.startThread {
             if (!hasTodayBackup()) {
                 log.info("Going to create a fresh backup.")

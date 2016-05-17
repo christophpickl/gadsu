@@ -35,6 +35,7 @@ abstract class SimpleUiTest : UISpecTestCase() {
         init {
             GadsuSystemProperty.disableLog.enable()
             GadsuSystemProperty.disableAutoUpdate.enable()
+            GadsuSystemProperty.disableAutoBackup.enable()
             System.setProperty("uispec4j.test.library", "testng")
             TestLogger().configureLog() // do it twice during the build, but enable once when running in IDE ;)
         }
