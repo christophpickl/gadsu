@@ -1,9 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.GadsuSystemPropertyKeys
-import at.cpickl.gadsu.spClear
-import at.cpickl.gadsu.spReadStringOrNull
-import at.cpickl.gadsu.spWriteString
+import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.view.language.Buttons
 import at.cpickl.gadsu.view.language.Labels
@@ -32,21 +29,21 @@ class LanguageTest {
     @BeforeClass
     fun storeOldState() {
         oldLocale = Locale.getDefault()
-        oldOverrideLanguage = GadsuSystemPropertyKeys.overrideLanguage.spReadStringOrNull()
+        oldOverrideLanguage = GadsuSystemProperty.overrideLanguage.getOrNull()
     }
 
     @BeforeMethod
     fun resetState() {
-        GadsuSystemPropertyKeys.overrideLanguage.spClear()
+        GadsuSystemProperty.overrideLanguage.clear()
         defaultLocale(Locale.KOREAN)
     }
 
     @AfterClass
     fun cleanupAfterYourself() {
         if (oldOverrideLanguage == null) {
-            GadsuSystemPropertyKeys.overrideLanguage.spClear()
+            GadsuSystemProperty.overrideLanguage.clear()
         } else {
-            GadsuSystemPropertyKeys.overrideLanguage.spWriteString(oldOverrideLanguage!!)
+            GadsuSystemProperty.overrideLanguage.set(oldOverrideLanguage!!)
         }
         defaultLocale(oldLocale!!)
     }
@@ -87,7 +84,7 @@ class LanguageTest {
     private fun initLang() = Languages._initLanguage()
 
     private fun overrideLang(value: String) {
-        GadsuSystemPropertyKeys.overrideLanguage.spWriteString(value)
+        GadsuSystemProperty.overrideLanguage.set(value)
     }
 
     private fun defaultLocale(locale: Locale) {

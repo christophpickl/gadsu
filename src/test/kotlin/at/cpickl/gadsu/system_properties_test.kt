@@ -9,71 +9,73 @@ import org.testng.annotations.Test
 
 @Test class SystemPropertiesSPTest {
 
-    private val key = "SystemPropertiesSPTest_key"
+    private val stringProp = StringSystemProperty("SystemPropertiesSPTest_keyString")
+    private val booleanProp = BooleanSystemProperty("SystemPropertiesSPTest_keyBoolean")
 
     @BeforeMethod
     fun resetKey() {
-        System.clearProperty(key)
+        System.clearProperty(stringProp.key)
+        System.clearProperty(booleanProp.key)
     }
 
-    fun `spReadString, not initialized returns null or default`() {
-        assertThat(key.spReadStringOrNull(), nullValue())
-        assertThat(key.spReadString("def"), equalTo("def"))
+    fun `stringProp, not initialized returns null or default`() {
+        assertThat(stringProp.getOrNull(), nullValue())
+        assertThat(stringProp.getOrDefault("def"), equalTo("def"))
     }
 
-    fun `spReadString, sunshine`() {
-        setProperty("foo")
-        assertThat(key.spReadString("def"), equalTo("foo"))
-        assertThat(key.spReadStringOrNull(), equalTo("foo"))
+    fun `stringProp, sunshine`() {
+        setProperty(stringProp, "foo")
+        assertThat(stringProp.getOrDefault("def"), equalTo("foo"))
+        assertThat(stringProp.getOrNull(), equalTo("foo"))
     }
 
 
-    fun `spReadBooleanOrNull, not initialized, set to null`() {
-        assertThat(key.spReadBooleanOrNull(), nullValue())
+    fun `booleanProp, not initialized, set to null`() {
+        assertThat(booleanProp.isEnabledOrNull(), nullValue())
     }
 
-    fun `spReadBoolean, sunshine`() {
-        setProperty("true"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
-        setProperty("TrUe"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
-        setProperty("1"); assertThat(key.spReadBooleanOrNull(), equalTo(true))
+    fun `booleanProp, sunshine`() {
+        setProperty(booleanProp, "true"); assertThat(booleanProp.isEnabledOrNull(), equalTo(true))
+        setProperty(booleanProp, "TrUe"); assertThat(booleanProp.isEnabledOrNull(), equalTo(true))
+        setProperty(booleanProp, "1"); assertThat(booleanProp.isEnabledOrNull(), equalTo(true))
 
-        setProperty("false"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
-        setProperty("FaLsE"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
-        setProperty("0"); assertThat(key.spReadBooleanOrNull(), equalTo(false))
+        setProperty(booleanProp, "false"); assertThat(booleanProp.isEnabledOrNull(), equalTo(false))
+        setProperty(booleanProp, "FaLsE"); assertThat(booleanProp.isEnabledOrNull(), equalTo(false))
+        setProperty(booleanProp, "0"); assertThat(booleanProp.isEnabledOrNull(), equalTo(false))
     }
 
-    fun `spReadBoolean, invalid value, fails`() {
-        setProperty("fuchur")
-        expect(GadsuException::class, {key.spReadBooleanOrNull()}, "fuchur")
+    fun `booleanProp, invalid value, fails`() {
+        setProperty(booleanProp, "fuchur")
+        expect(GadsuException::class, {booleanProp.isEnabledOrNull()}, "fuchur")
     }
 
-    fun `spWriteString`() {
-        key.spWriteString("foo")
-        assertProperty("foo")
+    fun `stringProp set`() {
+        stringProp.set("foo")
+        assertProperty(stringProp, "foo")
     }
 
-    fun `spWriteTrue`() {
-        key.spWriteTrue()
-        assertProperty("true")
+    fun `booleanProp set true`() {
+        booleanProp.enable()
+        assertProperty(booleanProp, "true")
     }
 
-    fun `spWriteFalse`() {
-        key.spWriteFalse()
-        assertProperty("false")
+    fun `booleanProp set false`() {
+        booleanProp.disable()
+        assertProperty(booleanProp, "false")
     }
 
-    fun `spClear`() {
-        setProperty("abc")
-        key.spClear()
-        assertProperty(null)
+    fun `clear`() {
+        setProperty(stringProp, "abc")
+        stringProp.clear()
+        assertProperty(stringProp, null)
     }
 
-    private fun setProperty(value: String) {
-        System.setProperty(key, value)
+    private fun setProperty(prop: AbstractSystemProperty, value: String) {
+        System.setProperty(prop.key, value)
     }
 
-    private fun assertProperty(expected: String?) {
-        assertThat(System.getProperty(key), equalTo(expected))
+    private fun assertProperty(prop: AbstractSystemProperty, expected: String?) {
+        assertThat(System.getProperty(prop.key), equalTo(expected))
     }
 
 }

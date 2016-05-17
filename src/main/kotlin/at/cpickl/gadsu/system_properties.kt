@@ -1,53 +1,54 @@
 package at.cpickl.gadsu
 
-object GadsuSystemPropertyKeys {
-    val development = "gadsu.development"
-    val overrideLanguage = "gadsu.overrideLanguage"
-    val disableLog = "gadsu.disableLog"
-    val isMacApp = "gadsu.isMacApp"
-    val disableAutoUpdate = "gadsu.disableAutoUpdate"
+object GadsuSystemProperty {
+    val development = BooleanSystemProperty("gadsu.development")
+    val overrideLanguage = StringSystemProperty("gadsu.overrideLanguage")
+    val disableLog = BooleanSystemProperty("gadsu.disableLog")
+    val isMacApp = BooleanSystemProperty("gadsu.isMacApp")
+    val disableAutoUpdate = BooleanSystemProperty("gadsu.disableAutoUpdate")
+    val disableAutoBackup = BooleanSystemProperty("gadsu.disableAutoBackup")
 }
 
-// TODO refactor system properties handling as cleiter said
-fun String.spReadBooleanOrDefault(orDefault: Boolean): Boolean {
-    return spReadBooleanOrNull() ?: orDefault
-}
-
-fun String.spReadBooleanOrFalse(): Boolean {
-    return spReadBooleanOrDefault(false)
-}
-
-fun String.spReadBooleanOrNull(): Boolean? {
-    val value = spReadStringOrNull()?.toLowerCase() ?: return null
-    if (value.equals("true") || value.equals("1")) {
-        return true
+abstract class AbstractSystemProperty(val key: String) {
+    final fun clear() {
+        System.clearProperty(key)
     }
-    if (value.equals("false") || value.equals("0")) {
-        return false
+}
+
+class StringSystemProperty(key: String) : AbstractSystemProperty(key) {
+    fun getOrNull(): String? {
+        return System.getProperty(key, null)
     }
-    throw GadsuException("Invalid system property '$this' boolean value: '$value'!")
+    fun getOrDefault(default: String) : String {
+        return System.getProperty(key, null) ?: default
+    }
+
+    fun set(value: String) {
+        System.setProperty(key, value)
+    }
 }
 
-fun String.spReadString(orDefault: String): String {
-    return System.getProperty(this, orDefault)
-}
+class BooleanSystemProperty(key: String) : AbstractSystemProperty(key) {
+    fun isEnabledOrNull(): Boolean? {
+        val raw = System.getProperty(key, null)?.toLowerCase() ?: return null
+        if (raw.equals("true") || raw.equals("1")) {
+            return true
+        }
+        if (raw.equals("false") || raw.equals("0")) {
+            return false
+        }
+        throw GadsuException("Invalid system property '$this' boolean value: '$raw'!")
+    }
 
-fun String.spReadStringOrNull(): String? {
-    return System.getProperty(this, null)
-}
+    fun isEnabledOrFalse(): Boolean {
+        return isEnabledOrNull() ?: false
+    }
 
-fun String.spWriteTrue() {
-    System.setProperty(this, "true")
-}
+    fun enable() {
+        System.setProperty(key, "true")
+    }
 
-fun String.spWriteFalse() {
-    System.setProperty(this, "false")
-}
-
-fun String.spWriteString(value: String) {
-    System.setProperty(this, value)
-}
-
-fun String.spClear() {
-    System.clearProperty(this)
+    fun disable() {
+        System.setProperty(key, "false")
+    }
 }
