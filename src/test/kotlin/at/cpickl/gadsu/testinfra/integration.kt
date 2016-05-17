@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
+import at.cpickl.gadsu.appointments.AppointmentRepository
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx
@@ -34,6 +35,7 @@ abstract class GuiceIntegrationTest {
     // https://github.com/google/guice/wiki/BoundFields
     @Bind protected lateinit var mockClientRepository: ClientRepository
     @Bind protected lateinit var mockTreatmentRepository: TreatmentRepository
+    @Bind protected lateinit var mockAppointmentRepository: AppointmentRepository
     @Bind protected lateinit var mockXPropsRepository: XPropsSqlRepository
 
     @Bind private var _clock: Clock = SimpleTestableClock()
@@ -54,6 +56,7 @@ abstract class GuiceIntegrationTest {
         busListener = TestBusListener()
         mockClientRepository = mock(ClientRepository::class.java)
         mockTreatmentRepository = mock(TreatmentRepository::class.java)
+        mockAppointmentRepository = mock(AppointmentRepository::class.java)
         mockXPropsRepository = mock(XPropsSqlRepository::class.java)
 
         Guice.createInjector(
