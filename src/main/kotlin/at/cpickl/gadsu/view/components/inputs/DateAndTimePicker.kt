@@ -17,7 +17,7 @@ class DateAndTimePicker(
 ) : GridPanel() {
 
     val inpDate = MyDatePicker.build(initialDate, viewNamePrefix, textFieldAlignment)
-    val inpTime = MyTimePicker(initialDate)
+    val inpTime = MyTimePicker(initialDate, "$viewNamePrefix.Time")
 
     init {
         inpTime.selectedItemTyped = LabeledDateTime(initialDate)

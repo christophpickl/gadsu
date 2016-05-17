@@ -48,7 +48,8 @@ class AppointmentJdbcRepository @Inject constructor(
 
         val argsMerged = args.toMutableList()
         argsMerged.add(0, client.id!!)
-        val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? $whereClause", argsMerged.toTypedArray(), Appointment.ROW_MAPPER)
+        val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? $whereClause ORDER BY startDate",
+                argsMerged.toTypedArray(), Appointment.ROW_MAPPER)
         appointments.sort()
         return appointments
     }

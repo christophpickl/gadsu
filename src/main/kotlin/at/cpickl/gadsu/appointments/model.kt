@@ -20,6 +20,9 @@ data class Appointment(
         }
     }
 
+    val idComparator: (Appointment) -> Boolean
+        get() = { that -> this.id.equals(that.id) }
+
     override fun compareTo(other: Appointment): Int {
         return ComparisonChain.start()
                 .compare(this.start, other.start)

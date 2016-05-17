@@ -28,6 +28,12 @@ class Framed {
             Framed()._show(arrayOf(component), size)
         }
 
+        fun showFrameWithContext(function: ((context: FramedContext) -> JFrame), size: Dimension? = null) {
+            val _context = FramedContext()
+            val frame = function.invoke(_context)
+            Framed()._showFrame(frame, size)
+        }
+
 
         fun show(component: Component, size: Dimension? = null) {
             Framed()._show(arrayOf(component), size)
@@ -46,12 +52,16 @@ class Framed {
 
         components.forEach { frame.contentPane.add(it) }
 
+        _showFrame(frame, size)
+    }
+
+    private fun _showFrame(frame: JFrame, size: Dimension? = null) {
         if (size != null) {
             frame.size = size
         } else {
             frame.pack()
         }
-        frame.setLocationRelativeTo(null)
+//        frame.setLocationRelativeTo(null)
         EventQueue.invokeLater { frame.isVisible = true }
 //        SwingUtilities.invokeLater { frame.isVisible = true }
     }

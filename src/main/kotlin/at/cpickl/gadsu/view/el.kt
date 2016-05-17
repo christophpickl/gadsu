@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
+import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.inputs.DateAndTimePicker
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
 import at.cpickl.gadsu.view.components.inputs.MyDatePicker
+import at.cpickl.gadsu.view.components.inputs.MyTimePicker
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
@@ -59,13 +61,17 @@ class ElTextField<V>(
 class ElTextArea<V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
-        private val viewName: String
+        private val viewName: String,
+        visibleRows: Int? = null
 ) : JTextArea(), ElField<V> {
 
     init {
         name = viewName
         lineWrap = true
 //        wrapStyleWord = true
+        if (visibleRows != null) {
+            rows = visibleRows
+        }
         enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
     }
 
@@ -123,6 +129,21 @@ class ElDatePicker<V>(
         delegate.hidePopup()
     }
 }
+
+class ElTimePicker<V>(
+        private val delegate: MyTimePicker,
+        override val formLabel: String,
+        private val extractValue: (V) -> DateTime
+) : ElField<V> {
+    var selectedTime: DateTime
+        get() = delegate.selectedItemTyped.delegate
+        set(value) = delegate.changeSelectedByDateTime(value)
+
+    override fun isModified(value: V) = _isModified(selectedTime.withAllButHourAndMinute(extractValue(value)), extractValue, value)
+    override fun updateValue(value: V) { selectedTime = extractValue(value) }
+    override fun toComponent() = delegate
+}
+
 class ElDateAndTimePicker<V>(
         private val delegate: DateAndTimePicker,
         override val formLabel: String,
@@ -160,8 +181,8 @@ class Fields<V>(private val modifications: ModificationChecker) {
         fields.add(field)
         return field
     }
-    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String): ElTextArea<V> {
-        val field = ElTextArea(label, extractValue, viewName)
+    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String, visibleRows: Int? = null): ElTextArea<V> {
+        val field = ElTextArea(label, extractValue, viewName, visibleRows)
         modifications.enableChangeListener(field)
         fields.add(field)
         return field
@@ -179,6 +200,14 @@ class Fields<V>(private val modifications: ModificationChecker) {
     fun newDatePicker(initDate: DateTime?, label: String, extractValue: (V) -> DateTime?, viewNamePrefix: String): ElDatePicker<V> {
         val realField = MyDatePicker.build(initDate, viewNamePrefix)
         val field = ElDatePicker(realField, label, extractValue)
+        modifications.enableChangeListener(realField)
+        fields.add(field)
+        return field
+    }
+
+    fun newTimePicker(label: String, initDate: DateTime, extractValue: (V) -> DateTime, viewName: String): ElTimePicker<V> {
+        val realField = MyTimePicker(initDate, viewName)
+        val field = ElTimePicker(realField, label, extractValue)
         modifications.enableChangeListener(realField)
         fields.add(field)
         return field

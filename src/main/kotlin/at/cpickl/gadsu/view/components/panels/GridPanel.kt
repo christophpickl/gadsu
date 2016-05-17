@@ -9,6 +9,7 @@ import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
+import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -66,4 +67,13 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
         border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
     }
 
+}
+
+class SingleButtonPanel(button: JButton) : GridPanel() {
+    init {
+        debugColor = Color.ORANGE
+        c.weightx = 1.0
+        c.fill = GridBagConstraints.HORIZONTAL
+        add(button)
+    }
 }

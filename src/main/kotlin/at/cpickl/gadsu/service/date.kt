@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.view.components.inputs.LabeledDateTime
 import at.cpickl.gadsu.view.language.Languages
 import org.joda.time.DateTime
@@ -23,6 +24,19 @@ class DateFormats {
 
 fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
 
+fun DateTime.ensureNoSeconds() {
+    if (!this.equals(this.clearSeconds())) {
+        throw GadsuException("Illegal date: must not have seconds or milliseconds set! Was: $this")
+    }
+}
+
+fun DateTime.ensureQuarterMinute() {
+    if (!minuteOfHour.isQuarterMinute()) {
+        throw GadsuException("Illegal date: expected minute to be a quarter part but was: $this")
+    }
+}
+
+
 //    println(timesList().map { it.formatTimeWithoutSeconds() }.joinToString("\n"))
 fun timesList(): List<DateTime> {
     var current = "00:00".parseTimeWithoutSeconds()
@@ -35,6 +49,12 @@ fun timesList(): List<DateTime> {
 
 fun timesLabeledList(): List<LabeledDateTime> {
     return timesList().map { LabeledDateTime(it) }.toList()
+}
+
+fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
+    return this.hourOfDay == that.hourOfDay &&
+           this.minuteOfHour == that.minuteOfHour
+
 }
 
 // --------------------------------------------------------------------------- extension methods
@@ -57,6 +77,11 @@ fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDat
  */
 fun String.parseDateTime() = DateFormats.DATE_TIME.parseDateTime(this)
 fun String.parseDateTimeFile() = DateFormats.DATE_TIME_FILE.parseDateTime(this)
+
+
+fun DateTime.withAllButHourAndMinute(copyReference: DateTime) =
+        copyReference.withHourOfDay(this.hourOfDay).withMinuteOfHour(this.minuteOfHour)
+
 
 // --------------------------------------------------------------------------- clock
 

@@ -1,12 +1,11 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.clearMinutes
-import at.cpickl.gadsu.service.clearSeconds
-import at.cpickl.gadsu.service.isQuarterMinute
+import at.cpickl.gadsu.service.ensureNoSeconds
+import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.minutes
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
@@ -28,12 +27,8 @@ data class Treatment(
         Comparable<Treatment>, HasId, Persistable {
 
     init {
-        if (!date.equals(date.clearSeconds())) {
-            throw GadsuException("Internal state violation: Treatment.date must not have seconds or milliseconds set! Was: $date")
-        }
-        if (!date.minuteOfHour.isQuarterMinute()) {
-            throw GadsuException("Internal state violation: Treatment.date must have a quarter minute but was: ${date.minuteOfHour}!")
-        }
+        date.ensureNoSeconds()
+        date.ensureQuarterMinute()
     }
 
     companion object {

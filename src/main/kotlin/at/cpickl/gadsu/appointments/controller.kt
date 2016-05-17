@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.appointments
 
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.appointments.view.AppointmentWindow
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.service.Clock
@@ -22,9 +23,7 @@ open class AppointmentControllerImpl @Inject constructor(
 ) : AppointmentController {
 
     @Subscribe open fun onCreateAppointmentEvent(event: CreateAppointmentEvent) {
-        currentClient.data.ensurePersisted()
-        window.changeCurrent(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes().withHourOfDay(12)))
-        window.showWindow()
+        showAppointment(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes()))
     }
 
     @Subscribe open fun onSaveAppointment(event: SaveAppointment) {
@@ -35,4 +34,19 @@ open class AppointmentControllerImpl @Inject constructor(
     @Subscribe open fun onAbortAppointmentDialog(event: AbortAppointmentDialog) {
         window.hideWindow()
     }
+
+    @Subscribe open fun onQuitEvent(event: QuitEvent) {
+        window.close()
+    }
+
+    @Subscribe open fun onOpenAppointmentEvent(event: OpenAppointmentEvent) {
+        showAppointment(event.appointment)
+    }
+
+    private fun showAppointment(appointment: Appointment) {
+        currentClient.data.ensurePersisted()
+        window.changeCurrent(appointment)
+        window.showWindow()
+    }
+
 }

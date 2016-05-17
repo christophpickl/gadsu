@@ -7,7 +7,7 @@ import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
@@ -15,7 +15,6 @@ import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Color
-import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JPanel
 
@@ -49,12 +48,7 @@ class TreatmentsInClientView @Inject constructor(
 
         add(treatmentsList.scrolled(), BorderLayout.CENTER)
 
-        val btnPanel = GridPanel()
-        btnPanel.debugColor = Color.ORANGE
-        btnPanel.c.weightx = 1.0
-        btnPanel.c.fill = GridBagConstraints.HORIZONTAL
-        btnPanel.add(newTreatmentButton)
-        add(btnPanel, BorderLayout.SOUTH)
+        add(SingleButtonPanel(newTreatmentButton), BorderLayout.SOUTH)
     }
 
     fun insert(treatment: Treatment) {
