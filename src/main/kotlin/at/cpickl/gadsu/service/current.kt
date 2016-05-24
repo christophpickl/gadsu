@@ -1,13 +1,12 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.AppEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.treatment.CurrentTreatment
 import com.google.common.base.Objects
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
 
 class CurrentModule : AbstractModule() {
     override fun configure() {
@@ -62,7 +61,6 @@ class CurrentPropertiesChangedEvent(id: String, oldData: Any?, newData: Any?) : 
 }
 
 abstract class Current<V : HasId?>(private val id: String, private val bus: EventBus, initialData: V) {
-    private val log = LoggerFactory.getLogger(javaClass)
     private var _data: V = initialData
 
     var data: V
@@ -97,27 +95,4 @@ abstract class Current<V : HasId?>(private val id: String, private val bus: Even
 
         }
 
-}
-
-class CurrentClient @Inject constructor(bus: EventBus) :
-        Current<Client>(ID, bus, INITIAL_VALUE) { // MINOR @REFACTOR - use kotlin delegation (requires interface first): Client by data
-    companion object {
-        val ID: String = "client"
-        val INITIAL_VALUE = Client.INSERT_PROTOTYPE
-    }
-}
-
-fun CurrentEvent.forClient(function: (Client?) -> Unit) {
-    if (this.id == CurrentClient.ID) function(this.newData as Client?)
-}
-
-class CurrentTreatment @Inject constructor(bus: EventBus) :
-        Current<Treatment?>(ID, bus, null) {
-    companion object {
-        val ID: String = "treatment"
-    }
-}
-
-fun CurrentEvent.forTreatment(function: (Treatment?) -> Unit) {
-    if (this.id == CurrentTreatment.ID) function(this.newData as Treatment?)
 }

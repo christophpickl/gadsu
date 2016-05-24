@@ -2,9 +2,9 @@ package at.cpickl.gadsu.appointments
 
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.appointments.view.AppointmentWindow
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.formatDateTimeTalkative
@@ -18,11 +18,11 @@ interface AppointmentController {
 
 @Logged
 open class AppointmentControllerImpl @Inject constructor(
-    private val window: AppointmentWindow,
-    private val clock: Clock,
-    private val currentClient: CurrentClient,
-    private val service: AppointmentService,
-    private val dialogs: Dialogs
+        private val window: AppointmentWindow,
+        private val clock: Clock,
+        private val currentClient: CurrentClient,
+        private val service: AppointmentService,
+        private val dialogs: Dialogs
 ) : AppointmentController {
 
     @Subscribe open fun onCreateAppointmentEvent(event: CreateAppointmentEvent) {

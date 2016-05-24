@@ -6,7 +6,6 @@ import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.treatment.TreatmentService
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory

@@ -3,19 +3,9 @@ package at.cpickl.gadsu.report
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CPropTypeCallback
-import at.cpickl.gadsu.preferences.PreferencesData
-import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
-import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.treatment.TreatmentService
-import com.google.common.eventbus.Subscribe
 import com.google.inject.AbstractModule
-import com.google.inject.Provider
-import org.slf4j.LoggerFactory
-import javax.inject.Inject
 
 
 class ReportModule : AbstractModule() {

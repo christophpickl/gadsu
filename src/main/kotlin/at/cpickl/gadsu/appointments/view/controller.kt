@@ -4,11 +4,11 @@ import at.cpickl.gadsu.appointments.AppointmentChangedEvent
 import at.cpickl.gadsu.appointments.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointments.AppointmentSavedEvent
 import at.cpickl.gadsu.appointments.AppointmentService
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.forClient
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
 

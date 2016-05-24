@@ -3,7 +3,7 @@ package at.cpickl.gadsu.appointments.view
 import at.cpickl.gadsu.appointments.AbortAppointmentDialog
 import at.cpickl.gadsu.appointments.Appointment
 import at.cpickl.gadsu.appointments.SaveAppointment
-import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.MainFrame

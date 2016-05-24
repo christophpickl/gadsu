@@ -3,13 +3,13 @@ package at.cpickl.gadsu.client.view.detail
 import at.cpickl.gadsu.appointments.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.forClient
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames

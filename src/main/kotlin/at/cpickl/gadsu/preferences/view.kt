@@ -133,6 +133,8 @@ class SwingPreferencesFrame @Inject constructor(
         if (isVisible != true) {
             log.trace("Setting preferencies window visible.")
             isVisible = true
+        } else {
+            requestFocus()
         }
     }
 

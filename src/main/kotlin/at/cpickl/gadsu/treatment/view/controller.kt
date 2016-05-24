@@ -1,11 +1,11 @@
 package at.cpickl.gadsu.treatment.view
 
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
-import at.cpickl.gadsu.service.CurrentTreatment
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
+import at.cpickl.gadsu.treatment.CurrentTreatment
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
@@ -16,7 +16,6 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentViewFactory
 import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
-import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory

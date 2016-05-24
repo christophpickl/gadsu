@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.image
 
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.Prefs
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ViewNames

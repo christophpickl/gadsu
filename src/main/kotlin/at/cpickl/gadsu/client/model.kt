@@ -8,12 +8,28 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
+import at.cpickl.gadsu.service.Current
+import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
+import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
+import javax.inject.Inject
+
+class CurrentClient @Inject constructor(bus: EventBus) :
+        Current<Client>(ID, bus, INITIAL_VALUE) { // MINOR @REFACTOR - use kotlin delegation (requires interface first): Client by data
+    companion object {
+        val ID: String = "client"
+        val INITIAL_VALUE = Client.INSERT_PROTOTYPE
+    }
+}
+
+fun CurrentEvent.forClient(function: (Client?) -> Unit) {
+    if (this.id == CurrentClient.ID) function(this.newData as Client?)
+}
 
 
 data class Client(

@@ -2,6 +2,8 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
+import at.cpickl.gadsu.service.Current
+import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.ensureNoSeconds
@@ -9,8 +11,22 @@ import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.minutes
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
+import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.joda.time.Duration
+import javax.inject.Inject
+
+
+class CurrentTreatment @Inject constructor(bus: EventBus) :
+        Current<Treatment?>(ID, bus, null) {
+    companion object {
+        val ID: String = "treatment"
+    }
+}
+fun CurrentEvent.forTreatment(function: (Treatment?) -> Unit) {
+    if (this.id == CurrentTreatment.ID) function(this.newData as Treatment?)
+}
+
 
 data class Treatment(
         override val id: String?,

@@ -2,9 +2,9 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.treatment.Treatment
