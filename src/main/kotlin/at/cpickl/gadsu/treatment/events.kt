@@ -2,6 +2,7 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.AppEvent
 import at.cpickl.gadsu.UserEvent
+import com.google.common.base.MoreObjects
 
 
 class CreateTreatmentEvent() : UserEvent()
@@ -29,7 +30,11 @@ class TreatmentSaveEvent(val treatment: Treatment) : UserEvent() {
     }
 }
 
-class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent()
+class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent() {
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("treatment", treatment)
+            .toString()
+}
 
 class TreatmentChangedEvent(val treatment: Treatment) : AppEvent()
 

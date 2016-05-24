@@ -2,15 +2,28 @@ package at.cpickl.gadsu.appointments
 
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.UserEvent
+import com.google.common.base.MoreObjects
 
 class CreateAppointmentEvent() : UserEvent()
 
-class SaveAppointment(val appointment: Appointment) : UserEvent()
+class SaveAppointment(val appointment: Appointment) : UserEvent() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
 
-class OpenAppointmentEvent(val appointment: Appointment) : UserEvent()
+class OpenAppointmentEvent(val appointment: Appointment) : UserEvent() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
+
+class DeleteAppointmentEvent(val appointment: Appointment) : UserEvent() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
 
 // TODO register for in ListController
-class AppointmentSavedEvent(val appointment: Appointment) : Event()
-class AppointmentChangedEvent(val appointment: Appointment) : Event()
+class AppointmentSavedEvent(val appointment: Appointment) : Event() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
+class AppointmentChangedEvent(val appointment: Appointment) : Event() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
 
 class AbortAppointmentDialog() : UserEvent()

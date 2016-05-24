@@ -3,7 +3,9 @@ package at.cpickl.gadsu
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.ShowDevWindowEvent
 import at.cpickl.gadsu.persistence.DatabaseManager
+import at.cpickl.gadsu.persistence.GADSU_DATABASE_DIRECTORY
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
+import at.cpickl.gadsu.service.GADSU_LOG_FILE
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
@@ -50,7 +52,19 @@ class GadsuGuiceStarter @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start() {
-        log.info("start()")
+        log.info("start()\n")
+        log.info("""
+               ___   _      ___  __
+      / _ \ /_\    /   \/ _\/\ /\
+     / /_\///_\\  / /\ /\ \/ / \ \
+    / /_\\/  _  \/ /_// _\ \ \_/ /
+    \____/\_/ \_/___,'  \__/\___/
+""")
+        log.info("\n-==================================================================-")
+        log.info("Gadsu directory: {}", GADSU_DIRECTORY.absolutePath)
+        log.info("Database directory: {}", GADSU_DATABASE_DIRECTORY.absolutePath)
+        log.info("Log file: {}", GADSU_LOG_FILE.absolutePath)
+        log.info("-==================================================================-\n")
 
         database.migrateDatabase()
         registerMacHandler()

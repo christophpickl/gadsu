@@ -10,7 +10,8 @@ public class TestViewStarter {
     public static Component componentToShow;
 
     public static void main(String[] args) {
-        if (componentToShow == null) {
+        if (componentToShow == null) { // ??? haha
+            // MINOR asdf
             Assert.fail("componentToShow must be set first!");
         }
         Framed.Companion.show(componentToShow, null);

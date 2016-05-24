@@ -141,7 +141,7 @@ class SwingClientMasterView @Inject constructor(
 
     override fun selectClient(client: Client?) {
         log.trace("selectClient(client={})", client)
-        if (client === null) {
+        if (client == null) {
             previousSelected = null
             list.clearSelection()
         } else {

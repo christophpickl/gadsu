@@ -14,6 +14,7 @@ import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_SHORT
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.scrolled
+import com.google.common.base.MoreObjects
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
@@ -32,11 +33,11 @@ interface ElField<V> {
     fun toComponent(): Component
 }
 
-private fun <V, T> ElField<V>._isModified(oldValue: T, extractValue: (V) -> T, value: V): Boolean {
-    val extracted = extractValue(value)
-    val modified = !Objects.equals(extracted, oldValue)
+private fun <V, T> ElField<V>._isModified(uiValue: T, extractValue: (V) -> T, value: V): Boolean {
+    val extractedValue = extractValue(value)
+    val modified = !Objects.equals(extractedValue, uiValue)
     if (modified) {
-        LOG_ElFIeld.trace("Changes detected for form item '{}': UI-value: '{}', given value: '{}'", formLabel, oldValue, extracted)
+        LOG_ElFIeld.trace("Changes detected for form item '{}'! UI value='{}', extracted value='{}'", formLabel, uiValue, extractedValue)
     }
     return modified
 }
@@ -54,8 +55,20 @@ class ElTextField<V>(
     }
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
+//    override fun isModified(value: V): Boolean {
+//        val mod = _isModified(text, extractValue, value)
+//        if (mod) {
+//            println("Change detected")
+//        }
+//        return mod
+//    }
     override fun updateValue(value: V) { text = extractValue(value) }
     override fun toComponent() = this
+
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .add("text", text)
+            .toString()
 }
 
 class ElTextArea<V>(

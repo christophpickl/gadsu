@@ -93,7 +93,7 @@ data class Client(
                 .add("firstName", firstName)
                 .add("lastName", lastName)
                 .add("picture", picture)
-                .add("cprops", cprops)
+//                .add("cprops", cprops)
                 .toString()
     }
 

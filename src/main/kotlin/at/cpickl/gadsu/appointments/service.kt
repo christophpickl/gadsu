@@ -9,6 +9,7 @@ interface AppointmentService {
     fun findAllFutureFor(client: Client): List<Appointment>
     fun insertOrUpdate(appointment: Appointment): Appointment
     fun deleteAll(client: Client)
+    fun delete(appointment: Appointment)
 }
 
 class AppointmentServiceImpl @Inject constructor(
@@ -16,7 +17,6 @@ class AppointmentServiceImpl @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock
 ) : AppointmentService {
-
     override fun findAllFutureFor(client: Client): List<Appointment> {
         return repository.findAllStartAfter(clock.now(), client)
     }
@@ -31,6 +31,10 @@ class AppointmentServiceImpl @Inject constructor(
             bus.post(AppointmentSavedEvent(savedAppointment))
             savedAppointment
         }
+    }
+
+    override fun delete(appointment: Appointment) {
+        repository.delete(appointment)
     }
 
     override fun deleteAll(client: Client) {

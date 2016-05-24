@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.appointments.view
 
 import at.cpickl.gadsu.appointments.Appointment
+import at.cpickl.gadsu.appointments.DeleteAppointmentEvent
 import at.cpickl.gadsu.appointments.OpenAppointmentEvent
 import at.cpickl.gadsu.service.formatDateTimeLong
 import at.cpickl.gadsu.view.ViewNames
@@ -29,7 +30,7 @@ class AppointmentList @Inject constructor(
         }
 ) {
     init {
-//        initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })
+        initSinglePopup("L\u00f6schen", { DeleteAppointmentEvent(it) })
         initDoubleClicked { OpenAppointmentEvent(it) }
     }
 

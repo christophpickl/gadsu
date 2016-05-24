@@ -81,10 +81,10 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onClientCreatedEvent(event: ClientCreatedEvent) {
         val index = view.masterView.model.calculateInsertIndex(event.client)
+        currentClient.data = event.client
+
         view.masterView.insertClient(index, event.client)
         view.masterView.selectClient(event.client)
-
-        currentClient.data = event.client
     }
 
     @Subscribe open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {

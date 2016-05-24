@@ -39,6 +39,12 @@ open class TreatmentsInClientController @Inject constructor(
         view.insert(event.treatment)
     }
 
+    @Subscribe open fun onDeleteTreatmentEvent(event: DeleteTreatmentEvent) {
+        dialogs.confirmedDelete("die Behandlung Nr. ${event.treatment.number}", {
+            service.delete(event.treatment)
+        })
+    }
+
     @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
         if (!event.treatment.clientId.equals(recentClient?.id)) {
             return
@@ -48,12 +54,6 @@ open class TreatmentsInClientController @Inject constructor(
 
     @Subscribe open fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
         view.change(event.treatment)
-    }
-
-    @Subscribe open fun onDeleteTreatmentEvent(event: DeleteTreatmentEvent) {
-        dialogs.confirmedDelete("die Behandlung Nr. ${event.treatment.number}", {
-            service.delete(event.treatment)
-        })
     }
 
 }
