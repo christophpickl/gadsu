@@ -10,10 +10,6 @@ interface VersionChecker {
     fun check(): VersionCheckResult
 }
 
-interface VersionCheckerFactory {
-    fun create(currentVersion: Version): VersionChecker
-}
-
 class VersionCheckerImpl @Inject constructor(
         private val fetcher: LatestVersionFetcher,
         private val metaInf: MetaInf

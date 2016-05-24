@@ -3,9 +3,11 @@ package at.cpickl.gadsu.preferences
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.disabled
@@ -32,11 +34,13 @@ interface PreferencesWindow {
 
     var txtApplicationDirectory: String
     var txtLatestBackup: String
+    val btnCheckUpdate: EventButton
 }
 
 class SwingPreferencesFrame @Inject constructor(
         private val mainFrame: MainFrame,
-        private val bus: EventBus
+        private val bus: EventBus,
+        private val swing: SwingFactory
 ) : MyFrame("Einstellungen"), PreferencesWindow {
 
     private val HGAP_FROM_WINDOW = 15
@@ -49,6 +53,8 @@ class SwingPreferencesFrame @Inject constructor(
     private var yetCreated: Boolean = false
     private val inpUsername = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
+
+    override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 
     override var txtApplicationDirectory: String
         get() = "unused"
@@ -101,7 +107,7 @@ class SwingPreferencesFrame @Inject constructor(
         panel.isTransparent = true
 
         panel.add(inpCheckUpdates)
-        panel.add(EventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() }, bus))
+        panel.add(btnCheckUpdate)
         return panel
     }
 

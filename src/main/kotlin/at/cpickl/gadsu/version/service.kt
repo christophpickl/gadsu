@@ -4,7 +4,9 @@ import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.InternetConnectionLostEvent
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.NoInternetConnectionException
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
@@ -34,7 +36,13 @@ open class VersionUpdaterImpl @Inject constructor(
 
     private fun checkForUpdates(settings: AsyncDialogSettings?) {
         log.debug("validateVersion(settings)")
-        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = settings == null) })
+        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = settings == null) }, { e ->
+            if (e is NoInternetConnectionException) {
+                bus.post(InternetConnectionLostEvent())
+            } else {
+                throw e
+            }
+        })
     }
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {

@@ -21,5 +21,6 @@ class ServiceModule() : AbstractModule() {
         bind(FileSystem::class.java).to(FileSystemImpl::class.java).`in`(Scopes.SINGLETON)
 
         install(CurrentModule())
+        install(InternetConnectionModule())
     }
 }

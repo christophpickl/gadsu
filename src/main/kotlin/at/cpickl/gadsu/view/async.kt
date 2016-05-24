@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
 }
 
 interface AsyncWorker {
-    fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit)
+    fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit)
 
 }
 
@@ -28,23 +28,27 @@ data class AsyncDialogSettings(val title: String, val message: String)
 
 class AsyncSwingWorker : AsyncWorker {
 
-    override fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit) {
-
+    override fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit) {
         val dialog = if (settings == null) {
             null
         } else {
             AsyncDialog(settings, currentActiveJFrame()).apply { SwingUtilities.invokeLater { this.isVisible = true } }
         }
-
-        KotlinSwingWorker.executeAsync(backgroundTask, { result ->
+        val closeDialog = {
             dialog?.isVisible = false
             dialog?.dispose()
+        }
+        KotlinSwingWorker.executeAsync(backgroundTask, { result ->
+            closeDialog()
             SwingUtilities.invokeLater { doneTask(result) }
+        }, { e ->
+            closeDialog()
+            exceptionTask(e)
         })
     }
 
-
 }
+
 class AsyncDialog(settings: AsyncDialogSettings, owner: JFrame?) : JDialog(owner, if (owner != null) true else false) {
     init {
         title = settings.title
@@ -79,13 +83,23 @@ class AsyncDialog(settings: AsyncDialogSettings, owner: JFrame?) : JDialog(owner
 }
 
 object KotlinSwingWorker {
-    fun <T> executeAsync(backgroundTask: () -> T, doneTask: (T) -> Unit) {
-        val worker = object : SwingWorker<T, Void>() {
-            override fun doInBackground(): T {
-                return backgroundTask()
+    fun <T> executeAsync(backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit) {
+        val worker = object : SwingWorker<T?, Void>() {
+            private var thrownException: Exception? = null
+            override fun doInBackground(): T? {
+                try {
+                    return backgroundTask()
+                } catch(e: Exception) {
+                    thrownException = e
+                    return null
+                }
             }
             override fun done() {
-                doneTask(get())
+                if (thrownException == null) {
+                    doneTask(get()!!)
+                } else {
+                    exceptionTask(thrownException!!)
+                }
             }
         }
         worker.execute()
