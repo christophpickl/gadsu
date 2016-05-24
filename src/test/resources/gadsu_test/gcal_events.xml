@@ -1,0 +1,967 @@
+<list>
+  <com.google.api.services.calendar.model.Event>
+    <unknownFields class="com.google.api.client.util.ArrayMap">
+      <size>0</size>
+    </unknownFields>
+    <classInfo>
+      <clazz>com.google.api.services.calendar.model.Event</clazz>
+      <ignoreCase>false</ignoreCase>
+      <nameToFieldInfoMap serialization="custom">
+        <unserializable-parents/>
+        <java.util.IdentityHashMap>
+          <default>
+            <size>36</size>
+          </default>
+          <int>36</int>
+          <string>gadget</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>gadget</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>gadget</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>hangoutLink</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>hangoutLink</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>hangoutLink</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>guestsCanInviteOthers</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>guestsCanInviteOthers</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>guestsCanInviteOthers</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>colorId</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>colorId</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>colorId</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>recurrence</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>recurrence</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>recurrence</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>originalStartTime</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>originalStartTime</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>originalStartTime</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>iCalUID</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>iCalUID</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>iCalUID</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>etag</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>etag</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>etag</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>locked</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>locked</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>locked</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>anyoneCanAddSelf</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>anyoneCanAddSelf</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>anyoneCanAddSelf</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>created</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>created</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>created</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>location</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>location</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>location</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>end</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>end</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>end</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>kind</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>kind</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>kind</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>description</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>description</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>description</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>organizer</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>organizer</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>organizer</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>privateCopy</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>privateCopy</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>privateCopy</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>transparency</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>transparency</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>transparency</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>visibility</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>visibility</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>visibility</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>reminders</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>reminders</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>reminders</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>start</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>start</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>start</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>updated</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>updated</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>updated</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>creator</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>creator</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>creator</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>extendedProperties</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>extendedProperties</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>extendedProperties</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>status</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>status</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>status</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>id</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>id</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>id</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>endTimeUnspecified</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>endTimeUnspecified</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>endTimeUnspecified</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>guestsCanModify</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>guestsCanModify</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>guestsCanModify</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>attendeesOmitted</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>attendeesOmitted</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>attendeesOmitted</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>source</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>source</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>source</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>guestsCanSeeOtherGuests</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>guestsCanSeeOtherGuests</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>guestsCanSeeOtherGuests</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>attendees</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>false</isPrimitive>
+            <field>
+              <name>attendees</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>attendees</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>summary</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>summary</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>summary</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>htmlLink</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>htmlLink</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>htmlLink</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>recurringEventId</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>recurringEventId</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>recurringEventId</name>
+          </com.google.api.client.util.FieldInfo>
+          <string>sequence</string>
+          <com.google.api.client.util.FieldInfo>
+            <isPrimitive>true</isPrimitive>
+            <field>
+              <name>sequence</name>
+              <clazz>com.google.api.services.calendar.model.Event</clazz>
+            </field>
+            <name>sequence</name>
+          </com.google.api.client.util.FieldInfo>
+        </java.util.IdentityHashMap>
+      </nameToFieldInfoMap>
+      <names class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+        <c class="list">
+          <string>anyoneCanAddSelf</string>
+          <string>attendees</string>
+          <string>attendeesOmitted</string>
+          <string>colorId</string>
+          <string>created</string>
+          <string>creator</string>
+          <string>description</string>
+          <string>end</string>
+          <string>endTimeUnspecified</string>
+          <string>etag</string>
+          <string>extendedProperties</string>
+          <string>gadget</string>
+          <string>guestsCanInviteOthers</string>
+          <string>guestsCanModify</string>
+          <string>guestsCanSeeOtherGuests</string>
+          <string>hangoutLink</string>
+          <string>htmlLink</string>
+          <string>iCalUID</string>
+          <string>id</string>
+          <string>kind</string>
+          <string>location</string>
+          <string>locked</string>
+          <string>organizer</string>
+          <string>originalStartTime</string>
+          <string>privateCopy</string>
+          <string>recurrence</string>
+          <string>recurringEventId</string>
+          <string>reminders</string>
+          <string>sequence</string>
+          <string>source</string>
+          <string>start</string>
+          <string>status</string>
+          <string>summary</string>
+          <string>transparency</string>
+          <string>updated</string>
+          <string>visibility</string>
+        </c>
+        <list reference="../c"/>
+      </names>
+    </classInfo>
+    <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory">
+      <factory>
+        <__factoryFeatures>3</__factoryFeatures>
+        <__parserFeatures>1</__parserFeatures>
+        <__generatorFeatures>45</__generatorFeatures>
+        <__rootValueSeparator class="com.fasterxml.jackson.core.io.SerializedString" serialization="custom">
+          <com.fasterxml.jackson.core.io.SerializedString>
+            <string> </string>
+          </com.fasterxml.jackson.core.io.SerializedString>
+        </__rootValueSeparator>
+      </factory>
+    </jsonFactory>
+    <created>
+      <value>1462960080000</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </created>
+    <creator>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo>
+        <clazz>com.google.api.services.calendar.model.Event$Creator</clazz>
+        <ignoreCase>false</ignoreCase>
+        <nameToFieldInfoMap serialization="custom">
+          <unserializable-parents/>
+          <java.util.IdentityHashMap>
+            <default>
+              <size>4</size>
+            </default>
+            <int>4</int>
+            <string>id</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>id</name>
+                <clazz>com.google.api.services.calendar.model.Event$Creator</clazz>
+              </field>
+              <name>id</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>email</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>email</name>
+                <clazz>com.google.api.services.calendar.model.Event$Creator</clazz>
+              </field>
+              <name>email</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>displayName</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>displayName</name>
+                <clazz>com.google.api.services.calendar.model.Event$Creator</clazz>
+              </field>
+              <name>displayName</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>self</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>self</name>
+                <clazz>com.google.api.services.calendar.model.Event$Creator</clazz>
+              </field>
+              <name>self</name>
+            </com.google.api.client.util.FieldInfo>
+          </java.util.IdentityHashMap>
+        </nameToFieldInfoMap>
+        <names class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+          <c class="list">
+            <string>displayName</string>
+            <string>email</string>
+            <string>id</string>
+            <string>self</string>
+          </c>
+          <list reference="../c"/>
+        </names>
+      </classInfo>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../jsonFactory"/>
+      <email>christoph.pickl@gmail.com</email>
+    </creator>
+    <end>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo>
+        <clazz>com.google.api.services.calendar.model.EventDateTime</clazz>
+        <ignoreCase>false</ignoreCase>
+        <nameToFieldInfoMap serialization="custom">
+          <unserializable-parents/>
+          <java.util.IdentityHashMap>
+            <default>
+              <size>3</size>
+            </default>
+            <int>3</int>
+            <string>dateTime</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>dateTime</name>
+                <clazz>com.google.api.services.calendar.model.EventDateTime</clazz>
+              </field>
+              <name>dateTime</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>date</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>date</name>
+                <clazz>com.google.api.services.calendar.model.EventDateTime</clazz>
+              </field>
+              <name>date</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>timeZone</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>timeZone</name>
+                <clazz>com.google.api.services.calendar.model.EventDateTime</clazz>
+              </field>
+              <name>timeZone</name>
+            </com.google.api.client.util.FieldInfo>
+          </java.util.IdentityHashMap>
+        </nameToFieldInfoMap>
+        <names class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+          <c class="list">
+            <string>date</string>
+            <string>dateTime</string>
+            <string>timeZone</string>
+          </c>
+          <list reference="../c"/>
+        </names>
+      </classInfo>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../jsonFactory"/>
+      <dateTime>
+        <value>1462971600000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </end>
+    <etag>&quot;2925920297832000&quot;</etag>
+    <htmlLink>https://www.google.com/calendar/event?eid=dG9hazJiN3VpZGtnam5xMDVpZXVja285YTAgOWNnanZtNG83Z2ViNWVmNzEyMXJkNTBvcGtAZw</htmlLink>
+    <iCalUID>toak2b7uidkgjnq05ieucko9a0@google.com</iCalUID>
+    <id>toak2b7uidkgjnq05ieucko9a0</id>
+    <kind>calendar#event</kind>
+    <organizer>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo>
+        <clazz>com.google.api.services.calendar.model.Event$Organizer</clazz>
+        <ignoreCase>false</ignoreCase>
+        <nameToFieldInfoMap serialization="custom">
+          <unserializable-parents/>
+          <java.util.IdentityHashMap>
+            <default>
+              <size>4</size>
+            </default>
+            <int>4</int>
+            <string>id</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>id</name>
+                <clazz>com.google.api.services.calendar.model.Event$Organizer</clazz>
+              </field>
+              <name>id</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>email</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>email</name>
+                <clazz>com.google.api.services.calendar.model.Event$Organizer</clazz>
+              </field>
+              <name>email</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>displayName</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>displayName</name>
+                <clazz>com.google.api.services.calendar.model.Event$Organizer</clazz>
+              </field>
+              <name>displayName</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>self</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>self</name>
+                <clazz>com.google.api.services.calendar.model.Event$Organizer</clazz>
+              </field>
+              <name>self</name>
+            </com.google.api.client.util.FieldInfo>
+          </java.util.IdentityHashMap>
+        </nameToFieldInfoMap>
+        <names class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+          <c class="list">
+            <string>displayName</string>
+            <string>email</string>
+            <string>id</string>
+            <string>self</string>
+          </c>
+          <list reference="../c"/>
+        </names>
+      </classInfo>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../jsonFactory"/>
+      <displayName>gadsu</displayName>
+      <email>9cgjvm4o7geb5ef7121rd50opk@group.calendar.google.com</email>
+      <self>true</self>
+    </organizer>
+    <reminders>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo>
+        <clazz>com.google.api.services.calendar.model.Event$Reminders</clazz>
+        <ignoreCase>false</ignoreCase>
+        <nameToFieldInfoMap serialization="custom">
+          <unserializable-parents/>
+          <java.util.IdentityHashMap>
+            <default>
+              <size>2</size>
+            </default>
+            <int>2</int>
+            <string>overrides</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>false</isPrimitive>
+              <field>
+                <name>overrides</name>
+                <clazz>com.google.api.services.calendar.model.Event$Reminders</clazz>
+              </field>
+              <name>overrides</name>
+            </com.google.api.client.util.FieldInfo>
+            <string>useDefault</string>
+            <com.google.api.client.util.FieldInfo>
+              <isPrimitive>true</isPrimitive>
+              <field>
+                <name>useDefault</name>
+                <clazz>com.google.api.services.calendar.model.Event$Reminders</clazz>
+              </field>
+              <name>useDefault</name>
+            </com.google.api.client.util.FieldInfo>
+          </java.util.IdentityHashMap>
+        </nameToFieldInfoMap>
+        <names class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+          <c class="list">
+            <string>overrides</string>
+            <string>useDefault</string>
+          </c>
+          <list reference="../c"/>
+        </names>
+      </classInfo>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../jsonFactory"/>
+      <useDefault>true</useDefault>
+    </reminders>
+    <sequence>1</sequence>
+    <start>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../jsonFactory"/>
+      <dateTime>
+        <value>1462968000000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </start>
+    <status>confirmed</status>
+    <summary>Max Mustermann - Behandlung #1</summary>
+    <updated>
+      <value>1462960148916</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </updated>
+  </com.google.api.services.calendar.model.Event>
+  <com.google.api.services.calendar.model.Event>
+    <unknownFields class="com.google.api.client.util.ArrayMap">
+      <size>0</size>
+    </unknownFields>
+    <classInfo reference="../../com.google.api.services.calendar.model.Event/classInfo"/>
+    <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+    <created>
+      <value>1463120739000</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </created>
+    <creator>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/creator/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <email>christoph.pickl@gmail.com</email>
+    </creator>
+    <description>hihi descr</description>
+    <end>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463124339000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </end>
+    <etag>&quot;2926241478628000&quot;</etag>
+    <htmlLink>https://www.google.com/calendar/event?eid=YzBkdHQ0MmNlMWpqOHR0ZWVpanNqM2JxczggOWNnanZtNG83Z2ViNWVmNzEyMXJkNTBvcGtAZw</htmlLink>
+    <iCalUID>c0dtt42ce1jj8tteeijsj3bqs8@google.com</iCalUID>
+    <id>c0dtt42ce1jj8tteeijsj3bqs8</id>
+    <kind>calendar#event</kind>
+    <organizer>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/organizer/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <displayName>gadsu</displayName>
+      <email>9cgjvm4o7geb5ef7121rd50opk@group.calendar.google.com</email>
+      <self>true</self>
+    </organizer>
+    <reminders>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/reminders/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <useDefault>true</useDefault>
+    </reminders>
+    <sequence>0</sequence>
+    <start>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463120739000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </start>
+    <status>confirmed</status>
+    <summary>foobar</summary>
+    <updated>
+      <value>1463120739314</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </updated>
+  </com.google.api.services.calendar.model.Event>
+  <com.google.api.services.calendar.model.Event>
+    <unknownFields class="com.google.api.client.util.ArrayMap">
+      <size>0</size>
+    </unknownFields>
+    <classInfo reference="../../com.google.api.services.calendar.model.Event/classInfo"/>
+    <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+    <created>
+      <value>1463121077000</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </created>
+    <creator>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/creator/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <email>christoph.pickl@gmail.com</email>
+    </creator>
+    <description>hihi descr</description>
+    <end>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463124675000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </end>
+    <etag>&quot;2926242154490000&quot;</etag>
+    <htmlLink>https://www.google.com/calendar/event?eid=aDJrcG45anIzcXRvNmk0b2dsb2swbzNpZmMgOWNnanZtNG83Z2ViNWVmNzEyMXJkNTBvcGtAZw</htmlLink>
+    <iCalUID>h2kpn9jr3qto6i4oglok0o3ifc@google.com</iCalUID>
+    <id>h2kpn9jr3qto6i4oglok0o3ifc</id>
+    <kind>calendar#event</kind>
+    <organizer>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/organizer/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <displayName>gadsu</displayName>
+      <email>9cgjvm4o7geb5ef7121rd50opk@group.calendar.google.com</email>
+      <self>true</self>
+    </organizer>
+    <reminders>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/reminders/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <useDefault>true</useDefault>
+    </reminders>
+    <sequence>0</sequence>
+    <start>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463121075000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </start>
+    <status>confirmed</status>
+    <summary>foobar2</summary>
+    <updated>
+      <value>1463121077245</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </updated>
+  </com.google.api.services.calendar.model.Event>
+  <com.google.api.services.calendar.model.Event>
+    <unknownFields class="com.google.api.client.util.ArrayMap">
+      <size>0</size>
+    </unknownFields>
+    <classInfo reference="../../com.google.api.services.calendar.model.Event/classInfo"/>
+    <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+    <created>
+      <value>1463120385000</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </created>
+    <creator>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/creator/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <email>christoph.pickl@gmail.com</email>
+    </creator>
+    <description>hihi descr</description>
+    <end>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463130000000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </end>
+    <etag>&quot;2926240892882000&quot;</etag>
+    <htmlLink>https://www.google.com/calendar/event?eid=djBrYzhvMmQ2dWpnZzQ0MmQyaDNtMW11amsgOWNnanZtNG83Z2ViNWVmNzEyMXJkNTBvcGtAZw</htmlLink>
+    <iCalUID>v0kc8o2d6ujgg442d2h3m1mujk@google.com</iCalUID>
+    <id>v0kc8o2d6ujgg442d2h3m1mujk</id>
+    <kind>calendar#event</kind>
+    <location>My Location</location>
+    <organizer>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/organizer/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <displayName>gadsu</displayName>
+      <email>9cgjvm4o7geb5ef7121rd50opk@group.calendar.google.com</email>
+      <self>true</self>
+    </organizer>
+    <reminders>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/reminders/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <useDefault>true</useDefault>
+    </reminders>
+    <sequence>2</sequence>
+    <start>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463126400000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </start>
+    <status>confirmed</status>
+    <summary>foobar</summary>
+    <updated>
+      <value>1463120446441</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </updated>
+  </com.google.api.services.calendar.model.Event>
+  <com.google.api.services.calendar.model.Event>
+    <unknownFields class="com.google.api.client.util.ArrayMap">
+      <size>0</size>
+    </unknownFields>
+    <classInfo reference="../../com.google.api.services.calendar.model.Event/classInfo"/>
+    <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+    <created>
+      <value>1463120479000</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </created>
+    <creator>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/creator/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <email>christoph.pickl@gmail.com</email>
+    </creator>
+    <end>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463155200000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </end>
+    <etag>&quot;2926240959102000&quot;</etag>
+    <htmlLink>https://www.google.com/calendar/event?eid=ZTYyaGgwNW1qcGc1OWNxazFxNWNoNzBtZTggOWNnanZtNG83Z2ViNWVmNzEyMXJkNTBvcGtAZw</htmlLink>
+    <iCalUID>e62hh05mjpg59cqk1q5ch70me8@google.com</iCalUID>
+    <id>e62hh05mjpg59cqk1q5ch70me8</id>
+    <kind>calendar#event</kind>
+    <organizer>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/organizer/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <displayName>gadsu</displayName>
+      <email>9cgjvm4o7geb5ef7121rd50opk@group.calendar.google.com</email>
+      <self>true</self>
+    </organizer>
+    <reminders>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/reminders/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <useDefault>true</useDefault>
+    </reminders>
+    <sequence>0</sequence>
+    <start>
+      <unknownFields class="com.google.api.client.util.ArrayMap">
+        <size>0</size>
+      </unknownFields>
+      <classInfo reference="../../../com.google.api.services.calendar.model.Event/end/classInfo"/>
+      <jsonFactory class="com.google.api.client.json.jackson2.JacksonFactory" reference="../../../com.google.api.services.calendar.model.Event/jsonFactory"/>
+      <dateTime>
+        <value>1463151600000</value>
+        <dateOnly>false</dateOnly>
+        <tzShift>120</tzShift>
+      </dateTime>
+    </start>
+    <status>confirmed</status>
+    <summary>Anna Nym</summary>
+    <updated>
+      <value>1463120479551</value>
+      <dateOnly>false</dateOnly>
+      <tzShift>0</tzShift>
+    </updated>
+  </com.google.api.services.calendar.model.Event>
+</list>
