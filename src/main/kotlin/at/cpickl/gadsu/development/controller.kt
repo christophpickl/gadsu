@@ -29,6 +29,7 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import java.io.File
 import javax.inject.Inject
 
 
@@ -76,9 +77,15 @@ open class DevelopmentController @Inject constructor(
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
-                        DateFormats.DATE.parseDateTime("26.10.1986"), Gender.MALE, "\u00d6sterreich",
-                        Relationship.MARRIED, "Computermensch", "keine", "Meine supi wuzi Anmerkung.",
-                        MyImage.DEFAULT_PROFILE_MAN, CProps.empty
+                        DateFormats.DATE.parseDateTime("26.10.1986"),
+                        Gender.MALE,
+                        "\u00d6sterreich",
+                        Relationship.MARRIED,
+                        "Computermensch",
+                        "keine",
+                        "Meine supi wuzi Anmerkung.",
+                        MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
+                        CProps.empty
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",
@@ -96,6 +103,7 @@ open class DevelopmentController @Inject constructor(
             if (saved.firstName.equals("Max")) {
                 val firstDate = "31.12.2001 14:15:00".parseDateTime()
                 val clientId = saved.id!!
+                clientService.savePicture(saved.copy(picture = it.picture))
                 arrayOf(
                         Treatment.insertPrototype(
                                 clientId = clientId,

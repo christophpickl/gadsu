@@ -1,16 +1,29 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.RealClock
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.awt.Point
 import javax.swing.BoxLayout
 import javax.swing.JFrame
 import javax.swing.UIManager
 import javax.swing.WindowConstants
+
+object DummyMainFrame : MainFrame {
+    override var descriptor = WindowDescriptor(Point(0, 0), Dimension(0, 0))
+    override val dockPositionRight: Point = Point(0, 0)
+
+    override fun start() { }
+    override fun close() { }
+    override fun asJFrame() = JFrame()
+    override fun requestFocus() { }
+}
 
 /**
  * For internal use, when starting up part of the UI in its own main method.
