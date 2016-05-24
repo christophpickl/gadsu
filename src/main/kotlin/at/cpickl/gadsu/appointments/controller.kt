@@ -7,6 +7,7 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.clearMinutes
+import at.cpickl.gadsu.service.formatDateTimeTalkative
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
@@ -47,7 +48,7 @@ open class AppointmentControllerImpl @Inject constructor(
 
     @Subscribe open fun onDeleteAppointmentEvent(event: DeleteAppointmentEvent) {
         // FIXME check if window is open with this appointment
-        dialogs.confirmedDelete("den Termin", {
+        dialogs.confirmedDelete("den Termin am ${event.appointment.start.formatDateTimeTalkative()}", {
             service.delete(event.appointment)
         })
     }

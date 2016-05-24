@@ -14,6 +14,8 @@ class DateFormats {
         val TIME_WITHOUT_SECONDS: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
+        val DATE_TIME_TALKATIVE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM. 'um' HH:mm 'Uhr'")
+        // needs I18N (check Language and create am/pm style for EN
         val DATE_TIME_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yy, HH:mm 'Uhr'").withLocale(Languages.locale)
 
         val DATE_TIME_FILE: DateTimeFormatter = DateTimeFormat.forPattern("yyyy_MM_dd_HH_mm_ss")
@@ -63,12 +65,9 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 fun DateTime.formatTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.print(this)
 fun DateTime.formatDate() = DateFormats.DATE.print(this)
 fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
+fun DateTime.formatDateTimeTalkative() = DateFormats.DATE_TIME_TALKATIVE.print(this)
 fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 fun DateTime.formatDateTimeFile() = DateFormats.DATE_TIME_FILE.print(this)
-
-fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
-fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
-fun DateTime.clearTime() = this.withHourOfDay(0).clearMinutes()
 
 fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
 /**
@@ -83,6 +82,11 @@ fun String.parseDateTimeFile() = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 fun DateTime.withAllButHourAndMinute(copyReference: DateTime) =
         copyReference.withHourOfDay(this.hourOfDay).withMinuteOfHour(this.minuteOfHour)
 
+
+
+fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
+fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
+fun DateTime.clearTime() = this.withHourOfDay(0).clearMinutes()
 
 // --------------------------------------------------------------------------- clock
 

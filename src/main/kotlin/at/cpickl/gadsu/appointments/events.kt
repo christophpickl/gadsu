@@ -17,6 +17,10 @@ class OpenAppointmentEvent(val appointment: Appointment) : UserEvent() {
 class DeleteAppointmentEvent(val appointment: Appointment) : UserEvent() {
     override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
 }
+class AppointmentDeletedEvent(val appointment: Appointment) : UserEvent() {
+    override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
+}
+
 
 // TODO register for in ListController
 class AppointmentSavedEvent(val appointment: Appointment) : Event() {

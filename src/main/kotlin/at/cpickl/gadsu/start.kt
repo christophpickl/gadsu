@@ -52,7 +52,8 @@ class GadsuGuiceStarter @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun start() {
-        log.info("start()\n")
+        log.info("")
+        log.info("")
         log.info("""
                ___   _      ___  __
       / _ \ /_\    /   \/ _\/\ /\
@@ -60,11 +61,14 @@ class GadsuGuiceStarter @Inject constructor(
     / /_\\/  _  \/ /_// _\ \ \_/ /
     \____/\_/ \_/___,'  \__/\___/
 """)
-        log.info("\n-==================================================================-")
+        log.info("")
+        log.info("-==================================================================-")
         log.info("Gadsu directory: {}", GADSU_DIRECTORY.absolutePath)
         log.info("Database directory: {}", GADSU_DATABASE_DIRECTORY.absolutePath)
         log.info("Log file: {}", GADSU_LOG_FILE.absolutePath)
-        log.info("-==================================================================-\n")
+        log.info("-==================================================================-")
+        log.info("")
+        log.info("")
 
         database.migrateDatabase()
         registerMacHandler()

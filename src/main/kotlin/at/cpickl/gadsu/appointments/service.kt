@@ -35,6 +35,7 @@ class AppointmentServiceImpl @Inject constructor(
 
     override fun delete(appointment: Appointment) {
         repository.delete(appointment)
+        bus.post(AppointmentDeletedEvent(appointment))
     }
 
     override fun deleteAll(client: Client) {

@@ -42,7 +42,7 @@ class Dialogs @Inject constructor(
     fun confirmedDelete(promptPart: String, onSuccess: () -> Unit, promptSuffix: String = "") {
         val selected = show(
                 title = "Bist du dir sicher?",
-                message = "Willst du $promptPart wirklich l\u00f6schen?!$promptSuffix",
+                message = "Willst du $promptPart wirklich l\u00f6schen?$promptSuffix",
                 type = DialogType.QUESTION,
                 buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
         )

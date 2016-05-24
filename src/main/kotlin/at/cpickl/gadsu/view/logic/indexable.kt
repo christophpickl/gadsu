@@ -45,7 +45,7 @@ fun <E> _findIndexByComparator(model: IndexableModel<E>, comparator: (current: E
             return i
         }
     }
-    throw GadsuException("Could not determine index of list entry!")
+    throw GadsuException("Could not determine index of list entry for model: $model")
 }
 
 /*
