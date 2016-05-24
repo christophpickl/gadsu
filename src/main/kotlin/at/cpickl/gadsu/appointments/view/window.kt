@@ -4,7 +4,9 @@ import at.cpickl.gadsu.appointments.AbortAppointmentDialog
 import at.cpickl.gadsu.appointments.Appointment
 import at.cpickl.gadsu.appointments.SaveAppointment
 import at.cpickl.gadsu.service.CurrentClient
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.MyFrame
@@ -27,16 +29,19 @@ interface AppointmentWindow {
     fun showWindow()
     fun hideWindow()
     fun close()
-
 }
+
 class SwingAppointmentWindow @Inject constructor(
         private val swing: SwingFactory,
         private val bus: EventBus,
-        private val currentClient: CurrentClient
+        private val currentClient: CurrentClient,
+        private val mainFrame: MainFrame // unfortunately we need the whole big mainframe to center this window
+        // FIXME make it a dialog. but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
+//) : MyDialog(mainFrame.asJFrame(), "Termin"), AppointmentWindow, ModificationAware {
 ) : MyFrame("Termin"), AppointmentWindow, ModificationAware {
     private var current: Appointment = Appointment.insertPrototype("xxx", DateTime(0))
 
-
+    private val log = LOG(javaClass)
     private val btnSave = swing.newPersistableEventButton("TODO_VIEWNAME", { SaveAppointment(readInput()) })
 
     private val modificationChecker = ModificationChecker(this, btnSave)
@@ -96,11 +101,16 @@ class SwingAppointmentWindow @Inject constructor(
 
     override fun showWindow() {
         // TODO position to a "good" location
-        isVisible = true
+        if (isVisible == false) {
+            setLocationRelativeTo(mainFrame.asJFrame())
+            isVisible = true
+        }
     }
 
     override fun hideWindow() {
-        isVisible = false
+        log.debug("hideWindow()")
+        dispose() // only works for JDialog :-/
+//        isVisible = false // only works for JFrame
     }
 
     override fun close() {

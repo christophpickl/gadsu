@@ -1,22 +1,15 @@
 package at.cpickl.gadsu.treatment.inclient
 
-import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.treatment.CreateTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.ListyView
 import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
-import at.cpickl.gadsu.view.swing.enforceWidth
-import at.cpickl.gadsu.view.swing.scrolled
-import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
-import java.awt.BorderLayout
-import java.awt.Color
 import javax.inject.Inject
-import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
@@ -31,24 +24,18 @@ fun main(args: Array<String>) {
     })
 }
 
+
 class TreatmentsInClientView @Inject constructor(
         private val swing: SwingFactory,
         private val treatmentsList: TreatmentList
-): JPanel() {
+): ListyView<Treatment>(
+        treatmentsList,
+        swing.newEventButton("Neue Behandlung anlegen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
+) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val newTreatmentButton = swing.newEventButton("Neue Behandlung anlegen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
-
     init {
-        debugColor = Color.RED
-        transparent()
-        enforceWidth(250)
-        layout = BorderLayout()
-        newTreatmentButton.isEnabled = false // disabled by default at startup
-
-        add(treatmentsList.scrolled(), BorderLayout.CENTER)
-
-        add(SingleButtonPanel(newTreatmentButton), BorderLayout.SOUTH)
+        createButton.isEnabled = false // disabled by default at startup
     }
 
     fun insert(treatment: Treatment) {
@@ -70,14 +57,14 @@ class TreatmentsInClientView @Inject constructor(
         log.trace("initData(treatments={})", treatments)
 
         treatmentsList.resetData(treatments)
-        newTreatmentButton.isEnabled = true
+        createButton.isEnabled = true
     }
 
     fun disableData() {
         log.debug("disableData()")
 
         treatmentsList.clear()
-        newTreatmentButton.isEnabled = false
+        createButton.isEnabled = false
     }
 
 }

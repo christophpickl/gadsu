@@ -26,7 +26,7 @@ open class AppointmentControllerImpl @Inject constructor(
 ) : AppointmentController {
 
     @Subscribe open fun onCreateAppointmentEvent(event: CreateAppointmentEvent) {
-        showAppointment(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes()))
+        showAppointment(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes().plusDays(1)))
     }
 
     @Subscribe open fun onSaveAppointment(event: SaveAppointment) {

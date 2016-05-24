@@ -139,7 +139,7 @@ class ClientTabMain(
         with (c) {
             weightx = 1.0
             weighty = 0.5
-            c.fill = GridBagConstraints.BOTH
+            fill = GridBagConstraints.BOTH
             add(appointmentsSubView)
 
             gridy++

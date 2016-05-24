@@ -35,6 +35,7 @@ class AppointmentList @Inject constructor(
     }
 
 }
+
 class AppointmentCell(val appointment: Appointment): DefaultCellView<Appointment>(appointment), CellView {
     private val lblDate = JLabel("${appointment.start.formatDateTimeLong()}")
 

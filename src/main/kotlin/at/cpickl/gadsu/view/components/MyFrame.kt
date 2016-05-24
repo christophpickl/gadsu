@@ -2,9 +2,20 @@ package at.cpickl.gadsu.view.components
 
 import java.awt.Point
 import javax.swing.BorderFactory
+import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.WindowConstants
 
+open class MyDialog(owner: JFrame, myTitle: String) : JDialog(owner, myTitle, true) {
+    init {
+        defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
+    }
+
+    protected fun hideAndClose() {
+        isVisible = false
+        dispose()
+    }
+}
 
 open class MyFrame(private val myTitle: String) : JFrame() {
     companion object {

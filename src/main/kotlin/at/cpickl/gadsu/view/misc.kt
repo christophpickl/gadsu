@@ -5,10 +5,7 @@ import javax.swing.FocusManager
 import javax.swing.JFrame
 
 fun currentActiveJFrame(): JFrame? {
-    val win = FocusManager.getCurrentManager().activeWindow
-    if (win == null) {
-        return null
-    }
+    val win = FocusManager.getCurrentManager().activeWindow ?: return null
     if (win !is JFrame) {
         throw GadsuException("Current active window is not a JFrame but: $win")
     }

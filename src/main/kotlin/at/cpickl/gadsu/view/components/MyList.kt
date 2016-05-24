@@ -2,16 +2,36 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
 import at.cpickl.gadsu.view.logic.IndexableModel
 import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import at.cpickl.gadsu.view.logic.enablePopup
 import at.cpickl.gadsu.view.logic.findIndexByComparator
 import at.cpickl.gadsu.view.logic.registerDoubleClicked
+import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
+import java.awt.BorderLayout
 import javax.swing.DefaultListModel
 import javax.swing.JList
+import javax.swing.JPanel
 
 
+abstract class ListyView<T : Comparable<T>>(
+        protected val list: MyList<T>,
+        protected val createButton: EventButton
+) : JPanel() {
+
+    init {
+        transparent()
+        enforceWidth(250)
+        layout = BorderLayout()
+
+        add(list.scrolled(), BorderLayout.CENTER)
+        add(SingleButtonPanel(createButton), BorderLayout.SOUTH)
+    }
+}
 
 open class MyList<T : Comparable<T>>(
         viewName: String,
