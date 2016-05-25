@@ -1,10 +1,7 @@
 package at.cpickl.gadsu.view.components
 
 import java.awt.Point
-import javax.swing.BorderFactory
-import javax.swing.JDialog
-import javax.swing.JFrame
-import javax.swing.WindowConstants
+import javax.swing.*
 
 open class MyDialog(owner: JFrame, myTitle: String) : JDialog(owner, myTitle, true) {
     init {
@@ -20,11 +17,13 @@ open class MyDialog(owner: JFrame, myTitle: String) : JDialog(owner, myTitle, tr
 open class MyFrame(private val myTitle: String) : JFrame() {
     companion object {
         val BORDER_GAP = BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        private val FRAME_ICON = ImageIcon(javaClass.getResource("/gadsu/logo100.png")).image
     }
 
     init {
         title = myTitle
         defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
+        iconImage = FRAME_ICON
     }
 
     final val dockPositionRight: Point

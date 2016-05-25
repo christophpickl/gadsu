@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.service.nullIfEmpty
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Point
@@ -21,6 +22,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 
         private val KEY_USERNAME = "USERNAME"
         private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
+        private val KEY_PROXY = "PROXY"
 
         private val KEY_WINDOW_X = "WINDOW_X"
 
@@ -50,13 +52,14 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
                 return PreferencesData.DEFAULT
             }
             val checkUpdates = preferences.get(KEY_CHECK_UPDATES, null).toBoolean()
-
-            return PreferencesData(username, checkUpdates)
+            val proxy = preferences.get(KEY_PROXY, "").nullIfEmpty()
+            return PreferencesData(username, checkUpdates, proxy)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
             preferences.put(KEY_USERNAME, value.username)
             preferences.put(KEY_CHECK_UPDATES, value.checkUpdates.toString())
+            preferences.put(KEY_PROXY, value.proxy ?: "")
             preferences.flush()
         }
 

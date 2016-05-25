@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -19,12 +20,7 @@ import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.BorderFactory
-import javax.swing.BoxLayout
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 
 interface PreferencesWindow {
     fun start()
@@ -34,6 +30,7 @@ interface PreferencesWindow {
 
     var txtApplicationDirectory: String
     var txtLatestBackup: String
+    var txtProxy: String
     val btnCheckUpdate: EventButton
 }
 
@@ -52,6 +49,7 @@ class SwingPreferencesFrame @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
     private var yetCreated: Boolean = false
     private val inpUsername = JTextField()
+    private val inpProxy = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
 
     override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
@@ -66,6 +64,11 @@ class SwingPreferencesFrame @Inject constructor(
         set(value) {
             inpLatestBackup.text = value
         }
+    override var txtProxy: String
+        get() = inpProxy.text
+        set(value) {
+            inpProxy.text = value
+        }
 
     init {
         name = ViewNames.Preferences.Window
@@ -77,6 +80,8 @@ class SwingPreferencesFrame @Inject constructor(
             addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
             addDescriptiveFormInput("Auto Update", initPanelCheckUpdates(), "Um immer am aktuellsten Stand zu bleiben,<br/>empfiehlt es sich diese Option zu aktivieren.",
                     GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
+            addDescriptiveFormInput("HTTP Proxy", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
+
             addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
                     addTopInset = VGAP_BETWEEN_COMPONENTS)
             addDescriptiveFormInput("Letztes Backup", inpLatestBackup, "Gadsu erstellt für dich täglich ein Backup aller Informationen.",
@@ -120,9 +125,10 @@ class SwingPreferencesFrame @Inject constructor(
         log.trace("initData(preferencesData={})", preferencesData)
         inpUsername.text = preferencesData.username
         inpCheckUpdates.isSelected = preferencesData.checkUpdates
+        inpProxy.text = preferencesData.proxy ?: ""
     }
 
-    override fun readData() = PreferencesData(inpUsername.text, inpCheckUpdates.isSelected)
+    override fun readData() = PreferencesData(inpUsername.text, inpCheckUpdates.isSelected, inpProxy.text.nullIfEmpty())
 
     override fun start() {
         if (yetCreated == false) {

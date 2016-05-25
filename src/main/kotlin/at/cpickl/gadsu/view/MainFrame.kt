@@ -13,7 +13,6 @@ import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import java.awt.*
 import javax.inject.Inject
-import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -52,7 +51,6 @@ open class SwingMainFrame @Inject constructor(
     private var _descriptor: WindowDescriptor? = null
 
     init {
-        iconImage = ImageIcon(javaClass.getResource("/gadsu/logo100.png")).image
         container.name = ViewNames.Main.ContainerPanel
         container.border = BORDER_GAP
         container.debugColor = Color.CYAN

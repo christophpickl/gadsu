@@ -4,34 +4,32 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.swing.bold
-import at.cpickl.gadsu.view.swing.changeBackgroundForASec
-import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.Point
 import javax.swing.JComponent
-import javax.swing.JFrame
 import javax.swing.JLabel
-import javax.swing.JTextArea
 
 
 class DevelopmentFrame(
         initLocation: Point,
         private val bus: EventBus
-): JFrame() {
+): MyFrame("Development Console") {
 
     private val txtClient = JLabel()
     private val txtTreatment = JLabel()
-    private val events = JTextArea()
+    private val events = MyTextArea("Development.EventsTextArea")
 
     init {
-        title = "Development Console"
-        txtClient.isOpaque = true
-        txtTreatment.isOpaque = true
+        addCloseListener { close() }
+
+        txtClient.opaque()
+        txtTreatment.opaque()
 
         val panel = GridPanel()
         panel.border = MyFrame.BORDER_GAP
