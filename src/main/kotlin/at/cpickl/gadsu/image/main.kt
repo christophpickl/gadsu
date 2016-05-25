@@ -35,6 +35,9 @@ class ImageSelectedEvent(
 
 fun File.readImageIcon() = _safeReadImageIcon {
     LOG_image.debug("File#readImageIcon('{}')", this.absolutePath)
+    if (!exists()) {
+        throw GadsuException("Can not read image from file as it does not exist! (path=$absolutePath)")
+    }
     ImageIO.read(this)
 }
 

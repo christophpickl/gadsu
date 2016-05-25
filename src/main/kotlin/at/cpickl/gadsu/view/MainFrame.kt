@@ -11,12 +11,9 @@ import at.cpickl.gadsu.view.swing.isTransparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.Point
+import java.awt.*
 import javax.inject.Inject
+import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -55,7 +52,7 @@ open class SwingMainFrame @Inject constructor(
     private var _descriptor: WindowDescriptor? = null
 
     init {
-
+        iconImage = ImageIcon(javaClass.getResource("/gadsu/logo100.png")).image
         container.name = ViewNames.Main.ContainerPanel
         container.border = BORDER_GAP
         container.debugColor = Color.CYAN

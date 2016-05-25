@@ -1,13 +1,11 @@
 package at.cpickl.gadsu.view.components.panels
 
+import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
-import java.awt.Color
-import java.awt.Component
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
+import java.awt.*
 import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -74,6 +72,7 @@ class SingleButtonPanel(button: JButton) : GridPanel() {
         debugColor = Color.ORANGE
         c.weightx = 1.0
         c.fill = GridBagConstraints.HORIZONTAL
+        if (IS_OS_WIN) c.insets = Insets(4, 0, 6, 0)
         add(button)
     }
 }

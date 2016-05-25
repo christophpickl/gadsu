@@ -10,3 +10,4 @@ val DUMMY_CREATED = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:00:00")
 val GADSU_LATEST_VERSION_URL = URL("https://raw.githubusercontent.com/christophpickl/gadsu/master/version_latest.txt")
 
 val IS_OS_MAC = System.getProperty("os.name").toLowerCase().contains("mac")
+val IS_OS_WIN = System.getProperty("os.name").toLowerCase().contains("win")

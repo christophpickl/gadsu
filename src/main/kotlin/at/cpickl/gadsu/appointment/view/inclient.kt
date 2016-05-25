@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AppoinmentsInClientView @Inject constructor(
         private val swing: SwingFactory,
         list: AppointmentList
-) : ListyView<Appointment>(list, swing.newEventButton("Termin Erstellen", "ViewName_TODO", { CreateAppointmentEvent() })) {
+) : ListyView<Appointment>(list, swing.newEventButton("Neuen Termin erstellen", "ViewName_TODO", { CreateAppointmentEvent() })) {
 
     init {
         createButton.isEnabled = false

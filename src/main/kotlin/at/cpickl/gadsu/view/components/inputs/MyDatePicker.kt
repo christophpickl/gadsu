@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.view.components.Framed
@@ -15,14 +16,8 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.Calendar
-import java.util.Date
-import java.util.Properties
-import javax.swing.JButton
-import javax.swing.JFormattedTextField
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
+import java.util.*
+import javax.swing.*
 
 
 //<editor-fold desc="main">
@@ -107,7 +102,7 @@ class MyDatePicker(viewNamePrefix: String,
         val panelClassName = panelClass.name
 
         val dateTextField = reflectivelyGetFieldAs<JFormattedTextField>(pickerClassName, thiz, "formattedTextField")
-        dateTextField.columns = 6
+        dateTextField.columns = if (IS_OS_WIN) 8 else 6
         dateTextField.horizontalAlignment = textFieldAlignment
 
         val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")

@@ -30,7 +30,7 @@ class TreatmentsInClientView @Inject constructor(
         private val treatmentsList: TreatmentList
 ): ListyView<Treatment>(
         treatmentsList,
-        swing.newEventButton("Neue Behandlung anlegen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
+        swing.newEventButton("Neue Behandlung erstellen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 

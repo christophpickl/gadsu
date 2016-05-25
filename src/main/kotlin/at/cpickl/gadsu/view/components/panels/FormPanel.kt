@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components.panels
 
+import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.swing.Pad
@@ -51,7 +52,7 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         c.weighty = 0.0
         c.fill = GridBagConstraints.NONE
         c.anchor = labelAnchor
-        c.insets = insetsCol1.addTop(addTopInset)
+        c.insets = insetsCol1.addPaddingForWindows().addTop(addTopInset)
         add(JLabel(label).bold())
 
         addIconMaybe(icon)
@@ -66,7 +67,7 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         } else {
             c.insets = insetsCol2
         }
-        c.insets = c.insets.addTop(addTopInset)
+        c.insets = c.insets.addPaddingForWindows().addTop(addTopInset)
         add(input)
 
         c.gridy++
@@ -74,19 +75,27 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
         c.gridx = 0
     }
 
-    protected open fun addIconMaybe(icon: ImageIcon?) {
-        if (icon != null) {
-            c.gridy++
-            c.insets = Pad.TOP
-            c.weighty = 0.0
-            c.weightx = 0.0
-            c.anchor = GridBagConstraints.NORTH
-            c.fill = GridBagConstraints.NONE
-            add(JLabel(icon))
-
-            c.gridheight = 2
-            c.gridy--
+    private fun Insets.addPaddingForWindows(): Insets {
+        if (!IS_OS_WIN || c.gridy == 0) {
+            return this
         }
+        return this.addTop(10)
+    }
+
+    protected open fun addIconMaybe(icon: ImageIcon?) {
+        if (icon == null) {
+            return
+        }
+        c.gridy++
+        c.insets = Insets(5, 0, 0, 4)
+        c.weighty = 0.0
+        c.weightx = 0.0
+        c.anchor = GridBagConstraints.NORTH
+        c.fill = GridBagConstraints.NONE
+        add(JLabel(icon))
+
+        c.gridheight = 2
+        c.gridy--
     }
 
     open fun addLastColumnsFilled(fillType: GridBagFill = GridBagFill.Both) {

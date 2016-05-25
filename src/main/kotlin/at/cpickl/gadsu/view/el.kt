@@ -2,14 +2,9 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
 import at.cpickl.gadsu.service.withAllButHourAndMinute
-import at.cpickl.gadsu.view.components.inputs.DateAndTimePicker
-import at.cpickl.gadsu.view.components.inputs.Labeled
-import at.cpickl.gadsu.view.components.inputs.MyComboBox
-import at.cpickl.gadsu.view.components.inputs.MyDatePicker
-import at.cpickl.gadsu.view.components.inputs.MyTimePicker
-import at.cpickl.gadsu.view.components.inputs.NumberField
+import at.cpickl.gadsu.view.components.MyTextArea
+import at.cpickl.gadsu.view.components.inputs.*
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_SHORT
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
@@ -18,9 +13,7 @@ import com.google.common.base.MoreObjects
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
-import java.util.LinkedList
-import java.util.Objects
-import javax.swing.JTextArea
+import java.util.*
 import javax.swing.JTextField
 
 
@@ -74,19 +67,9 @@ class ElTextField<V>(
 class ElTextArea<V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
-        private val viewName: String,
+        viewName: String,
         visibleRows: Int? = null
-) : JTextArea(), ElField<V> {
-
-    init {
-        name = viewName
-        lineWrap = true
-//        wrapStyleWord = true
-        if (visibleRows != null) {
-            rows = visibleRows
-        }
-        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
-    }
+) : MyTextArea(viewName, visibleRows), ElField<V> {
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
     override fun updateValue(value: V) { text = extractValue(value) }

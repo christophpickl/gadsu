@@ -1,15 +1,10 @@
 package at.cpickl.gadsu.view.swing
 
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.Font
-import java.awt.Point
+import java.awt.*
 import java.awt.event.InputEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 import javax.swing.JComponent
 import javax.swing.JScrollPane
 
@@ -79,5 +74,10 @@ var JComponent.isTransparent: Boolean
 
 fun <T : JComponent> T.transparent(): T {
     isTransparent = true
+    return this
+}
+
+fun <T : JComponent> T.opaque(): T {
+    isOpaque = true
     return this
 }
