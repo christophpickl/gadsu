@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.client.view.ClientView
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.testinfra.GuiceIntegrationTest
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.unsavedValidInstance

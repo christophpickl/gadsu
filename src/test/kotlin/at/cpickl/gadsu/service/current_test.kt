@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp

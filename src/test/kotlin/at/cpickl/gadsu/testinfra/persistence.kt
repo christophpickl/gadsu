@@ -3,13 +3,13 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentClient
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository

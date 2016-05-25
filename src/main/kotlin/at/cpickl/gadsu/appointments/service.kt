@@ -5,6 +5,33 @@ import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
 
+//fun main(args: Array<String>) {
+////    val kotlinHack = when (validate()) {
+////        is ValidationResult.Ok -> println("Ok")
+////        is ValidationResult.TooLong -> println("Nope")
+////        is ValidationResult.MissFormat -> println("Nope")
+////    }
+//    val result = validate()
+//    val kotlinHack = when (result) {
+//        is ValidationResult.Ok -> println("Ok")
+//        is ValidationResult.MissFormat -> println("Nope, format: ${result.input}")
+//
+//        is ValidationResult.TooLong -> println("Nope, too long: ${result.length}") // must come before abstract
+//        is ValidationResult.TooShort -> println("Nope, too short: ${result.length}")
+//        is ValidationResult.SizeInvalid -> throw RuntimeException("not reachable!")
+//    }
+//}
+//fun validate(): ValidationResult {
+//    return ValidationResult.TooLong(42)
+//}
+//sealed class ValidationResult {
+//    class Ok : ValidationResult()
+//    abstract class SizeInvalid(val length: Int) : ValidationResult()
+//    class TooLong(length: Int) : SizeInvalid(length)
+//    class TooShort(length: Int) : SizeInvalid(length)
+//    class MissFormat(val input: String) : ValidationResult()
+//}
+
 interface AppointmentService {
     fun findAllFutureFor(client: Client): List<Appointment>
     fun insertOrUpdate(appointment: Appointment): Appointment
