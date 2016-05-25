@@ -5,11 +5,7 @@ import at.cpickl.gadsu.appointment.DeleteAppointmentEvent
 import at.cpickl.gadsu.appointment.OpenAppointmentEvent
 import at.cpickl.gadsu.service.formatDateTimeLong
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.CellView
-import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.MyList
-import at.cpickl.gadsu.view.components.MyListCellRenderer
-import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.*
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
@@ -26,7 +22,7 @@ class AppointmentList @Inject constructor(
         MyListModel<Appointment>(),
         bus,
         object : MyListCellRenderer<Appointment>() {
-            override fun newCell(value: Appointment) = at.cpickl.gadsu.appointment.AppointmentCell(value)
+            override fun newCell(value: Appointment) = AppointmentCell(value)
         }
 ) {
     init {
