@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
-import at.cpickl.gadsu.appointments.view.AppoinmentsInClientView
-import at.cpickl.gadsu.appointments.view.AppointmentList
+import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
+import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
             ModificationChecker(object : ModificationAware {
                 override fun isModified() = true
             }),
-            AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
+                AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
             TreatmentsInClientView(context.swing, TreatmentList(context.bus)))
     }, Dimension(800, 600))
 }

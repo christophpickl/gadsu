@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.appointments
+package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.UserEvent

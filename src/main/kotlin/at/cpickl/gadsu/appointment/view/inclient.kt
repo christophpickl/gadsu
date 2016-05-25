@@ -1,7 +1,7 @@
-package at.cpickl.gadsu.appointments.view
+package at.cpickl.gadsu.appointment.view
 
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.CreateAppointmentEvent
+import at.cpickl.gadsu.appointment.Appointment
+import at.cpickl.gadsu.appointment.CreateAppointmentEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.components.ListyView

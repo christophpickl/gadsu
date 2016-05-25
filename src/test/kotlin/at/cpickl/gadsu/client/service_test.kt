@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
-import at.cpickl.gadsu.appointments.AppointmentRepository
-import at.cpickl.gadsu.appointments.AppointmentService
-import at.cpickl.gadsu.appointments.AppointmentServiceImpl
+import at.cpickl.gadsu.appointment.AppointmentJdbcRepository
+import at.cpickl.gadsu.appointment.AppointmentRepository
+import at.cpickl.gadsu.appointment.AppointmentService
+import at.cpickl.gadsu.appointment.AppointmentServiceImpl
 import at.cpickl.gadsu.client.xprops.ROW_MAPPER
 import at.cpickl.gadsu.client.xprops.SProp
 import at.cpickl.gadsu.client.xprops.XPropsService

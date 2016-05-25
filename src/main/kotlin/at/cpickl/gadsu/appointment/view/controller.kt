@@ -1,9 +1,9 @@
-package at.cpickl.gadsu.appointments.view
+package at.cpickl.gadsu.appointment.view
 
-import at.cpickl.gadsu.appointments.AppointmentChangedEvent
-import at.cpickl.gadsu.appointments.AppointmentDeletedEvent
-import at.cpickl.gadsu.appointments.AppointmentSavedEvent
-import at.cpickl.gadsu.appointments.AppointmentService
+import at.cpickl.gadsu.appointment.AppointmentChangedEvent
+import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
+import at.cpickl.gadsu.appointment.AppointmentSavedEvent
+import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentChangedEvent

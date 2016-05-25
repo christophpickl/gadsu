@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.appointments
+package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.HasId

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client.view.detail
 
-import at.cpickl.gadsu.appointments.view.AppoinmentsInClientView
+import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient

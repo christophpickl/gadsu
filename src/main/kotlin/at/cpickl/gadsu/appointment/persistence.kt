@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.appointments
+package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
@@ -48,7 +48,7 @@ class AppointmentJdbcRepository @Inject constructor(
 
         val argsMerged = args.toMutableList()
         argsMerged.add(0, client.id!!)
-        val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? $whereClause ORDER BY startDate",
+        val appointments = jdbcx.query("SELECT * FROM ${TABLE} WHERE id_client = ? $whereClause ORDER BY startDate",
                 argsMerged.toTypedArray(), Appointment.ROW_MAPPER)
         appointments.sort()
         return appointments
@@ -60,7 +60,7 @@ class AppointmentJdbcRepository @Inject constructor(
 
         val newId = idGenerator.generate()
         jdbcx.update(
-            """INSERT INTO $TABLE (
+            """INSERT INTO ${TABLE} (
                 id, id_client, created, startDate, endDate,
                 note
             ) VALUES (
@@ -79,7 +79,7 @@ class AppointmentJdbcRepository @Inject constructor(
         appointment.ensurePersisted()
 
         jdbcx.update("""
-                UPDATE $TABLE SET
+                UPDATE ${TABLE} SET
                     startDate = ?,
                     endDate = ?,
                     note = ?
@@ -92,12 +92,12 @@ class AppointmentJdbcRepository @Inject constructor(
     override fun delete(appointment: Appointment) {
         log.debug("delete(appointment={})", appointment)
         appointment.ensurePersisted()
-        jdbcx.deleteSingle("DELETE FROM $TABLE WHERE id = ?", appointment.id!!)
+        jdbcx.deleteSingle("DELETE FROM ${TABLE} WHERE id = ?", appointment.id!!)
     }
 
     override fun deleteAll(client: Client) {
         client.ensurePersisted()
-        val deleted = jdbcx.update("DELETE FROM $TABLE where id_client = ?", client.id)
+        val deleted = jdbcx.update("DELETE FROM ${TABLE} where id_client = ?", client.id)
         log.trace("Deleted {} appointments for client: {}", deleted, client)
     }
 
@@ -107,11 +107,11 @@ class AppointmentJdbcRepository @Inject constructor(
 val Appointment.Companion.ROW_MAPPER: RowMapper<Appointment>
     get() = RowMapper { rs, rowNum ->
         Appointment(
-            rs.getString("id"),
-            rs.getString("id_client"),
-            DateTime(rs.getTimestamp("created")),
-            DateTime(rs.getTimestamp("startDate")),
-            DateTime(rs.getTimestamp("endDate")),
-            rs.getString("note")
+                rs.getString("id"),
+                rs.getString("id_client"),
+                DateTime(rs.getTimestamp("created")),
+                DateTime(rs.getTimestamp("startDate")),
+                DateTime(rs.getTimestamp("endDate")),
+                rs.getString("note")
         )
     }

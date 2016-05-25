@@ -1,8 +1,8 @@
-package at.cpickl.gadsu.appointments.view
+package at.cpickl.gadsu.appointment.view
 
-import at.cpickl.gadsu.appointments.AbortAppointmentDialog
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.SaveAppointment
+import at.cpickl.gadsu.appointment.AbortAppointmentDialog
+import at.cpickl.gadsu.appointment.Appointment
+import at.cpickl.gadsu.appointment.SaveAppointment
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Fields

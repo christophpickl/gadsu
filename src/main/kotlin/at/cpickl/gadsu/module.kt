@@ -1,7 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.acupuncture.AcupunctureModule
-import at.cpickl.gadsu.appointments.AppointmentModule
+import at.cpickl.gadsu.appointment.AppointmentModule
 import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.development.DevelopmentModule
 import at.cpickl.gadsu.export.ExportModule

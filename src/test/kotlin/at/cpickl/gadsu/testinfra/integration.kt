@@ -2,7 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
-import at.cpickl.gadsu.appointments.AppointmentRepository
+import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx

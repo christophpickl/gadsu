@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
+import at.cpickl.gadsu.appointment.AppointmentJdbcRepository
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.CurrentClient

@@ -3,9 +3,9 @@ package at.cpickl.gadsu.development
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.AppointmentSavedEvent
-import at.cpickl.gadsu.appointments.AppointmentService
+import at.cpickl.gadsu.appointment.Appointment
+import at.cpickl.gadsu.appointment.AppointmentSavedEvent
+import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.Contact

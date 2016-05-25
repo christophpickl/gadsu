@@ -1,8 +1,8 @@
-package at.cpickl.gadsu.appointments.view
+package at.cpickl.gadsu.appointment.view
 
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.DeleteAppointmentEvent
-import at.cpickl.gadsu.appointments.OpenAppointmentEvent
+import at.cpickl.gadsu.appointment.Appointment
+import at.cpickl.gadsu.appointment.DeleteAppointmentEvent
+import at.cpickl.gadsu.appointment.OpenAppointmentEvent
 import at.cpickl.gadsu.service.formatDateTimeLong
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.CellView
@@ -26,7 +26,7 @@ class AppointmentList @Inject constructor(
         MyListModel<Appointment>(),
         bus,
         object : MyListCellRenderer<Appointment>() {
-            override fun newCell(value: Appointment) = AppointmentCell(value)
+            override fun newCell(value: Appointment) = at.cpickl.gadsu.appointment.AppointmentCell(value)
         }
 ) {
     init {

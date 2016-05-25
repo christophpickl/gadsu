@@ -1,5 +1,8 @@
 package at.cpickl.gadsu.appointment
 
+import at.cpickl.gadsu.appointment.gcal.GCalConnectorImpl
+import at.cpickl.gadsu.appointment.gcal.GCalRepositoryImpl
+import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
 import at.cpickl.gadsu.service.saveToFile
 import com.thoughtworks.xstream.XStream
 import org.joda.time.DateTime

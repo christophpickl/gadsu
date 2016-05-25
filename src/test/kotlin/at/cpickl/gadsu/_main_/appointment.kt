@@ -1,7 +1,7 @@
 package at.cpickl.gadsu._main_
 
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.view.SwingAppointmentWindow
+import at.cpickl.gadsu.appointment.Appointment
+import at.cpickl.gadsu.appointment.view.SwingAppointmentWindow
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.service.parseDateTime

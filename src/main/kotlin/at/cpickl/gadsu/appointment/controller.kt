@@ -1,7 +1,7 @@
-package at.cpickl.gadsu.appointments
+package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.appointments.view.AppointmentWindow
+import at.cpickl.gadsu.appointment.view.AppointmentWindow
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.service.Clock

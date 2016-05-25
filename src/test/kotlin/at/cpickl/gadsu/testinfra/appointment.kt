@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.appointments.Appointment
+import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.service.clearSeconds
 
 

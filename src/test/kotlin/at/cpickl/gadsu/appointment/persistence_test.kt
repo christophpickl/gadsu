@@ -1,8 +1,5 @@
 package at.cpickl.gadsu.appointment
 
-import at.cpickl.gadsu.appointments.Appointment
-import at.cpickl.gadsu.appointments.AppointmentJdbcRepository
-import at.cpickl.gadsu.appointments.ROW_MAPPER
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.testinfra.Expects.expect

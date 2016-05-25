@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.appointment
+package at.cpickl.gadsu.appointment.gcal
 
 import at.cpickl.gadsu.GADSU_DIRECTORY
 import at.cpickl.gadsu.GadsuException
@@ -10,11 +10,10 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.client.util.DateTime
 import com.google.api.client.util.store.FileDataStoreFactory
+import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
-import com.google.api.services.calendar.model.EventDateTime
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import java.io.File
@@ -67,7 +66,7 @@ class GCalRepositoryImpl @Inject constructor(
 
 
     private lateinit var calendarId: String
-    private val cal: com.google.api.services.calendar.Calendar by lazy {
+    private val cal: Calendar by lazy {
         val connection = connector.connect()
         calendarId = connection.transformCalendarNameToId(calendarName)
         connection
@@ -106,7 +105,7 @@ class GCalRepositoryImpl @Inject constructor(
     // https://developers.google.com/google-apps/calendar/v3/reference/events/update#examples
     fun updateEvent(calendarId: String, eventId: String, newSummary: String) {
         val updateEvent = cal.events().get(calendarId, eventId).execute()
-        updateEvent.setSummary(newSummary)
+        updateEvent.summary = newSummary
         cal.events().update(calendarId, eventId, updateEvent).execute()
     }
 
@@ -116,16 +115,8 @@ class GCalRepositoryImpl @Inject constructor(
     }
 }
 
-fun org.joda.time.DateTime.toGDateTime(): DateTime {
-    return DateTime(this.millis)
-}
-
-fun org.joda.time.DateTime.toGEventDateTime(): EventDateTime {
-    return EventDateTime().setDateTime(com.google.api.client.util.DateTime(this.millis)) // no timezone
-}
-
 interface GCalConnector {
-    fun connect(): com.google.api.services.calendar.Calendar
+    fun connect(): Calendar
 }
 
 class GCalConnectorImpl constructor(
@@ -140,14 +131,14 @@ class GCalConnectorImpl constructor(
     private val dataStoreFactory = FileDataStoreFactory(dataStore)
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
-    private val lazyConnection: com.google.api.services.calendar.Calendar by lazy {
+    private val lazyConnection: Calendar by lazy {
         log.trace("Connecting to GMail Calendar.")
         val credential = authorize()
-        com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential)
+        Calendar.Builder(httpTransport, jsonFactory, credential)
                 .setApplicationName(applicationName)
                 .build()
     }
-    override fun connect(): com.google.api.services.calendar.Calendar = lazyConnection
+    override fun connect(): Calendar = lazyConnection
 
     private fun authorize(): Credential {
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsReader)
@@ -163,8 +154,8 @@ class GCalConnectorImpl constructor(
 
 }
 
-private val log = LOG(com.google.api.services.calendar.Calendar::class.java as Class<Any>)
-fun com.google.api.services.calendar.Calendar.transformCalendarNameToId(name: String): String {
+private val log = LOG(Calendar::class.java as Class<Any>)
+fun Calendar.transformCalendarNameToId(name: String): String {
     log.debug("transformCalendarNameToId(name={})", name)
     val calendars = this.calendarList().list().setMaxResults(100).execute().items
     return calendars.firstOrNull { it.summary.equals(name) }?.id ?: throw GadsuException("Could not find calendar by name '$name'! " +
