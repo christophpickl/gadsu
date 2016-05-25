@@ -141,7 +141,7 @@ class ElTimePicker<V>(
 }
 
 class ElDateAndTimePicker<V>(
-        private val delegate: DateAndTimePicker,
+        val delegate: DateAndTimePicker,
         override val formLabel: String,
         private val extractValue: (V) -> DateTime
 ) : ElField<V> {

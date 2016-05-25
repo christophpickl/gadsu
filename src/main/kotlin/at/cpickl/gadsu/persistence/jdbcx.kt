@@ -53,10 +53,8 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
     }
     override fun <E> querySingle(rowMapper: RowMapper<E>, sql: String, args: Array<out Any?>): E {
         log.trace("querySingle(rowMapper, sql='{}', args)", sql)
-        val maybe = queryMaybeSingle(rowMapper, sql, args)
-        if (maybe == null) {
-            throw PersistenceException("Expected exactly one item to be returned but was 0, by sql code: '$sql'!", PersistenceErrorCode.EXPECT_QUERY_SINGLE_ONE)
-        }
+        val maybe = queryMaybeSingle(rowMapper, sql, args) ?:
+                throw PersistenceException("Expected exactly one item to be returned but was 0, by sql code: '$sql'!", PersistenceErrorCode.EXPECT_QUERY_SINGLE_ONE)
         return maybe
     }
 

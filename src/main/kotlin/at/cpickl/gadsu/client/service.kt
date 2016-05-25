@@ -22,6 +22,7 @@ interface ClientService {
     fun savePicture(client: Client)
     fun deletePicture(client: Client)
 
+    fun findById(id: String): Client
 }
 
 
@@ -43,6 +44,10 @@ class ClientServiceImpl @Inject constructor(
             // TODO performance improvement: dont ask DB for each client, but rather exec a bulk operation
             it.copy(cprops = xpropsService.read(it))
         }
+    }
+
+    override fun findById(id: String): Client {
+        return clientRepo.findById(id)
     }
 
     override fun insertOrUpdate(client: Client): Client {

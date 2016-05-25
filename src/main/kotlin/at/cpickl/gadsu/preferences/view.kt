@@ -8,12 +8,12 @@ import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.isTransparent
-import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -31,6 +31,7 @@ interface PreferencesWindow {
     var txtApplicationDirectory: String
     var txtLatestBackup: String
     var txtProxy: String
+    var txtGcalName: String
     val btnCheckUpdate: EventButton
 }
 
@@ -50,6 +51,7 @@ class SwingPreferencesFrame @Inject constructor(
     private var yetCreated: Boolean = false
     private val inpUsername = JTextField()
     private val inpProxy = JTextField()
+    private val inpGcalName = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
 
     override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
@@ -69,6 +71,11 @@ class SwingPreferencesFrame @Inject constructor(
         set(value) {
             inpProxy.text = value
         }
+    override var txtGcalName: String
+        get() = inpGcalName.text
+        set(value) {
+            inpGcalName.text = value
+        }
 
     init {
         name = ViewNames.Preferences.Window
@@ -80,13 +87,16 @@ class SwingPreferencesFrame @Inject constructor(
             addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
             addDescriptiveFormInput("Auto Update", initPanelCheckUpdates(), "Um immer am aktuellsten Stand zu bleiben,<br/>empfiehlt es sich diese Option zu aktivieren.",
                     GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
-            addDescriptiveFormInput("HTTP Proxy", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
+            addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
+            addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
 
             addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
                     addTopInset = VGAP_BETWEEN_COMPONENTS)
             addDescriptiveFormInput("Letztes Backup", inpLatestBackup, "Gadsu erstellt für dich täglich ein Backup aller Informationen.",
                     addTopInset = VGAP_BETWEEN_COMPONENTS)
-            addLastColumnsFilled()
+
+            c.gridwidth = 2
+            add(HtmlEditorPane("<b>*</b> ... <i>Neustart erforderlich</i>"))
         }
 
         val btnClose = JButton("Schlie\u00dfen")
@@ -101,8 +111,8 @@ class SwingPreferencesFrame @Inject constructor(
         }
 
         contentPane.layout = BorderLayout()
-        contentPane.add(panel, BorderLayout.NORTH)
-        contentPane.add(JPanel().apply { transparent() }, BorderLayout.CENTER)
+        contentPane.add(panel, BorderLayout.CENTER)
+//        contentPane.add(JPanel().apply { transparent() }, BorderLayout.CENTER)
         contentPane.add(panelSouth, BorderLayout.SOUTH)
     }
 
@@ -126,9 +136,10 @@ class SwingPreferencesFrame @Inject constructor(
         inpUsername.text = preferencesData.username
         inpCheckUpdates.isSelected = preferencesData.checkUpdates
         inpProxy.text = preferencesData.proxy ?: ""
+        inpGcalName.text = preferencesData.gcalName ?: ""
     }
 
-    override fun readData() = PreferencesData(inpUsername.text, inpCheckUpdates.isSelected, inpProxy.text.nullIfEmpty())
+    override fun readData() = PreferencesData(inpUsername.text, inpCheckUpdates.isSelected, inpProxy.text.nullIfEmpty(), inpGcalName.text.nullIfEmpty())
 
     override fun start() {
         if (yetCreated == false) {

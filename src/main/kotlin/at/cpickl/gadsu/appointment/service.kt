@@ -1,6 +1,10 @@
 package at.cpickl.gadsu.appointment
 
+import at.cpickl.gadsu.appointment.gcal.GCalEvent
+import at.cpickl.gadsu.appointment.gcal.GCalService
+import at.cpickl.gadsu.appointment.gcal.GCalUpdateEvent
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
@@ -42,8 +46,11 @@ interface AppointmentService {
 class AppointmentServiceImpl @Inject constructor(
         private val repository: AppointmentRepository,
         private val bus: EventBus,
-        private val clock: Clock
+        private val clock: Clock,
+        private val gcal: GCalService,
+        private val clientService: ClientService
 ) : AppointmentService {
+
     override fun findAllFutureFor(client: Client): List<Appointment> {
         return repository.findAllStartAfter(clock.now(), client)
     }
@@ -51,10 +58,25 @@ class AppointmentServiceImpl @Inject constructor(
     override fun insertOrUpdate(appointment: Appointment): Appointment {
         return if (appointment.yetPersisted) {
             repository.update(appointment)
+            if (appointment.gcalId != null) {
+                gcal.updateEvent(GCalUpdateEvent(
+                        id = appointment.gcalId,
+                        summary = appointment.note,
+                        start = appointment.start,
+                        end = appointment.end
+                ))
+            }
             bus.post(AppointmentChangedEvent(appointment))
             appointment
         } else {
-            val savedAppointment = repository.insert(appointment)
+            val client = clientService.findById(appointment.clientId)
+            val maybeGcalId = gcal.createEvent(GCalEvent(
+                    summary = client.fullName,
+                    description = appointment.note,
+                    start = appointment.start,
+                    end = appointment.end
+            ))
+            val savedAppointment = repository.insert(appointment.copy(gcalId = maybeGcalId?.id, gcalUrl = maybeGcalId?.url))
             bus.post(AppointmentSavedEvent(savedAppointment))
             savedAppointment
         }
@@ -62,6 +84,9 @@ class AppointmentServiceImpl @Inject constructor(
 
     override fun delete(appointment: Appointment) {
         repository.delete(appointment)
+        if (appointment.gcalId != null) {
+            gcal.deleteEvent(appointment.gcalId)
+        }
         bus.post(AppointmentDeletedEvent(appointment))
     }
 

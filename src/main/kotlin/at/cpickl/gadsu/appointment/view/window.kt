@@ -5,6 +5,7 @@ import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.SaveAppointment
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -20,8 +21,11 @@ import at.cpickl.gadsu.view.swing.addCloseListener
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import java.awt.BorderLayout
+import java.awt.event.ItemEvent
+import java.net.URL
 import javax.inject.Inject
 import javax.swing.BorderFactory
+import javax.swing.JButton
 import javax.swing.JLabel
 
 interface AppointmentWindow {
@@ -52,8 +56,15 @@ class SwingAppointmentWindow @Inject constructor(
     private val inpEndDate = fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
     private val inpNote = fields.newTextArea("Notiz", { it.note }, "Appointment.Note", 2)
     private val outClient = JLabel()
+    private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
+
     init {
         modificationChecker.disableAll()
+        inpStartDate.delegate.inpTime.addItemListener { event ->
+            if (event.stateChange == ItemEvent.SELECTED) {
+                inpEndDate.selectedTime = inpStartDate.delegate.inpTime.selectedItemTyped.delegate.plusHours(1)
+            }
+        }
 
         rootPane.border = BorderFactory.createEmptyBorder(10, 20, 10, 20)
         addCloseListener { bus.post(AbortAppointmentDialog()) }
@@ -69,6 +80,7 @@ class SwingAppointmentWindow @Inject constructor(
         addFormInput(inpStartDate)
         addFormInput(inpEndDate)
         addFormInput(inpNote)
+        addFormInput("Google", btnOpenGcal)
     }
 
     private fun initSouthPanel() = GridPanel().apply {
@@ -83,16 +95,21 @@ class SwingAppointmentWindow @Inject constructor(
         val startDate = inpStartDate.selectedDate
         val endTime = inpEndDate.selectedTime
         val endDate = startDate.withHourOfDay(endTime.hourOfDay).withMinuteOfHour(endTime.minuteOfHour)
-        return Appointment(current.id, current.clientId, current.created, startDate, endDate, inpNote.text)
+        return Appointment(current.id, current.clientId, current.created, startDate, endDate, inpNote.text, current.gcalId, current.gcalUrl)
     }
 
     override fun changeCurrent(newCurrent: Appointment) {
         current = newCurrent
 
         outClient.text = currentClient.data.fullName
+        btnOpenGcal.isEnabled = current.gcalUrl != null
         btnSave.changeLabel(current)
         fields.updateAll(current)
         modificationChecker.disableAll()
+    }
+
+    private fun onOpenGCal() {
+        bus.post(OpenWebpageEvent(URL(current.gcalUrl!!)))
     }
 
     override fun isModified(): Boolean {

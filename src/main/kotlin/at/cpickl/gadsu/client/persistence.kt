@@ -6,11 +6,7 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.ensureNotPersisted
-import at.cpickl.gadsu.persistence.ensurePersisted
-import at.cpickl.gadsu.persistence.toBufferedImage
-import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.persistence.*
 import at.cpickl.gadsu.service.IdGenerator
 import com.google.inject.Inject
 import org.joda.time.DateTime
@@ -40,16 +36,19 @@ interface ClientRepository {
      */
     fun delete(client: Client)
 
+    fun findById(id: String): Client
+
 }
 
 class ClientJdbcRepository @Inject constructor(
         private val jdbcx: Jdbcx,
         private val idGenerator: IdGenerator
 ) : ClientRepository {
-    companion object {
 
+    companion object {
         val TABLE = "client"
     }
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAll(): List<Client> {
@@ -58,6 +57,10 @@ class ClientJdbcRepository @Inject constructor(
         val clients = jdbcx.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
         clients.sort()
         return clients
+    }
+
+    override fun findById(id: String): Client {
+        return jdbcx.querySingle(Client.ROW_MAPPER, "SELECT * FROM $TABLE WHERE id = ?", id)
     }
 
     override fun insertWithoutPicture(client: Client): Client {

@@ -1,22 +1,8 @@
-package at.cpickl.gadsu.appointment
-
-import at.cpickl.gadsu.appointment.gcal.GCalConnectorImpl
-import at.cpickl.gadsu.appointment.gcal.GCalRepositoryImpl
-import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
-import at.cpickl.gadsu.service.saveToFile
-import com.thoughtworks.xstream.XStream
-import org.joda.time.DateTime
-import java.io.File
+package at.cpickl.gadsu.appointment.gcal
 
 
+/*
 fun main(args: Array<String>) {
-    // FIXME let user change proxy settings in preferences window
-
-//    System.setProperty("http.proxyHost", "proxy-sd.s-mxs.net")
-//    System.setProperty("http.proxyPort", "8080")
-//    System.setProperty("https.proxyHost", "proxy-sd.s-mxs.net")
-//    System.setProperty("https.proxyPort", "8080")
-
     GCalPlayground().apply {
         createNewEvent()
 //        listEventsAndSaveToFile()
@@ -56,3 +42,4 @@ private class GCalPlayground {
         gcal.deleteEvent(calendarId, eventId)
     }
 }
+*/

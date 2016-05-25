@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.appointment
+package at.cpickl.gadsu.appointment.gcal
 
 import com.google.api.services.calendar.model.Event
 import com.thoughtworks.xstream.XStream
