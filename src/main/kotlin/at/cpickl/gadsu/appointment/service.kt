@@ -4,7 +4,7 @@ import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.appointment.gcal.GCalUpdateEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class AppointmentServiceImpl @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val gcal: GCalService,
-        private val clientService: ClientService
+        private val clientRepository: ClientRepository
 ) : AppointmentService {
 
     override fun findAllFutureFor(client: Client): List<Appointment> {
@@ -69,7 +69,7 @@ class AppointmentServiceImpl @Inject constructor(
             bus.post(AppointmentChangedEvent(appointment))
             appointment
         } else {
-            val client = clientService.findById(appointment.clientId)
+            val client = clientRepository.findById(appointment.clientId)
             val maybeGcalId = gcal.createEvent(GCalEvent(
                     summary = client.fullName,
                     description = appointment.note,

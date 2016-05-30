@@ -4,22 +4,14 @@ import at.cpickl.gadsu.appointment.AppointmentJdbcRepository
 import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.AppointmentServiceImpl
-import at.cpickl.gadsu.client.xprops.ROW_MAPPER
-import at.cpickl.gadsu.client.xprops.SProp
-import at.cpickl.gadsu.client.xprops.XPropsService
-import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
-import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
-import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
+import at.cpickl.gadsu.appointment.gcal.TestableGCalService
+import at.cpickl.gadsu.client.xprops.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.copyWithoutCprops
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
-import at.cpickl.gadsu.treatment.TreatmentRepository
-import at.cpickl.gadsu.treatment.TreatmentService
-import at.cpickl.gadsu.treatment.TreatmentServiceImpl
+import at.cpickl.gadsu.treatment.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -51,7 +43,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
         treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx, bus, clock)
         appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)
-        appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock)
+        appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock, TestableGCalService, clientRepo)
 
         testee = ClientServiceImpl(clientRepo, propsService, treatmentService, appointmentService,
                 jdbcx, bus, clock, currentClient)

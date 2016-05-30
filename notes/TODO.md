@@ -40,6 +40,7 @@ Med
 
 Low
 ------------------------------------------------------------
+* switch to HSQLDB's new UUID type for ID columns
 * @TECH: use custom AOP annotation to ensure transaction safety
 * [2] REFACT: split ClientViewController for master and detail
 * check there are no snapshots during release.sh

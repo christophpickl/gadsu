@@ -78,6 +78,7 @@ open class DatabaseManager @Inject constructor(
         flyway.dataSource = dataSource
         flyway.migrate()
         databaseConnected = true
+        log.debug("DB migration done.")
     }
 
     @Suppress("UNUSED_PARAMETER")

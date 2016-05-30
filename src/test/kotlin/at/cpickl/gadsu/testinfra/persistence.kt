@@ -53,10 +53,10 @@ abstract class HsqldbTest {
     @BeforeClass
     fun initDb() {
         dataSource = JDBCDataSource()
-        dataSource!!.url = "jdbc:hsqldb:mem:testDb${javaClass.simpleName}"
+        dataSource!!.setUrl("jdbc:hsqldb:mem:testDb${javaClass.simpleName}")
         dataSource!!.user = "SA"
         jdbcx = SpringJdbcx(dataSource!!)
-        log.info("Using data source URL: ${dataSource!!.url}")
+        log.info("Using data source URL: ${dataSource!!.getUrl()}")
 
         DatabaseManager(dataSource!!).migrateDatabase()
     }
