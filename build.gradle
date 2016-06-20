@@ -91,7 +91,7 @@ dependencies {
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3'
     compile 'org.springframework:spring-jdbc:4.2.6.RELEASE'
-    compile 'org.flywaydb:flyway-core:4.0' // 4.0.1 or hsqldb 2.3.4 makes trouble
+    compile 'org.liquibase:liquibase-core:3.5.1'
 
     // VIEW
     // -------------------------------------------------------------------------

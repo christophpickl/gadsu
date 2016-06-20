@@ -7,7 +7,12 @@ import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
-import org.flywaydb.core.Flyway
+import liquibase.Contexts
+import liquibase.LabelExpression
+import liquibase.Liquibase
+import liquibase.database.DatabaseFactory
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -56,6 +61,9 @@ enum class PersistenceErrorCode {
 open class DatabaseManager @Inject constructor(
         private val dataSource: DataSource
 ) {
+    companion object {
+        private val CHANGELOG = "gadsu/persistence/liquibase_changelog.sql"
+    }
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
 
@@ -71,12 +79,12 @@ open class DatabaseManager @Inject constructor(
 
     fun migrateDatabase() {
         log.info("migrateDatabase()")
-        // https://flywaydb.org/documentation/api/
 
-        val flyway = Flyway()
-        flyway.setLocations(*arrayOf("/gadsu/persistence"))
-        flyway.dataSource = dataSource
-        flyway.migrate()
+        // http://www.liquibase.org/2015/07/executing-liquibase.html
+        val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dataSource.connection))
+        val liquibase = Liquibase(CHANGELOG, ClassLoaderResourceAccessor(), database)
+        liquibase.update(Contexts(), LabelExpression())
+
         databaseConnected = true
         log.debug("DB migration done.")
     }

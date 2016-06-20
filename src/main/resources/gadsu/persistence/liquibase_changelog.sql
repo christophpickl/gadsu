@@ -1,6 +1,7 @@
+--liquibase formatted sql
 
--- CLIENT
--- ================================================================================================================== --
+--changeset christoph:1
+--================================================================================================================== --
 CREATE TABLE client (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   created TIMESTAMP NOT NULL,
@@ -25,9 +26,6 @@ CREATE TABLE client (
   picture BLOB
 );
 
-
--- XPROPS
--- ================================================================================================================== --
 CREATE TABLE xprops (
   id_client VARCHAR(36) NOT NULL,
   key VARCHAR(128) NOT NULL,
@@ -37,9 +35,6 @@ CREATE TABLE xprops (
   FOREIGN KEY (id_client) REFERENCES client(id)
 );
 
-
--- TREATMENT
--- ================================================================================================================== --
 CREATE TABLE treatment (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   id_client VARCHAR(36) NOT NULL,
@@ -48,6 +43,25 @@ CREATE TABLE treatment (
   number INT NOT NULL,
   date TIMESTAMP NOT NULL, -- second and millisecond will be cut off by application
   note VARCHAR(1024) NOT NULL,
+  durationInMin INT NOT NULL,
+  aboutClient VARCHAR(1024) NOT NULL,
+  aboutTreatment VARCHAR(1024) NOT NULL,
+  aboutHomework VARCHAR(1024) NOT NULL,
+
+  FOREIGN KEY (id_client) REFERENCES client(id)
+);
+
+CREATE TABLE appointment (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  id_client VARCHAR(36) NOT NULL,
+  created TIMESTAMP NOT NULL,
+
+  startDate TIMESTAMP NOT NULL,
+  endDate TIMESTAMP NOT NULL,
+
+  note VARCHAR(1024) NOT NULL,
+  gcal_id VARCHAR(64),
+  gcal_url VARCHAR(192),
 
   FOREIGN KEY (id_client) REFERENCES client(id)
 );
