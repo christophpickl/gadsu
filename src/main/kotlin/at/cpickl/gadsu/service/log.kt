@@ -110,7 +110,7 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
         arrayOf(
                 "org.apache",
                 "org.springframework",
-//                "org.flywaydb",
+                "liquibase",
                 "net.sf.jasperreports"
         ).forEach { changeLevel(it, Level.WARN) }
 
