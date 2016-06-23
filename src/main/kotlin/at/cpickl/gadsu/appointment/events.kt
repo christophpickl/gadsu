@@ -30,4 +30,4 @@ class AppointmentChangedEvent(val appointment: Appointment) : Event() {
     override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
 }
 
-class AbortAppointmentDialog() : UserEvent()
+class AbortAppointmentDialogEvent() : UserEvent()

@@ -4,16 +4,8 @@ import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.treatment.CreateTreatmentEvent
-import at.cpickl.gadsu.treatment.CurrentTreatment
-import at.cpickl.gadsu.treatment.OpenTreatmentEvent
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentBackEvent
-import at.cpickl.gadsu.treatment.TreatmentChangedEvent
-import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
-import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.treatment.TreatmentService
-import at.cpickl.gadsu.treatment.TreatmentViewFactory
+import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.treatment.*
 import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import com.google.common.eventbus.EventBus
@@ -37,11 +29,11 @@ open class TreatmentController @Inject constructor(
 
 
     @Subscribe open fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
-        changeToTreatmentView(null)
+        changeToTreatmentView(null, event.prefilled)
     }
 
     @Subscribe open fun onOpenTreatmentEvent(event: OpenTreatmentEvent) {
-        changeToTreatmentView(event.treatment)
+        changeToTreatmentView(event.treatment, null)
     }
 
     @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
@@ -62,8 +54,7 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
-
-        // check changes for treatment
+        // TODO check changes for treatment
 
         currentTreatment.data = null
         bus.post(ShowClientViewEvent())
@@ -75,7 +66,7 @@ open class TreatmentController @Inject constructor(
         }
     }
 
-    private fun changeToTreatmentView(treatment: Treatment?) {
+    private fun changeToTreatmentView(treatment: Treatment?, prefilled: PrefilledTreatment?) {
         val client = currentClient.data
 
         val nullSafeTreatment: Treatment
@@ -83,7 +74,13 @@ open class TreatmentController @Inject constructor(
             nullSafeTreatment = treatment
         } else {
             val number = treatmentService.calculateNextNumber(client)
-             nullSafeTreatment = Treatment.insertPrototype(client.id!!, number, clock.now())
+            val startDate = if (prefilled == null) clock.now() else prefilled.start
+            val duration = if (prefilled == null) Treatment.DEFAULT_DURATION else minutes(prefilled.duration)
+             nullSafeTreatment = Treatment.insertPrototype(
+                     clientId = client.id!!,
+                     number = number,
+                     date = startDate,
+                     duration = duration)
         }
 
         currentTreatment.data = nullSafeTreatment

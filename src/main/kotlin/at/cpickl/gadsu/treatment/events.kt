@@ -3,9 +3,11 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.AppEvent
 import at.cpickl.gadsu.UserEvent
 import com.google.common.base.MoreObjects
+import org.joda.time.DateTime
 
+data class PrefilledTreatment(val start: DateTime, val duration: Int)
 
-class CreateTreatmentEvent() : UserEvent()
+class CreateTreatmentEvent(val prefilled: PrefilledTreatment? = null) : UserEvent()
 
 class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
     override fun toString(): String{

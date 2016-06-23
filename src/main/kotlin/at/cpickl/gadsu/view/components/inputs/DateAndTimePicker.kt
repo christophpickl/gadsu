@@ -29,7 +29,7 @@ class DateAndTimePicker(
         c.gridx++
         add(inpTime)
         c.gridx++
-        add(JLabel("Uhr."))
+        add(JLabel(" Uhr"))
     }
 
     fun readDateTime(): DateTime {
