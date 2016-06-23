@@ -40,7 +40,8 @@ class TreatmentsInClientView @Inject constructor(
 
     fun insert(treatment: Treatment) {
         log.trace("insert(treatment={})", treatment)
-        treatmentsList.addProperIndex(treatment)
+        // insert new treatment at top, as expecting it to have the highest number (which is ordered by DESC)
+        treatmentsList.addElementAtTop(treatment)
     }
 
     fun delete(treatment: Treatment) {
@@ -54,7 +55,8 @@ class TreatmentsInClientView @Inject constructor(
     }
 
     fun enableData(treatments: List<Treatment>) {
-        log.trace("initData(treatments={})", treatments)
+        log.trace("enableData(treatments={})", treatments)
+        // data will be ordered by number DESC
 
         treatmentsList.resetData(treatments)
         createButton.isEnabled = true

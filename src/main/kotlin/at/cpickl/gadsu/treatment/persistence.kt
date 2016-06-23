@@ -2,11 +2,7 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.PersistenceErrorCode
-import at.cpickl.gadsu.persistence.PersistenceException
-import at.cpickl.gadsu.persistence.ensurePersisted
-import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.persistence.*
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
@@ -17,6 +13,7 @@ import javax.inject.Inject
 
 interface TreatmentRepository {
 
+    // ordered by number DESC
     fun findAllFor(client: Client): List<Treatment>
     fun insert(treatment: Treatment): Treatment
     fun update(treatment: Treatment)
