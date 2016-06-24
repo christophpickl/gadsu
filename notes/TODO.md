@@ -4,15 +4,6 @@
 
 
 
-
-  
-@rebecca
-* behandlungslist labeln
-* alle textfields/areas immer TRIM
-* mehr aktionen ueber menu bar: Klient / Bild Aendern, ... 
-* BUG: treatment list selection onNew
-* datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
-
 T-O-D-O
 ============================================================
 
@@ -21,8 +12,8 @@ High
 * @UI: bug in TCM lists (not preselected)
 * changes detection for treatment
 * @UI: automatically scroll to far left in textfields (on update)
-* define different DB location during development (dont cross with PROD data when working on gadsu!!!)
-* bug, wenn aenderung verwerfen, treatment list ist leer!
+* BUG: wenn aenderung verwerfen, treatment list ist leer!
+* BUG: treatment list selection onNew
 * git tagging in release.sh does not work!
 * automate the release more
   * download link on github main page to current version
@@ -30,6 +21,7 @@ High
 
 Med
 ------------------------------------------------------------
+* datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
 * [2] check for database lock file
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
 * [1] UI: logo for windows icon
@@ -45,6 +37,8 @@ Med
 
 Low
 ------------------------------------------------------------
+* alle textfields/areas immer TRIM (???)
+* mehr aktionen ueber menu bar: Klient / Bild Aendern, ...
 * switch to HSQLDB's new UUID type for ID columns
 * @TECH: use custom AOP annotation to ensure transaction safety
 * [2] REFACT: split ClientViewController for master and detail
