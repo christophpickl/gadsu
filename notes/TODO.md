@@ -1,11 +1,12 @@
 
-* doodle integration (a la steffi)
 * in behandlung view: previous/next button zum durchscrollen
+* unter WIN gibts andauernd ur viele alert beeps!
+
+
 
 
   
 @rebecca
-* notiz feld labeln
 * behandlungslist labeln
 * alle textfields/areas immer TRIM
 * mehr aktionen ueber menu bar: Klient / Bild Aendern, ... 
@@ -69,9 +70,5 @@ Test
 
 Luxury Ideas
 ------------------------------------------------------------
-
-* google CALENDER integration
-  * erst spaeter, wenns termine gibt...
-  * das evtl schon als plugin zur verfuegung stellen (??)
-  * https://developers.google.com/google-apps/calendar/quickstart/java
+* doodle integration (a la steffi)
 * [8] UI: mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)

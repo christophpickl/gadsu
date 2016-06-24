@@ -15,6 +15,7 @@ import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
@@ -74,8 +75,7 @@ class ClientTabMain(
     val inpZipCode = fields.newTextField("PLZ", {it.contact.zipCode}, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
 
-    // the label will not be used as we are placing it directly in a panel, rather than a FormPanel
-    val inpNote = fields.newTextArea("NOT USED", {it.note}, ViewNames.Client.InputNote)
+    val inpNote = fields.newTextArea("Notiz", {it.note}, ViewNames.Client.InputNote)
 
 
     init {
@@ -132,7 +132,9 @@ class ClientTabMain(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
-        add(inpNote.toComponent())
+        add(VFillFormPanel().apply {
+            addFormInput(inpNote)
+        })
     }
 
     private fun initListsPanel(appointmentsSubView: AppoinmentsInClientView, treatmentsSubview: TreatmentsInClientView) = GridPanel().apply {
