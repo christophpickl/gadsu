@@ -1,4 +1,8 @@
 
+* doodle integration (a la steffi)
+* in behandlung view: previous/next button zum durchscrollen
+
+
   
 @rebecca
 * notiz feld labeln

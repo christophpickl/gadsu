@@ -22,19 +22,21 @@ interface XPropsFinder {
 object XProps : XPropsFinder by XPropsFactory {
 
     private val eager_Sleep = SleepOpts.TiredInMorning
+
     enum class SleepOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         NeedLess (opt("Sleep_NeedLess", "Brauche wenig Schlaf")),
         NeedMuch (opt("Sleep_NeedMuch", "Brauche viel Schlaf")),
         TiredInMorning     (opt("Sleep_TiredInMorning", "Morgens müde")),
         TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
-        ProblemsWakeUp     (opt("Sleep_ProblemsWakeUp", "Problem aufwachen")),
         ProblemsFallAsleep (opt("Sleep_ProblemsFallAsleep", "Problem einschlafen")),
         ProblemsSleepThrough (opt("Sleep_ProblemsSleepThrough", "Durchschlafen"))
     }
+
     val Sleep = enum("Sleep", "Schlaf")
 
 
     private val eager_Hungry = HungryOpts.BigHunger
+
     enum class HungryOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         BigHunger    (opt("Hungry_BigHunger", "Großen Hunger")),
         LittleHunger (opt("Hungry_LittleHunger", "Kleinen Hunger")),
@@ -43,9 +45,11 @@ object XProps : XPropsFinder by XPropsFactory {
         StoolHard (opt("Hungry_StoolHard", "Stuhl geformt, hart")),
         StoolSoft (opt("Hungry_StoolSoft", "Stuhl ungeformt, weich"))
     }
+
     val Hungry = enum("Hungry", "Essen") // Verdauung
 
     private val eager_Taste = TasteOpts.Sweet
+
     enum class TasteOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         Sweet (opt("Taste_Sweet", "süß")),
         Salty (opt("Taste_Salty", "salzig")),
@@ -53,9 +57,11 @@ object XProps : XPropsFinder by XPropsFactory {
         Hot (opt("Taste_Hot", "scharf")),
         Bitter (opt("Taste_Bitter", "bitter"))
     }
+
     val Taste = enum("Taste", "Geschmack")
 
     private val eager_Temperature = TemperatureOpts.FeelWarm
+
     enum class TemperatureOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         FeelWarm (opt("Temperature_FeelWarm", "Meist warm")),
         FeelCold (opt("Temperature_FeelCold", "Meist kalt")), // got additional textfield describing where if cold: "TemperatureColdLocation"
@@ -64,9 +70,11 @@ object XProps : XPropsFinder by XPropsFactory {
         SweatDuringNight (opt("Temperature_SweatDuringNight", "Nachtschweiß")),
         SweatWhenStressed (opt("Temperature_SweatWhenStressed", "Bei Stress"))
     }
+
     val Temperature = enum("Temperature", "Temperatur") // verhalten
 
     private val eager_Menstruation = MenstruationOpts.Strong
+
     enum class MenstruationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         // see text field: MenstruationTimes
         Strong (opt("Menstruation_Strong", "Kräftig")),
@@ -78,10 +86,12 @@ object XProps : XPropsFinder by XPropsFactory {
         Menopause (opt("Menstruation_Menopause", "Wechseljahre")),
         Operations (opt("Menstruation_Operations", "Operationen"))
     }
+
     val Menstruation = enum("Menstruation", "Zyklus")
 
 
     private val eager_Tongue = TongueOpts.Thick
+
     enum class TongueOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         Thick (opt("Tongue_Thick", "Dick")),
         Thin (opt("Tongue_Thin", "Dünn")),
@@ -96,9 +106,11 @@ object XProps : XPropsFinder by XPropsFactory {
         Dry (opt("Tongue_Dry", "trocken")),
         Wet (opt("Tongue_Wet", "feucht")),
     }
+
     val Tongue = enum("Tongue", "Zunge")
 
     private val eager_Pulse = PulseOpts.Superficial
+
     enum class PulseOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         Superficial (opt("Pulse_Superficial", "oberflächlich")),
         Deep (opt("Pulse_Deep", "tief")),
@@ -107,9 +119,11 @@ object XProps : XPropsFinder by XPropsFactory {
         Full (opt("Pulse_Full", "voll")),
         Empty (opt("Pulse_Empty", "leer"))
     }
+
     val Pulse = enum("Pulse", "Puls")
 
     private val eager_ChiLocation = ChiLocationOpts.Top
+
     enum class ChiLocationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         Top (opt("ChiLocation_Top", "oben")),
         Bottom (opt("ChiLocation_Bottom", "unten")),
@@ -118,9 +132,11 @@ object XProps : XPropsFinder by XPropsFactory {
         Outside (opt("ChiLocation_Outside", "nach aussen")),
         Inside (opt("ChiLocation_Inside", "nach innen"))
     }
+
     val ChiLocation = enum("ChiLocation", "Qi Status") // Energiekonzentration
 
     private val eager_BodyConception = BodyConceptionOpts.TissueTight
+
     enum class BodyConceptionOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         TissueTight (opt("BodyConception_TissueTight", "Gewebe fest")),
         TissueSoft (opt("BodyConception_TissueSoft", "Gewebe weich")),
@@ -131,6 +147,7 @@ object XProps : XPropsFinder by XPropsFactory {
         JointsStiff (opt("BodyConception_JointsStiff", "Gelenke steif")),
         JointsFlexible (opt("BodyConception_JointsFlexible", "Gelenke flexibel"))
     }
+
     val BodyConception = enum("BodyConception", "Körperbild")
 
 }
