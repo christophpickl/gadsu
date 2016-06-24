@@ -26,7 +26,7 @@ open class AppointmentControllerImpl @Inject constructor(
 ) : AppointmentController {
 
     @Subscribe open fun onCreateAppointmentEvent(event: CreateAppointmentEvent) {
-        showAppointment(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes().plusDays(1)))
+        showAppointment(Appointment.insertPrototype(currentClient.data.id!!, clock.now().clearMinutes()))
     }
 
     @Subscribe open fun onSaveAppointment(event: SaveAppointment) {
@@ -34,7 +34,7 @@ open class AppointmentControllerImpl @Inject constructor(
         window.hideWindow()
     }
 
-    @Subscribe open fun onAbortAppointmentDialog(event: AbortAppointmentDialog) {
+    @Subscribe open fun onAbortAppointmentDialog(event: AbortAppointmentDialogEvent) {
         window.hideWindow()
     }
 

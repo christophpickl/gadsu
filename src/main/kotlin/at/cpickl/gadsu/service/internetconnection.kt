@@ -120,6 +120,6 @@ open class InternetConnectionControllerImpl @Inject constructor(
 
 class InternetConnectionModule : AbstractModule() {
     override fun configure() {
-        bind(InternetConnectionControllerImpl::class.java).asEagerSingleton()
+        bind(InternetConnectionController::class.java).to(InternetConnectionControllerImpl::class.java).asEagerSingleton()
     }
 }

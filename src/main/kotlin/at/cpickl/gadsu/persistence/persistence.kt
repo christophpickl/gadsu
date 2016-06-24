@@ -78,10 +78,12 @@ open class DatabaseManager @Inject constructor(
     private var databaseConnected: Boolean = false
 
     fun migrateDatabase() {
-        log.info("migrateDatabase()")
-
+        log.info("migrateDatabase() by changelog file at '{}'", CHANGELOG)
+        log.trace("datasource connection product name: {}", dataSource.connection.metaData.databaseProductName) // HSQL Database Engine => liquibase.database.core.HsqlDatabase
         // http://www.liquibase.org/2015/07/executing-liquibase.html
         val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dataSource.connection))
+        log.trace("liquibase database product: {}, version: {}, short name: {}", database.databaseProductName, database.databaseProductVersion, database.shortName)
+
         val liquibase = Liquibase(CHANGELOG, ClassLoaderResourceAccessor(), database)
         liquibase.update(Contexts(), LabelExpression())
 

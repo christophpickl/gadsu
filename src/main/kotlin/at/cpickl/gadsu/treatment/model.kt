@@ -2,13 +2,7 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
-import at.cpickl.gadsu.service.Current
-import at.cpickl.gadsu.service.CurrentEvent
-import at.cpickl.gadsu.service.HasId
-import at.cpickl.gadsu.service.clearMinutes
-import at.cpickl.gadsu.service.ensureNoSeconds
-import at.cpickl.gadsu.service.ensureQuarterMinute
-import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.*
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -51,7 +45,7 @@ data class Treatment(
 
         // needed for static extension methods as well
 
-        private val DEFAULT_DURATION = minutes(60)
+        val DEFAULT_DURATION = minutes(60)
 
         fun insertPrototype(clientId: String,
                             number: Int,

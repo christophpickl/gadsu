@@ -43,21 +43,29 @@ open class MyList<T : Comparable<T>>(
         name = viewName
     }
 
-    final fun addProperIndex(treatment: T) {
-        val index = myModel.calculateInsertIndex(treatment)
-        myModel.add(index, treatment)
+    final fun addElementAtTop(element: T) {
+        myModel.insertElementAt(element, 0)
+    }
+
+    final fun addElementAtBottom(element: T) {
+        myModel.addElement(element)
+    }
+
+    final fun addProperIndex(element: T) {
+        val index = myModel.calculateInsertIndex(element)
+        myModel.add(index, element)
     }
 
     final fun removeElementByComparator(idComparator: (T) -> Boolean) {
         myModel.removeElementByComparator(idComparator)
     }
 
-    final fun setElementByComparator(treatment: T, idComparator: (T) -> Boolean) {
-        myModel.setElementByComparator(treatment, idComparator)
+    final fun setElementByComparator(element: T, idComparator: (T) -> Boolean) {
+        myModel.setElementByComparator(element, idComparator)
     }
 
-    final fun resetData(treatments: List<T>) {
-        myModel.resetData(treatments)
+    final fun resetData(elements: List<T>) {
+        myModel.resetData(elements)
     }
 
     final fun clear() {
@@ -65,7 +73,7 @@ open class MyList<T : Comparable<T>>(
     }
 
     protected fun initDoubleClicked(eventFunction: (T) -> UserEvent) {
-        registerDoubleClicked { row, treatment -> bus.post(eventFunction(treatment)) }
+        registerDoubleClicked { row, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initSinglePopup(label: String, eventFunction: (T) -> UserEvent) {
