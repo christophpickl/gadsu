@@ -1,13 +1,24 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.GadsuException
+import com.google.common.io.Files
 import net.lingala.zip4j.core.ZipFile
 import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.util.Zip4jConstants
+import org.slf4j.LoggerFactory
 import java.io.File
 
 fun main(args: Array<String>) {
     FileSystemImpl().zip(File("notes/"), File("tut.zip"))
+}
+
+val LOG_File = LoggerFactory.getLogger(File::class.java)
+fun File.writeByClasspath(classpath: String) {
+    LOG_File.debug("writeByClasspath(classpath='{}')", classpath)
+    val stream = FileSystemImpl::class.java.getResourceAsStream(classpath) ?: throw IllegalArgumentException("Not existing classpath resource '$classpath'!")
+    val buffer = ByteArray(stream.available())
+    stream.read(buffer)
+    Files.write(buffer, this)
 }
 
 interface FileSystem {

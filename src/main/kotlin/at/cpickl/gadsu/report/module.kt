@@ -14,6 +14,7 @@ class ReportModule : AbstractModule() {
         bind(ProtocolGenerator::class.java).to(JasperProtocolGenerator::class.java)
         bind(JasperEngine::class.java).to(JasperEngineImpl::class.java)
 
+        bind(PrintReportController::class.java).asEagerSingleton()
     }
 }
 
