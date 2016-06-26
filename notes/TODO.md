@@ -1,7 +1,13 @@
 
 * doodle integration (a la steffi)
-* in behandlung view: previous/next button zum durchscrollen
 
+ - extra lib fuer pdf handling: mehrere zusammenmergen
+ - binary/clientPic in jasper rein
+ - dynamische texthoehe fuer jasper
+ - schon vorhandenes deckblatt programmatisch was drauf schreiben
+ - seitenzahl muesste auch komplett neu vergeben werden, ToC haendisch??
+ 
+ @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 
   
 @rebecca
@@ -17,6 +23,7 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
+* in behandlung view: previous/next button zum durchscrollen
 * @UI: bug in TCM lists (not preselected)
 * changes detection for treatment
 * @UI: automatically scroll to far left in textfields (on update)
