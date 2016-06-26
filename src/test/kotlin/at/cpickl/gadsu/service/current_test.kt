@@ -2,11 +2,7 @@ package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.xprops.model.CPropEnum
-import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.client.xprops.model.XProp
-import at.cpickl.gadsu.client.xprops.model.XPropEnum
-import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
+import at.cpickl.gadsu.client.xprops.model.*
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.TEST_UUID2
 import at.cpickl.gadsu.testinfra.TestBusListener
@@ -101,14 +97,14 @@ import org.testng.annotations.Test
     }
 
     fun `props change`() {
-        val wakeupClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.SleepOpts.ProblemsWakeUp.opt))
+        val tiredClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.SleepOpts.TiredInMorning.opt))
         val asleepClient = client1.copy(cprops = buildCPropsSingleEnum(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep.opt))
 
-        testee.data = wakeupClient
+        testee.data = tiredClient
         busListener.clear()
 
         testee.data = asleepClient
-        busListener.assertContains(CurrentPropertiesChangedEvent(eventId, wakeupClient, asleepClient))
+        busListener.assertContains(CurrentPropertiesChangedEvent(eventId, tiredClient, asleepClient))
 
     }
 

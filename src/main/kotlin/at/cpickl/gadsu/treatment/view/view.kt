@@ -9,11 +9,7 @@ import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.MainContent
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.*
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -28,13 +24,7 @@ import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.FlowLayout
-import java.awt.Font
-import java.awt.GridBagConstraints
-import java.awt.Insets
+import java.awt.*
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -184,15 +174,11 @@ class SwingTreatmentView @Inject constructor(
         return panel
     }
 
-    private fun initTextAreas(): Component {
-        val panel = VFillFormPanel()
-        with(panel) {
-            addFormInput(inpAboutClient)
-            addFormInput(inpAboutTreatment)
-            addFormInput(inpAboutHomework)
-            addFormInput(inpNote)
-        }
-        return panel
+    private fun initTextAreas() = VFillFormPanel().apply {
+        addFormInput(inpAboutClient)
+        addFormInput(inpAboutTreatment)
+        addFormInput(inpAboutHomework)
+        addFormInput(inpNote)
     }
 
     override fun isModified(): Boolean {

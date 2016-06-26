@@ -8,8 +8,7 @@ import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
-import at.cpickl.gadsu.report.CreateMultiProtocolEvent
-import at.cpickl.gadsu.report.CreateProtocolEvent
+import at.cpickl.gadsu.report.*
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
 import at.cpickl.gadsu.service.Logged
@@ -123,7 +122,20 @@ open class GadsuMenuBar @Inject constructor(
         menuReports.add(itemProtocol)
         menuReports.addItem("Sammelprotokoll erstellen", MenuBarEntryClickedEvent(MenuBarEntry.REPORT_MULTI_PROTOCOL))
 
+        menuReports.addSeparator()
+        menuReports.add(printReportMenu(PrintReportType.ANAMNESE))
+        menuReports.add(printReportMenu(PrintReportType.TREATMENT))
+
         add(menuReports)
+    }
+
+    private fun printReportMenu(type: PrintReportType) = JMenu(type.label).apply {
+        val printItem = JMenuItem("Drucken")
+        val saveItem = JMenuItem("Speichern")
+        printItem.addActionListener { bus.post(PrintReportPrintEvent(type))}
+        saveItem.addActionListener { bus.post(PrintReportSaveEvent(type))}
+        add(printItem)
+        add(saveItem)
     }
 
     private fun JMenu.addItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {

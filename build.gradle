@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.0.2'
+    ext.kotlin_version = '1.0.2-1'
     repositories {
         mavenCentral()
         maven {
@@ -76,21 +76,21 @@ dependencies {
     // -------------------------------------------------------------------------
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile 'joda-time:joda-time:2.9.3'
+    compile 'joda-time:joda-time:2.9.4'
     compile 'commons-cli:commons-cli:1.3.1' // parse CLI args
     compile 'com.thoughtworks.xstream:xstream:1.4.9'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
 
-    compile 'com.google.inject:guice:4.0'
-    testCompile 'com.google.inject.extensions:guice-grapher:4.0'
-    compile 'com.google.inject.extensions:guice-assistedinject:4.0'
+    compile 'com.google.inject:guice:4.1.0'
+    testCompile 'com.google.inject.extensions:guice-grapher:4.1.0'
+    compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
     compile 'com.google.guava:guava:19.0' // guice comes with 16.0.1
 
 
     // DB
     // -------------------------------------------------------------------------
-    compile 'org.hsqldb:hsqldb:2.3.3'
-    compile 'org.springframework:spring-jdbc:4.2.6.RELEASE'
+    compile 'org.hsqldb:hsqldb:2.3.4'
+    compile 'org.springframework:spring-jdbc:4.3.0.RELEASE'
     compile 'org.liquibase:liquibase-core:3.5.1'
     compile 'com.mattbertolini:liquibase-slf4j:2.0.0'
 
@@ -100,7 +100,7 @@ dependencies {
     compile 'org.jdatepicker:jdatepicker:1.3.4'
 
     // REPORTING
-    compile 'net.sf.jasperreports:jasperreports:6.2.2'
+    compile 'net.sf.jasperreports:jasperreports:6.3.0'
     compile 'com.lowagie:itext:2.1.7'
     // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
     compile 'com.itextpdf:itextpdf:5.5.9' // jasper comes with outdated itext (fortunately got different package name)
@@ -116,7 +116,8 @@ dependencies {
     // -------------------------------------------------------------------------
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
-    compile 'com.google.apis:google-api-services-calendar:v3-rev186-1.22.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev194-1.22.0'
+    compile 'org.apache.pdfbox:pdfbox:2.0.2'
 
     // TEST
     // -------------------------------------------------------------------------
@@ -128,8 +129,8 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19' // 2.0.51-beta
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
-    testCompile 'com.google.inject.extensions:guice-testlib:4.0'
-    testCompile 'org.apache.pdfbox:pdfbox:2.0.1'
+    testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'
+
 }
 
 // =====================================================================================================================
@@ -249,7 +250,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // >> gradle test testIt testUi
 
 jacoco {
-    toolVersion = "0.7.6.201602180812"
+    toolVersion = "0.7.7.201606060606"
 }
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
