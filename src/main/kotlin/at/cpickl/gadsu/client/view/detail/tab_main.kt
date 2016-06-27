@@ -21,11 +21,13 @@ import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.titledBorder
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
+import javax.swing.JTabbedPane
 import javax.swing.JTextField
 
 fun main(args: Array<String>) {
@@ -132,6 +134,12 @@ class ClientTabMain(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
+
+//        val tabbed = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
+//        tabbed.isOpaque = false
+//        tabbed.add("Diagnose", inpDiagnosis.scrolled())
+//        tabbed.add("Notiz", inpNote.scrolled())
+//        add(tabbed)
         add(VFillFormPanel().apply {
             addFormInput(inpNote)
         })
