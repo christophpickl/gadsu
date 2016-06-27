@@ -6,12 +6,27 @@ import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.CurrentEvent
+import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.tcm.model.XProps
-import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.treatment.CurrentTreatment
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
+import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.forTreatment
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -99,8 +114,8 @@ open class DevelopmentController @Inject constructor(
                                 number = 1,
                                 date = firstDate,
                                 duration = minutes(20),
-                                aboutClient = "Ihm gings ganz ganz schlecht.",
-                                aboutTreatment = "Den Herzmeridian hab ich behandelt.",
+                                aboutDiagnosis = "Ihm gings ganz ganz schlecht.",
+                                aboutContent = "Den Herzmeridian hab ich behandelt.",
                                 aboutHomework = "Er soll mehr sport machen, eh kloa. Und weniger knoblauch essen!",
                                 note = "Aja, und der kommentar passt sonst nirgends rein ;)"
                         ),

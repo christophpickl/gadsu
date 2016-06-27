@@ -62,9 +62,12 @@ object TreatmentViewNames {
     val ListInClientView = "Treatment.ListInClientView"
     val InputDatePrefix = "Treatment.InputDatePrefix" // will be added something like ".XXX"
     val InputDuration = "Treatment.Duration"
-    val InputAboutClient = "Treatment.InputAboutClient"
-    val InputAboutTreatment = "Treatment.InputAboutTreatment"
+    val InputAboutDiscomfort = "Treatment.InputAboutDiscomfort"
+    val InputAboutDiagnosis = "Treatment.InputAboutDiagnosis"
+    val InputAboutContent = "Treatment.InputAboutContent"
+    val InputAboutFeedback = "Treatment.InputAboutFeedback"
     val InputAboutHomework = "Treatment.InputAboutHomework"
+    val InputAboutUpcoming = "Treatment.InputAboutUpcoming"
     val InputNote = "Treatment.InputNote"
 
 }

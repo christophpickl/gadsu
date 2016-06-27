@@ -42,11 +42,14 @@ CREATE TABLE treatment (
   created TIMESTAMP NOT NULL,
   number INT NOT NULL,
   date TIMESTAMP NOT NULL, -- second and millisecond will be cut off by application
-  note VARCHAR(1024) NOT NULL,
   durationInMin INT NOT NULL,
-  aboutClient VARCHAR(1024) NOT NULL,
-  aboutTreatment VARCHAR(1024) NOT NULL,
+  aboutDiscomfort VARCHAR(1024) NOT NULL,
+  aboutDiagnosis VARCHAR(1024) NOT NULL,
+  aboutContent VARCHAR(1024) NOT NULL,
+  aboutFeedback VARCHAR(1024) NOT NULL,
   aboutHomework VARCHAR(1024) NOT NULL,
+  aboutUpcoming VARCHAR(1024) NOT NULL,
+  note VARCHAR(1024) NOT NULL,
 
   FOREIGN KEY (id_client) REFERENCES client(id)
 );

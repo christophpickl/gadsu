@@ -1,5 +1,5 @@
 
-* unter WIN gibts andauernd ur viele alert beeps!
+* !!! es gibt andauernd ur viele alert beeps!!!
 
  - extra lib fuer pdf handling: mehrere zusammenmergen
  - binary/clientPic in jasper rein

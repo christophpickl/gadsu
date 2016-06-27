@@ -10,7 +10,7 @@ interface SearchableService<T> {
 }
 
 interface SearchableList<T> {
-    fun resetData(treatments: List<T>)
+    fun resetData(elements: List<T>)
 }
 
 class Search<T> private constructor(

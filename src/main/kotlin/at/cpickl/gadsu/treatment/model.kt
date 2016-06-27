@@ -2,7 +2,13 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.Current
+import at.cpickl.gadsu.service.CurrentEvent
+import at.cpickl.gadsu.service.HasId
+import at.cpickl.gadsu.service.clearMinutes
+import at.cpickl.gadsu.service.ensureNoSeconds
+import at.cpickl.gadsu.service.ensureQuarterMinute
+import at.cpickl.gadsu.service.minutes
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -23,15 +29,31 @@ fun CurrentEvent.forTreatment(function: (Treatment?) -> Unit) {
 
 
 data class Treatment(
+        /** Unique UUID for database. */
         override val id: String?,
+        /** Foreign UUID key. */
         val clientId: String,
+        /** Date of initial persistence. */
         val created: DateTime,
+        /** Sequence number displayed to the user. */
         val number: Int,
+        /** Date when this treatment was held. */
         val date: DateTime,
-        val duration: Duration, // in minutes
-        val aboutClient: String,
-        val aboutTreatment: String,
+        /** Duration of the treatment in minutes (instead of storing start & end date). */
+        val duration: Duration,
+        /** Text field for "Beschwerden". */
+        val aboutDiscomfort: String,
+        /** Text field for "Diagnose". */
+        val aboutDiagnosis: String,
+        /** Text field for "Inhalt". */
+        val aboutContent: String,
+        /** Text field for "Feedback". */
+        val aboutFeedback: String,
+        /** Text field for "Tips/Hausuebung". */
         val aboutHomework: String,
+        /** Text field for "Naechste Behandlung". */
+        val aboutUpcoming: String,
+        /** Anything else goes here. */
         val note: String
 ) :
         Comparable<Treatment>, HasId, Persistable {
@@ -52,9 +74,12 @@ data class Treatment(
                             date: DateTime,
                             duration: Duration = DEFAULT_DURATION,
                             created: DateTime = DUMMY_CREATED, // created will be overridden anyway
-                            aboutClient: String = "",
-                            aboutTreatment: String = "",
+                            aboutDiscomfort: String = "",
+                            aboutDiagnosis: String = "",
+                            aboutContent: String = "",
+                            aboutFeedback: String = "",
                             aboutHomework: String = "",
+                            aboutUpcoming: String = "",
                             note: String = ""
         ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
@@ -65,9 +90,12 @@ data class Treatment(
                     number,
                     date.clearMinutes(),
                     duration,
-                    aboutClient,
-                    aboutTreatment,
+                    aboutDiscomfort,
+                    aboutDiagnosis,
+                    aboutContent,
+                    aboutFeedback,
                     aboutHomework,
+                    aboutUpcoming,
                     note)
         }
     }

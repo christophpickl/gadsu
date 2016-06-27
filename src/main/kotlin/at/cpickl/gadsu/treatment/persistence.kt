@@ -2,7 +2,10 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.persistence.*
+import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensureNotPersisted
+import at.cpickl.gadsu.persistence.ensurePersisted
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
@@ -55,9 +58,13 @@ class TreatmentJdbcRepository @Inject constructor(
             throw GadsuException("IdGenerator did return null, although compile forbids. Are you testing and havent setup a proper mock maybe?! (idGenerator=$idGenerator)")
         }
 
-        jdbcx.update("INSERT INTO $TABLE (id, id_client, created, number, date, durationInMin, aboutClient, aboutTreatment, aboutHomework, note) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        jdbcx.update("INSERT INTO $TABLE (" +
+                "id, id_client, created, number, date, durationInMin, " +
+                "aboutDiscomfort, aboutDiagnosis, aboutContent, aboutFeedback, aboutHomework, aboutUpcoming, note) VALUES (" +
+                "?, ?, ?, ?, ?, ?, " +
+                "?, ?, ?, ?, ?, ?, ?)",
                 newId, treatment.clientId, treatment.created.toSqlTimestamp(), treatment.number, treatment.date.toSqlTimestamp(), treatment.duration.toMinutes(),
-                treatment.aboutClient, treatment.aboutTreatment, treatment.aboutHomework, treatment.note)
+                treatment.aboutDiscomfort, treatment.aboutDiagnosis, treatment.aboutContent, treatment.aboutFeedback, treatment.aboutHomework, treatment.aboutUpcoming, treatment.note)
         return treatment.copy(id = newId)
     }
 
@@ -65,8 +72,10 @@ class TreatmentJdbcRepository @Inject constructor(
         log.debug("update(treatment={})", treatment)
         treatment.ensurePersisted()
 
-        jdbcx.updateSingle("UPDATE $TABLE SET number = ?, date = ?, note = ? WHERE id = ?",
-                treatment.number, treatment.date.toSqlTimestamp(), treatment.note, treatment.id)
+        jdbcx.updateSingle("UPDATE $TABLE SET number = ?, date = ?, durationInMin = ?, " +
+                "aboutDiscomfort = ?, aboutDiagnosis = ?, aboutContent = ?, aboutFeedback = ?, aboutHomework = ?, aboutUpcoming = ?, note = ? WHERE id = ?",
+                treatment.number, treatment.date.toSqlTimestamp(), treatment.duration.toMinutes(),
+                treatment.aboutDiscomfort, treatment.aboutDiagnosis, treatment.aboutContent, treatment.aboutFeedback, treatment.aboutHomework, treatment.aboutUpcoming, treatment.note, treatment.id)
     }
 
     override fun delete(treatment: Treatment) {
@@ -95,20 +104,6 @@ class TreatmentJdbcRepository @Inject constructor(
 
 }
 
-
-
-fun Treatment.ensurePersisted() {
-    if (!yetPersisted) {
-        throw PersistenceException("Treatment must have set an ID! ($this)", PersistenceErrorCode.EXPECTED_YET_PERSISTED)
-    }
-}
-
-fun Treatment.ensureNotPersisted() {
-    if (yetPersisted) {
-        throw PersistenceException("Treatment must not have set an ID! ($this)", PersistenceErrorCode.EXPECTED_NOT_YET_PERSISTED)
-    }
-}
-
 @Suppress("UNUSED")
 val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
     get() = RowMapper { rs, rowNum ->
@@ -119,9 +114,12 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 rs.getInt("number"),
                 DateTime(rs.getTimestamp("date")),
                 minutes(rs.getInt("durationInMin")),
-                rs.getString("aboutClient"),
-                rs.getString("aboutTreatment"),
+                rs.getString("aboutDiscomfort"),
+                rs.getString("aboutDiagnosis"),
+                rs.getString("aboutContent"),
+                rs.getString("aboutFeedback"),
                 rs.getString("aboutHomework"),
+                rs.getString("aboutUpcoming"),
                 rs.getString("note")
         )
     }

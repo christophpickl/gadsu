@@ -9,7 +9,11 @@ import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentBackEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.MainContent
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -24,7 +28,13 @@ import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.Color
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.FlowLayout
+import java.awt.Font
+import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -38,7 +48,7 @@ fun main(args: Array<String>) {
     val client = Client.INSERT_PROTOTYPE.copy(id = "myId", firstName = "Anna", lastName = "Nym")
     val treatment = Treatment.insertPrototype(clientId = client.id!!, number = 1, date = "31.12.2016 15:30:00".parseDateTime(),
             duration = minutes(42),
-            aboutClient = dummyLines(20), aboutTreatment = dummyLines(20)
+            aboutHomework = dummyLines(20), aboutContent = dummyLines(20)
     )
     Framed.showWithContext({ context ->
         SwingTreatmentView(context.swing, client, treatment)
@@ -71,9 +81,13 @@ class SwingTreatmentView @Inject constructor(
     private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
 
-    private val inpAboutClient = fields.newTextArea("Feedback Klient", { it.aboutClient }, ViewNames.Treatment.InputAboutClient)
-    private val inpAboutTreatment = fields.newTextArea("Mein Feedback", { it.aboutTreatment }, ViewNames.Treatment.InputAboutTreatment)
-    private val inpAboutHomework = fields.newTextArea("Hausaufgabe", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
+    private val inpAboutDiscomfort = fields.newTextArea("Beschwerden", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort)
+    private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
+    private val inpAboutContent = fields.newTextArea("Inhalt", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
+    private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback)
+    private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
+    private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
+
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
     init {
@@ -175,9 +189,12 @@ class SwingTreatmentView @Inject constructor(
     }
 
     private fun initTextAreas() = VFillFormPanel().apply {
-        addFormInput(inpAboutClient)
-        addFormInput(inpAboutTreatment)
+        addFormInput(inpAboutDiscomfort)
+        addFormInput(inpAboutDiagnosis)
+        addFormInput(inpAboutContent)
+        addFormInput(inpAboutFeedback)
         addFormInput(inpAboutHomework)
+        addFormInput(inpAboutUpcoming)
         addFormInput(inpNote)
     }
 
@@ -216,9 +233,12 @@ class SwingTreatmentView @Inject constructor(
                 treatment.number,
                 inpDateAndTime.selectedDate,
                 minutes(inpDuration.numberValue),
-                inpAboutClient.text,
-                inpAboutTreatment.text,
+                inpAboutDiscomfort.text,
+                inpAboutDiagnosis.text,
+                inpAboutContent.text,
+                inpAboutFeedback.text,
                 inpAboutHomework.text,
+                inpAboutUpcoming.text,
                 inpNote.text
         )
     }
