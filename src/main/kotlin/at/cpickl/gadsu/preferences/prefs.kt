@@ -13,6 +13,7 @@ interface Prefs {
 
     var windowDescriptor: WindowDescriptor?
     var clientPictureDefaultFolder: File
+    var recentSaveReportFolder: File
 
     fun clear()
 }
@@ -31,6 +32,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
         private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
         private val KEY_CLIENT_PICTURE_DEFAULT_FOLDER = "CLIENT_PICTURE_DEFAULT_FOLDER"
+        private val KEY_RECENT_SAVE_REPORT_FOLDER = "RECENT_SAVE_REPORT_FOLDER"
+
 
     }
     private val log = LoggerFactory.getLogger(javaClass)
@@ -104,6 +107,12 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         set(value) {
             log.trace("set clientPictureDefaultFolder(value={})", value.absolutePath)
             preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
+        }
+    override var recentSaveReportFolder: File
+        get() = File(preferences.get(KEY_RECENT_SAVE_REPORT_FOLDER, System.getProperty("user.home")))
+        set(value) {
+            log.trace("set recentSaveReportFolder(value={})", value.absolutePath)
+            preferences.put(KEY_RECENT_SAVE_REPORT_FOLDER, value.absolutePath)
         }
 
     override fun clear() {

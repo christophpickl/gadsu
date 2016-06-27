@@ -13,12 +13,20 @@ fun main(args: Array<String>) {
 }
 
 val LOG_File = LoggerFactory.getLogger(File::class.java)
+
 fun File.writeByClasspath(classpath: String) {
     LOG_File.debug("writeByClasspath(classpath='{}')", classpath)
     val stream = FileSystemImpl::class.java.getResourceAsStream(classpath) ?: throw IllegalArgumentException("Not existing classpath resource '$classpath'!")
     val buffer = ByteArray(stream.available())
     stream.read(buffer)
     Files.write(buffer, this)
+}
+
+fun File.ensureExtension(extension: String): File {
+    if (name.toLowerCase().endsWith(extension)) {
+        return this
+    }
+    return File(parentFile, "$name.$extension")
 }
 
 interface FileSystem {

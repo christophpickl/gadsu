@@ -1,8 +1,10 @@
 package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.ensureExtension
 import at.cpickl.gadsu.service.formatDateTimeFile
 import at.cpickl.gadsu.service.writeByClasspath
 import at.cpickl.gadsu.view.components.DialogType
@@ -11,7 +13,6 @@ import com.google.common.eventbus.Subscribe
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.printing.PDFPageable
 import java.awt.print.PrinterJob
-import java.io.File
 import javax.inject.Inject
 import javax.swing.JFileChooser
 
@@ -29,7 +30,8 @@ enum class PrintReportType(
 @Logged
 open class PrintReportController @Inject constructor(
         private val dialogs: Dialogs,
-        private val clock: Clock
+        private val clock: Clock,
+        private val prefs: Prefs
 ) {
 
     @Subscribe open fun onPrintReportPrintEvent(event: PrintReportPrintEvent) {
@@ -55,17 +57,20 @@ open class PrintReportController @Inject constructor(
 
     @Subscribe open fun onPrintReportSaveEvent(event: PrintReportSaveEvent) {
         val chooser = JFileChooser()
-        chooser.currentDirectory = File(".") // TODO use preferences for recent save multi protocol report path
+
+        chooser.currentDirectory = prefs.recentSaveReportFolder
         val retrival = chooser.showSaveDialog(null)
         if (retrival != JFileChooser.APPROVE_OPTION) {
             return
         }
+        val pdfTarget = chooser.selectedFile.ensureExtension("pdf")
 
-        chooser.selectedFile.writeByClasspath(event.type.fullPath)
+        prefs.recentSaveReportFolder = pdfTarget
+        pdfTarget.writeByClasspath(event.type.fullPath)
 
         dialogs.show(
                 title = "${event.type.label} gespeichert",
-                message = "Der ${event.type.label} wurde erfolgreich gespichert als:\n${chooser.selectedFile.absolutePath}",
+                message = "Der ${event.type.label} wurde erfolgreich gespeichert als:\n${pdfTarget.absolutePath}",
                 type = DialogType.INFO
         )
     }
