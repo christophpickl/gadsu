@@ -7,7 +7,20 @@ import at.cpickl.gadsu.treatment.Treatment
 
 @Suppress("UNUSED")
 fun Treatment.Companion.unsavedValidInstance(clientId: String) =
-        Treatment(null, clientId, TEST_DATETIME1, 1, TEST_DATETIME_FOR_TREATMENT_DATE, minutes(60), "", "", "", "note")
+        Treatment(
+                id = null,
+                clientId = clientId,
+                created = TEST_DATETIME1,
+                number = 1,
+                date = TEST_DATETIME_FOR_TREATMENT_DATE,
+                duration = minutes(60),
+                aboutDiscomfort = "",
+                aboutDiagnosis = "",
+                aboutContent = "",
+                aboutFeedback = "",
+                aboutHomework = "",
+                aboutUpcoming = "",
+                note = "note")
 
 
 fun Treatment.Companion.unsavedValidInstance(client: Client) =
