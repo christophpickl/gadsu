@@ -14,7 +14,8 @@ fun Client.Companion.unsavedValidInstance() = Client.INSERT_PROTOTYPE.copy(
         gender = Gender.MALE,
         birthday = TEST_DATE_1985,
         job = "lazy bastard",
-        picture = MyImage.DEFAULT_PROFILE_MAN
+        picture = MyImage.DEFAULT_PROFILE_MAN,
+        countryOfOrigin = "\u00d6sterreich"
 )
 
 @Suppress("UNUSED")
