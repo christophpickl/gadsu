@@ -3,11 +3,7 @@ package at.cpickl.gadsu.view.swing
 import at.cpickl.gadsu.view.logic.beep
 import java.util.regex.Pattern
 import javax.swing.JTextField
-import javax.swing.text.AbstractDocument
-import javax.swing.text.AttributeSet
-import javax.swing.text.DocumentFilter
-import javax.swing.text.JTextComponent
-import javax.swing.text.PlainDocument
+import javax.swing.text.*
 
 fun <T : JTextComponent> T.disabled(): T {
     isEditable = false

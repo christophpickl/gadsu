@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.development
 
+import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.components.MyFrame
-import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
@@ -14,6 +14,7 @@ import java.awt.GridBagConstraints
 import java.awt.Point
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.JTextArea
 
 
 class DevelopmentFrame(
@@ -23,7 +24,13 @@ class DevelopmentFrame(
 
     private val txtClient = JLabel()
     private val txtTreatment = JLabel()
-    private val events = MyTextArea("Development.EventsTextArea")
+    private val events = JTextArea().apply {
+        name = "Development.EventsTextArea"
+        lineWrap = true
+        if (IS_OS_WIN) {
+            font = JLabel().font
+        }
+    }
 
     init {
         addCloseListener { close() }
