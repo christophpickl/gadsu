@@ -7,12 +7,8 @@ import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
-import liquibase.Contexts
-import liquibase.LabelExpression
-import liquibase.Liquibase
-import liquibase.database.DatabaseFactory
-import liquibase.database.jvm.JdbcConnection
-import liquibase.resource.ClassLoaderResourceAccessor
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.internal.util.jdbc.JdbcUtils
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -61,9 +57,6 @@ enum class PersistenceErrorCode {
 open class DatabaseManager @Inject constructor(
         private val dataSource: DataSource
 ) {
-    companion object {
-        private val CHANGELOG = "gadsu/persistence/liquibase_changelog.sql"
-    }
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
 
@@ -78,17 +71,23 @@ open class DatabaseManager @Inject constructor(
     private var databaseConnected: Boolean = false
 
     fun migrateDatabase() {
-        log.info("migrateDatabase() by changelog file at '{}'", CHANGELOG)
-        log.trace("datasource connection product name: {}", dataSource.connection.metaData.databaseProductName) // HSQL Database Engine => liquibase.database.core.HsqlDatabase
-        // http://www.liquibase.org/2015/07/executing-liquibase.html
-        val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dataSource.connection))
-        log.trace("liquibase database product: {}, version: {}, short name: {}", database.databaseProductName, database.databaseProductVersion, database.shortName)
+        log.info("migrateDatabase()")
 
-        val liquibase = Liquibase(CHANGELOG, ClassLoaderResourceAccessor(), database)
-        liquibase.update(Contexts(), LabelExpression())
+        val flyway = Flyway()
+        flyway.setLocations(*arrayOf("/gadsu/persistence"))
+        flyway.dataSource = dataSource
+//        changeTransactionControl("LOCKS")
+        flyway.migrate()
+//        changeTransactionControl("MVCC")
 
         databaseConnected = true
         log.debug("DB migration done.")
+    }
+
+    private fun changeTransactionControl(mode: String) {
+        val connection = JdbcUtils.openConnection(dataSource)
+        connection.createStatement().execute("SET DATABASE TRANSACTION CONTROL $mode")
+        JdbcUtils.closeConnection(connection)
     }
 
     @Suppress("UNUSED_PARAMETER")

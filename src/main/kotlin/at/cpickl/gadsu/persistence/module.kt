@@ -14,8 +14,8 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
         val DEFAULT_DB_URL: String
         private val DB_USER = "SA"
         init {
-            // or: "jdbc:hsqldb:mem:mymemdb"
-            DEFAULT_DB_URL = "jdbc:hsqldb:file:" + File(GADSU_DATABASE_DIRECTORY, "database").absolutePath
+//            DEFAULT_DB_URL = "jdbc:hsqldb:mem:mymemdb;hsqldb.tx=mvcc"
+            DEFAULT_DB_URL = "jdbc:hsqldb:file:${File(GADSU_DATABASE_DIRECTORY, "database").absolutePath}"
 
         }
     }

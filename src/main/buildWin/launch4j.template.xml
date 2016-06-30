@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>((GADSU_BUILD))\libs\gadsu-((GADSU_VERSION)).jar</jar>
+  <outfile>((GADSU_BUILD))\Gadsu.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>((GADSU_ROOT))\src\main\buildWin\logo.ico</icon>
+  <singleInstance>
+    <mutexName>gadsu</mutexName>
+    <windowTitle></windowTitle>
+  </singleInstance>
+  <jre>
+    <path></path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion>1.8.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+  </jre>
+  <versionInfo>
+    <fileVersion>((GADSU_VERSION_WIN))</fileVersion>
+    <txtFileVersion>((GADSU_VERSION))</txtFileVersion>
+    <fileDescription>Gadsu Shiatsu Application</fileDescription>
+    <copyright>Gadsu</copyright>
+    <productVersion>((GADSU_VERSION_WIN))</productVersion>
+    <txtProductVersion>((GADSU_VERSION))</txtProductVersion>
+    <productName>Gadsu</productName>
+    <companyName></companyName>
+    <internalName>Gadsu</internalName>
+    <originalFilename>Gadsu.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>
