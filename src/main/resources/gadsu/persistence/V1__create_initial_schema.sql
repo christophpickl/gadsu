@@ -1,7 +1,4 @@
---liquibase formatted sql
 
---changeset christoph:1
---================================================================================================================== --
 CREATE TABLE client (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   created TIMESTAMP NOT NULL,

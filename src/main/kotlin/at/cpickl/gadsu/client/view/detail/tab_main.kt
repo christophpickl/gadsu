@@ -1,46 +1,29 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.service.formatDate
-import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
-import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
-import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.titledBorder
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Dimension
 import java.awt.GridBagConstraints
-import javax.swing.JTabbedPane
 import javax.swing.JTextField
 
-fun main(args: Array<String>) {
-    Framed.showWithContext({ context ->
-        ClientTabMain(
-            Client.INSERT_PROTOTYPE,
-            ModificationChecker(object : ModificationAware {
-                override fun isModified() = true
-            }),
-                AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
-            TreatmentsInClientView(context.swing, TreatmentList(context.bus)))
-    }, Dimension(800, 600))
-}
 
 class DisabledTextField(initialValue: String = ""): JTextField(initialValue) {
     init {
@@ -52,7 +35,8 @@ class ClientTabMain(
         initialClient: Client,
         modificationChecker: ModificationChecker,
         appointmentsSubView: AppoinmentsInClientView,
-        treatmentsSubview: TreatmentsInClientView
+        treatmentsSubview: TreatmentsInClientView,
+        suggester: SuggesterController
 ) : DefaultClientTab(Labels.Tabs.ClientMain) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -82,6 +66,8 @@ class ClientTabMain(
 
     init {
         debugColor = Color.ORANGE
+
+        suggester.enableSuggestionsFor(inpJob, inpCountryOfOrigin, inpChildren, inpZipCode, inpCity)
 
         val baseForm = FormPanel()
         with(baseForm) {
