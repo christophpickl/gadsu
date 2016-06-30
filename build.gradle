@@ -360,7 +360,9 @@ if (!new File("/home/travis").exists()) {
         config = config.replaceAll("\\(\\(GADSU_BUILD\\)\\)", buildDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
         config = config.replaceAll("\\(\\(GADSU_VERSION\\)\\)", version)
         config = config.replaceAll("\\(\\(GADSU_VERSION_WIN\\)\\)", winVersion)
-
+        if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
+            config = config.replaceAll("\\\\", "/")
+        }
         new File(buildDir, 'launch4j.xml').write(config, 'UTF-8')
     }
 
@@ -370,7 +372,8 @@ if (!new File("/home/travis").exists()) {
             // launch4jc.exe src/main/buildWin/launch4j.xml
             commandLine 'cmd', '/c', 'launch4jc.exe ' + launch4jConfigPath
         } else {
-            commandLine 'launch4j', launch4jConfigPath
+            // although launch4j is on the PATH, simply invoking the binary doesnt work...
+            commandLine '/Users/wu/Bin/launch4j/launch4j', launch4jConfigPath
         }
     }
 
