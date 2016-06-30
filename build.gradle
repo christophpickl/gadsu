@@ -348,22 +348,20 @@ site.dependsOn dependencyUpdates
 
 task launch4jConfig {
     String config = new File('src/main/buildWin/launch4j.template.xml').getText('UTF-8')
-
-    config = config.replaceAll("\\(\\(GADSU_ROOT\\)\\)", projectDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
-    config = config.replaceAll("\\(\\(GADSU_BUILD\\)\\)", buildDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
-    config = config.replaceAll("\\(\\(GADSU_VERSION\\)\\)", version)
     String winVersion = version
     if (winVersion.contains("-SNAPSHOT")) { // cut off "-SNAPSHOT" from version and add ".0"
         winVersion = winVersion.substring(0, winVersion.length() - "-SNAPSHOT".length()) + ".0"
     }
+
+    config = config.replaceAll("\\(\\(GADSU_ROOT\\)\\)", projectDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
+    config = config.replaceAll("\\(\\(GADSU_BUILD\\)\\)", buildDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
+    config = config.replaceAll("\\(\\(GADSU_VERSION\\)\\)", version)
     config = config.replaceAll("\\(\\(GADSU_VERSION_WIN\\)\\)", winVersion)
-    println("build: " + buildDir)
+
     new File(buildDir, 'launch4j.xml').write(config, 'UTF-8')
 }
 
 task buildExe(type:Exec) {
-    println("Building EXE via launch4j ... (version=" + version + ")")
-
     String launch4jConfigPath = new File(buildDir, 'launch4j.xml').absolutePath
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
         // launch4jc.exe src/main/buildWin/launch4j.xml
