@@ -41,6 +41,17 @@ fun main(args: Array<String>) {
 //    })
 //}
 
+/*
+
+fun main(args: Array<String>) {
+    val dialogs = Dialogs(null)
+    val clock = Mockito.mock(Clock::class.java)
+    val prefs = Mockito.mock(Prefs::class.java)
+    PrintReportController(dialogs, clock, prefs).onPrintReportSaveEvent(PrintReportSaveEvent(PrintReportType.ANAMNESE))
+
+}
+
+ */
 private fun mockClientRepo(): ClientRepository {
     val clientRepo = Mockito.mock(ClientRepository::class.java)
     Mockito.`when`(clientRepo.findAll()).thenReturn(listOf(Client.savedValidInstance(), Client.savedValidInstance2().copy(countryOfOrigin = "Hungary")))
