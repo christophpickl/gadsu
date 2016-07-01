@@ -2,6 +2,7 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
@@ -21,6 +22,8 @@ interface TreatmentService {
 
     fun calculateNextNumber(client: Client): Int
 
+    fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?>
+
 }
 
 class TreatmentServiceImpl @Inject constructor(
@@ -29,10 +32,24 @@ class TreatmentServiceImpl @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock
 ) : TreatmentService {
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
         return repository.findAllFor(client)
+    }
+
+    override fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?> {
+        pivot.ensurePersisted()
+
+        val treatments = repository.findAllForRaw(pivot.clientId).sortedBy { it.number }
+        val index = treatments.indexOfFirst { it.id == pivot.id }
+        if (index == -1) throw IllegalStateException("Pivot treatment expected to be persisted yet! $pivot")
+
+        return Pair(
+            if (index == 0) null else treatments[index - 1],
+            if (index == treatments.size - 1) null else treatments[index + 1]
+        )
     }
 
     override fun insert(treatmentToSave: Treatment): Treatment {

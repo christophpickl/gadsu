@@ -69,6 +69,9 @@ object TreatmentViewNames {
     val InputAboutHomework = "Treatment.InputAboutHomework"
     val InputAboutUpcoming = "Treatment.InputAboutUpcoming"
     val InputNote = "Treatment.InputNote"
+    val ButtonPrevious = "Treatment.ButtonPrevious"
+    val ButtonNext = "Treatment.ButtonNext"
+
 
 }
 object AcupunctViewNames {
