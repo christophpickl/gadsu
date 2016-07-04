@@ -41,3 +41,6 @@ class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent() {
 class TreatmentChangedEvent(val treatment: Treatment) : AppEvent()
 
 class TreatmentDeletedEvent(val treatment: Treatment) : AppEvent()
+
+class PreviousTreatmentEvent() : UserEvent()
+class NextTreatmentEvent() : UserEvent()

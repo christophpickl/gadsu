@@ -6,14 +6,8 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.service.toMinutes
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentBackEvent
-import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.MainContent
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.view.*
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -28,13 +22,7 @@ import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.FlowLayout
-import java.awt.Font
-import java.awt.GridBagConstraints
-import java.awt.Insets
+import java.awt.*
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -58,6 +46,8 @@ fun main(args: Array<String>) {
 
 interface TreatmentView : ModificationAware, MainContent {
     fun wasSaved(newTreatment: Treatment)
+    fun enablePrev(enable: Boolean)
+    fun enableNext(enable: Boolean)
 }
 
 
@@ -76,20 +66,23 @@ class SwingTreatmentView @Inject constructor(
     })
 
     private val modificationChecker = ModificationChecker(this, btnSave)
+
     private val fields = Fields<Treatment>(modificationChecker)
-
     private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
-    private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
 
+    private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
     private val inpAboutDiscomfort = fields.newTextArea("Beschwerden", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort)
+
     private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
     private val inpAboutContent = fields.newTextArea("Inhalt", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
     private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback)
     private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
-
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
+    private val btnPrev = swing.newEventButton("Vorherige", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() })
+
+    private val btnNext = swing.newEventButton("N\u00e4chste", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() })
     init {
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
@@ -98,6 +91,13 @@ class SwingTreatmentView @Inject constructor(
         fields.updateAll(treatment)
 
         initComponents()
+    }
+
+    override fun enablePrev(enable: Boolean) {
+        btnPrev.isEnabled = enable
+    }
+    override fun enableNext(enable: Boolean) {
+        btnNext.isEnabled = enable
     }
 
     private fun initComponents() {
@@ -179,12 +179,24 @@ class SwingTreatmentView @Inject constructor(
     }
 
     private fun initButtonPanel(): Component {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panel = JPanel(BorderLayout())
         panel.transparent()
         panel.debugColor = Color.ORANGE
 
-        panel.add(btnSave)
-        panel.add(swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }))
+        panel.add(JPanel().apply {
+            transparent()
+            add(btnPrev)
+        }, BorderLayout.WEST)
+        panel.add(JPanel().apply {
+            transparent()
+            add(btnSave)
+            add(swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }))
+        }, BorderLayout.CENTER)
+        panel.add(JPanel().apply {
+            transparent()
+            add(btnNext)
+        }, BorderLayout.EAST)
+
         return panel
     }
 

@@ -65,6 +65,16 @@ open class TreatmentController @Inject constructor(
             treatmentView!!.closePreparations()
         }
     }
+    
+    @Subscribe open fun onPreviousTreatmentEvent(event: PreviousTreatmentEvent) {
+        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).first
+        changeToTreatmentView(newTreatment, null)
+    }
+    
+    @Subscribe open fun onNextTreatmentEvent(event: NextTreatmentEvent) {
+        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).second
+        changeToTreatmentView(newTreatment, null)
+    }
 
     private fun changeToTreatmentView(treatment: Treatment?, prefilled: PrefilledTreatment?) {
         val client = currentClient.data
@@ -85,6 +95,16 @@ open class TreatmentController @Inject constructor(
 
         currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
+
+        if (!nullSafeTreatment.yetPersisted) {
+            treatmentView!!.enablePrev(false)
+            treatmentView!!.enableNext(false)
+        } else {
+            val prevNext = treatmentService.prevAndNext(nullSafeTreatment)
+            treatmentView!!.enablePrev(prevNext.first != null)
+            treatmentView!!.enableNext(prevNext.second != null)
+        }
+
         bus.post(ChangeMainContentEvent(treatmentView!!))
     }
 }
