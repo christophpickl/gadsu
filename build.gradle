@@ -363,6 +363,9 @@ if (!new File("/home/travis").exists()) {
         if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
             config = config.replaceAll("\\\\", "/")
         }
+        if (!new File(buildDir).exists()) {
+            new File(buildDir).mkdirs()
+        }
         new File(buildDir, 'launch4j.xml').write(config, 'UTF-8')
     }
 
