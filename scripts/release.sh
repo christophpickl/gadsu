@@ -113,6 +113,8 @@ checkLastCommand
 
 cp build/distributions/*.dmg ${ARTIFACTS_DIR}
 cp build/libs/*.jar ${ARTIFACTS_DIR}
+cp build/*.exe ${ARTIFACTS_DIR}
+
 echo
 myEcho "Copied artifacts to: $ARTIFACTS_DIR"
 
