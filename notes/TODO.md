@@ -1,6 +1,5 @@
 
-* !!! es gibt andauernd ur viele alert beeps!!!
-
+* ad report:
  - extra lib fuer pdf handling: mehrere zusammenmergen
  - binary/clientPic in jasper rein
  - dynamische texthoehe fuer jasper
@@ -14,7 +13,6 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-* in behandlung view: previous/next button zum durchscrollen
 * @UI: bug in TCM lists (not preselected)
 * changes detection for treatment
 * @UI: automatically scroll to far left in textfields (on update)

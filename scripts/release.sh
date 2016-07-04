@@ -108,7 +108,7 @@ changeLatestVersion ${VERSION_RELEASE}
 echo
 myEcho "Creating assemblies."
 myEcho "------------------------------------"
-./gradlew createDmg fatJar -Dgadsu.enableMacBundle=true
+./gradlew createDmg fatJar buildExe -Dgadsu.enableMacBundle=true
 checkLastCommand
 
 cp build/distributions/*.dmg ${ARTIFACTS_DIR}
