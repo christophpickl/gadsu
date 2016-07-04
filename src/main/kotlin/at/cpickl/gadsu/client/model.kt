@@ -75,8 +75,8 @@ data class Client(
 
     override fun compareTo(other: Client): Int {
         return ComparisonChain.start()
-                .compare(this.lastName, other.lastName)
                 .compare(this.firstName, other.firstName)
+                .compare(this.lastName, other.lastName)
                 .result()
     }
 
