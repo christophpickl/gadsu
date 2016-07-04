@@ -354,6 +354,8 @@ if (!new File("/home/travis").exists()) {
         String winVersion = version
         if (winVersion.contains("-SNAPSHOT")) { // cut off "-SNAPSHOT" from version and add ".0"
             winVersion = winVersion.substring(0, winVersion.length() - "-SNAPSHOT".length()) + ".0"
+        } else {
+            winVersion = winVersion + ".0"
         }
 
         config = config.replaceAll("\\(\\(GADSU_ROOT\\)\\)", projectDir.absolutePath.replaceAll("\\\\", "\\\\\\\\"))
