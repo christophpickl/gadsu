@@ -11,38 +11,35 @@
 [![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](http://kotlinlang.org)
 
 
-For more detailed information visit the [Wiki](https://github.com/christophpickl/gadsu/wiki) or simply [Download](https://github.com/christophpickl/gadsu/releases/latest) Gadsu.
+[**Download**](https://github.com/christophpickl/gadsu/releases/latest) the latest release of Gadsu!
 
-Gadsu is a Shiatsu management application which helps you in your daily life as a Shiatsu practitioner, keeping track of appointments and treatments for your clients. It was initially created because of the need to automatically generate protocols for the [Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years, but grows continuously while being in active use.
+Gadsu is a Shiatsu tool which helps you in your daily life as a practitioner, mainly keeping track of appointments and treatments for your clients.
+It was initially created because of the need to automatically generate protocols for my [Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years, but growed continuously while being in active use.
 
 ![gadsu_screenshot_1.1-SS.png](https://github.com/christophpickl/gadsu/wiki/gadsu_screenshot_1.1-SS.png "Gadsu Screenshot")
 
+For more detailed information visit the [Wiki](https://github.com/christophpickl/gadsu/wiki).
 
+## FEATURES
+
+* Protocol Generation
+* Anamnesis and Treatment Forms
+* Auto Update of the application
+* Auto Backup of the database
+* Basic Google Calendar Integration
+* Configurable HTTP proxy
+* Smart Fields (Auto Completion/Suggestion for text fields)
 
 ##  ROADMAP
 
-### v1.2
-* Protocol Generation
-* Auto Backup
-* Appointments
-
-### v1.3
 * Database Encryption
-* Search Clients, Smart Fields
-
-### v1.x
-* Polishing, Hardening, Finalizing
-
-### v2.0 and later
-* YinYang/5-Elements support
-* Acupuncture Database
+* Search Clients
+* Improved Protocol Generation (nicer PDFs, creation Wizard)
+* Improved Google Calendar Integration
+* Acupuncture Points Database
+* Doodle Integration
+* Knowledge Database (YinYang/5-Elements)
 * Dynamic Treatments
+* Invoicing (Invoice Generation)
+* Finance Office Communication
 * English I18N
-
-
-Coverage
-============================================================
-![Coverage Graph](https://codecov.io/github/christophpickl/gadsu/branch.svg?branch=master)
-<!--- ![codecov.io](`https://codecov.io/gh/christophpickl/gadsu/branch/master/graphs/icicle.svg`) -->
-
-[Coverage Report](https://codecov.io/gh/christophpickl/gadsu/tree/76de6ea6948c9497d2eaa46a9d9eefc33a58bb87/src/main/kotlin/at/cpickl/gadsu)
