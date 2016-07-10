@@ -22,6 +22,7 @@ For more detailed information visit the [Wiki](https://github.com/christophpickl
 
 ## FEATURES
 
+* Management of clients, appointments and treatments
 * Protocol Generation
 * Anamnesis and Treatment Forms
 * Auto Update of the application
@@ -32,14 +33,27 @@ For more detailed information visit the [Wiki](https://github.com/christophpickl
 
 ##  ROADMAP
 
-* Database Encryption
-* Search Clients
-* Improved Protocol Generation (nicer PDFs, creation Wizard)
-* Improved Google Calendar Integration
-* Acupuncture Points Database
-* Doodle Integration
-* Knowledge Database (YinYang/5-Elements)
+### Version 1.4
+
+* Improved Protocol Generation (Wizard)
+
+### Version 1.5
+
+* Search and order Client list
 * Dynamic Treatments
+* Database Encryption
+
+### Version 2.0
+
+* Nicer User Interface
+
+### Other Versions
+
+* Acupuncture Points Database
+* Knowledge Database (YinYang/5-Elements)
+* Improved Google Calendar Integration
+* Doodle Integration
+* XML Export
 * Invoicing (Invoice Generation)
 * Finance Office Communication
 * English I18N

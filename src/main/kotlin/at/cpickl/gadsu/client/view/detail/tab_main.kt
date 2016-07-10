@@ -48,10 +48,12 @@ class ClientTabMain(
     val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
     val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
-    val inpCountryOfOrigin = fields.newTextField("Herkunftsland", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
+    val inpCountryOfOrigin = fields.newTextField("Geburtsort", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
+    val inpOrigin = fields.newTextField("Herkunft", {it.origin}, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
     val inpJob = fields.newTextField("Beruf", {it.job}, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", {it.children}, ViewNames.Client.InputChildren)
+    val inpHobbies = fields.newTextField("Hobbies", {it.hobbies}, ViewNames.Client.InputHobbies)
     val outCreated = DisabledTextField()
 
     // contact
@@ -78,9 +80,11 @@ class ClientTabMain(
             addFormInput(inpGender)
             addFormInput(inpBirthday)
             addFormInput(inpCountryOfOrigin)
+            addFormInput(inpOrigin)
             addFormInput(inpRelationship)
             addFormInput(inpJob)
             addFormInput(inpChildren)
+            addFormInput(inpHobbies)
             addFormInput("Erstellt am", outCreated)
         }
 

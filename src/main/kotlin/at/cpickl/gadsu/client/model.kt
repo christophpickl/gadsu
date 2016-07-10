@@ -41,10 +41,13 @@ data class Client(
         val contact: Contact,
         val birthday: DateTime?,
         val gender: Gender,
+        /** birth location */
         val countryOfOrigin: String,
+        val origin: String,
         val relationship: Relationship,
         val job: String,
         val children: String,
+        val hobbies: String,
 
         val note: String,
         val picture: MyImage,
@@ -56,7 +59,10 @@ data class Client(
 
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
-                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", Relationship.UNKNOWN, "", "", "",
+//                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "\u00d6sterreich", "", Relationship.UNKNOWN,
+//                "", "keine", "", "",
+                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN,
+                "", "", "", "",
                 MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 

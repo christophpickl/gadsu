@@ -40,6 +40,8 @@ object ClientViewNames {
     val TabbedPane = "Client.TabbedPane"
     val InputChildren = "Client.InputChildren"
     val InputCountryOfOrigin = "Client.InputCountryOfOrigin"
+    val InputOrigin = "Client.InputOrigin"
+    val InputHobbies= "Client.InputHobbies"
     val InputMail = "Client.InputMail"
     val InputPhone = "Client.InputPhone"
     val InputStreet = "Client.InputStreet"

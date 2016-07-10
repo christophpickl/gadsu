@@ -6,7 +6,11 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.*
+import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensureNotPersisted
+import at.cpickl.gadsu.persistence.ensurePersisted
+import at.cpickl.gadsu.persistence.toBufferedImage
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
 import com.google.inject.Inject
 import org.joda.time.DateTime
@@ -148,9 +152,11 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 else DateTime(rs.getTimestamp("birthday")),
                 gender,
                 rs.getString("countryOfOrigin"),
+                rs.getString("origin"),
                 Relationship.parseSqlCode(rs.getString("relationship_enum")),
                 rs.getString("job"),
                 rs.getString("children"),
+                rs.getString("hobbies"),
                 rs.getString("note"),
 
                 readFromBlob(rs.getBlob("picture"), gender),

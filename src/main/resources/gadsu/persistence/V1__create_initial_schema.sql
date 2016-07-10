@@ -7,7 +7,7 @@ CREATE TABLE client (
   lastName VARCHAR(128) NOT NULL,
   birthday DATE, -- NULLABLE
   gender_enum CHAR(1) NOT NULL, -- eg: '?', 'M', or 'F'
-  countryOfOrigin VARCHAR(128) NOT NULL,
+  countryOfOrigin VARCHAR(128) NOT NULL, -- meaning of birth location
   relationship_enum VARCHAR(16) NOT NULL, -- eg: 'SINGLE'
   job VARCHAR(128) NOT NULL,
   children VARCHAR(128) NOT NULL,
