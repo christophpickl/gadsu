@@ -87,6 +87,7 @@ open class DevelopmentController @Inject constructor(
                         "keine",
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
+                        "drahtiger puls",
                         MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
                         CProps.empty
                 ),

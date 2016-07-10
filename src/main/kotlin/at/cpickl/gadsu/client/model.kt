@@ -50,6 +50,7 @@ data class Client(
         val hobbies: String,
 
         val note: String,
+        val tcmNote: String,
         val picture: MyImage,
         val cprops: CProps
 
@@ -59,10 +60,11 @@ data class Client(
 
         // created will be overridden anyway
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
+                // TODO prefill oesterreich und kinder
 //                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "\u00d6sterreich", "", Relationship.UNKNOWN,
 //                "", "keine", "", "",
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN,
-                "", "", "", "",
+                "", "", "", "", "",
                 MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 

@@ -158,6 +158,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("children"),
                 rs.getString("hobbies"),
                 rs.getString("note"),
+                rs.getString("tcmNote"),
 
                 readFromBlob(rs.getBlob("picture"), gender),
                 CProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result

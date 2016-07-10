@@ -39,6 +39,7 @@ High
 
 Med
 ------------------------------------------------------------
+* @UI: tcm note (and others) use split view (with grab handle to resize) instead!
 * datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
 * [2] check for database lock file
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting

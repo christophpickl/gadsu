@@ -45,6 +45,7 @@ class CPropEnumView(
     }
 
     override fun updateValue(value: Client) {
+        println("yess: " + this.xprop)
         list.clearSelection()
         val cprop = value.cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
