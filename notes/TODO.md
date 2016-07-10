@@ -42,14 +42,12 @@ Med
 * datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
 * [2] check for database lock file
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
-* [1] UI: logo for windows icon
 * ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * [1] add DB constraint that firstName+lastName combination is unique!
 * AOP logging for all service + repository classes
 * konkurrenz analyse
   * http://www.clinicsense.com/tour/
   * http://www.bodyworkbuddy.com/
-* calc star sign (west and east) based on birthday
 * client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
    - auch so beim namen?
 
@@ -63,7 +61,7 @@ Low
 * check there are no snapshots during release.sh
 * @UI: https://tips4java.wordpress.com/2010/11/28/combo-box-popup/
 * @Languages check default system property for language (luxury: configurable via preferences)
-* @UI: JDatePicker seems to support JodaTime (see their website)
+* @UI: JDatePicker seems to support JodaTime (see their website) => 
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
 * enhance window descriptor:
   * make reusable for others
