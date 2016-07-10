@@ -1,4 +1,18 @@
 
+! bug: print report speichern geht nicht (drucken aber schon)
+- geburtsdatum eingebbar (durchklicken is ur laestig)
+- notizfeld fuer TCM
+- nickname (zwischen first- und lastname)
+- breitere textfelder: mail, strasse
+- wenn in textareas, mit tab in felder springen!
+- in textareas wrap only at whitespace
+- sternzeichen kalkulator :)
+- geburtstags reminder!!!
+@client:
+  - neues feld familie: geschwister, eltern verheiratet, bezug zu geschwister/eltern
+!!! textfelder mehr als 1024 zeichen! vor allem notiz braucht mehr!!!
+- BUG: wenn neue behandlung anlegen, speichern -> dann muss navigationsbutton updated werden => write test first!
+
 * ad report:
  - extra lib fuer pdf handling: mehrere zusammenmergen
  - binary/clientPic in jasper rein
@@ -70,3 +84,4 @@ Luxury Ideas
 ------------------------------------------------------------
 * doodle integration (a la steffi)
 * [8] UI: mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
+* WYSIWYG text editor

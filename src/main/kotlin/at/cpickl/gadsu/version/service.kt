@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.version
 
+import at.cpickl.gadsu.APP_SUFFIX
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.GadsuSystemProperty
-import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.InternetConnectionLostEvent
 import at.cpickl.gadsu.service.LOG
@@ -31,7 +31,6 @@ open class VersionUpdaterImpl @Inject constructor(
 ) : VersionUpdater {
     private val log = LOG(javaClass)
 
-    private val suffix = if (IS_OS_MAC) "dmg" else "jar"
     private val dialogTitle = "Auto Update"
 
     private fun checkForUpdates(settings: AsyncDialogSettings?) {
@@ -83,7 +82,7 @@ open class VersionUpdaterImpl @Inject constructor(
                 }
 
                 val version = result.latest.toLabel()
-                val downloadUrl = "https://github.com/christophpickl/gadsu/releases/download/v$version/Gadsu-$version.$suffix"
+                val downloadUrl = "https://github.com/christophpickl/gadsu/releases/download/v$version/Gadsu-$version.$APP_SUFFIX"
                 log.info("Going to download latest gadsu version from: {}", downloadUrl)
                 bus.post(OpenWebpageEvent(URL(downloadUrl)))
             }

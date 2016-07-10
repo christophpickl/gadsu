@@ -11,3 +11,8 @@ val GADSU_LATEST_VERSION_URL = URL("https://raw.githubusercontent.com/christophp
 
 val IS_OS_MAC = System.getProperty("os.name").toLowerCase().contains("mac")
 val IS_OS_WIN = System.getProperty("os.name").toLowerCase().contains("win")
+
+val APP_SUFFIX =
+    if (IS_OS_MAC) "dmg"
+    else if (IS_OS_WIN) "exe"
+    else "jar"
