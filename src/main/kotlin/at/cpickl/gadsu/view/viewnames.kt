@@ -52,6 +52,12 @@ object ClientViewNames {
     val InputNote = "Client.InputNote"
     val InputTcmNote = "Client.InputTcmNote"
     val InputBirthdayPrefix = "Client.InputBirthday" // will be added something like ".XXX"
+
+    val InputTextImpression = "Client.InputTextImpression"
+    val InputTextMedical = "Client.InputTextMedical"
+    val InputTextComplaints = "Client.InputTextComplaints"
+    val InputTextPersonal = "Client.InputTextPersonal"
+    val InputTextObjective = "Client.InputTextObjective"
 }
 
 object AppointmentViewNames {

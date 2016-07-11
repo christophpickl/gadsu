@@ -125,11 +125,6 @@ class ClientTabMain(
         c.weightx = 1.0
         c.weighty = 1.0
 
-//        val tabbed = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-//        tabbed.isOpaque = false
-//        tabbed.add("Diagnose", inpDiagnosis.scrolled())
-//        tabbed.add("Notiz", inpNote.scrolled())
-//        add(tabbed)
         add(VFillFormPanel().apply {
             addFormInput(inpNote)
         })

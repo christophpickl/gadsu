@@ -48,8 +48,14 @@ data class Client(
         val job: String,
         val children: String,
         val hobbies: String,
-
         val note: String,
+
+        val textImpression: String,
+        val textMedical: String,
+        val textComplaints: String,
+        val textPersonal: String,
+        val textObjective: String,
+
         val tcmNote: String,
         val picture: MyImage,
         val cprops: CProps
@@ -58,14 +64,12 @@ data class Client(
 
     companion object { // needed for static extension methods
 
-        // created will be overridden anyway
+        // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
-                // TODO prefill oesterreich und kinder
-//                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "\u00d6sterreich", "", Relationship.UNKNOWN,
-//                "", "keine", "", "",
-                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN,
+                // MINOR prefill oesterreich und kinder
+                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "",
-                MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
+                "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 
     override val yetPersisted: Boolean get() = id != null

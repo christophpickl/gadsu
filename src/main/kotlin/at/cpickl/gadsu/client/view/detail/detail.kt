@@ -49,10 +49,10 @@ interface ClientDetailView {
 @Logged
 open class SwingClientDetailView @Inject constructor(
         swing: SwingFactory,
-        private val bus: EventBus,
+        bus: EventBus,
         private val currentClient: CurrentClient,
-        private val appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
-        private val treatmentSubview: TreatmentsInClientView, // passed through to TabMain
+        appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
+        treatmentSubview: TreatmentsInClientView, // passed through to TabMain
         suggester: SuggesterController // passed through to TabMain
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
@@ -67,9 +67,10 @@ open class SwingClientDetailView @Inject constructor(
 
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester)
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
+    private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
-    private val allTabs = arrayOf(tabMain, tabTcm)
+    private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
     init {
         modificationChecker.disableAll()
 
@@ -149,6 +150,13 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpChildren.text,
                 tabMain.inpHobbies.text,
                 tabMain.inpNote.text,
+
+                tabTexts.inpImpression.text,
+                tabTexts.inpMedical.text,
+                tabTexts.inpComplaints.text,
+                tabTexts.inpPersonal.text,
+                tabTexts.inpObjective.text,
+
                 tabTcm.inpTcmNote.text,
                 currentClient.data.picture, // FIXME this will use a maybe outdated reference, as list itself can update the picture!
                 tabTcm.readProps()

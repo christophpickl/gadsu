@@ -87,7 +87,14 @@ open class DevelopmentController @Inject constructor(
                         "keine",
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
-                        "drahtiger puls",
+
+                        "mein eindruck ist blub",
+                        "er hatte ein gebrochenes bein",
+                        "nacken; zuwenig selbstbewusstsein",
+                        "perfektionist; schlangen phobie; single",
+                        "mag mehr selbstbewusstein",
+
+                        "zyklus 24T-6T; drahtiger puls",
                         MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
                         CProps.empty
                 ),
