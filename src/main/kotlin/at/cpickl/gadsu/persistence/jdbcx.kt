@@ -22,7 +22,7 @@ interface Jdbcx {
 
     fun transactionSafe(function: () -> Unit)
     fun <T> transactionSafeAndReturn(function: () -> T): T
-    fun count(table: String, args: Array<in Any>, optionalWhereClause: String = ""): Int
+    fun count(table: String, args: Array<in Any> = emptyArray(), optionalWhereClause: String = ""): Int
     fun execute(sql: String)
 
 }

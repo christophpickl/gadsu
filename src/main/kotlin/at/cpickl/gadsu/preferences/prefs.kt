@@ -25,9 +25,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
         private val KEY_PROXY = "PROXY"
         private val KEY_GCAL_NAME = "GCAL_NAME"
-
+        private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
         private val KEY_WINDOW_X = "WINDOW_X"
-
         private val KEY_WINDOW_Y = "WINDOW_Y"
         private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
         private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
@@ -58,7 +57,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             val checkUpdates = preferences.get(KEY_CHECK_UPDATES, null).toBoolean()
             val proxy = preferences.get(KEY_PROXY, "").nullIfEmpty()
             val gcalName = preferences.get(KEY_GCAL_NAME, "").nullIfEmpty()
-            return PreferencesData(username, checkUpdates, proxy, gcalName)
+            val treatmentGoal = preferences.get(KEY_TREATMENT_GOAL, "").nullIfEmpty()?.toInt()
+            return PreferencesData(username, checkUpdates, proxy, gcalName, treatmentGoal)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
@@ -66,6 +66,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.put(KEY_CHECK_UPDATES, value.checkUpdates.toString())
             preferences.put(KEY_PROXY, value.proxy ?: "")
             preferences.put(KEY_GCAL_NAME, value.gcalName?: "")
+            preferences.put(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
             preferences.flush()
         }
 

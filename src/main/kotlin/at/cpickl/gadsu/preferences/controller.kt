@@ -17,6 +17,11 @@ open class PreferencesController @Inject constructor(
 
     private val log = LOG(javaClass)
 
+    init {
+        // could happen, that app is going to quit, without the prefs window has been shown => ensure the window (read data) got properly initialized
+        window.initData(prefs.preferencesData)
+    }
+
     @Subscribe open fun onShowPreferencesEvent(@Suppress("UNUSED_PARAMETER") event: ShowPreferencesEvent) {
         window.initData(prefs.preferencesData)
         window.start()
@@ -24,7 +29,7 @@ open class PreferencesController @Inject constructor(
         window.txtLatestBackup = backupController.findLatestBackup()?.date?.formatDateTimeLong() ?: "N/A"
     }
 
-    @Subscribe open fun onPreferencesWindowClosedEvent(@Suppress("UNUSED_PARAMETER") event: PreferencesWindowClosedEvent) {
+    @Subscribe open fun onPreferencesWindowClosedEvent(event: PreferencesWindowClosedEvent) {
         if (event.persistData) {
             prefs.preferencesData = window.readData()
         } else {

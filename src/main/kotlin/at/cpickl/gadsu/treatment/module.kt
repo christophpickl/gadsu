@@ -30,6 +30,9 @@ class TreatmentModule : AbstractModule() {
 
         bind(TreatmentController::class.java).asEagerSingleton()
         bind(TreatmentService::class.java).to(TreatmentServiceImpl::class.java).asEagerSingleton()
+
+        bind(TreatmentGoalController::class.java).asEagerSingleton()
+
     }
 }
 

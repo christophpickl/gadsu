@@ -1,35 +1,50 @@
 package at.cpickl.gadsu._main_
 
-import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.client.view.detail.ClientTabMain
-import at.cpickl.gadsu.service.SuggesterControllerImpl
-import at.cpickl.gadsu.service.SuggesterImpl
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
-import at.cpickl.gadsu.treatment.inclient.TreatmentList
-import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
+import at.cpickl.gadsu.treatment.TreatmentGoalView
 import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.logic.ModificationAware
-import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.components.inputs.NumberField
 import org.mockito.Mockito
+import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.FlowLayout
+import javax.swing.JButton
+import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
     Framed.showWithContext({ context ->
-        ClientTabMain(
-                Client.INSERT_PROTOTYPE,
-                ModificationChecker(object : ModificationAware {
-                    override fun isModified() = true
-                }),
-                AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
-                TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
-                SuggesterControllerImpl(SuggesterImpl(mockClientRepo()))
-        )
-    }, Dimension(800, 600))
+//        ClientTabMain(
+//                Client.INSERT_PROTOTYPE,
+//                ModificationChecker(object : ModificationAware {
+//                    override fun isModified() = true
+//                }),
+//                AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
+//                TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
+//                SuggesterControllerImpl(SuggesterImpl(mockClientRepo()))
+//        )
+        treatmentGoal()
+    }, Dimension(800, 200))
+}
+
+fun treatmentGoal() = JPanel().apply {
+    layout = BorderLayout()
+    val goal = 20
+    val current = 15
+    val view = TreatmentGoalView(goal, current)
+    add(view, BorderLayout.CENTER)
+    add(JPanel(FlowLayout()).apply {
+        val txt = NumberField(5).apply { numberValue = current }
+        add(txt)
+        add(JButton("Change").apply {
+            addActionListener {
+                view.updateCurrent(txt.numberValue)
+            }
+        })
+    }, BorderLayout.NORTH)
 }
 
 //fun main(args: Array<String>) {

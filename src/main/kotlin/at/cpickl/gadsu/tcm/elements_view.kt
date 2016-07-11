@@ -1,22 +1,16 @@
 package at.cpickl.gadsu.tcm
 
 import at.cpickl.gadsu.Event
+import at.cpickl.gadsu.service.toMutableMap
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.view.brighterIfTrue
 import at.cpickl.gadsu.view.swing.addSingleLeftClickListener
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Cursor
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.Point
-import java.awt.Rectangle
+import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.HashMap
-import java.util.LinkedHashMap
+import java.util.*
 import javax.swing.JPanel
 
 
@@ -31,12 +25,6 @@ class ElementClickedEvent(val element: Element) : ElementsEvent() {
     override fun toString() = "ElementClickedEvent(element=$element)"
 }
 
-fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): HashMap<K, V> {
-    val immutableMap = toMap()
-    val map = HashMap<K, V>(immutableMap.size)
-    map.putAll(immutableMap)
-    return map
-}
 
 class ElementsStarView(
         val bus: EventBus,

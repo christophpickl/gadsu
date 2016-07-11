@@ -9,6 +9,7 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
+import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.addCloseListener
@@ -53,6 +54,7 @@ class SwingPreferencesFrame @Inject constructor(
     private val inpProxy = JTextField()
     private val inpGcalName = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
+    private val inpTreatmentGoal = NumberField(4)
 
     override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 
@@ -89,6 +91,7 @@ class SwingPreferencesFrame @Inject constructor(
                     GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
             addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
             addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
+            addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
 
             addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
                     addTopInset = VGAP_BETWEEN_COMPONENTS)
@@ -137,9 +140,16 @@ class SwingPreferencesFrame @Inject constructor(
         inpCheckUpdates.isSelected = preferencesData.checkUpdates
         inpProxy.text = preferencesData.proxy ?: ""
         inpGcalName.text = preferencesData.gcalName ?: ""
+        inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
     }
 
-    override fun readData() = PreferencesData(inpUsername.text, inpCheckUpdates.isSelected, inpProxy.text.nullIfEmpty(), inpGcalName.text.nullIfEmpty())
+    override fun readData() = PreferencesData(
+            inpUsername.text,
+            inpCheckUpdates.isSelected,
+            inpProxy.text.nullIfEmpty(),
+            inpGcalName.text.nullIfEmpty(),
+            if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue
+    )
 
     override fun start() {
         if (yetCreated == false) {

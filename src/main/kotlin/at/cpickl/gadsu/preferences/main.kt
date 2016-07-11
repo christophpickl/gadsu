@@ -11,14 +11,16 @@ data class PreferencesData(
         val username: String,
         val checkUpdates: Boolean,
         val proxy: String?,
-        val gcalName: String?
+        val gcalName: String?,
+        val treatmentGoal: Int?
 ) {
     companion object {
         val DEFAULT = PreferencesData(
                 username = System.getProperty("user.name"),
                 checkUpdates = true,
                 proxy = null,
-                gcalName = null
+                gcalName = null,
+                treatmentGoal = null
         )
     }
 }

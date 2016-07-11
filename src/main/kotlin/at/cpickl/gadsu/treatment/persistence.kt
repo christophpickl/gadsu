@@ -27,6 +27,10 @@ interface TreatmentRepository {
 
     fun calculateMaxNumberUsed(client: Client): Int?
 
+    // used for the treatment progress bar
+    // !!! in future exclude those already used in protocol !!!
+    fun countAll(): Int
+
 
 }
 
@@ -37,9 +41,9 @@ class TreatmentJdbcRepository @Inject constructor(
     companion object {
 
         val TABLE = "treatment"
+
     }
     private val log = LoggerFactory.getLogger(javaClass)
-
     override fun findAllFor(client: Client): List<Treatment> {
         client.ensurePersisted()
         return findAllForRaw(client.id!!)
@@ -93,6 +97,11 @@ class TreatmentJdbcRepository @Inject constructor(
         client.ensurePersisted()
 
         return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
+    }
+
+    override fun countAll(): Int {
+        log.debug("countAll()")
+        return jdbcx.count(TABLE)
     }
 
     override fun calculateMaxNumberUsed(client: Client): Int? {
