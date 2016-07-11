@@ -5,6 +5,7 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.colorByPercentage
 import com.google.common.eventbus.Subscribe
 import java.awt.Color
+import java.awt.GradientPaint
 import java.awt.Graphics
 import java.awt.Graphics2D
 import javax.inject.Inject
@@ -42,7 +43,6 @@ class TreatmentGoalView(private val goal: Int, private var current: Int) : JPane
     companion object {
         private val PAD = 2
         private val SIZE_ADJUSTER = 5
-        private val OVERGOAL_COLOR = Color.GREEN
     }
 
     private var progressText: String = ""
@@ -76,17 +76,15 @@ class TreatmentGoalView(private val goal: Int, private var current: Int) : JPane
 
         // greenish background
         val cleanPercent = Math.min(percentDone, 1.0)
-        g.color = colorByPercentage(cleanPercent)
+        val properColor = colorByPercentage(cleanPercent)
+//        g.color = colorByPercentage(cleanPercent)
+        g.paint = GradientPaint(0.0F, 0.0F, properColor, 0.0F, rectHeight.toFloat(), properColor.darker())
         val greenishWidth = (rectWidth.toDouble() * cleanPercent).toInt()
         g.fillRect(PAD, PAD, greenishWidth, rectHeight)
 
         if (percentDone > 1.0) {
             // overgoal
             val overGoalX = (rectWidth * (goal.toDouble() / current)).toInt()
-
-            g.color = OVERGOAL_COLOR
-            g.fillRect(overGoalX, PAD, rectWidth - overGoalX + 1, rectHeight)
-
             g.color = Color.BLACK
             g.drawLine(overGoalX, PAD, overGoalX, rectHeight + 1) // haha, one pixel hack ;)
         } else {

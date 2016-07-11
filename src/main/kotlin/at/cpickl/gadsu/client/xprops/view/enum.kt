@@ -13,11 +13,7 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
-import javax.swing.ImageIcon
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JScrollPane
-import javax.swing.ListSelectionModel
+import javax.swing.*
 
 interface ElFieldForProps<V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
@@ -45,7 +41,6 @@ class CPropEnumView(
     }
 
     override fun updateValue(value: Client) {
-        println("yess: " + this.xprop)
         list.clearSelection()
         val cprop = value.cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
