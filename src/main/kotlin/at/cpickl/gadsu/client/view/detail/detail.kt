@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client.view.detail
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.SaveClientEvent
@@ -164,6 +165,7 @@ open class SwingClientDetailView @Inject constructor(
         return Client(
                 currentClient.data.id,
                 currentClient.data.created,
+                ClientState.ACTIVE, // FIXME state
                 tabMain.inpFirstName.text,
                 tabMain.inpLastName.text,
 

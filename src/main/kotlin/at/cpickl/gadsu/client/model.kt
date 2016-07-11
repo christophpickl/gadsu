@@ -35,6 +35,7 @@ fun CurrentEvent.forClient(function: (Client?) -> Unit) {
 data class Client(
         override val id: String?, // it is null if not yet persisted
         val created: DateTime,
+        val state: ClientState,
 
         val firstName: String,
         val lastName: String,
@@ -65,7 +66,8 @@ data class Client(
     companion object { // needed for static extension methods
 
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
-        val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, "", "",
+        val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
+                "", "",
                 // MINOR prefill oesterreich und kinder
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "",
@@ -140,6 +142,17 @@ data class Contact(
     }
 }
 
+
+enum class ClientState(override val sqlCode: String, override val label: String) :
+        SqlEnum, Labeled {
+    ACTIVE("ACTIVE", "Aktiv"),
+    INACTIVE("INACTIVE", "Inaktiv");
+
+    companion object {
+//        val orderedValues:List<ClientState> = orderedValuesOf(ClientState.values())
+        fun parseSqlCode(search: String) = parseSqlCodeFor(ClientState.values(), search)
+    }
+}
 
 enum class Gender(override val order: Int, override val sqlCode: String, override val label: String) :
         Ordered, SqlEnum, Labeled {

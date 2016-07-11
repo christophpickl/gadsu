@@ -1,5 +1,9 @@
 
--- add new fields for client
+-- #31 active flag for client
+-- ========================================================================= --
+ALTER TABLE client ADD COLUMN state VARCHAR(64) DEFAULT 'ACTIVE' NOT NULL;
+
+-- #33 add more input fields for client
 -- ========================================================================= --
 ALTER TABLE client ADD COLUMN hobbies VARCHAR(512) DEFAULT '' NOT NULL;
 ALTER TABLE client ADD COLUMN origin  VARCHAR(512) DEFAULT '' NOT NULL;
@@ -12,7 +16,7 @@ ALTER TABLE client ADD COLUMN textComplaints VARCHAR(5120) DEFAULT '' NOT NULL;
 ALTER TABLE client ADD COLUMN textPersonal VARCHAR(5120) DEFAULT '' NOT NULL;
 ALTER TABLE client ADD COLUMN textObjective VARCHAR(5120) DEFAULT '' NOT NULL;
 
--- change varchar sizes
+-- #22 minor ui improvements - change varchar sizes
 -- ========================================================================= --
 ALTER TABLE client ALTER COLUMN firstName VARCHAR(512);
 ALTER TABLE client ALTER COLUMN lastName VARCHAR(512);

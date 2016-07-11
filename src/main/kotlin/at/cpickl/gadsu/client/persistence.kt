@@ -102,18 +102,20 @@ class ClientJdbcRepository @Inject constructor(
         log.debug("update(client={})", client)
         client.ensurePersisted()
 
-        println("FIXME client/persistence ... add new columns for UPDATE SQL statement !!!")
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    firstName = ?, lastName = ?, birthday = ?,
+                    state = ?, firstName = ?, lastName = ?, birthday = ?,
                     gender_enum = ?, countryOfOrigin = ?, mail = ?, phone = ?, street = ?,
                     zipCode = ?, city = ?, relationship_enum = ?, job = ?, children = ?,
-                    note = ?
+                    note = ?, textImpression = ?, textMedical = ?, textComplaints = ?,
+                    textPersonal = ?, textObjective = ?, tcmNote = ?
                 WHERE id = ?""",
-                client.firstName, client.lastName, client.birthday?.toSqlTimestamp(),
+                client.state.sqlCode, client.firstName, client.lastName, client.birthday?.toSqlTimestamp(),
                 client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
                 client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
-                client.note,
+                client.note, client.textImpression, client.textMedical, client.textComplaints,
+                client.textPersonal, client.textObjective, client.tcmNote,
+                // no picture, xprops
                 client.id!!)
     }
 
@@ -140,6 +142,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
         Client(
                 rs.getString("id"),
                 DateTime(rs.getTimestamp("created")),
+                ClientState.parseSqlCode(rs.getString("state")),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 Contact(

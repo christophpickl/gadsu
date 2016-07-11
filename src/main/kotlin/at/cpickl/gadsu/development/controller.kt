@@ -8,6 +8,7 @@ import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient
@@ -70,7 +71,7 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
 
         arrayOf(
-                Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, "Max", "Mustermann",
+                Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, ClientState.ACTIVE, "Max", "Mustermann",
                         Contact(
                                 mail = "max@mustermann.at",
                                 phone = "0699 11 22 33 432",
