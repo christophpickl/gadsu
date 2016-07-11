@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.treatment
 
+import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.colorByPercentage
@@ -14,18 +15,16 @@ import javax.swing.JPanel
 @Logged
 open class TreatmentGoalController @Inject constructor(
     prefs: Prefs,
-    treatmentRepository: TreatmentRepository
+    private val treatmentRepository: TreatmentRepository
 ) {
 
-    val enabled: Boolean
-    val view: TreatmentGoalView
-    init {
-        enabled = prefs.preferencesData.treatmentGoal != null
+    val enabled = prefs.preferencesData.treatmentGoal != null
+    val view = TreatmentGoalView(prefs.preferencesData.treatmentGoal ?: 0, 0)
+
+    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         if (enabled) {
             val currentTreatments = treatmentRepository.countAll()
-            view = TreatmentGoalView(prefs.preferencesData.treatmentGoal!!, currentTreatments)
-        } else {
-            view = TreatmentGoalView(0, 0)
+            view.updateCurrent(currentTreatments)
         }
     }
 
