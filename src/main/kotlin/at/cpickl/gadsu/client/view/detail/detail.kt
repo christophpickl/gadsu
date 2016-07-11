@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client.view.detail
 
+import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
@@ -29,6 +30,8 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
+import java.awt.KeyboardFocusManager
+import java.awt.event.KeyEvent
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -70,8 +73,38 @@ open class SwingClientDetailView @Inject constructor(
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
+    private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
     init {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .addKeyEventDispatcher { event ->
+
+                    val handled: Boolean
+                    val commandDown = if (IS_OS_MAC) {
+                        event.isMetaDown
+                    } else {
+                        event.isControlDown
+                    }
+                    if (commandDown) {
+                        val newTab: JPanel? = when (event.keyCode) {
+                            KeyEvent.VK_1 -> tabMain
+                            KeyEvent.VK_2 -> tabTexts
+                            KeyEvent.VK_3 -> tabTcm
+                            else -> null
+                        }
+                        if (newTab != null && newTab != tabbedPane.selectedComponent) {
+                            handled = true
+                            log.trace("Changing selected tab to: {}", newTab)
+                            tabbedPane.selectedComponent = newTab
+                        } else {
+                            handled = false
+                        }
+                    } else {
+                        handled = false
+                    }
+                    handled
+                }
+
         modificationChecker.disableAll()
 
         btnCancel.name = ViewNames.Client.CancelButton
@@ -94,7 +127,7 @@ open class SwingClientDetailView @Inject constructor(
         c.fill = GridBagConstraints.BOTH
         c.weightx = 1.0
         c.weighty = 1.0
-        add(createTabbedPane())
+        add(initTabbedPane())
 
         c.gridy++
         c.fill = GridBagConstraints.HORIZONTAL
@@ -104,17 +137,16 @@ open class SwingClientDetailView @Inject constructor(
         add(createButtonPanel())
     }
 
-    private fun createTabbedPane(): JTabbedPane {
-        val tabbed = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-        tabbed.isOpaque = false
-        tabbed.name = ViewNames.Client.TabbedPane
+    private fun initTabbedPane(): JTabbedPane {
+        tabbedPane.isOpaque = false
+        tabbedPane.name = ViewNames.Client.TabbedPane
         var i: Int = 0
         allTabs.forEach {
             val tabContent: Component = if (it.scrolled) JScrollPane(it.asComponent()).transparent() else it.asComponent()
-            tabbed.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", tabContent)
-            tabbed.setTabComponentAt(i++, JLabel(it.title, JLabel.CENTER).enforceWidth(100))
+            tabbedPane.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", tabContent)
+            tabbedPane.setTabComponentAt(i++, JLabel(it.title, JLabel.CENTER).enforceWidth(100))
         }
-        return tabbed
+        return tabbedPane
     }
 
     private fun createButtonPanel(): JPanel {
