@@ -8,12 +8,12 @@ private val LOG_misc = LoggerFactory.getLogger("at.cpickl.gadsu.view.logic.misc.
 /**
  * Limit as defined in SQL, used for JTextField.
  */
-val MAX_FIELDLENGTH_SHORT = 128
+val MAX_FIELDLENGTH_SHORT = 512
 
 /**
  * Limit as defined in SQL, used for JTextArea.
  */
-val MAX_FIELDLENGTH_LONG = 1024
+val MAX_FIELDLENGTH_LONG = 5120
 
 fun beep() {
     LOG_misc.trace("beep()")

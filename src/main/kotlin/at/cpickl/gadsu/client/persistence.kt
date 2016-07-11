@@ -102,6 +102,7 @@ class ClientJdbcRepository @Inject constructor(
         log.debug("update(client={})", client)
         client.ensurePersisted()
 
+        println("FIXME client/persistence ... add new columns for UPDATE SQL statement !!!")
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
                     firstName = ?, lastName = ?, birthday = ?,

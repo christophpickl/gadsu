@@ -37,7 +37,6 @@
 	* datum der naechst anstehenden behandlung (anhand der termine!)
 	* geburtstags icon: wenn geburtstag bevorsteht
 	* 
-! maximal textgroessen von textareas von 1024 massig erhoehen!
 - BUG: termin dialog oeffnen, dann gleich "neue behandlung" klicken => termin ist nicht gespeichert
 - mehr auswahlmoeglichkeiten fuer pulsdiagnose
 - klienten sortierreihenfolge auswaehlbar
