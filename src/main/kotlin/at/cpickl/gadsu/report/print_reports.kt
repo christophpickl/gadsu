@@ -2,9 +2,9 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.ensureExtension
 import at.cpickl.gadsu.service.formatDateTimeFile
 import at.cpickl.gadsu.service.writeByClasspath
 import at.cpickl.gadsu.view.components.DialogType
@@ -13,8 +13,8 @@ import com.google.common.eventbus.Subscribe
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.printing.PDFPageable
 import java.awt.print.PrinterJob
+import java.io.File
 import javax.inject.Inject
-import javax.swing.JFileChooser
 
 class PrintReportPrintEvent(val type: PrintReportType) : UserEvent()
 class PrintReportSaveEvent(val type: PrintReportType) : UserEvent()
@@ -56,21 +56,20 @@ open class PrintReportController @Inject constructor(
     }
 
     @Subscribe open fun onPrintReportSaveEvent(event: PrintReportSaveEvent) {
-        val chooser = JFileChooser()
+        ChooseFile.savePdf(
+            fileTypeLabel = event.type.label,
+            currentDirectory = prefs.recentSaveReportFolder,
+            onSuccess = { doSavePdf(it, event.type) }
+        )
+    }
 
-        chooser.currentDirectory = prefs.recentSaveReportFolder
-        val retrival = chooser.showSaveDialog(null)
-        if (retrival != JFileChooser.APPROVE_OPTION) {
-            return
-        }
-        val pdfTarget = chooser.selectedFile.ensureExtension("pdf")
-
+    private fun doSavePdf(pdfTarget: File, type: PrintReportType) {
         prefs.recentSaveReportFolder = pdfTarget
-        pdfTarget.writeByClasspath(event.type.fullPath)
+        pdfTarget.writeByClasspath(type.fullPath)
 
         dialogs.show(
-                title = "${event.type.label} gespeichert",
-                message = "Der ${event.type.label} wurde erfolgreich gespeichert als:\n${pdfTarget.absolutePath}",
+                title = "${type.label} gespeichert",
+                message = "Der ${type.label} wurde erfolgreich gespeichert als:\n${pdfTarget.absolutePath}",
                 type = DialogType.INFO
         )
     }

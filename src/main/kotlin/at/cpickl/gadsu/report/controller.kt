@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.nullIfEmpty
@@ -14,9 +15,7 @@ import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider
 import org.slf4j.LoggerFactory
-import java.io.File
 import javax.inject.Inject
-import javax.swing.JFileChooser
 
 
 @Logged
@@ -55,19 +54,19 @@ open class ReportController @Inject constructor(
         val cover = MultiProtocolCoverData(printDate, author)
 
         val protocols = multiProtocolWizard()
-        val chooser = JFileChooser()
-        chooser.currentDirectory = File(".") // TODO use preferences for recent save multi protocol report path
-        val retrival = chooser.showSaveDialog(null)
-        if (retrival != JFileChooser.APPROVE_OPTION) {
-            return
-        }
 
-        // FIXME show progress bar
-        MultiProtocolGeneratorImpl().generate(chooser.selectedFile, cover, protocols)
-        dialogs.show(
-                title = "Sammelprotokoll erstellt",
-                message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${chooser.selectedFile.absolutePath}",
-                type = DialogType.INFO
+        // TODO use preferences for recent save multi protocol report path
+        ChooseFile.savePdf(
+            fileTypeLabel = "Sammelprotokoll",
+            onSuccess = {
+                // TODO show progress bar
+                MultiProtocolGeneratorImpl().generate(it, cover, protocols)
+                dialogs.show(
+                    title = "Sammelprotokoll erstellt",
+                    message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",
+                    type = DialogType.INFO
+                )
+            }
         )
     }
 

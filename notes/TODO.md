@@ -1,19 +1,16 @@
+!!! wenn in textareas, mit tab in felder springen!
+!!! notizfeld fuer TCM
 
-- vorherige/next treatment buttons nebeneinander
-- BUG vorherige button soll aktiv sein, wenn neue behandlung anlegen
-! bug: print report speichern geht nicht (drucken aber schon)
-- geburtsdatum eingebbar (durchklicken is ur laestig)
-- notizfeld fuer TCM
+!!! textfelder mehr als 1024 zeichen! vor allem notiz braucht mehr!!!
+!! vorherige/next treatment buttons nebeneinander
+
+!! BUG vorherige button soll aktiv sein, wenn neue behandlung anlegen
+! @date component: geburtsdatum eingebbar (durchklicken is ur laestig)
 - nickname (zwischen first- und lastname)
 - breitere textfelder: mail, strasse
-- wenn in textareas, mit tab in felder springen!
 - in textareas wrap only at whitespace
-- sternzeichen kalkulator :)
-- geburtstags reminder!!!
-@client:
-  - neues feld familie: geschwister, eltern verheiratet, bezug zu geschwister/eltern
-!!! textfelder mehr als 1024 zeichen! vor allem notiz braucht mehr!!!
-- BUG: wenn neue behandlung anlegen, speichern -> dann muss navigationsbutton updated werden => write test first!
+-- geburtstags reminder
+- @client neues feld familie: geschwister, eltern verheiratet, bezug zu geschwister/eltern
 
 * ad report:
  - extra lib fuer pdf handling: mehrere zusammenmergen
