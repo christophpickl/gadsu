@@ -8,7 +8,11 @@ import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
-import at.cpickl.gadsu.report.*
+import at.cpickl.gadsu.report.CreateMultiProtocolEvent
+import at.cpickl.gadsu.report.CreateProtocolEvent
+import at.cpickl.gadsu.report.PrintReportPrintEvent
+import at.cpickl.gadsu.report.PrintReportSaveEvent
+import at.cpickl.gadsu.report.PrintReportType
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
 import at.cpickl.gadsu.service.Logged
@@ -78,6 +82,8 @@ open class GadsuMenuBar @Inject constructor(
     init {
         menuApp()
         menuReports()
+        // MINOR menuView() ... contains: Anischt / Tab General CMD+1
+        // requires to be able to detect in which main tab we are in currently ...
 
         Development.fiddleAroundWithMenuBar(this, bus)
     }

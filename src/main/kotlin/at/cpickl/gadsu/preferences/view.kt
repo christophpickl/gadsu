@@ -13,15 +13,22 @@ import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.isTransparent
+import at.cpickl.gadsu.view.swing.selectAllOnFocus
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 interface PreferencesWindow {
     fun start()
@@ -45,8 +52,8 @@ class SwingPreferencesFrame @Inject constructor(
     private val HGAP_FROM_WINDOW = 15
     private val VGAP_BETWEEN_COMPONENTS = 10
 
-    private val inpApplicationDirectory = JTextField().disabled()
-    private val inpLatestBackup = JTextField().disabled()
+    private val inpApplicationDirectory = JTextField().disabled().disableFocusable()
+    private val inpLatestBackup = JTextField().disabled().disableFocusable()
 
     private val log = LoggerFactory.getLogger(javaClass)
     private var yetCreated: Boolean = false
@@ -54,7 +61,7 @@ class SwingPreferencesFrame @Inject constructor(
     private val inpProxy = JTextField()
     private val inpGcalName = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
-    private val inpTreatmentGoal = NumberField(4)
+    private val inpTreatmentGoal = NumberField(4).selectAllOnFocus()
 
     override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 

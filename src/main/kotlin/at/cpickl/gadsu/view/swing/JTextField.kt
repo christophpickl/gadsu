@@ -3,13 +3,10 @@ package at.cpickl.gadsu.view.swing
 import at.cpickl.gadsu.view.logic.beep
 import java.util.regex.Pattern
 import javax.swing.JTextField
-import javax.swing.text.*
-
-fun <T : JTextComponent> T.disabled(): T {
-    isEditable = false
-    isEnabled = false
-    return this
-}
+import javax.swing.text.AbstractDocument
+import javax.swing.text.AttributeSet
+import javax.swing.text.DocumentFilter
+import javax.swing.text.PlainDocument
 
 fun JTextField.enforceMaxCharacters(enforcedLength: Int) {
     // MINOR @UI - instead of replace, maybe delegate to original document?!

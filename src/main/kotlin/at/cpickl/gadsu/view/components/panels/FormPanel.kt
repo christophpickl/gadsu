@@ -7,6 +7,7 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addLeft
 import at.cpickl.gadsu.view.swing.addTop
 import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.disableFocusable
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
@@ -33,7 +34,9 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
             addTopInset: Int = 0
     ) {
         addFormInput(label, input, fillType, icon, addTopInset)
-        val txtDescription = HtmlEditorPane(description).changeLabelFontSize(11.0F)
+        val txtDescription = HtmlEditorPane(description)
+                .changeLabelFontSize(11.0F)
+                .disableFocusable()
         txtDescription.border = BorderFactory.createEmptyBorder(0, 5, 0, 0)
         addFormInput("", txtDescription, GridBagFill.Both, null)
     }
