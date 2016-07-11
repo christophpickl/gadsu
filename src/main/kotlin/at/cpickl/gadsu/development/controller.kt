@@ -96,7 +96,11 @@ open class DevelopmentController @Inject constructor(
 
                         "zyklus 24T-6T; drahtiger puls",
                         MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
-                        CProps.empty
+                        CProps.builder
+                                .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
+                                .add(XProps.Hungry, XProps.HungryOpts.BigHunger)
+                                .build()
+
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Anna",
@@ -104,10 +108,7 @@ open class DevelopmentController @Inject constructor(
                         countryOfOrigin = "Austria",
                         gender = Gender.FEMALE,
                         picture = MyImage.DEFAULT_PROFILE_WOMAN,
-                cprops = CProps.builder
-                        .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
-                        .add(XProps.Hungry, XProps.HungryOpts.BigHunger)
-                        .build()
+                        cprops = CProps.empty
                 )
         ).forEach {
             val saved = clientService.insertOrUpdate(it)

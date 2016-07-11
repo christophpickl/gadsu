@@ -4,7 +4,6 @@ import at.cpickl.gadsu.appointment.AbortAppointmentDialogEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.SaveAppointment
 import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.view.detail.DisabledTextField
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.InternetConnectionController
 import at.cpickl.gadsu.service.LOG
@@ -15,6 +14,7 @@ import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.DisabledTextField
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton

@@ -76,10 +76,11 @@ open class SwingClientDetailView @Inject constructor(
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
     init {
+        // FIXME the focus manager should only be active when THIS view is visible
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher { event ->
-
                     val handled: Boolean
+//                    event.id == KeyEvent.KEY_RELEASED
                     val commandDown = if (IS_OS_MAC) {
                         event.isMetaDown
                     } else {

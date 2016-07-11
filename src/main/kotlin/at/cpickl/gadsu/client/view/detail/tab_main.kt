@@ -11,6 +11,7 @@ import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.DisabledTextField
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
@@ -23,13 +24,6 @@ import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
 import javax.swing.JTextField
-
-
-class DisabledTextField(initialValue: String = ""): JTextField(initialValue) {
-    init {
-        isEnabled = false
-    }
-}
 
 class ClientTabMain(
         initialClient: Client,
