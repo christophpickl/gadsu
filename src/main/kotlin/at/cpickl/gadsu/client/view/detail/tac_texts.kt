@@ -7,13 +7,11 @@ import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
 
 
 class ClientTabTexts(
-        modificationChecker: ModificationChecker,
-        bus: EventBus
+        modificationChecker: ModificationChecker
 ) : DefaultClientTab(
         title = Labels.Tabs.ClientTexts
 //        scrolled = false

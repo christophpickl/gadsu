@@ -1,13 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
-import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -26,18 +20,8 @@ import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.KeyboardFocusManager
-import java.awt.event.KeyEvent
-import javax.swing.JButton
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
+import java.awt.*
+import javax.swing.*
 
 interface ClientDetailView {
 
@@ -48,6 +32,8 @@ interface ClientDetailView {
     fun focusFirst()
     fun asComponent(): Component
     fun closePreparations()
+
+    fun changeTab(tab: ClientTabType)
 }
 
 @Logged
@@ -61,51 +47,53 @@ open class SwingClientDetailView @Inject constructor(
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
 ) : GridPanel(), ClientDetailView, ModificationAware {
+
     private val log = LOG(javaClass)
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
-    private val btnCancel = JButton("Abbrechen")
-    // attention: must come AFTER list of buttons due to hacky design nature ;)
 
+    private val btnCancel = JButton("Abbrechen")
     private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
+
+    // attention: must come AFTER list of buttons due to hacky design nature ;)
 
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester)
 //            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
-    private val tabTexts = ClientTabTexts(modificationChecker, bus)
+    private val tabTexts = ClientTabTexts(modificationChecker)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
     init {
         // FIXME the focus manager should only be active when THIS view is visible
-        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .addKeyEventDispatcher { event ->
-                    val handled: Boolean
-//                    event.id == KeyEvent.KEY_RELEASED
-                    val commandDown = if (IS_OS_MAC) {
-                        event.isMetaDown
-                    } else {
-                        event.isControlDown
-                    }
-                    if (commandDown) {
-                        val newTab: JPanel? = when (event.keyCode) {
-                            KeyEvent.VK_1 -> tabMain
-                            KeyEvent.VK_2 -> tabTexts
-                            KeyEvent.VK_3 -> tabTcm
-                            else -> null
-                        }
-                        if (newTab != null && newTab != tabbedPane.selectedComponent) {
-                            handled = true
-                            log.trace("Changing selected tab to: {}", newTab)
-                            tabbedPane.selectedComponent = newTab
-                        } else {
-                            handled = false
-                        }
-                    } else {
-                        handled = false
-                    }
-                    handled
-                }
+//        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+//                .addKeyEventDispatcher { event ->
+//                    val handled: Boolean
+////                    event.id == KeyEvent.KEY_RELEASED
+//                    val commandDown = if (IS_OS_MAC) {
+//                        event.isMetaDown
+//                    } else {
+//                        event.isControlDown
+//                    }
+//                    if (commandDown) {
+//                        val newTab: JPanel? = when (event.keyCode) {
+//                            KeyEvent.VK_1 -> tabMain
+//                            KeyEvent.VK_2 -> tabTexts
+//                            KeyEvent.VK_3 -> tabTcm
+//                            else -> null
+//                        }
+//                        if (newTab != null && newTab != tabbedPane.selectedComponent) {
+//                            handled = true
+//                            log.trace("Changing selected tab to: {}", newTab)
+//                            tabbedPane.selectedComponent = newTab
+//                        } else {
+//                            handled = false
+//                        }
+//                    } else {
+//                        handled = false
+//                    }
+//                    handled
+//                }
 
         modificationChecker.disableAll()
 
@@ -119,6 +107,18 @@ open class SwingClientDetailView @Inject constructor(
         btnCancel.changeSize(newSize)
 
         initLayout()
+    }
+
+    override fun changeTab(tab: ClientTabType) {
+        val newTab = when(tab) {
+            ClientTabType.MAIN -> tabMain
+            ClientTabType.TEXTS -> tabTexts
+            ClientTabType.TCM -> tabTcm
+        }
+        if (newTab != tabbedPane.selectedComponent) {
+            log.trace("Switching to tab: {}", tab)
+            tabbedPane.selectedComponent = newTab
+        }
     }
 
     override fun closePreparations() {

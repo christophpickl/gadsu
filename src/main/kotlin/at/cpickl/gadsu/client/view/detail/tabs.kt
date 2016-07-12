@@ -5,6 +5,12 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Component
 
+enum class ClientTabType {
+    MAIN,
+    TEXTS,
+    TCM;
+}
+
 interface ClientTab {
     val title: String
     val scrolled: Boolean

@@ -2,17 +2,16 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.view.detail.ClientTabType
+import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
-import at.cpickl.gadsu.report.CreateMultiProtocolEvent
-import at.cpickl.gadsu.report.CreateProtocolEvent
-import at.cpickl.gadsu.report.PrintReportPrintEvent
-import at.cpickl.gadsu.report.PrintReportSaveEvent
-import at.cpickl.gadsu.report.PrintReportType
+import at.cpickl.gadsu.report.*
 import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
 import at.cpickl.gadsu.service.Logged
@@ -78,21 +77,32 @@ open class GadsuMenuBar @Inject constructor(
 
     val itemProtocol = JMenuItem("Protokoll erstellen")
 
+    private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
+    private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
+    private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
+
     lateinit var itemReconnect: JMenuItem
     init {
-        menuApp()
-        menuReports()
-        // MINOR menuView() ... contains: Anischt / Tab General CMD+1
-        // requires to be able to detect in which main tab we are in currently ...
+        IS_OS_MAC
+        add(menuApp())
+        add(menuView())
+        add(menuReports())
 
         Development.fiddleAroundWithMenuBar(this, bus)
+    }
+
+    // controller listen to: MainContentChangedEvent
+    private fun menuView() = JMenu("Ansicht").apply {
+        add(clientTabMain)
+        add(clientTabTexts)
+        add(clientTabTcm)
     }
 
     @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
         itemReconnect.isVisible = !event.isConnected
     }
 
-    private fun menuApp() {
+    private fun menuApp(): JMenu {
         val menuApp = JMenu("Datei")
 
         if (!mac.isEnabled()) {
@@ -116,10 +126,10 @@ open class GadsuMenuBar @Inject constructor(
             menuApp.addSeparator()
             menuApp.addItem("Beenden", QuitEvent())
         }
-        add(menuApp)
+        return menuApp
     }
 
-    private fun menuReports() {
+    private fun menuReports(): JMenu {
         val menuReports = JMenu("Berichte")
 
         itemProtocol.isEnabled = false
@@ -132,7 +142,7 @@ open class GadsuMenuBar @Inject constructor(
         menuReports.add(printReportMenu(PrintReportType.ANAMNESE))
         menuReports.add(printReportMenu(PrintReportType.TREATMENT))
 
-        add(menuReports)
+        return menuReports
     }
 
     private fun printReportMenu(type: PrintReportType) = JMenu(type.label).apply {
@@ -144,10 +154,15 @@ open class GadsuMenuBar @Inject constructor(
         add(saveItem)
     }
 
-    private fun JMenu.addItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {
+    private fun buildItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {
         val item = JMenuItem(label)
         item.addActionListener { e -> bus.post(event) }
         if (shortcut != null) item.accelerator = shortcut
+        return item
+    }
+
+    private fun JMenu.addItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {
+        val item = buildItem(label, event, shortcut)
         add(item)
         return item
     }
