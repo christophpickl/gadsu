@@ -1,13 +1,57 @@
 package at.cpickl.gadsu.view.swing
 
+import at.cpickl.gadsu.service.LOG
 import java.awt.*
-import java.awt.event.InputEvent
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
+import java.awt.event.*
 import java.util.*
-import javax.swing.JComponent
-import javax.swing.JScrollPane
+import java.util.Timer
+import javax.swing.*
 
+class MyKeyListener(
+        val actionCommand: String,
+        val keyStroke: KeyStroke,
+        val onTriggered: (e: ActionEvent) -> Unit
+) {
+    companion object {
+        fun onEscape(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) = MyKeyListener(actionCommand, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), onTriggered)
+    }
+
+    override fun toString(): String{
+        return "MyKeyListener(actionCommand='$actionCommand', keyStroke=$keyStroke)"
+    }
+
+}
+
+interface RegisteredKeyListener {
+    fun deregisterYourself()
+}
+
+class RegisteredKeyListenerImpl(
+        private val listener: MyKeyListener, private val inputMap: InputMap, private val actionMap: ActionMap
+) : RegisteredKeyListener {
+
+    private val log = LOG(javaClass)
+    fun registerYourself() {
+        log.trace("registerYourself() ... listener={}", listener)
+        inputMap.put(listener.keyStroke, listener.actionCommand)
+        actionMap.put(listener.actionCommand, object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent) {
+                listener.onTriggered.invoke(e)
+            }
+        })
+    }
+
+    override fun deregisterYourself() {
+        log.trace("deregisterYourself() ... listener={}", listener)
+        inputMap.remove(listener.keyStroke)
+        actionMap.remove(listener.actionCommand)
+    }
+}
+
+fun JComponent.registerMyKeyListener(listener: MyKeyListener): RegisteredKeyListener =
+        RegisteredKeyListenerImpl(listener, getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), actionMap).apply {
+    registerYourself()
+}
 
 fun JComponent.scrolled(hPolicy: Int? = null, vPolicy: Int? = null): JScrollPane {
     return JScrollPane(this).apply {

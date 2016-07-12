@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.UserEvent
@@ -11,13 +12,11 @@ import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.*
-import at.cpickl.gadsu.service.CurrentChangedEvent
-import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
-import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
+import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.treatment.NextTreatmentEvent
+import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import org.slf4j.LoggerFactory
 import java.awt.event.KeyEvent
 import javax.inject.Inject
 import javax.swing.JMenu
@@ -45,7 +44,10 @@ open class GadsuMenuBarController @Inject constructor(
         private val bus: EventBus,
         private val currentClient: CurrentClient
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
+
+    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
+        menuBar.contentType = MainContentType.CLIENT // initialize at startup
+    }
 
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
         val enforceRemainingBranchesKotlinBug = when (event.entry) {
@@ -66,11 +68,7 @@ open class GadsuMenuBarController @Inject constructor(
     }
 
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        if (event.newContent.type == MainContentType.TREATMENT) {
-            menuBar.clientEntriesEnabled = false
-        } else if (event.newContent.type == MainContentType.CLIENT) {
-            menuBar.clientEntriesEnabled = true
-        }
+        menuBar.contentType = event.newContent.type
     }
 
 }
@@ -81,21 +79,30 @@ open class GadsuMenuBar @Inject constructor(
         private val mac: MacHandler
 ) : JMenuBar() {
 
+    private val log = LOG(javaClass)
     val itemProtocol = JMenuItem("Protokoll erstellen")
 
     private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
-
     private val clientEntries = listOf(clientTabMain, clientTabTexts, clientTabTcm)
 
-    var clientEntriesEnabled = true
+    val treatmentPrevious = buildItem("Vorherige Behandlung", PreviousTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
+    val treatmentNext = buildItem("N\u00e4chste Behandlung", NextTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
+    private val treatmentEntries = listOf(treatmentPrevious, treatmentNext)
+
+    private val allEntries = listOf(clientEntries, treatmentEntries)
+
+    var contentType = MainContentType.CLIENT
         get() = field
         set(value) {
-            if (value != field) {
-                field = value
-                clientEntries.forEach { it.isVisible = value }
-            }
+            log.debug("Set content type to: {}", value)
+            field = value
+            val entriesToShow = when (field) {
+                MainContentType.CLIENT -> clientEntries
+                MainContentType.TREATMENT -> treatmentEntries
+            }.apply { forEach { it.isVisible = true} }
+            allEntries.filter { it != entriesToShow }.forEach { it.forEach { it.isVisible = false } }
         }
 
     lateinit var itemReconnect: JMenuItem
@@ -111,6 +118,9 @@ open class GadsuMenuBar @Inject constructor(
         add(clientTabMain)
         add(clientTabTexts)
         add(clientTabTcm)
+
+        add(treatmentPrevious)
+        add(treatmentNext)
     }
 
     @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {

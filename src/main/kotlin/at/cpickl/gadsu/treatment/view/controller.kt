@@ -6,12 +6,15 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.*
-import at.cpickl.gadsu.view.ChangeMainContentEvent
-import at.cpickl.gadsu.view.MainContentChangedEvent
+import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.view.swing.MyKeyListener
+import at.cpickl.gadsu.view.swing.RegisteredKeyListener
+import at.cpickl.gadsu.view.swing.registerMyKeyListener
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.swing.JComponent
 
 @Logged
 open class TreatmentController @Inject constructor(
@@ -20,13 +23,15 @@ open class TreatmentController @Inject constructor(
         private val currentClient: CurrentClient,
         private val currentTreatment: CurrentTreatment,
         private val bus: EventBus,
-        private val clock: Clock
+        private val clock: Clock,
+        private val mainFrame: MainFrame, // need a proper handle to register keyboard listener
+        private val menuBar: GadsuMenuBar // do it the simple way: hard wire the dependency ;) could use events instead...
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     private var treatmentView: TreatmentView? = null
-
+    private var registeredEscapeListener: RegisteredKeyListener? = null
 
     @Subscribe open fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
         changeToTreatmentView(null, event.prefilled)
@@ -61,7 +66,21 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        if (treatmentView != null && event.oldContent === treatmentView) {
+        if (event.oldContent?.type !=  MainContentType.TREATMENT && event.newContent.type == MainContentType.TREATMENT) {
+            log.trace("Navigating TO treatment view.")
+            registeredEscapeListener = (mainFrame.asJFrame().contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("abortTreatmentView", {
+                log.debug("Escape was hit in treatment view. Dispatching TreatmentBackEvent.")
+                bus.post(TreatmentBackEvent())
+            }))
+        }
+        if (event.oldContent?.type == MainContentType.TREATMENT && event.newContent.type != MainContentType.TREATMENT) {
+            log.trace("Navigating AWAY from treatment view")
+            if (registeredEscapeListener != null) {
+                registeredEscapeListener!!.deregisterYourself()
+                registeredEscapeListener = null
+            }
+        }
+        if (treatmentView != null && event.oldContent?.type == MainContentType.TREATMENT) {
             treatmentView!!.closePreparations()
         }
     }
@@ -96,14 +115,20 @@ open class TreatmentController @Inject constructor(
         currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
 
+        val enablePrev: Boolean
+        val enableNext: Boolean
         if (!nullSafeTreatment.yetPersisted) {
-            treatmentView!!.enablePrev(false)
-            treatmentView!!.enableNext(false)
+            enablePrev = false
+            enableNext = false
         } else {
             val prevNext = treatmentService.prevAndNext(nullSafeTreatment)
-            treatmentView!!.enablePrev(prevNext.first != null)
-            treatmentView!!.enableNext(prevNext.second != null)
+            enablePrev = prevNext.first != null
+            enableNext = prevNext.second != null
         }
+        treatmentView!!.enablePrev(enablePrev)
+        treatmentView!!.enableNext(enableNext)
+        menuBar.treatmentPrevious.isEnabled = enablePrev
+        menuBar.treatmentNext.isEnabled = enableNext
 
         bus.post(ChangeMainContentEvent(treatmentView!!))
     }

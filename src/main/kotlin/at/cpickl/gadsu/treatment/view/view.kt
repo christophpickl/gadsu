@@ -187,15 +187,17 @@ class SwingTreatmentView @Inject constructor(
 
         panel.add(JPanel().apply {
             transparent()
-            add(btnPrev)
-        }, BorderLayout.WEST)
-        panel.add(JPanel().apply {
-            transparent()
             add(btnSave)
             add(swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }))
-        }, BorderLayout.CENTER)
+
+        }, BorderLayout.WEST)
+//        panel.add(JPanel().apply {
+//            transparent()
+//            // nothing in the middle yet ;)
+//        }, BorderLayout.CENTER)
         panel.add(JPanel().apply {
             transparent()
+            add(btnPrev)
             add(btnNext)
         }, BorderLayout.EAST)
 

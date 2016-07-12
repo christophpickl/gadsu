@@ -2,14 +2,10 @@ package at.cpickl.gadsu.view.swing
 
 import java.awt.Container
 import java.awt.Window
-import java.awt.event.ActionEvent
-import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import javax.swing.AbstractAction
 import javax.swing.JComponent
 import javax.swing.JFrame
-import javax.swing.KeyStroke
 
 
 interface ClosableWindow {
@@ -17,17 +13,20 @@ interface ClosableWindow {
     fun closeWindow()
 }
 
+
+
 fun <W : ClosableWindow> W.closeOnEscape(): W {
     val component = getContentPane() as JComponent // hacky-da-hack ;)
-    val inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    val actionMap = component.actionMap
-
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "dispose")
-    actionMap.put("dispose", object : AbstractAction() {
-        override fun actionPerformed(e: ActionEvent?) {
-            closeWindow()
-        }
-    })
+    component.registerMyKeyListener(MyKeyListener.onEscape("disposeMyWindow", { closeWindow() }))
+//    val inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+//    val actionMap = component.actionMap
+//
+//    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "dispose")
+//    actionMap.put("dispose", object : AbstractAction() {
+//        override fun actionPerformed(e: ActionEvent?) {
+//            closeWindow()
+//        }
+//    })
     return this
 }
 
