@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.logic
 
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.inputs.Labeled
+import at.cpickl.gadsu.view.components.inputs.MyCheckBox
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
 import at.cpickl.gadsu.view.components.inputs.MyDatePicker
 import org.slf4j.LoggerFactory
@@ -35,6 +36,11 @@ class ModificationChecker(
         delegate.addChangeListener {
             checkModificationsAndUpdateIsEnabledField()
         }
+        return delegate
+    }
+
+    fun enableChangeListener(delegate: MyCheckBox): MyCheckBox {
+        // FIXME implement me
         return delegate
     }
 

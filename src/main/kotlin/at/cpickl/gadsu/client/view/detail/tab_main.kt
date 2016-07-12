@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
@@ -23,7 +24,6 @@ import at.cpickl.gadsu.view.swing.titledBorder
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
-import javax.swing.JTextField
 
 class ClientTabMain(
         initialClient: Client,
@@ -58,7 +58,7 @@ class ClientTabMain(
     val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
 
     val inpNote = fields.newTextArea("Notiz", {it.note}, ViewNames.Client.InputNote)
-
+    val inpActive = fields.newCheckBox("Aktiv", {it.state == ClientState.ACTIVE}, ViewNames.Client.InputActive)
 
     init {
         debugColor = Color.ORANGE
@@ -79,6 +79,7 @@ class ClientTabMain(
             addFormInput(inpJob)
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
+            addFormInput(inpActive)
             addFormInput("Erstellt am", outCreated)
         }
 

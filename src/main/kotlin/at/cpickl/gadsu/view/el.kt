@@ -19,7 +19,7 @@ import javax.swing.JTextField
 
 private val LOG_ElFIeld = LoggerFactory.getLogger(ElField::class.java)
 
-interface ElField<V> {
+interface ElField<in V> {
     val formLabel: String
     fun isModified(value: V): Boolean
     fun updateValue(value: V)
@@ -90,6 +90,17 @@ class ElNumberField<V>(
         numberValue = extractValue(value)
     }
     override fun toComponent() = this
+}
+
+class ElCheckBox<in V>(
+        private val delegate: MyCheckBox,
+        override val formLabel: String,
+        private val extractValue: (V) -> Boolean
+) : ElField<V> {
+
+    override fun isModified(value: V) = _isModified(delegate.isSelected, extractValue, value)
+    override fun updateValue(value: V) { delegate.isSelected = extractValue(value) }
+    override fun toComponent() = delegate
 }
 
 class ElComboBox<V, T : Labeled>(
@@ -180,6 +191,14 @@ class Fields<V>(private val modifications: ModificationChecker) {
     fun newTextArea(label: String, extractValue: (V) -> String, viewName: String, visibleRows: Int? = null): ElTextArea<V> {
         val field = ElTextArea(label, extractValue, viewName, visibleRows)
         modifications.enableChangeListener(field)
+        fields.add(field)
+        return field
+    }
+
+    fun newCheckBox(label: String, extractValue: (V) -> Boolean, viewName: String): ElCheckBox<V> {
+        val realField = MyCheckBox().apply { name = viewName }
+        val field = ElCheckBox(realField, label, extractValue)
+        modifications.enableChangeListener(realField)
         fields.add(field)
         return field
     }

@@ -165,7 +165,7 @@ open class SwingClientDetailView @Inject constructor(
         return Client(
                 currentClient.data.id,
                 currentClient.data.created,
-                ClientState.ACTIVE, // FIXME state
+                if (tabMain.inpActive.toComponent().isSelected) ClientState.ACTIVE else ClientState.INACTIVE,
                 tabMain.inpFirstName.text,
                 tabMain.inpLastName.text,
 

@@ -50,6 +50,8 @@ object ClientViewNames {
     val InputGender = "Client.InputGender"
     val InputRelationship = "Client.InputRelationship"
     val InputNote = "Client.InputNote"
+    val InputActive = "Client.InputActive"
+
     val InputTcmNote = "Client.InputTcmNote"
     val InputBirthdayPrefix = "Client.InputBirthday" // will be added something like ".XXX"
 
