@@ -67,6 +67,14 @@ open class GadsuMenuBarController @Inject constructor(
         }
     }
 
+    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+        if (event.newContent.type == MainContentType.TREATMENT) {
+            menuBar.clientEntriesEnabled = false
+        } else if (event.newContent.type == MainContentType.CLIENT) {
+            menuBar.clientEntriesEnabled = true
+        }
+    }
+
 }
 
 @Logged
@@ -81,9 +89,19 @@ open class GadsuMenuBar @Inject constructor(
     private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
 
+    private val clientEntries = listOf(clientTabMain, clientTabTexts, clientTabTcm)
+
+    var clientEntriesEnabled = true
+        get() = field
+        set(value) {
+            if (value != field) {
+                field = value
+                clientEntries.forEach { it.isVisible = value }
+            }
+        }
+
     lateinit var itemReconnect: JMenuItem
     init {
-        IS_OS_MAC
         add(menuApp())
         add(menuView())
         add(menuReports())
@@ -91,7 +109,6 @@ open class GadsuMenuBar @Inject constructor(
         Development.fiddleAroundWithMenuBar(this, bus)
     }
 
-    // controller listen to: MainContentChangedEvent
     private fun menuView() = JMenu("Ansicht").apply {
         add(clientTabMain)
         add(clientTabTexts)

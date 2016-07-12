@@ -59,6 +59,8 @@ class SwingTreatmentView @Inject constructor(
         viewName = ViewNames.Treatment.MainPanel,
         _debugColor = Color.YELLOW
 ), TreatmentView {
+
+    override val type = MainContentType.TREATMENT
     private val log = LoggerFactory.getLogger(javaClass)
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, {
@@ -253,6 +255,10 @@ class SwingTreatmentView @Inject constructor(
                 inpAboutUpcoming.text,
                 inpNote.text
         )
+    }
+
+    override fun toString(): String{
+        return "SwingTreatmentView(type=$type)"
     }
 
 }

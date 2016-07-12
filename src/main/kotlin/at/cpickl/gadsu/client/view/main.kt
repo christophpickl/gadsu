@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.view.detail.ClientDetailView
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.treatment.TreatmentGoalController
 import at.cpickl.gadsu.view.MainContent
+import at.cpickl.gadsu.view.MainContentType
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
@@ -23,6 +24,8 @@ class SwingClientView @Inject constructor(
         override val detailView: ClientDetailView,
         goalController: TreatmentGoalController // this is actually not a very nice thing to do :-/
 ) : GridPanel(), ClientView {
+
+    override val type = MainContentType.CLIENT
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -59,4 +62,9 @@ class SwingClientView @Inject constructor(
     }
 
     override fun asComponent() = this
+    override fun toString(): String{
+        return "SwingClientView(type=$type)"
+    }
+
+
 }

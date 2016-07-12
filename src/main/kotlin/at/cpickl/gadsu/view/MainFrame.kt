@@ -17,10 +17,19 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 
 class ChangeMainContentEvent(val newContent: MainContent) : AppEvent()
-class MainContentChangedEvent(val oldContent: MainContent?, val newContent: MainContent) : AppEvent()
+class MainContentChangedEvent(val oldContent: MainContent?, val newContent: MainContent) : AppEvent() {
+    override fun toString(): String{
+        return "MainContentChangedEvent(oldContent=$oldContent, newContent=$newContent)"
+    }
+}
 
+enum class MainContentType {
+    CLIENT,
+    TREATMENT;
+}
 
 interface MainContent {
+    val type: MainContentType
     /**
      * To close datepicker popup.
      */
