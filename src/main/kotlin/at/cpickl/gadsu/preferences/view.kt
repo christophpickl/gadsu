@@ -12,27 +12,18 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.disableFocusable
-import at.cpickl.gadsu.view.swing.disabled
-import at.cpickl.gadsu.view.swing.isTransparent
-import at.cpickl.gadsu.view.swing.selectAllOnFocus
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.BorderFactory
-import javax.swing.BoxLayout
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 
-interface PreferencesWindow {
+
+interface PreferencesWindow : ClosableWindow {
     fun start()
-    fun close()
     fun initData(preferencesData: PreferencesData)
     fun readData(): PreferencesData
 
@@ -46,7 +37,7 @@ interface PreferencesWindow {
 class SwingPreferencesFrame @Inject constructor(
         private val mainFrame: MainFrame,
         private val bus: EventBus,
-        private val swing: SwingFactory
+        swing: SwingFactory
 ) : MyFrame("Einstellungen"), PreferencesWindow {
 
     private val HGAP_FROM_WINDOW = 15
@@ -87,6 +78,8 @@ class SwingPreferencesFrame @Inject constructor(
         }
 
     init {
+        closeOnEscape()
+
         name = ViewNames.Preferences.Window
         addCloseListener { doClose(false) }
 
@@ -106,10 +99,10 @@ class SwingPreferencesFrame @Inject constructor(
                     addTopInset = VGAP_BETWEEN_COMPONENTS)
 
             c.gridwidth = 2
-            add(HtmlEditorPane("<b>*</b> ... <i>Neustart erforderlich</i>"))
+            add(HtmlEditorPane("<b>*</b> ... <i>Neustart erforderlich</i>").disableFocusable())
         }
 
-        val btnClose = JButton("Schlie\u00dfen")
+        val btnClose = JButton("Speichern und schlie\u00dfen")
         btnClose.addActionListener { doClose(true) }
         rootPane.defaultButton = btnClose
 
@@ -172,7 +165,7 @@ class SwingPreferencesFrame @Inject constructor(
         }
     }
 
-    override fun close() {
+    override fun closeWindow() {
         hideAndClose()
     }
 

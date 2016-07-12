@@ -33,7 +33,7 @@ open class PreferencesController @Inject constructor(
         if (event.persistData) {
             prefs.preferencesData = window.readData()
         } else {
-            log.trace("Not persisting preferences data (user closed via X button in window title, instead of hitting the Schliessen button.)")
+            log.trace("Not persisting preferences data (user closed via X button in window title, instead of hitting the close button.)")
         }
     }
 
@@ -47,6 +47,6 @@ open class PreferencesController @Inject constructor(
 
     @Subscribe open fun onQuitEvent(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
         prefs.preferencesData = window.readData() // store data back (again?! seems so...)
-        window.close()
+        window.closeWindow()
     }
 }

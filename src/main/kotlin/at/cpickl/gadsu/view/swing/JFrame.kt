@@ -1,15 +1,40 @@
 package at.cpickl.gadsu.view.swing
 
+import java.awt.Container
 import java.awt.Window
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import javax.swing.AbstractAction
+import javax.swing.JComponent
 import javax.swing.JFrame
+import javax.swing.KeyStroke
 
+
+interface ClosableWindow {
+    fun getContentPane(): Container // every JFrame got it ;)
+    fun closeWindow()
+}
+
+fun <W : ClosableWindow> W.closeOnEscape(): W {
+    val component = getContentPane() as JComponent // hacky-da-hack ;)
+    val inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    val actionMap = component.actionMap
+
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "dispose")
+    actionMap.put("dispose", object : AbstractAction() {
+        override fun actionPerformed(e: ActionEvent?) {
+            closeWindow()
+        }
+    })
+    return this
+}
 
 fun JFrame.packCenterAndShow() {
     pack()
     setLocationRelativeTo(null)
-    setVisible(true)
+    isVisible = true
 }
 
 

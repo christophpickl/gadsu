@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.UserEvent
@@ -19,7 +18,6 @@ import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
-import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import javax.inject.Inject
 import javax.swing.JMenu
@@ -124,11 +122,7 @@ open class GadsuMenuBar @Inject constructor(
 
         if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
-
-            val shortcut = if (IS_OS_MAC) {
-                KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, Toolkit.getDefaultToolkit ().menuShortcutKeyMask) // CTRL for win/linux, and CMD for mac
-            } else null
-            menuApp.addItem("Einstellungen", ShowPreferencesEvent(), shortcut)
+            menuApp.addItem("Einstellungen", ShowPreferencesEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, SHORTCUT_MODIFIER))
         }
 
         itemReconnect = menuApp.addItem("Internet Verbindung herstellen", MenuBarEntryClickedEvent(MenuBarEntry.RECONNECT_INTERNET_CONNECTION))
