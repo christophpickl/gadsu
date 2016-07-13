@@ -105,7 +105,7 @@ open class DatabaseManager @Inject constructor(
             dataSource.connection.close()
         } catch (e: Exception) {
             // when there is a lock, the shutdown hook will fail, avoid this!
-            log.error("Could not closeWindow database connection.", e)
+            log.error("Could not close database connection.", e)
         }
     }
 

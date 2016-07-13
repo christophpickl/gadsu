@@ -2,6 +2,7 @@ package at.cpickl.gadsu
 
 object GadsuSystemProperty {
     val development = BooleanSystemProperty("gadsu.development")
+    val testRun = BooleanSystemProperty("gadsu.testRun")
     val overrideLanguage = StringSystemProperty("gadsu.overrideLanguage")
     val disableLog = BooleanSystemProperty("gadsu.disableLog")
     val isMacApp = BooleanSystemProperty("gadsu.isMacApp")

@@ -33,6 +33,7 @@ import java.util.prefs.Preferences
 abstract class SimpleUiTest : UISpecTestCase() {
     companion object {
         init {
+            GadsuSystemProperty.testRun.enable()
             GadsuSystemProperty.disableLog.enable()
             GadsuSystemProperty.disableAutoUpdate.enable()
             GadsuSystemProperty.disableAutoBackup.enable()
@@ -41,7 +42,7 @@ abstract class SimpleUiTest : UISpecTestCase() {
         }
     }
 
-    protected val log = LoggerFactory.getLogger(javaClass)
+    protected val log = LoggerFactory.getLogger(javaClass)!!
 
     protected var window: Window? = null
 
@@ -62,8 +63,7 @@ abstract class SimpleUiTest : UISpecTestCase() {
         postInit(window!!)
     }
 
-    @AfterClass
-    final fun destroyUi() {
+    @AfterClass fun destroyUi() {
         log.debug("destroyUi()")
         super.tearDown()
     }
@@ -73,7 +73,7 @@ abstract class SimpleUiTest : UISpecTestCase() {
         val oldTimeout = UISpec4J.getWindowInterceptionTimeLimit()
         try {
             UISpec4J.setWindowInterceptionTimeLimit(1000 * 20)
-            return mainWindow
+            return mainWindow // this getter does all the logic to retrieve the main window
         } finally {
             UISpec4J.setWindowInterceptionTimeLimit(oldTimeout)
         }

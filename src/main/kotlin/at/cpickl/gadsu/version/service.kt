@@ -77,7 +77,7 @@ open class VersionUpdaterImpl @Inject constructor(
                         arrayOf("Download starten"), null, DialogType.WARN, currentActiveJFrame())
 
                 if (selected == null) {
-                    log.debug("User closed window by hitting the closeWindow button, seems as he doesnt care about using the latest version :-/")
+                    log.debug("User closed window by hitting the close button, seems as he doesnt care about using the latest version :-/")
                     return
                 }
 
