@@ -165,7 +165,7 @@ open class SwingClientDetailView @Inject constructor(
         return Client(
                 currentClient.data.id,
                 currentClient.data.created,
-                if (tabMain.inpActive.toComponent().isSelected) ClientState.ACTIVE else ClientState.INACTIVE,
+                currentClient.data.state,
                 tabMain.inpFirstName.text,
                 tabMain.inpLastName.text,
 
