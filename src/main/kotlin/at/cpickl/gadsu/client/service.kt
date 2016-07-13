@@ -6,8 +6,10 @@ import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.TreatmentService
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -25,8 +27,8 @@ interface ClientService {
     fun findById(id: String): Client
 }
 
-
-class ClientServiceImpl @Inject constructor(
+@Logged
+open class ClientServiceImpl @Inject constructor(
         private val clientRepo: ClientRepository,
         private val xpropsService: XPropsService,
         private val treatmentService: TreatmentService,
@@ -75,6 +77,14 @@ class ClientServiceImpl @Inject constructor(
         log.trace("Dispatching ClientCreatedEvent: {}", savedClient)
         bus.post(ClientCreatedEvent(savedClient))
         return savedClient
+    }
+
+    @Subscribe open fun onClientChangeState(event: ClientChangeState) {
+        val client = currentClient.data
+        if (client.state == event.newState) {
+            throw IllegalArgumentException("Client's state is already set to '${event.newState}' for client: $client")
+        }
+        updateClient(client.copy(state = event.newState))
     }
 
     private fun updateClient(client: Client): Client {

@@ -99,3 +99,5 @@ class ClientUnselectedEvent(val client: Client) : UserEvent()
  * Back button in treatments view.
  */
 class ShowClientViewEvent() : AppEvent()
+
+class ClientChangeState(val newState: ClientState) : UserEvent()

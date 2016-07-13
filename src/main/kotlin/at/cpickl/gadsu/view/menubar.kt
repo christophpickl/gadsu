@@ -5,14 +5,26 @@ import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientChangeState
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
-import at.cpickl.gadsu.report.*
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.report.CreateMultiProtocolEvent
+import at.cpickl.gadsu.report.CreateProtocolEvent
+import at.cpickl.gadsu.report.PrintReportPrintEvent
+import at.cpickl.gadsu.report.PrintReportSaveEvent
+import at.cpickl.gadsu.report.PrintReportType
+import at.cpickl.gadsu.service.CurrentChangedEvent
+import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
+import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import com.google.common.eventbus.EventBus
@@ -45,11 +57,19 @@ open class GadsuMenuBarController @Inject constructor(
         private val currentClient: CurrentClient
 ) {
 
+    // initialize at startup
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        menuBar.contentType = MainContentType.CLIENT // initialize at startup
+        menuBar.contentType = MainContentType.CLIENT
+        menuBar.currentClient(currentClient.data)
+    }
+
+    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+        menuBar.contentType = event.newContent.type
+        menuBar.currentClient(currentClient.data) // re-initialize menu bar for client specific items
     }
 
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
+        // MINOR i dont get kotlin :-/
         val enforceRemainingBranchesKotlinBug = when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
             // TODO @REFACTOR - rethink this double dispatching. aint necessary :-/
@@ -63,12 +83,12 @@ open class GadsuMenuBarController @Inject constructor(
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
         event.forClient {
-            menuBar.itemProtocol.isEnabled = it != null && it.yetPersisted
+            menuBar.currentClient(it)
         }
     }
 
-    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        menuBar.contentType = event.newContent.type
+    @Subscribe open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
+        menuBar.currentClient(event.client)
     }
 
 }
@@ -80,18 +100,22 @@ open class GadsuMenuBar @Inject constructor(
 ) : JMenuBar() {
 
     private val log = LOG(javaClass)
-    val itemProtocol = JMenuItem("Protokoll erstellen")
+    private val itemProtocol = JMenuItem("Protokoll erstellen")
 
+    private val clientActivate = buildItem("Klient aktivieren", ClientChangeState(ClientState.ACTIVE))
+    private val clientDeactivate = buildItem("Klient deaktivieren", ClientChangeState(ClientState.INACTIVE))
     private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
-    private val clientEntries = listOf(clientTabMain, clientTabTexts, clientTabTcm)
+    private val clientEntries = listOf(clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", PreviousTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
     val treatmentNext = buildItem("N\u00e4chste Behandlung", NextTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
     private val treatmentEntries = listOf(treatmentPrevious, treatmentNext)
 
     private val allEntries = listOf(clientEntries, treatmentEntries)
+
+    lateinit var itemReconnect: JMenuItem
 
     var contentType = MainContentType.CLIENT
         get() = field
@@ -105,26 +129,14 @@ open class GadsuMenuBar @Inject constructor(
             allEntries.filter { it != entriesToShow }.forEach { it.forEach { it.isVisible = false } }
         }
 
-    lateinit var itemReconnect: JMenuItem
+
     init {
         add(menuApp())
+        add(menuEdit())
         add(menuView())
         add(menuReports())
 
         Development.fiddleAroundWithMenuBar(this, bus)
-    }
-
-    private fun menuView() = JMenu("Ansicht").apply {
-        add(clientTabMain)
-        add(clientTabTexts)
-        add(clientTabTcm)
-
-        add(treatmentPrevious)
-        add(treatmentNext)
-    }
-
-    @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
-        itemReconnect.isVisible = !event.isConnected
     }
 
     private fun menuApp(): JMenu {
@@ -148,6 +160,37 @@ open class GadsuMenuBar @Inject constructor(
             menuApp.addItem("Beenden", QuitEvent())
         }
         return menuApp
+    }
+
+    private fun menuEdit() = JMenu("Bearbeiten").apply {
+        add(clientActivate)
+        add(clientDeactivate)
+    }
+
+    private fun menuView() = JMenu("Ansicht").apply {
+        add(clientTabMain)
+        add(clientTabTexts)
+        add(clientTabTcm)
+
+        add(treatmentPrevious)
+        add(treatmentNext)
+    }
+
+    @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
+        itemReconnect.isVisible = !event.isConnected
+    }
+
+    fun currentClient(client: Client?) {
+        log.trace("currentClient(client={})", client)
+        val isPersisted = client?.yetPersisted ?: false
+        itemProtocol.isEnabled = isPersisted
+        if (client == null) {
+            clientActivate.isVisible = false
+            clientDeactivate.isVisible = false
+        } else {
+            clientActivate.isVisible = client.state == ClientState.INACTIVE
+            clientDeactivate.isVisible = client.state == ClientState.ACTIVE
+        }
     }
 
     private fun menuReports(): JMenu {

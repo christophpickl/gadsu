@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.Framed
@@ -9,6 +10,7 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.scrolled
+import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.swing.JComponent
@@ -32,11 +34,14 @@ fun main(args: Array<String>) {
 
 class ClientCell(val client: Client) : DefaultCellView<Client>(client) {
 
-    private val name = JLabel(client.fullName).bold()
+    private val name = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
     private val mail = JLabel("Mail: ${client.contact.mail}")
     override val applicableForegrounds: Array<JComponent>
 
     init {
+        if (client.state == ClientState.INACTIVE) {
+            name.foreground = Color.LIGHT_GRAY
+        }
         applicableForegrounds = arrayOf(name, mail)
 
         val mailPresent = client.contact.mail.isNotEmpty()
