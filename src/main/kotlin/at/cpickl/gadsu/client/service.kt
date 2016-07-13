@@ -17,7 +17,7 @@ import javax.inject.Inject
 interface ClientService {
 
 
-    fun findAll(): List<Client>
+    fun findAll(filterState: ClientState? = null): List<Client>
     fun insertOrUpdate(client: Client): Client // return type needed for development reset data (only?!)
     fun delete(client: Client)
 
@@ -41,8 +41,8 @@ open class ClientServiceImpl @Inject constructor(
 ) : ClientService {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun findAll(): List<Client> {
-        return clientRepo.findAll().map {
+    override fun findAll(filterState: ClientState?): List<Client> {
+        return clientRepo.findAll(filterState).map {
             // TODO performance improvement: dont ask DB for each client, but rather exec a bulk operation
             it.copy(cprops = xpropsService.read(it))
         }
@@ -79,7 +79,7 @@ open class ClientServiceImpl @Inject constructor(
         return savedClient
     }
 
-    @Subscribe open fun onClientChangeState(event: ClientChangeState) {
+    @Subscribe open fun onClientChangeState(event: ClientChangeStateEvent) {
         val client = currentClient.data
         if (client.state == event.newState) {
             throw IllegalArgumentException("Client's state is already set to '${event.newState}' for client: $client")

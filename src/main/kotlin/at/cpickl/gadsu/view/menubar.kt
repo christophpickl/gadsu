@@ -1,15 +1,17 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientChangeState
+import at.cpickl.gadsu.client.ClientChangeStateEvent
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.ShowInClientsListEvent
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
@@ -31,9 +33,12 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
 import javax.inject.Inject
+import javax.swing.JCheckBoxMenuItem
+import javax.swing.JComponent
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
 import javax.swing.KeyStroke
 
 
@@ -102,12 +107,14 @@ open class GadsuMenuBar @Inject constructor(
     private val log = LOG(javaClass)
     private val itemProtocol = JMenuItem("Protokoll erstellen")
 
-    private val clientActivate = buildItem("Klient aktivieren", ClientChangeState(ClientState.ACTIVE))
-    private val clientDeactivate = buildItem("Klient deaktivieren", ClientChangeState(ClientState.INACTIVE))
+    private val clientSeperator1 = JPopupMenu.Separator()
+    private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", { ShowInClientsListEvent(it) })
+    private val clientActivate = buildItem("Klient aktivieren", ClientChangeStateEvent(ClientState.ACTIVE))
+    private val clientDeactivate = buildItem("Klient deaktivieren", ClientChangeStateEvent(ClientState.INACTIVE))
     private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
-    private val clientEntries = listOf(clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
+    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientShowInactives, clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", PreviousTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
     val treatmentNext = buildItem("N\u00e4chste Behandlung", NextTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
@@ -169,8 +176,12 @@ open class GadsuMenuBar @Inject constructor(
 
     private fun menuView() = JMenu("Ansicht").apply {
         add(clientTabMain)
+        add(clientSeperator1)
         add(clientTabTexts)
+        add(clientSeperator1)
         add(clientTabTcm)
+        add(clientSeperator1)
+        add(clientShowInactives)
 
         add(treatmentPrevious)
         add(treatmentNext)
@@ -216,6 +227,13 @@ open class GadsuMenuBar @Inject constructor(
         saveItem.addActionListener { bus.post(PrintReportSaveEvent(type))}
         add(printItem)
         add(saveItem)
+    }
+
+    private fun buildCheckBoxItem(label: String, funCreateEvent: (Boolean) -> Event, shortcut: KeyStroke? = null): JCheckBoxMenuItem {
+        val item = JCheckBoxMenuItem(label)
+        item.addActionListener { e -> bus.post(funCreateEvent(item.isSelected)) }
+        if (shortcut != null) item.accelerator = shortcut
+        return item
     }
 
     private fun buildItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {

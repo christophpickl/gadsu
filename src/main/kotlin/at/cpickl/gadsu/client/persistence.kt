@@ -23,7 +23,7 @@ private val log = LoggerFactory.getLogger("at.cpickl.gadsu.client.persistence")
 
 interface ClientRepository {
 
-    fun findAll(): List<Client>
+    fun findAll(filterState: ClientState? = null): List<Client>
 
     /**
      * @param client its ID must be null
@@ -55,10 +55,14 @@ class ClientJdbcRepository @Inject constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun findAll(): List<Client> {
-        log.debug("findAll()")
+    override fun findAll(filterState: ClientState?): List<Client> {
+        log.debug("findAll(filterState={})", filterState)
 
-        val clients = jdbcx.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
+        val clients = if (filterState == null)
+            jdbcx.query("SELECT * FROM $TABLE", Client.ROW_MAPPER)
+        else {
+            jdbcx.query2("SELECT * FROM $TABLE WHERE state = ?", Client.ROW_MAPPER, filterState.sqlCode)
+        }
         clients.sort()
         return clients
     }

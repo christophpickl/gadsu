@@ -12,6 +12,7 @@ interface Jdbcx {
 
     fun <E> query(sql: String, rowMapper: RowMapper<E>): MutableList<E>
     fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E>
+    fun <E> query2(sql: String, rowMapper: RowMapper<E>, vararg args: Any): MutableList<E>
     fun <E> queryMaybeSingle(rowMapper: RowMapper<E>, sql: String, args: Array<out Any?>): E?
     fun <E> querySingle(rowMapper: RowMapper<E>, sql: String, vararg args: Any?): E
 
@@ -37,6 +38,11 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
     }
 
     override fun <E> query(sql: String, args: Array<out Any?>, rowMapper: RowMapper<E>): MutableList<E> {
+        log.trace("query(sql='{}', args={}, rowMapper)", sql, args)
+        return encapsulateException({ jdbc.query(sql, args, rowMapper) })
+    }
+
+    override fun <E> query2(sql: String, rowMapper: RowMapper<E>, vararg args: Any): MutableList<E> {
         log.trace("query(sql='{}', args={}, rowMapper)", sql, args)
         return encapsulateException({ jdbc.query(sql, args, rowMapper) })
     }
@@ -75,7 +81,8 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
         encapsulateException {
             val affectedRows = jdbc.update(sql, *args)
             if (affectedRows != 1) {
-                throw PersistenceException("Expected exactly one row to be deleted, but was: $affectedRows!", PersistenceErrorCode.EXPECT_DELETED_ONE)
+                throw PersistenceException("Expected exactly one row to be deleted, but was: $affectedRows! SQL: [[$sql]], args: [[$args]]",
+                        PersistenceErrorCode.EXPECT_DELETED_ONE)
             }
         }
     }

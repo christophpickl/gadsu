@@ -61,7 +61,11 @@ class DeleteClientEvent(val client: Client) : UserEvent() {
     }
 }
 
-class ClientDeletedEvent(val client: Client) : AppEvent()
+class ClientDeletedEvent(val client: Client) : AppEvent() {
+    override fun toString(): String{
+        return "ClientDeletedEvent(client=$client)"
+    }
+}
 
 /**
  * Master list selected.
@@ -100,4 +104,6 @@ class ClientUnselectedEvent(val client: Client) : UserEvent()
  */
 class ShowClientViewEvent() : AppEvent()
 
-class ClientChangeState(val newState: ClientState) : UserEvent()
+class ClientChangeStateEvent(val newState: ClientState) : UserEvent()
+
+class ShowInClientsListEvent(val showInactives: Boolean) : UserEvent()

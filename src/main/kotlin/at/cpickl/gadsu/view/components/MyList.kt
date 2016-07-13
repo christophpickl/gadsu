@@ -2,8 +2,13 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
-import at.cpickl.gadsu.view.logic.*
+import at.cpickl.gadsu.view.logic.IndexableModel
+import at.cpickl.gadsu.view.logic.calculateInsertIndex
+import at.cpickl.gadsu.view.logic.enablePopup
+import at.cpickl.gadsu.view.logic.findIndexByComparator
+import at.cpickl.gadsu.view.logic.registerDoubleClicked
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
@@ -110,6 +115,17 @@ class MyListModel<E> : DefaultListModel<E>(), IndexableModel<E> {
         removeAllElements()
         newElements.forEach { addElement(it) }
     }
+
 }
 
+
+fun <E : HasId> MyListModel<E>.containsById(element: E): Boolean {
+    val it = this.elements().iterator()
+    while (it.hasNext()) {
+        if (it.next().id == element.id) {
+            return true
+        }
+    }
+    return false
+}
 

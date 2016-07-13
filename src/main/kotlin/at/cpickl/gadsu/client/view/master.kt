@@ -12,6 +12,7 @@ import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.containsById
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.enableSmartPopup
@@ -156,7 +157,11 @@ class SwingClientMasterView @Inject constructor(
 
     override fun deleteClient(client: Client) {
         log.trace("deleteClient(client={})", client)
-        model.removeElementByComparator(client.idComparator)
+        if (model.containsById(client)) {
+            model.removeElementByComparator(client.idComparator)
+        } else {
+            log.trace("client not currently displaying in master list (show inactives is disabled)")
+        }
     }
 
 }

@@ -1,7 +1,21 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientDeletedEvent
+import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.ClientUnselectedEvent
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.CreateNewClientEvent
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.DeleteClientEvent
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.ShowClientViewEvent
+import at.cpickl.gadsu.client.ShowInClientsListEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.service.Clock
@@ -40,7 +54,7 @@ open class ClientViewController @Inject constructor(
     })
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        view.masterView.initClients(clientService.findAll())
+        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE)) // initially only display actives
         bus.post(ChangeMainContentEvent(view))
         bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
     }
@@ -131,6 +145,11 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onSelectClientTab(event: SelectClientTab) {
         view.detailView.changeTab(event.tab)
+    }
+
+    @Subscribe open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
+        val clients = clientService.findAll(filterState = if(event.showInactives) null else ClientState.ACTIVE)
+        view.masterView.initClients(clients)
     }
 
     private fun saveClient(client: Client) {
