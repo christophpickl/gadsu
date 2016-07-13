@@ -89,7 +89,7 @@ open class DevelopmentController @Inject constructor(
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
 
-                        "mein eindruck ist blub",
+                        "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
                         "er hatte ein gebrochenes bein",
                         "nacken; zuwenig selbstbewusstsein",
                         "perfektionist; schlangen phobie; single",
