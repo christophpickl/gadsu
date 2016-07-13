@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components.inputs
 
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.swing.enforceCharactersByRegexp
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
@@ -11,15 +12,19 @@ open class NumberField(columns: Int = 100) : JTextField(columns) {
     companion object {
         private val NUMBER_REGEXP = Pattern.compile("""\d+""")
     }
+    private val log = LOG(javaClass)
     init {
         enforceCharactersByRegexp(NUMBER_REGEXP)
         addFocusListener(object : FocusListener {
-            override fun focusLost(e: FocusEvent?) {
+            override fun focusGained(e: FocusEvent) {
+                log.trace("focusGained; selectAll()")
+                selectAll()
+            }
+            override fun focusLost(e: FocusEvent) {
                 if (text.isEmpty()) {
                     text = "0"
                 }
             }
-            override fun focusGained(e: FocusEvent?) { }
         })
 
         horizontalAlignment = JTextField.RIGHT

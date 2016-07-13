@@ -1,7 +1,11 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -10,18 +14,25 @@ import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import at.cpickl.gadsu.view.swing.changeSize
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
-import java.awt.*
-import javax.swing.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.GridBagConstraints
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTabbedPane
 
 interface ClientDetailView {
 
@@ -50,9 +61,9 @@ open class SwingClientDetailView @Inject constructor(
 
     private val log = LOG(javaClass)
 
-    private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() })
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() }).gadsuWidth()
 
-    private val btnCancel = JButton("Abbrechen")
+    private val btnCancel = JButton("Abbrechen").gadsuWidth()
     private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
 
     // attention: must come AFTER list of buttons due to hacky design nature ;)
@@ -102,9 +113,6 @@ open class SwingClientDetailView @Inject constructor(
             log.debug("btnCancel clicked")
             updateFields()
         }
-        val newSize = Dimension(btnSave.preferredSize.width + 20, btnSave.preferredSize.height)
-        btnSave.changeSize(newSize)
-        btnCancel.changeSize(newSize)
 
         initLayout()
     }

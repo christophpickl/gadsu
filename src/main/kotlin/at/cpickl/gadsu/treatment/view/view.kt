@@ -6,9 +6,19 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.service.toMinutes
-import at.cpickl.gadsu.treatment.*
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.treatment.NextTreatmentEvent
+import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentBackEvent
+import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.MainContent
+import at.cpickl.gadsu.view.MainContentType
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -22,7 +32,13 @@ import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.Font
+import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -63,9 +79,8 @@ class SwingTreatmentView @Inject constructor(
     override val type = MainContentType.TREATMENT
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, {
-        TreatmentSaveEvent(readTreatment())
-    })
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment()) }).gadsuWidth()
+    private val btnBack = swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }).gadsuWidth()
 
     private val modificationChecker = ModificationChecker(this, btnSave)
 
@@ -82,9 +97,9 @@ class SwingTreatmentView @Inject constructor(
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
-    private val btnPrev = swing.newEventButton("Vorherige", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() })
+    private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
+    private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
-    private val btnNext = swing.newEventButton("N\u00e4chste", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() })
     init {
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
@@ -188,7 +203,7 @@ class SwingTreatmentView @Inject constructor(
         panel.add(JPanel().apply {
             transparent()
             add(btnSave)
-            add(swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }))
+            add(btnBack)
 
         }, BorderLayout.WEST)
 //        panel.add(JPanel().apply {
