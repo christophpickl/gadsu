@@ -5,8 +5,24 @@ import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.treatment.*
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.treatment.CurrentTreatment
+import at.cpickl.gadsu.treatment.NextTreatmentEvent
+import at.cpickl.gadsu.treatment.OpenTreatmentEvent
+import at.cpickl.gadsu.treatment.PrefilledTreatment
+import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
+import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentBackEvent
+import at.cpickl.gadsu.treatment.TreatmentChangedEvent
+import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
+import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.TreatmentViewFactory
+import at.cpickl.gadsu.view.ChangeMainContentEvent
+import at.cpickl.gadsu.view.GadsuMenuBar
+import at.cpickl.gadsu.view.MainContentChangedEvent
+import at.cpickl.gadsu.view.MainContentType
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.RegisteredKeyListener
 import at.cpickl.gadsu.view.swing.registerMyKeyListener
@@ -33,7 +49,7 @@ open class TreatmentController @Inject constructor(
     private var treatmentView: TreatmentView? = null
     private var registeredEscapeListener: RegisteredKeyListener? = null
 
-    @Subscribe open fun onCreateTreatmentEvent(event: CreateTreatmentEvent) {
+    @Subscribe open fun onPrepareNewTreatmentEvent(event: PrepareNewTreatmentEvent) {
         changeToTreatmentView(null, event.prefilled)
     }
 
@@ -44,10 +60,12 @@ open class TreatmentController @Inject constructor(
     @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
         val treatmentAfterSave: Treatment
         val treatmentToSave = event.treatment
+
         if (!treatmentToSave.yetPersisted) {
             val insertedTreatment = treatmentService.insert(treatmentToSave)
             bus.post(TreatmentCreatedEvent(insertedTreatment))
             treatmentAfterSave = insertedTreatment
+            updatePrevNextStateFor(insertedTreatment)
         } else {
             treatmentService.update(treatmentToSave)
             bus.post(TreatmentChangedEvent(treatmentToSave))
@@ -59,7 +77,7 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
-        // TODO check changes for treatment
+        // FIXME check changes for treatment
 
         currentTreatment.data = null
         bus.post(ShowClientViewEvent())
@@ -115,21 +133,24 @@ open class TreatmentController @Inject constructor(
         currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
 
-        val enablePrev: Boolean
-        val enableNext: Boolean
         if (!nullSafeTreatment.yetPersisted) {
-            enablePrev = false
-            enableNext = false
+            updatePrevNextState(false, false)
         } else {
-            val prevNext = treatmentService.prevAndNext(nullSafeTreatment)
-            enablePrev = prevNext.first != null
-            enableNext = prevNext.second != null
+            updatePrevNextStateFor(nullSafeTreatment)
         }
+
+        bus.post(ChangeMainContentEvent(treatmentView!!))
+    }
+
+    private fun updatePrevNextStateFor(treatment: Treatment) {
+        val prevNext = treatmentService.prevAndNext(treatment)
+        updatePrevNextState(prevNext.first != null, prevNext.second != null)
+    }
+
+    private fun updatePrevNextState(enablePrev: Boolean, enableNext: Boolean) {
         treatmentView!!.enablePrev(enablePrev)
         treatmentView!!.enableNext(enableNext)
         menuBar.treatmentPrevious.isEnabled = enablePrev
         menuBar.treatmentNext.isEnabled = enableNext
-
-        bus.post(ChangeMainContentEvent(treatmentView!!))
     }
 }

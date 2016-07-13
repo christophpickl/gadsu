@@ -8,7 +8,7 @@ import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.InternetConnectionController
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.OpenWebpageEvent
-import at.cpickl.gadsu.treatment.CreateTreatmentEvent
+import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.treatment.PrefilledTreatment
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.MainFrame
@@ -72,7 +72,7 @@ class SwingAppointmentWindow @Inject constructor(
         name = "Appointment.ButtonNewTreatment"
         addActionListener {
             bus.post(AbortAppointmentDialogEvent())
-            bus.post(CreateTreatmentEvent(PrefilledTreatment(inpStartDate.selectedDate, inpDuration.numberValue)))
+            bus.post(PrepareNewTreatmentEvent(PrefilledTreatment(inpStartDate.selectedDate, inpDuration.numberValue)))
         }
     }
 

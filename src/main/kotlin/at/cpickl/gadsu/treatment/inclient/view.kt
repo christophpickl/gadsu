@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment.inclient
 
-import at.cpickl.gadsu.treatment.CreateTreatmentEvent
+import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
@@ -30,7 +30,7 @@ class TreatmentsInClientView @Inject constructor(
         private val treatmentsList: TreatmentList
 ): ListyView<Treatment>(
         treatmentsList,
-        swing.newEventButton("Neue Behandlung erstellen", ViewNames.Treatment.OpenNewButton, { CreateTreatmentEvent() })
+        swing.newEventButton("Neue Behandlung erstellen", ViewNames.Treatment.OpenNewButton, { PrepareNewTreatmentEvent() })
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
