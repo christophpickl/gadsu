@@ -31,7 +31,7 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
 
         bind(DataSource::class.java).toInstance(dataSource)
         bind(Jdbcx::class.java).toInstance(SpringJdbcx(dataSource))
-        bind(DatabaseManager::class.java).asEagerSingleton()
+        bind(DatabaseManager::class.java).toInstance(FlywayDatabaseManager(dataSource))
 
         install(BackupModule())
     }

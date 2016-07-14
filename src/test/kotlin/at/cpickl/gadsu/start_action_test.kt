@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.testinfra.Expects.expect
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,14 +18,15 @@ class ArgsActionExecutorTest {
     private var prefs = Mockito.mock(Prefs::class.java)
     private var resetPrefsAction = ResetPrefsArgAction(prefs)
     private var helpAction = HelpArgAction()
-    private var testee = ArgsActionExecutor(resetPrefsAction, helpAction)
+    private var repairDbAction = RepairDatabaseArgAction(Mockito.mock(DatabaseManager::class.java))
+    private var testee = ArgsActionExecutor(resetPrefsAction, helpAction, repairDbAction)
 
     @BeforeMethod
     fun resetState() {
         prefs = Mockito.mock(Prefs::class.java)
         resetPrefsAction = ResetPrefsArgAction(prefs)
         helpAction = HelpArgAction()
-        testee = ArgsActionExecutor(resetPrefsAction, helpAction)
+        testee = ArgsActionExecutor(resetPrefsAction, helpAction, repairDbAction)
     }
 
     @AfterMethod

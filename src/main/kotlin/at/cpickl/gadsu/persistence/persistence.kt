@@ -51,13 +51,21 @@ enum class PersistenceErrorCode {
 
 }
 
+
+interface DatabaseManager {
+
+    fun migrateDatabase()
+    fun repairDatabase()
+
+}
+
 /**
  * Shuts down the database connection so HSQLDB persists its data to the filesystem.
  */
 @Logged
-open class DatabaseManager @Inject constructor(
+open class FlywayDatabaseManager @Inject constructor(
         private val dataSource: DataSource
-) {
+) : DatabaseManager {
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
 
@@ -71,7 +79,7 @@ open class DatabaseManager @Inject constructor(
     private val log = LOG(javaClass)
     private var databaseConnected: Boolean = false
 
-    fun migrateDatabase() {
+    override fun migrateDatabase() {
         log.info("migrateDatabase()")
 
         val flyway = flyway(dataSource)
@@ -92,7 +100,7 @@ open class DatabaseManager @Inject constructor(
         log.debug("Good luck, DB migration was successfull.")
     }
 
-    fun repairDatabase() {
+    override fun repairDatabase() {
         log.info("repairDatabase()")
         flyway(dataSource).repair()
     }
