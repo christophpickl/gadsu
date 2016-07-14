@@ -59,6 +59,7 @@ T-O-D-O
 High
 ------------------------------------------------------------
 * changes detection for treatment
+* development controller action: reset data X, to make a screenshot from for the website
 * when client changes detected, user confirms, then select the clicked one to save one click
 * @UI: bug in TCM lists (not preselected)
 * @UI: automatically scroll to far left in textfields (on update)

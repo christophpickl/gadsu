@@ -67,16 +67,22 @@ $
 * pull changes from remote git repo to local
 * copy the released artifacts to the local __Gadsu/Releases directory
 * draft a new release on github: https://github.com/christophpickl/gadsu/releases
+    * select existing tag, e.g. `v1.4.0`
+    * set release title to: `Release 1.4.0`
+    * attach all three binary artifacts (exe, dmg, jar); this can take a moment as of 3x50 MB to upload
     * list all resolved issues for this milestone
+    * enter following description and publish:
+---
+windows users please use the EXE, apple users the DMG and for all other nixes the JAR file.
 
-
+hot stuff:
 
 * #22 UI Improvements 1.4 user interface
 * #31 Active flag for clients enhancement
 * #33 More client input fields enhancement
-* #35 Treatment goal progress bar enhancement
-* #37 Save print report produces corrupt PDF bug
+---
 
+* create a new milestone, so we always have 3 ahead of us
 
 # Optional
 
