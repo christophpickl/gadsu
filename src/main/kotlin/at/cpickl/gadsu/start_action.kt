@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.preferences.Prefs
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.base.Splitter
@@ -10,10 +11,11 @@ class ArgsActionException(message: String) : GadsuException(message)
 
 class ArgsActionExecutor @Inject constructor(
         resetPrefsAction: ResetPrefsArgAction,
-        helpAction: HelpArgAction
+        helpAction: HelpArgAction,
+        repairDbAction: RepairDatabaseArgAction
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
-    private val actions = listOf<ArgAction>(resetPrefsAction, helpAction)
+    private val actions = listOf<ArgAction>(resetPrefsAction, helpAction, repairDbAction)
 
     fun execute(actionUrl: String) {
         log.debug("execute(actionUrl={})", actionUrl)
@@ -59,5 +61,15 @@ class ResetPrefsArgAction @Inject constructor(
     override fun execute(params: Map<String, String>) {
         prefs.clear()
         println("Preferences cleared to factory defaults.")
+    }
+}
+
+class RepairDatabaseArgAction @Inject constructor(
+        private val db: DatabaseManager
+) : BaseArgAction("repairDb") {
+
+    override fun execute(params: Map<String, String>) {
+        println("Repairing flyway database ...")
+        db.repairDatabase()
     }
 }

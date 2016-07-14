@@ -26,7 +26,7 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
         log.debug("configure() ... using database URL; '{}'", databaseUrl)
 
         val dataSource = JDBCDataSource()
-        dataSource.setUrl(databaseUrl)
+        dataSource.url = databaseUrl
         dataSource.user = DB_USER
 
         bind(DataSource::class.java).toInstance(dataSource)

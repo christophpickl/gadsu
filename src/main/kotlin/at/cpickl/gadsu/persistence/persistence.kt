@@ -8,6 +8,7 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.FlywayException
 import org.flywaydb.core.internal.util.jdbc.JdbcUtils
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -63,7 +64,7 @@ open class DatabaseManager @Inject constructor(
 //            log.info("dumping env variables")
 //            System.getProperties().forEach { key, value -> log.info("property: {} = {}", key, value) }
 
-            log.info("Database shutdown hook is running.")
+            log.info("Database shutdown hook is running and dancing around.")
             closeConnection()
         }, "DatabaseShutdownHookThread"))
     }
@@ -73,15 +74,32 @@ open class DatabaseManager @Inject constructor(
     fun migrateDatabase() {
         log.info("migrateDatabase()")
 
-        val flyway = Flyway()
-        flyway.setLocations(*arrayOf("/gadsu/persistence"))
-        flyway.dataSource = dataSource
-//        changeTransactionControl("LOCKS")
-        flyway.migrate()
-//        changeTransactionControl("MVCC")
-
+        val flyway = flyway(dataSource)
+        try {
+            flyway.migrate()
+        } catch(e: FlywayException) {
+            if (e.message?.contains("validate failed", true) ?: false) {
+                log.warn("Migration failed due to validation error, going to repair the database first and try migrating then.", e)
+                flyway.repair()
+                log.info("DB repair done, going to migrate now again.")
+                flyway.migrate()
+            } else {
+                throw e
+            }
+        }
         databaseConnected = true
-        log.debug("DB migration done.")
+
+        log.debug("Good luck, DB migration was successfull.")
+    }
+
+    fun repairDatabase() {
+        log.info("repairDatabase()")
+        flyway(dataSource).repair()
+    }
+
+    private fun flyway(hsqldb: DataSource) = Flyway().apply {
+        setLocations(*arrayOf("/gadsu/persistence"))
+        dataSource = hsqldb
     }
 
     private fun changeTransactionControl(mode: String) {

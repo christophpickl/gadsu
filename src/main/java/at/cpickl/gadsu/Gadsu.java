@@ -1,5 +1,7 @@
 package at.cpickl.gadsu;
 
+import java.util.Arrays;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -34,7 +36,13 @@ public class Gadsu {
             LOG.error("Could not set native look&feel!", e);
         }
 
-        new GadsuStarter().start(args);
+
+        try {
+            new GadsuStarter().start(args);
+        } catch (ArgsActionException e) {
+            LOG.error("Invalid CLI arguments! " + Arrays.toString(cliArgs), e);
+            System.err.println("You entered an invalid CLI argument: '" + Arrays.toString(cliArgs) + "'! Exception message: " + e.getMessage());
+        }
     }
 
 }
