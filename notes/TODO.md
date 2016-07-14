@@ -58,8 +58,9 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-* @UI: bug in TCM lists (not preselected)
 * changes detection for treatment
+* when client changes detected, user confirms, then select the clicked one to save one click
+* @UI: bug in TCM lists (not preselected)
 * @UI: automatically scroll to far left in textfields (on update)
 * BUG: wenn aenderung verwerfen, treatment list ist leer!
 * BUG: treatment list selection onNew

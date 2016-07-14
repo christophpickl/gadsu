@@ -8,11 +8,12 @@ import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.InternetConnectionController
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.OpenWebpageEvent
-import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.treatment.PrefilledTreatment
+import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.DisabledTextField
 import at.cpickl.gadsu.view.components.MyFrame
@@ -60,16 +61,16 @@ class SwingAppointmentWindow @Inject constructor(
     private val modificationChecker = ModificationChecker(this, btnSave)
     private val fields: Fields<Appointment> = Fields(modificationChecker)
 
-    private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, "Appointment.DateStart")
+    private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, ViewNames.Appointment.InputStartDate)
 
-    private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt()}, "Appointment.Duration", 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, "Appointment.Note", 2)
+    private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt()}, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
+    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 2)
     private val outClient = DisabledTextField()
     private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
 
     private val btnNewTreatment = JButton().apply {
         text = "Neue Behandlung erstellen"
-        name = "Appointment.ButtonNewTreatment"
+        name = ViewNames.Appointment.ButtonNewTreatment
         addActionListener {
             bus.post(AbortAppointmentDialogEvent())
             bus.post(PrepareNewTreatmentEvent(PrefilledTreatment(inpStartDate.selectedDate, inpDuration.numberValue)))
@@ -108,7 +109,7 @@ class SwingAppointmentWindow @Inject constructor(
             insets = Pad.TOP
             add(btnSave)
             gridx++
-            add(swing.newEventButton("Abbrechen", "Appointment.ButtonCancel", { AbortAppointmentDialogEvent() }))
+            add(swing.newEventButton("Abbrechen", ViewNames.Appointment.ButtonCancel, { AbortAppointmentDialogEvent() }))
         }
     }
 

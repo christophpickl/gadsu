@@ -16,8 +16,14 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.*
-import javax.swing.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Properties
+import javax.swing.JButton
+import javax.swing.JFormattedTextField
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 
 //<editor-fold desc="main">
@@ -53,7 +59,7 @@ class MyDatePicker(viewNamePrefix: String,
         JDatePickerImpl(panel, formatter) {
     companion object {
 
-        private val log = LoggerFactory.getLogger(MyDatePicker::class.java)
+        private val LOG = LoggerFactory.getLogger(MyDatePicker::class.java)
 
         private val VIEWNAME_BUTTON_SUFFIX = ".OpenButton"
         private val VIEWNAME_TEXTFIELD_SUFFIX = ".TextField"
@@ -73,7 +79,7 @@ class MyDatePicker(viewNamePrefix: String,
         }
 
         fun build(initDate: DateTime?, viewNamePrefix: String, textFieldAlignment: Int = JTextField.LEFT): MyDatePicker {
-            log.trace("build(initDate={}, ..)", initDate)
+            LOG.trace("build(initDate={}, ..)", initDate)
 
             val model = UtilDateModel()
             // joda uses 1-12, java date uses 0-11
@@ -87,7 +93,7 @@ class MyDatePicker(viewNamePrefix: String,
         }
     }
 
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass.name + "#" + viewNamePrefix)
     private val hidePopupMethod: () -> Unit
     private val disableClearFuntion: () -> Unit
 

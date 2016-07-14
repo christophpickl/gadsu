@@ -114,7 +114,10 @@ open class TreatmentController @Inject constructor(
     }
 
     private fun changeToTreatmentView(treatment: Treatment?, prefilled: PrefilledTreatment?) {
+        log.debug("changeToTreatmentView(treatment={}, prefilled={})", treatment, prefilled)
         val client = currentClient.data
+
+        treatmentView?.closePreparations()
 
         val nullSafeTreatment: Treatment
         if (treatment != null) {

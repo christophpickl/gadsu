@@ -64,7 +64,13 @@ object ClientViewNames {
 
 object AppointmentViewNames {
     val ListInClientView = "Appointment.ListInClientView"
+    val InputStartDate = "Appointment.InputStartDate"
+    val InputDuration = "Appointment.InputDuration"
+    val InputNote = "Appointment.InputNote"
+    val ButtonNewTreatment = "Appointment.ButtonNewTreatment"
+    val ButtonCancel = "Appointment.ButtonCancel"
 }
+
 object TreatmentViewNames {
     val MainPanel = "Treatment.MainPanel"
     val OpenNewButton = "Treatment.OpenNewButton"
