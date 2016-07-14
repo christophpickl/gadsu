@@ -128,7 +128,7 @@ checkLastCommand
 
 # https://git-scm.com/book/en/v2/Git-Basics-Tagging
 # or a heavy weight annotated tag? $ git tag -a v1.1.0 -m "[Auto-Release] current release version: 1.1.0"
-git tag ${VERSION_RELEASE}
+git tag "v"${VERSION_RELEASE}
 checkLastCommand
 
 echo
