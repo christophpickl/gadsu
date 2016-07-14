@@ -30,7 +30,10 @@ class ClientTabMain(
         appointmentsSubView: AppoinmentsInClientView,
         treatmentsSubview: TreatmentsInClientView,
         suggester: SuggesterController
-) : DefaultClientTab(Labels.Tabs.ClientMain) {
+) : DefaultClientTab(
+        title = Labels.Tabs.ClientMain,
+        type = ClientTabType.MAIN
+) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

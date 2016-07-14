@@ -1,7 +1,11 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -24,7 +28,11 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTabbedPane
 
 interface ClientDetailView {
 
@@ -76,6 +84,11 @@ open class SwingClientDetailView @Inject constructor(
             updateFields()
         }
 
+        tabbedPane.addChangeListener {
+            val tab = tabbedPane.selectedComponent as ClientTab
+            bus.post(ClientTabSelected(tab))
+        }
+
         initLayout()
     }
 
@@ -89,7 +102,6 @@ open class SwingClientDetailView @Inject constructor(
             log.trace("Switching to tab: {}", tab)
             tabbedPane.selectedComponent = newTab
         }
-//        FIXME tabbedPane on selection change dispatch event => view.closePreparations()
     }
 
     override fun closePreparations() {

@@ -13,7 +13,8 @@ import java.awt.GridBagConstraints
 class ClientTabTexts(
         modificationChecker: ModificationChecker
 ) : DefaultClientTab(
-        title = Labels.Tabs.ClientTexts
+        title = Labels.Tabs.ClientTexts,
+        type = ClientTabType.TEXTS
 //        scrolled = false
 ) {
 

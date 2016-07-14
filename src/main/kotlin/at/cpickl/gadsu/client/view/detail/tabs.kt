@@ -15,12 +15,18 @@ enum class ClientTabType(val label: String) {
 interface ClientTab {
     val title: String
     val scrolled: Boolean
+    val type: ClientTabType
     fun isModified(client: Client): Boolean
     fun updateFields(client: Client)
     fun asComponent(): Component
 }
 
-abstract class DefaultClientTab(override val title: String, override val scrolled: Boolean = false) : GridPanel(), ClientTab {
+abstract class DefaultClientTab(
+        override val title: String,
+        override val type: ClientTabType,
+        override val scrolled: Boolean = false
+) :
+        GridPanel(), ClientTab {
 
     init {
         transparent()

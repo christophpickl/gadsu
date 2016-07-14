@@ -24,6 +24,7 @@ class ClientTabTcm(
         bus: EventBus
 ) : DefaultClientTab(
         title = Labels.Tabs.ClientTcm,
+        type = ClientTabType.TCM,
         scrolled = false
 ) {
 
