@@ -1,11 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -28,11 +24,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.JButton
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
+import javax.swing.*
 
 interface ClientDetailView {
 
@@ -69,43 +61,13 @@ open class SwingClientDetailView @Inject constructor(
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester)
-//            imagePickerFactory.create(imageViewNamePrefix, prefs.clientPictureDefaultFolder)
     private val tabTexts = ClientTabTexts(modificationChecker)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
-    init {
-        // FIXME the focus manager should only be active when THIS view is visible
-//        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-//                .addKeyEventDispatcher { event ->
-//                    val handled: Boolean
-////                    event.id == KeyEvent.KEY_RELEASED
-//                    val commandDown = if (IS_OS_MAC) {
-//                        event.isMetaDown
-//                    } else {
-//                        event.isControlDown
-//                    }
-//                    if (commandDown) {
-//                        val newTab: JPanel? = when (event.keyCode) {
-//                            KeyEvent.VK_1 -> tabMain
-//                            KeyEvent.VK_2 -> tabTexts
-//                            KeyEvent.VK_3 -> tabTcm
-//                            else -> null
-//                        }
-//                        if (newTab != null && newTab != tabbedPane.selectedComponent) {
-//                            handled = true
-//                            log.trace("Changing selected tab to: {}", newTab)
-//                            tabbedPane.selectedComponent = newTab
-//                        } else {
-//                            handled = false
-//                        }
-//                    } else {
-//                        handled = false
-//                    }
-//                    handled
-//                }
 
+    init {
         modificationChecker.disableAll()
 
         btnCancel.name = ViewNames.Client.CancelButton

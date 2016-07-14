@@ -1,12 +1,8 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.Ordered
-import at.cpickl.gadsu.SqlEnum
+import at.cpickl.gadsu.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.orderedValuesOf
-import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -101,18 +97,25 @@ data class Client(
 
         return  Objects.equal(this.id, that.id) &&
                 Objects.equal(this.created, that.created) &&
-
+                Objects.equal(this.state, that.state) &&
                 Objects.equal(this.firstName, that.firstName) &&
                 Objects.equal(this.lastName, that.lastName) &&
                 Objects.equal(this.contact, that.contact) &&
                 Objects.equal(this.birthday, that.birthday) &&
                 Objects.equal(this.gender, that.gender) &&
                 Objects.equal(this.countryOfOrigin, that.countryOfOrigin) &&
+                Objects.equal(this.origin, that.origin) &&
                 Objects.equal(this.relationship, that.relationship) &&
                 Objects.equal(this.job, that.job) &&
                 Objects.equal(this.children, that.children) &&
-
+                Objects.equal(this.hobbies, that.hobbies) &&
                 Objects.equal(this.note, that.note) &&
+                Objects.equal(this.textImpression, that.textImpression) &&
+                Objects.equal(this.textMedical, that.textMedical) &&
+                Objects.equal(this.textComplaints, that.textComplaints) &&
+                Objects.equal(this.textPersonal, that.textPersonal) &&
+                Objects.equal(this.textObjective, that.textObjective) &&
+                Objects.equal(this.tcmNote, that.tcmNote) &&
                 Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
                 Objects.equal(this.cprops, that.cprops)
     }
@@ -120,6 +123,7 @@ data class Client(
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)
                 .add("id", id)
+                .add("tcmNote", tcmNote)
                 .add("firstName", firstName)
                 .add("lastName", lastName)
                 .add("picture", picture)

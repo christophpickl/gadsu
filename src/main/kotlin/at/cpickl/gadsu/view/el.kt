@@ -30,7 +30,7 @@ private fun <V, T> ElField<V>._isModified(uiValue: T, extractValue: (V) -> T, va
     val extractedValue = extractValue(value)
     val modified = !Objects.equals(extractedValue, uiValue)
     if (modified) {
-        LOG_ElFIeld.trace("Changes detected for form item '{}'! UI value='{}', extracted value='{}'", formLabel, uiValue, extractedValue)
+        LOG_ElFIeld.trace("Changes detected for form item '{}'! UI value='{}', extracted object value='{}' ({})", formLabel, uiValue, extractedValue, this)
     }
     return modified
 }

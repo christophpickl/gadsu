@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.testinfra.IS_TRAVIS
 import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.skip
@@ -89,6 +90,17 @@ class ClientUiTest : UiTest() {
                 driver.saveButton.isEnabled)
 
         driver.saveButton.clickAndDisposeDialog("Speichern Abbrechen", "Speichern abgebrochen")
+    }
+
+    fun `changing TCM note and saving client should disable save button`() {
+        saveClient(client)
+
+        driver.changeTab(ClientTabType.TCM)
+        assertFalse("Freshly saved client should not be savable!", driver.saveButton.isEnabled)
+        driver.inputTcmNote.text = "something new"
+        assertTrue("TCM note changed, client should be savable!", driver.saveButton.isEnabled)
+        driver.saveButton.click()
+        assertFalse("After saving client with changed TCM note, it should not be savable!", driver.saveButton.isEnabled)
     }
 
     //</editor-fold>

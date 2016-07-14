@@ -63,11 +63,9 @@ class WebLatestVersionFetcher(private val versionPropertiesFile: URL) : LatestVe
     override fun fetch(): Version {
         log.debug("fetch() ... url: {}", versionPropertiesFile)
 
-//        FIXME return withTimeout(CONNECTION_TIMEOUT) {
+        // TODO return withTimeout(CONNECTION_TIMEOUT) {
         try {
-            println("Internet connection START")
             val fileContent = Resources.toString(versionPropertiesFile, Charsets.UTF_8).trim()
-            println("Internet connection END")
             return Version.parse(fileContent)
         } catch (e: UnknownHostException) {
             throw NoInternetConnectionException(e)

@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 @Test(groups = arrayOf("hsqldb", "integration"))
 class ClientServiceImplIntegrationTest : HsqldbTest() {
 
-    private val unsavedClient = Client.unsavedValidInstance().copy(cprops = CProps.builder
+    private val unsavedClient = Client.unsavedValidInstance().copy(cprops = CProps.builder()
         .add(XProps.Sleep, XProps.SleepOpts.NeedMuch).build()
     )
 

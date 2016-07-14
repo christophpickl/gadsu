@@ -2,13 +2,14 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Component
 
-enum class ClientTabType {
-    MAIN,
-    TEXTS,
-    TCM;
+enum class ClientTabType(val label: String) {
+    MAIN(Labels.Tabs.ClientMain),
+    TEXTS(Labels.Tabs.ClientTexts),
+    TCM(Labels.Tabs.ClientTcm);
 }
 
 interface ClientTab {

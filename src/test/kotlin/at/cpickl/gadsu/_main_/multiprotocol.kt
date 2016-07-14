@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
             client = dummyClient.copy(
                     cprops = CPropsComposer.compose(Client.INSERT_PROTOTYPE.copy(
                             gender = Gender.MALE,
-                            cprops = CProps.builder.add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning).build()
+                            cprops = CProps.builder().add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning).build()
                     ))
                     // "Something fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!"
                     //                          picture = newPicture NO! does not work! :(

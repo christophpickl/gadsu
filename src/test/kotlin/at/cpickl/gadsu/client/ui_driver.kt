@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.ui.BaseDriver
@@ -20,7 +21,7 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    val list = window.getListBox(ViewNames.Client.List)
+    val list = window.getListBox(ViewNames.Client.List)!!
 
     @Suppress("UNCHECKED_CAST")
     val listModel: MyListModel<Client> get() {
@@ -30,25 +31,27 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         return list.awtComponent.model as MyListModel<Client>
     }
 
-    val createButton = window.getButton(ViewNames.Client.CreateButton)
+    val createButton = window.getButton(ViewNames.Client.CreateButton)!!
 
-    val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)
-    val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)
-    val inputJob = window.getInputTextBox(ViewNames.Client.InputJob)
+    val inputFirstName = window.getInputTextBox(ViewNames.Client.InputFirstName)!!
+    val inputLastName = window.getInputTextBox(ViewNames.Client.InputLastName)!!
+    val inputJob = window.getInputTextBox(ViewNames.Client.InputJob)!!
 
-    val inputMail = window.getInputTextBox(ViewNames.Client.InputMail)
-    val inputPhone = window.getInputTextBox(ViewNames.Client.InputPhone)
-    val inputStreet = window.getInputTextBox(ViewNames.Client.InputStreet)
-    val inputZipCode = window.getInputTextBox(ViewNames.Client.InputZipCode)
-    val inputCity = window.getInputTextBox(ViewNames.Client.InputCity)
-    val inputChildren = window.getInputTextBox(ViewNames.Client.InputChildren)
-    val inputCountryOfOrigin = window.getInputTextBox(ViewNames.Client.InputCountryOfOrigin)
-    val inputNote = window.getInputTextBox(ViewNames.Client.InputNote)
-    val inputRelationship = window.getComboBox(ViewNames.Client.InputRelationship)
-    val inputGender = window.getComboBox(ViewNames.Client.InputGender)
+    val inputMail = window.getInputTextBox(ViewNames.Client.InputMail)!!
+    val inputPhone = window.getInputTextBox(ViewNames.Client.InputPhone)!!
+    val inputStreet = window.getInputTextBox(ViewNames.Client.InputStreet)!!
+    val inputZipCode = window.getInputTextBox(ViewNames.Client.InputZipCode)!!
+    val inputCity = window.getInputTextBox(ViewNames.Client.InputCity)!!
+    val inputChildren = window.getInputTextBox(ViewNames.Client.InputChildren)!!
+    val inputCountryOfOrigin = window.getInputTextBox(ViewNames.Client.InputCountryOfOrigin)!!
+    val inputNote = window.getInputTextBox(ViewNames.Client.InputNote)!!
+    val inputRelationship = window.getComboBox(ViewNames.Client.InputRelationship)!!
+    val inputGender = window.getComboBox(ViewNames.Client.InputGender)!!
+    val inputTcmNote = window.getInputTextBox(ViewNames.Client.InputTcmNote)!!
 
-    val saveButton = window.getButton(ViewNames.Client.SaveButton)
-    val cancelButton = window.getButton(ViewNames.Client.CancelButton)
+    val tabbedPane = window.getTabGroup(ViewNames.Client.TabbedPane)!!
+    val saveButton = window.getButton(ViewNames.Client.SaveButton)!!
+    val cancelButton = window.getButton(ViewNames.Client.CancelButton)!!
 
     val inputBirthdate: DateSpecPicker get() = DateSpecPicker(test, window, ViewNames.Client.InputBirthdayPrefix)
 
@@ -93,6 +96,13 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     //</editor-fold>
 
     // --------------------------------------------------------------------------- misc
+
+    fun changeTab(tab: ClientTabType) {
+        if (tabbedPane.selectedTab.label != tab.label) {
+            log.trace("changing tab to '{}'", tab.label)
+            tabbedPane.selectTab(tab.label)
+        }
+    }
 
     fun saveBasicClient(client: Client) {
         createButton.click()
