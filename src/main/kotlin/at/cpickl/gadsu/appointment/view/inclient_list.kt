@@ -3,9 +3,13 @@ package at.cpickl.gadsu.appointment.view
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.DeleteAppointmentEvent
 import at.cpickl.gadsu.appointment.OpenAppointmentEvent
-import at.cpickl.gadsu.service.formatDateTimeLong
+import at.cpickl.gadsu.service.formatDateTimeSemiLong
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.components.CellView
+import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.MyListCellRenderer
+import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
@@ -33,13 +37,21 @@ class AppointmentList @Inject constructor(
 }
 
 class AppointmentCell(val appointment: Appointment): DefaultCellView<Appointment>(appointment), CellView {
-    private val lblDate = JLabel("${appointment.start.formatDateTimeLong()}")
 
-    override val applicableForegrounds: Array<JComponent> = arrayOf(lblDate)
+    private val lblDate = JLabel("${appointment.start.formatDateTimeSemiLong()}")
+    private val hasNoteIndicator = JLabel(" [...]")
+
+    override val applicableForegrounds: Array<JComponent> = arrayOf(lblDate, hasNoteIndicator)
+
 
     init {
         c.anchor = GridBagConstraints.NORTHWEST
         add(lblDate)
+
+        if (appointment.note.isNotEmpty()) {
+            c.gridx++
+            add(hasNoteIndicator)
+        }
 
         // fill UI hack ;)
         c.gridx++

@@ -68,6 +68,7 @@ object AppointmentViewNames {
     val InputDuration = "Appointment.InputDuration"
     val InputNote = "Appointment.InputNote"
     val ButtonNewTreatment = "Appointment.ButtonNewTreatment"
+    val ButtonSave = "Appointment.ButtonSave"
     val ButtonCancel = "Appointment.ButtonCancel"
 }
 

@@ -8,6 +8,9 @@ import java.util.UUID
 fun LOG(javaClass: Class<Any>): Logger {
     return LoggerFactory.getLogger(javaClass.nameAopCleaned)
 }
+fun LOGUI(javaClass: Class<Any>, viewName: String): Logger {
+    return LoggerFactory.getLogger("${javaClass.nameAopCleaned}#$viewName")
+}
 
 private val Class<Any>.nameAopCleaned: String get() = if (name.contains("$$")) name.substring(0, name.indexOf("$$")) else name
 

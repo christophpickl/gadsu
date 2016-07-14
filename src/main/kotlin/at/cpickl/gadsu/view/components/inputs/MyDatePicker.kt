@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view.components.inputs
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.service.LOGUI
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.swing.transparent
@@ -93,7 +94,7 @@ class MyDatePicker(viewNamePrefix: String,
         }
     }
 
-    private val log = LoggerFactory.getLogger(javaClass.name + "#" + viewNamePrefix)
+    private val log = LOGUI(javaClass, viewNamePrefix)
     private val hidePopupMethod: () -> Unit
     private val disableClearFuntion: () -> Unit
 

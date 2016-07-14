@@ -16,6 +16,7 @@ class DateFormats {
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val DATE_TIME_TALKATIVE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM. 'um' HH:mm 'Uhr'")
         // needs I18N (check Language and create am/pm style for EN
+        val DATE_TIME_SEMILONG: DateTimeFormatter = DateTimeFormat.forPattern("EE, dd.MM., HH:mm").withLocale(Languages.locale)
         val DATE_TIME_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yy, HH:mm 'Uhr'").withLocale(Languages.locale)
 
         val DATE_TIME_FILE: DateTimeFormatter = DateTimeFormat.forPattern("yyyy_MM_dd_HH_mm_ss")
@@ -66,6 +67,7 @@ fun DateTime.formatTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.print
 fun DateTime.formatDate() = DateFormats.DATE.print(this)
 fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeTalkative() = DateFormats.DATE_TIME_TALKATIVE.print(this)
+fun DateTime.formatDateTimeSemiLong() = DateFormats.DATE_TIME_SEMILONG.print(this)
 fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 fun DateTime.formatDateTimeFile() = DateFormats.DATE_TIME_FILE.print(this)
 
