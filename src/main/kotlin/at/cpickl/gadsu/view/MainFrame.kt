@@ -68,7 +68,6 @@ open class SwingMainFrame @Inject constructor(
         addCloseListener { bus.post(QuitEvent()) }
 
         contentPane.name = ViewNames.Main.ContentPanel
-//        contentPane.background = Color.RED
         contentPane.layout = BorderLayout()
         contentPane.add(container, BorderLayout.CENTER)
     }

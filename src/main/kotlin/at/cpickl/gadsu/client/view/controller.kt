@@ -1,21 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCreatedEvent
-import at.cpickl.gadsu.client.ClientDeletedEvent
-import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.client.ClientService
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.ClientUnselectedEvent
-import at.cpickl.gadsu.client.ClientUpdatedEvent
-import at.cpickl.gadsu.client.CreateNewClientEvent
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.DeleteClientEvent
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.ShowClientViewEvent
-import at.cpickl.gadsu.client.ShowInClientsListEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.service.Clock
@@ -98,12 +84,12 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        if (changesChecker.checkChanges() === ChangeBehaviour.ABORT) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
         }
-
         currentClient.data = event.client
+        view.closePreparations()
     }
 
     @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
@@ -138,7 +124,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        if (event.oldContent === view) {
+        if (event.oldContent === view) { // navigate away
             view.closePreparations()
         }
     }

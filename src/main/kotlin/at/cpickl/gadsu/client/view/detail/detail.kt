@@ -89,6 +89,7 @@ open class SwingClientDetailView @Inject constructor(
             log.trace("Switching to tab: {}", tab)
             tabbedPane.selectedComponent = newTab
         }
+//        FIXME tabbedPane on selection change dispatch event => view.closePreparations()
     }
 
     override fun closePreparations() {
