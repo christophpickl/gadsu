@@ -1,47 +1,10 @@
 
-
 - zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
-- nickname (zwischen first- und lastname)
 - breitere textfelder: mail, strasse
 
--- geburtstags reminder
-- @client neues feld familie: geschwister, eltern verheiratet, bezug zu geschwister/eltern
-
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
-
-------------------------------------------------------------
-
-@GADSU RENE
-
-- das "erstellt am" feld dezenter machen
-	* er hat probiert reinzuklicken, weils so im "flow der eingabe" im weg steht
-- client list andere sachen reinrendern als die mailadresse
-	* zb anzahl der behandlungen
-	* datum der naechst anstehenden behandlung (anhand der termine!)
-	* geburtstags icon: wenn geburtstag bevorsteht
-- mehr auswahlmoeglichkeiten fuer pulsdiagnose
-- klienten sortierreihenfolge auswaehlbar
-	* vorname
-	* meisten behandlung
-	* most recent behandlung
-	* most recent updated (store last update field)
-- MINOR: @check modifications: wenn klient bearbeiten, dann anderen klient gehen, dann dialog "speichern" klick, dann sollte der andere klient ausgewaehlt sein, nicht der alte (sonst ist ein zweiter unnoetiger klick notwendig)
-- Client.insert prototype die herkunftsland defaultmaessig auf Oesterreich
-	* eigentlich ist eh nur wichtig wo man aufgewachsen ist (zusaetzliches feld?!)
-
-- @TCM property list: das verhalten soll defaultmaessig so sein, als wuerde man die ganze zeit ctrl gedrueck halten
-	- evtl echt schon mit rendering hints arbeiten fuer checkbox renderer
-- wenn exception geworfen, dann im error dialog nicht nur URL anklickbar zu github issue, sondern auch log file direkt aufmachen (zb unter macos "open xxx"
-
-!! anzahl an behandlungen als "ziel" einggebar; drunter erscheint dann ein balken als progressbar (brauch ja 20, das soll aber konfigurierbar sein)
-
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
-! die EXE version ist im windows nirgends registriert
-	* man kanns nicht mal pinnen an die taskbar!
-	=> windows installer anbieten!
-* die versionsnummer aus Gadsu-1.2.3.exe rausnehmen => nur "Gadsu.exe"
-* backup zielordner auswaehlen (sollte nicht dort liegen, wo ~/.gadsu liegt!
-- dass tab content transparent ist, ist unter win schirch (wird weiss!)
+
 
 PROTOCOL
 ------------------------------------------------------------
@@ -58,36 +21,29 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-* changes detection for treatment
-* development controller action: reset data X, to make a screenshot from for the website
+
 * when client changes detected, user confirms, then select the clicked one to save one click
-* @UI: bug in TCM lists (not preselected)
 * @UI: automatically scroll to far left in textfields (on update)
-* BUG: wenn aenderung verwerfen, treatment list ist leer!
-* BUG: treatment list selection onNew
-* git tagging in release.sh does not work!
-* automate the release more
-  * download link on github main page to current version
-  * nice would be to create a release in github, containing list of issues, and attached release files, etc.
 
 Med
 ------------------------------------------------------------
 * @UI: tcm note (and others) use split view (with grab handle to resize) instead!
-* datum text eingebbar, zb geburtsdatum ist umstaendlich jahr nach hinten zu scrollen (ueberhaupt die ganze komponenten copy'n'pasten, anstatt noch mehr reflection)
-* [2] check for database lock file
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
-* ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * [1] add DB constraint that firstName+lastName combination is unique!
 * AOP logging for all service + repository classes
-* konkurrenz analyse
-  * http://www.clinicsense.com/tour/
-  * http://www.bodyworkbuddy.com/
 * client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
    - auch so beim namen?
+* ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 
 Low
 ------------------------------------------------------------
+* [2] check for database lock file
+* konkurrenz analyse
+  * http://www.clinicsense.com/tour/
+  * http://www.bodyworkbuddy.com/
+* geburtstags reminder
 * alle textfields/areas immer TRIM (???)
+* backup zielordner auswaehlen (sollte nicht dort liegen, wo ~/.gadsu liegt!
 * mehr aktionen ueber menu bar: Klient / Bild Aendern, ...
 * switch to HSQLDB's new UUID type for ID columns
 * @TECH: use custom AOP annotation to ensure transaction safety
@@ -115,6 +71,5 @@ Test
 Luxury Ideas
 ------------------------------------------------------------
 * doodle integration (a la steffi)
-* [8] UI: mit doppelklick auf eine JTextArea oeffnet sich ein modaler dialog, wo nur ein fettes textarea drinnen ist, das man speichern/dismissen kann (mehr platz zum schreiben)
 * WYSIWYG text editor
 - user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog
