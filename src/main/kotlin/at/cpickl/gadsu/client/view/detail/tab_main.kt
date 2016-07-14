@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
@@ -44,6 +45,7 @@ class ClientTabMain(
     val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
     val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
+    val outStarsign= DisabledTextField()
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Herkunft", {it.origin}, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
@@ -74,6 +76,7 @@ class ClientTabMain(
             addFormInput(inpLastName)
             addFormInput(inpGender)
             addFormInput(inpBirthday)
+            addFormInput("Sternzeichen", outStarsign)
             addFormInput(inpCountryOfOrigin)
             addFormInput(inpOrigin)
             addFormInput(inpRelationship)
@@ -144,6 +147,7 @@ class ClientTabMain(
     override fun updateFields(client: Client) {
         log.trace("updateFields(client={})", client)
         fields.updateAll(client)
+        outStarsign.text = if (client.birthday == null) "" else StarSignCalculator.signFor(client.birthday).label
         outCreated.text = client.created.formatDate()
     }
 

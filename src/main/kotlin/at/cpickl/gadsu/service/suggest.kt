@@ -5,7 +5,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.view.ViewNames
 import com.google.common.eventbus.Subscribe
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 import javax.inject.Inject
 import javax.swing.JTextField
 import javax.swing.SwingUtilities
@@ -44,6 +45,7 @@ class SuggesterImpl @Inject constructor(
         val mapper: (Client) -> String = when (viewName) {
             ViewNames.Client.InputJob -> { { it.job } }
             ViewNames.Client.InputCountryOfOrigin -> { { it.countryOfOrigin } }
+            ViewNames.Client.InputOrigin -> { { it.origin } }
             ViewNames.Client.InputChildren -> { { it.children } }
             ViewNames.Client.InputZipCode -> { { it.contact.zipCode } }
             ViewNames.Client.InputCity -> { { it.contact.city } }

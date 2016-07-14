@@ -190,4 +190,3 @@ enum class Relationship(override val order: Int, override val sqlCode: String, o
         fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
     }
 }
-

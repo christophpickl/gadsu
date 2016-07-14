@@ -3,10 +3,13 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.service.StarSign
+import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.tcm.model.XProps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
+import org.joda.time.DateTime
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
