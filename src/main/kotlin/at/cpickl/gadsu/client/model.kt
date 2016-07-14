@@ -1,8 +1,12 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.*
+import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.Ordered
+import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.orderedValuesOf
+import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -172,12 +176,13 @@ enum class Gender(override val order: Int, override val sqlCode: String, overrid
 
 enum class Relationship(override val order: Int, override val sqlCode: String, override val label: String) :
         Ordered, SqlEnum, Labeled {
-    SINGLE(1, "SINGLE", "ledig"),
-    RELATION(2, "RELATION", "partnerschaft"),
-    MARRIED(3, "MARRIED", "verheiratet"),
-    DIVORCED(4, "DIVORCED", "geschieden"),
-    WIDOW(5, "WIDOW", "verwitwet"),
-    UNKNOWN(99, "UNKNOWN", "Unbekannt");
+    SINGLE(      1, "SINGLE",      "ledig"),
+    RELATION(    2, "RELATION",    "partnerschaft"),
+    MARRIED(     3, "MARRIED",     "verheiratet"),
+    DIVORCED(    4, "DIVORCED",    "geschieden"),
+    WIDOW(       5, "WIDOW",       "verwitwet"),
+    COMPLICATED( 6, "COMPLICATED", "es ist kompliziert"),
+    UNKNOWN(    99, "UNKNOWN",     "Unbekannt");
 
 
     companion object {

@@ -90,8 +90,8 @@ class SwingTreatmentView @Inject constructor(
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
     private val inpAboutDiscomfort = fields.newTextArea("Beschwerden", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort)
 
-    private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
     private val inpAboutContent = fields.newTextArea("Inhalt", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
+    private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
     private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback)
     private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
@@ -221,8 +221,8 @@ class SwingTreatmentView @Inject constructor(
 
     private fun initTextAreas() = VFillFormPanel().apply {
         addFormInput(inpAboutDiscomfort)
-        addFormInput(inpAboutDiagnosis)
         addFormInput(inpAboutContent)
+        addFormInput(inpAboutDiagnosis)
         addFormInput(inpAboutFeedback)
         addFormInput(inpAboutHomework)
         addFormInput(inpAboutUpcoming)

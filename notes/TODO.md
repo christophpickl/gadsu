@@ -1,6 +1,6 @@
 
 
-
+- zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
 - nickname (zwischen first- und lastname)
 - breitere textfelder: mail, strasse
 

@@ -64,7 +64,7 @@ class ClientTabMain(
     init {
         debugColor = Color.ORANGE
 
-        suggester.enableSuggestionsFor(inpJob, inpCountryOfOrigin, inpChildren, inpZipCode, inpCity)
+        suggester.enableSuggestionsFor(inpJob, inpCountryOfOrigin, inpOrigin, inpChildren, inpZipCode, inpCity)
 
         val baseForm = FormPanel()
         with(baseForm) {

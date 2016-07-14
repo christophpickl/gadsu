@@ -22,38 +22,35 @@ For more detailed information visit the [Wiki](https://github.com/christophpickl
 
 ## FEATURES
 
-* Management of clients, appointments and treatments
-* Protocol Generation
-* Anamnesis and Treatment Forms
-* Auto Update of the application
-* Auto Backup of the database
-* Basic Google Calendar Integration
-* Configurable HTTP proxy
-* Smart Fields (Auto Completion/Suggestion for text fields)
+* Manage client data/state, attach pictures, specify some TCM properties
+* Create appointments and treatments
+* Protocol generation of treatments
+* Anamnesis and treatment forms provided
+* Define a goal for number of treatments to "reach" ;)
+* GoogleCalendar integration
+* Smart Fields (auto completion for text input)
+* Auto update of the application
+* Auto backup of the database
 
 ##  ROADMAP
 
-### Version 1.4
+### Version 1.x
 
 * Improved Protocol Generation (Wizard)
-
-### Version 1.5
-
-* Search and order Client list
+* Search and order Clients
 * Dynamic Treatments
 * Database Encryption
 
-### Version 2.0
-
-* Nicer User Interface
-
-### Other Versions
+### Version 2.x
 
 * Acupuncture Points Database
 * Knowledge Database (YinYang/5-Elements)
 * Improved Google Calendar Integration
-* Doodle Integration
 * XML Export
+
+### Other Versions
+
+* Doodle Integration
 * Invoicing (Invoice Generation)
 * Finance Office Communication
 * English I18N
