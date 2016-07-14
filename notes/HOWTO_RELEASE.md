@@ -4,9 +4,9 @@
 
 # Preconditions
 
+* check everything has been pushed to GIT!!!
 * check all GitHub issues are closed
 * execute manual smoke tests
-* check everything has been pushed to GIT
 * check the build dir does not exist
 
 # Release Script
@@ -63,8 +63,20 @@ $
 
 * make a backup of local `~/.gadsu` folder
 * start the APP and JAR (and EXE if possible), and verify functionality via smoke tests
+    * if there was an error, fix it, and create new x.x.1 bugfix version
+* pull changes from remote git repo to local
+* copy the released artifacts to the local __Gadsu/Releases directory
 * draft a new release on github: https://github.com/christophpickl/gadsu/releases
-* ...
+    * list all resolved issues for this milestone
+
+
+
+* #22 UI Improvements 1.4 user interface
+* #31 Active flag for clients enhancement
+* #33 More client input fields enhancement
+* #35 Treatment goal progress bar enhancement
+* #37 Save print report produces corrupt PDF bug
+
 
 # Optional
 
