@@ -30,9 +30,7 @@ enum class MainContentType {
 
 interface MainContent {
     val type: MainContentType
-    /**
-     * To close datepicker popup.
-     */
+    /** Right now only to close datepicker popup. */
     fun closePreparations()
     fun asComponent(): Component
 
@@ -51,11 +49,11 @@ interface MainFrame {
 @Logged
 open class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
-        private val gadsuMenuBar: GadsuMenuBar
+        gadsuMenuBar: GadsuMenuBar
         ) : MainFrame, MyFrame("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val defaultSize = Dimension(600, 400)
+    private val defaultSize = Dimension(1000, 600)
     private val container = JPanel()
     private var _descriptor: WindowDescriptor? = null
 
