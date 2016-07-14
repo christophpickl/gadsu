@@ -17,6 +17,7 @@ import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.client.ShowInClientsListEvent
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.ClientTabSelected
+import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.service.Clock
@@ -70,6 +71,7 @@ open class ClientViewController @Inject constructor(
             bus.post(ClientUnselectedEvent(currentClient.data))
         }
 
+        view.detailView.changeTab(ClientTabType.MAIN)
         view.masterView.selectClient(null)
         val newCreatingClient = Client.INSERT_PROTOTYPE.copy(created = clock.now())
 
