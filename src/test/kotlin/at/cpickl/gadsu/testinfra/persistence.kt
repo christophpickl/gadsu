@@ -5,7 +5,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
-import at.cpickl.gadsu.persistence.DatabaseManager
+import at.cpickl.gadsu.persistence.FlywayDatabaseManager
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.SpringJdbcx
@@ -52,13 +52,14 @@ abstract class HsqldbTest {
 
     @BeforeClass
     fun initDb() {
-        dataSource = JDBCDataSource()
-        dataSource!!.setUrl("jdbc:hsqldb:mem:testDb${javaClass.simpleName}")
-        dataSource!!.user = "SA"
-        jdbcx = SpringJdbcx(dataSource!!)
-        log.info("Using data source URL: ${dataSource!!.getUrl()}")
+        val ds = JDBCDataSource()
+        dataSource = ds
+        ds.url = "jdbc:hsqldb:mem:testDb${javaClass.simpleName}"
+        ds.user = "SA"
+        jdbcx = SpringJdbcx(ds)
+        log.info("Using data source URL: ${ds.url}")
 
-        DatabaseManager(dataSource!!).migrateDatabase()
+        FlywayDatabaseManager(ds).migrateDatabase()
     }
 
     @BeforeMethod
