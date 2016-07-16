@@ -1,6 +1,9 @@
-package at.cpickl.gadsu.report
+package at.cpickl.gadsu.report.multiprotocol
 
+import at.cpickl.gadsu.report.ProtocolGenerator
+import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.service.formatDateTimeLong
+import com.google.inject.AbstractModule
 import com.itextpdf.text.Document
 import com.itextpdf.text.Element
 import com.itextpdf.text.Phrase
@@ -12,6 +15,15 @@ import org.joda.time.DateTime
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import javax.inject.Inject
+
+class MultiProtocolModule : AbstractModule() {
+    override fun configure() {
+        bind(MultiProtocolGenerator::class.java).to(MultiProtocolGeneratorImpl::class.java)
+        bind(MultiProtocolRepository::class.java).to(MultiProtocolJdbcRepository::class.java)
+
+    }
+}
 
 interface MultiProtocolGenerator {
     fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
@@ -30,9 +42,9 @@ data class MultiProtocolCoverData(
     }
 }
 
-class MultiProtocolGeneratorImpl : MultiProtocolGenerator {
-    // TODO let it inject!
-    val protocolGenerator = JasperProtocolGenerator(JasperEngineImpl())
+class MultiProtocolGeneratorImpl @Inject constructor(
+        private val protocolGenerator: ProtocolGenerator
+) : MultiProtocolGenerator {
 
     override fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
         val protocols = mergeProtocols(protocolDatas)

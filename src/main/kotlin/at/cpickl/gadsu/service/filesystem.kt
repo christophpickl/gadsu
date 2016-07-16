@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 
 fun main(args: Array<String>) {
 //    FileSystemImpl().zip(File("notes/"), File("tut.zip"))
-    File("foo.pdf").writeByClasspath("/gadsu/reports/print/Anamnesebogen.pdf", true)
+    File("foo.pdf").writeByClasspath("/gadsu/reports/form/Anamnesebogen.pdf", true)
 }
 
 val LOG_File = LoggerFactory.getLogger(File::class.java)

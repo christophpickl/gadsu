@@ -1,12 +1,7 @@
-package at.cpickl.gadsu.report
+package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.preferences.Prefs
-import at.cpickl.gadsu.service.ChooseFile
-import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.formatDateTimeFile
-import at.cpickl.gadsu.service.writeByClasspath
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
@@ -16,10 +11,10 @@ import java.awt.print.PrinterJob
 import java.io.File
 import javax.inject.Inject
 
-class PrintReportPrintEvent(val type: PrintReportType) : UserEvent()
-class PrintReportSaveEvent(val type: PrintReportType) : UserEvent()
+class PrintFormEvent(val type: FormType) : UserEvent()
+class FormSaveEvent(val type: FormType) : UserEvent()
 
-enum class PrintReportType(
+enum class FormType(
         val label: String,
         val classpathFilename: String
 ) {
@@ -34,7 +29,7 @@ open class PrintReportController @Inject constructor(
         private val prefs: Prefs
 ) {
 
-    @Subscribe open fun onPrintReportPrintEvent(event: PrintReportPrintEvent) {
+    @Subscribe open fun onPrintFormEvent(event: PrintFormEvent) {
         // https://svn.apache.org/viewvc/pdfbox/trunk/examples/src/main/java/org/apache/pdfbox/examples/printing/Printing.java?view=markup
         val job = PrinterJob.getPrinterJob()
 //        val pf = job.defaultPage()
@@ -55,7 +50,7 @@ open class PrintReportController @Inject constructor(
         }
     }
 
-    @Subscribe open fun onPrintReportSaveEvent(event: PrintReportSaveEvent) {
+    @Subscribe open fun onFormSaveEvent(event: FormSaveEvent) {
         ChooseFile.savePdf(
             fileTypeLabel = event.type.label,
             currentDirectory = prefs.recentSaveReportFolder,
@@ -63,16 +58,16 @@ open class PrintReportController @Inject constructor(
         )
     }
 
-    private fun doSavePdf(pdfTarget: File, type: PrintReportType) {
+    private fun doSavePdf(pdfTarget: File, form: FormType) {
         prefs.recentSaveReportFolder = pdfTarget
-        pdfTarget.writeByClasspath(type.fullPath)
+        pdfTarget.writeByClasspath(form.fullPath)
 
         dialogs.show(
-                title = "${type.label} gespeichert",
-                message = "Der ${type.label} wurde erfolgreich gespeichert als:\n${pdfTarget.absolutePath}",
+                title = "${form.label} gespeichert",
+                message = "Der ${form.label} wurde erfolgreich gespeichert als:\n${pdfTarget.absolutePath}",
                 type = DialogType.INFO
         )
     }
 
-    private val PrintReportType.fullPath: String get() = "/gadsu/reports/print/$classpathFilename"
+    private val FormType.fullPath: String get() = "/gadsu/reports/form/$classpathFilename"
 }

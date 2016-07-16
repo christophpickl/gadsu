@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.report.multiprotocol.ReportMetaData
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.nullIfEmpty
 import org.joda.time.DateTime

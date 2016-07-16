@@ -5,6 +5,8 @@ import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CPropTypeCallback
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolModule
+import at.cpickl.gadsu.service.PrintReportController
 import com.google.inject.AbstractModule
 
 
@@ -15,6 +17,8 @@ class ReportModule : AbstractModule() {
         bind(JasperEngine::class.java).to(JasperEngineImpl::class.java)
 
         bind(PrintReportController::class.java).asEagerSingleton()
+
+        install(MultiProtocolModule())
     }
 }
 

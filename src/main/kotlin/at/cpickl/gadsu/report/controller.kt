@@ -4,6 +4,8 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGenerator
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -26,7 +28,8 @@ open class ReportController @Inject constructor(
         private val clock: Clock,
         private val currentClient: CurrentClient,
         private val preferences: Provider<PreferencesData>,
-        private val dialogs: Dialogs
+        private val dialogs: Dialogs,
+        private val multiProtocolGenerator: MultiProtocolGenerator
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -60,7 +63,7 @@ open class ReportController @Inject constructor(
             fileTypeLabel = "Sammelprotokoll",
             onSuccess = {
                 // TODO show progress bar
-                MultiProtocolGeneratorImpl().generate(it, cover, protocols)
+                multiProtocolGenerator.generate(it, cover, protocols)
                 dialogs.show(
                     title = "Sammelprotokoll erstellt",
                     message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",
