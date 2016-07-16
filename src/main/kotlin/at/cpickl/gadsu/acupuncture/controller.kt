@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 open class AcupunctureController @Inject constructor(
         private val frame: AcupunctureFrame,
-        private val service: AcupunctureService
+        service: AcupunctureService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
