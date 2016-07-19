@@ -4,9 +4,11 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.report.CPropsComposer
+import at.cpickl.gadsu.report.JasperEngineImpl
+import at.cpickl.gadsu.report.JasperProtocolGenerator
+import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
-import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.tcm.model.XProps
 import java.io.File
 
@@ -24,6 +26,6 @@ fun main(args: Array<String>) {
                     //                          picture = newPicture NO! does not work! :(
             )
     ))
-    MultiProtocolGeneratorImpl().generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
+    MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl())).generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
     println("DONE")
 }
