@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensurePersisted
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
@@ -28,6 +29,7 @@ interface TreatmentService {
 
 class TreatmentServiceImpl @Inject constructor(
         private val repository: TreatmentRepository,
+        private val multiProtocolRepository: MultiProtocolRepository,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
         private val clock: Clock
@@ -69,6 +71,7 @@ class TreatmentServiceImpl @Inject constructor(
         log.debug("deleteAllFor(client={})", client)
 
         jdbcx.transactionSafe {
+            multiProtocolRepository.deleteAllTreatmentRefsFor(client)
             findAllFor(client).forEach {
                 _delete(it)
             }

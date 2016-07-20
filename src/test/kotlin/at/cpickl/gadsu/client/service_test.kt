@@ -7,6 +7,8 @@ import at.cpickl.gadsu.appointment.AppointmentServiceImpl
 import at.cpickl.gadsu.appointment.gcal.TestableGCalService
 import at.cpickl.gadsu.client.xprops.*
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.copyWithoutCprops
@@ -28,6 +30,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var clientRepo: ClientRepository
     private lateinit var propsRepo: XPropsSqlRepository
     private lateinit var propsService: XPropsService
+    private lateinit var multiProtocolRepo: MultiProtocolRepository
     private lateinit var treatmentRepo: TreatmentRepository
     private lateinit var treatmentService: TreatmentService
     private lateinit var appointmentRepo: AppointmentRepository
@@ -41,7 +44,8 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         propsRepo = XPropsSqlJdbcRepository(jdbcx)
         propsService = XPropsServiceImpl(propsRepo)
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
-        treatmentService = TreatmentServiceImpl(treatmentRepo, jdbcx, bus, clock)
+        multiProtocolRepo = MultiProtocolJdbcRepository(jdbcx, idGenerator)
+        treatmentService = TreatmentServiceImpl(treatmentRepo, multiProtocolRepo, jdbcx, bus, clock)
         appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)
         appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock, TestableGCalService, clientRepo)
 

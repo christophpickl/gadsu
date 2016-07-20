@@ -5,11 +5,13 @@ import at.cpickl.gadsu.service.HasId
 import org.joda.time.DateTime
 
 
-class MultiProtocol(
+data class MultiProtocol(
         override val id: String?, // it is null if not yet persisted
-        override val yetPersisted: Boolean,
         val created: DateTime,
-        val someText: String
+        val description: String,
+        val treatmentIds: List<String>
 ) : HasId, Persistable {
+
+    override val yetPersisted: Boolean get() = id != null
 
 }

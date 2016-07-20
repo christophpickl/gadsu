@@ -9,6 +9,7 @@ import at.cpickl.gadsu.persistence.FlywayDatabaseManager
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.SpringJdbcx
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
@@ -35,9 +36,11 @@ abstract class HsqldbTest {
     protected val TABLE_TREATMENT = TreatmentJdbcRepository.TABLE
     protected val TABLE_APPOINTMENT = AppointmentJdbcRepository.TABLE
     protected val TABLE_XPROPS = XPropsSqlJdbcRepository.TABLE
+    protected val TABLE_MULTIPROTOCOL = MultiProtocolJdbcRepository.TABLE
+    protected val TABLE_MULTIPROTOCOL_KEYS = MultiProtocolJdbcRepository.TABLE_KEYS
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf(TABLE_XPROPS, TABLE_APPOINTMENT, TABLE_TREATMENT, TABLE_CLIENT)
+    private val allTables = arrayOf(TABLE_MULTIPROTOCOL_KEYS, TABLE_MULTIPROTOCOL, TABLE_XPROPS, TABLE_APPOINTMENT, TABLE_TREATMENT, TABLE_CLIENT)
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx

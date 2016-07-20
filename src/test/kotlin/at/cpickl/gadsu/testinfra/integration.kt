@@ -6,6 +6,8 @@ import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
@@ -78,9 +80,10 @@ object IntegrationServiceLookuper {
                                bus: EventBus = EventBus(),
                                defaultGeneratedId: String = TEST_UUID1,
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
-                               treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator)
-    ): TreatmentService {
-        return TreatmentServiceImpl(treatmentRepository, jdbcx, bus, clock)
+                               treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator),
+                               multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
+                               ): TreatmentService {
+        return TreatmentServiceImpl(treatmentRepository, multiProtocolRepository, jdbcx, bus, clock)
     }
 
 }
