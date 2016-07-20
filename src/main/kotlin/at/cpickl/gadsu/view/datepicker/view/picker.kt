@@ -141,7 +141,7 @@ open class JDatePicker constructor(
         if (popup == null) {
             val fac = PopupFactory()
             val xy = locationOnScreen
-            datePanel.setVisible(true)
+            datePanel.isVisible = true
             popup = fac.getPopup(this, datePanel, xy.getX().toInt(), (xy.getY() + this.height).toInt())
             popup!!.show()
         }

@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.datepicker
 
+import at.cpickl.gadsu.GadsuException
 import java.awt.Color
 import java.awt.SystemColor
 import java.io.IOException
@@ -89,12 +90,10 @@ object ComponentFormatDefaults {
         formats.put(key, format)
     }
 
-
 }
 
 
 object ComponentIconDefaults {
-
 
     private val CLEAR = "/gadsu/images/datepicker_clear.png"
 
@@ -136,7 +135,7 @@ object ComponentIconDefaults {
             previousYearIconDisabled = JPreviousIcon(8, 7, true, false)
             popupButtonIcon = null
         } catch (e: IOException) {
-            e.printStackTrace()
+            throw GadsuException("Oh noes, load icons failed!", e)
         }
 
     }
@@ -170,13 +169,13 @@ object ComponentTextDefaults {
         DECEMBER("text.december", "month", 11),
 
         // Days of the week abbreviated where necessary
-        SUN("text.sun", "dow", 0),
-        MON("text.mon", "dow", 1),
-        TUE("text.tue", "dow", 2),
-        WED("text.wed", "dow", 3),
-        THU("text.thu", "dow", 4),
-        FRI("text.fri", "dow", 5),
-        SAT("text.sat", "dow", 6);
+        SUN("text.sun", "dow", Calendar.SUNDAY),
+        MON("text.mon", "dow", Calendar.MONDAY),
+        TUE("text.tue", "dow", Calendar.TUESDAY),
+        WED("text.wed", "dow", Calendar.WEDNESDAY),
+        THU("text.thu", "dow", Calendar.THURSDAY),
+        FRI("text.fri", "dow", Calendar.FRIDAY),
+        SAT("text.sat", "dow", Calendar.SATURDAY);
 
         companion object {
             fun getMonthKey(index: Int) = values().firstOrNull { "month" == it.kind && index == it.index } ?: throw IllegalArgumentException("Invalid index: $index")

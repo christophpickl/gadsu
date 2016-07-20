@@ -55,7 +55,7 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
 
         showYearButtons = false
         isDoubleClickAction = false
-        firstDayOfWeek = Calendar.getInstance().firstDayOfWeek
+        firstDayOfWeek = Calendar.MONDAY //Calendar.getInstance().firstDayOfWeek
 
         internalModel = InternalCalendarModel(model)
         internalController = InternalController()
@@ -815,7 +815,7 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
          * Part of TableModel, day
          */
         override fun getColumnName(columnIndex: Int): String {
-            val key = ComponentTextDefaults.Key.getDowKey((firstDayOfWeek - 1 + columnIndex) % 7)
+            val key = ComponentTextDefaults.Key.getDowKey((columnIndex + 1) % 7 + 1)
             return texts.getText(key)
         }
 
