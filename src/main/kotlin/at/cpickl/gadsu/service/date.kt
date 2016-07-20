@@ -7,6 +7,7 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import java.util.*
 
 
 class DateFormats {
@@ -72,11 +73,7 @@ fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
 fun DateTime.formatDateTimeFile() = DateFormats.DATE_TIME_FILE.print(this)
 
 fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
-/**
- * Format: "dd.MM.yyyy HH:mm:ss"
- *
- * Eg: "31.12.2001 14:21:42"
- */
+fun String.parseDate() = DateFormats.DATE.parseDateTime(this)
 fun String.parseDateTime() = DateFormats.DATE_TIME.parseDateTime(this)
 fun String.parseDateTimeFile() = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 
@@ -89,6 +86,9 @@ fun DateTime.withAllButHourAndMinute(copyReference: DateTime) =
 fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
 fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
 fun DateTime.clearTime() = this.withHourOfDay(0).clearMinutes()
+
+fun Date.toDateTime() = DateTime(this)
+
 
 // --------------------------------------------------------------------------- clock
 

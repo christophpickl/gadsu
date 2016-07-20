@@ -73,11 +73,12 @@ fun <T : JComponent> T.italic(): T {
 
 
 fun JComponent.changeBackgroundForASec(tempBackground: Color) {
+    val originalBackground = background
     background = tempBackground
 
-    Timer("dev-blinking", true).schedule(object : TimerTask() {
+    Timer("bg-color-blinking", true).schedule(object : TimerTask() {
         override fun run() {
-            background = null
+            background = originalBackground
         }
     }, 1000L)
 }

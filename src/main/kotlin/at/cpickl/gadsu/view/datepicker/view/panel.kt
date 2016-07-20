@@ -65,6 +65,11 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
         add(internalView)
     }
 
+
+    fun disableClear() {
+        internalView.disableClear()
+    }
+
     override fun addActionListener(actionListener: ActionListener) {
         actionListeners.add(actionListener)
     }
@@ -137,10 +142,12 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
      */
     private inner class InternalView : JPanel() {
 
+        var noneLabel = createNoneLabel() // must come before southpanel ;)
+
         private var centerPanel: JPanel? = null
         private var northCenterPanel: JPanel? = null
-        private var northPanel: JPanel? = null
-        private var southPanel: JPanel? = null
+        private var northPanel = createNorthPanel()
+        private var southPanel = createSouthPanel()
         private var previousButtonPanel: JPanel? = null
         private var nextButtonPanel: JPanel? = null
         private var dayTable: JTable? = null
@@ -148,7 +155,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
         private var dayTableCellRenderer: InternalTableCellRenderer? = null
         private var monthLabel: JLabel? = null
         private var todayLabel: JLabel? = null
-        private var noneLabel: JLabel? = null
         private var monthPopupMenu: JPopupMenu? = null
         private var monthPopupMenuItems: Array<JMenuItem>? = null
         private var nextMonthButton: JButton? = null
@@ -184,26 +190,22 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             setSize(200, 180)
             preferredSize = java.awt.Dimension(200, 180)
             isOpaque = false
-            add(getNorthPanel(), java.awt.BorderLayout.NORTH)
-            add(getSouthPanel(), java.awt.BorderLayout.SOUTH)
+            add(northPanel, java.awt.BorderLayout.NORTH)
+            add(southPanel, java.awt.BorderLayout.SOUTH)
             add(getCenterPanel(), java.awt.BorderLayout.CENTER)
         }
 
         /**
          * This method initializes northPanel
          */
-        private fun getNorthPanel(): JPanel {
-            if (northPanel == null) {
-                northPanel = javax.swing.JPanel()
-                northPanel!!.layout = java.awt.BorderLayout()
-                northPanel!!.name = ""
-                northPanel!!.border = javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3)
-                northPanel!!.background = colors.getColor(ComponentColorDefaults.Key.BG_MONTH_SELECTOR)
-                northPanel!!.add(getPreviousButtonPanel(), java.awt.BorderLayout.WEST)
-                northPanel!!.add(getNextButtonPanel(), java.awt.BorderLayout.EAST)
-                northPanel!!.add(getNorthCenterPanel(), java.awt.BorderLayout.CENTER)
-            }
-            return northPanel!!
+        private fun createNorthPanel() = JPanel().apply {
+            layout = java.awt.BorderLayout()
+            name = ""
+            border = javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3)
+            background = colors.getColor(ComponentColorDefaults.Key.BG_MONTH_SELECTOR)
+            add(getPreviousButtonPanel(), java.awt.BorderLayout.WEST)
+            add(getNextButtonPanel(), java.awt.BorderLayout.EAST)
+            add(getNorthCenterPanel(), java.awt.BorderLayout.CENTER)
         }
 
         /**
@@ -249,32 +251,24 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
         /**
          * This method initializes southPanel
          */
-        private fun getSouthPanel(): JPanel {
-            if (southPanel == null) {
-                southPanel = javax.swing.JPanel()
-                southPanel!!.layout = java.awt.BorderLayout()
-                southPanel!!.background = colors.getColor(ComponentColorDefaults.Key.BG_TODAY_SELECTOR)
-                southPanel!!.border = javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3)
-                southPanel!!.add(getTodayLabel(), java.awt.BorderLayout.WEST)
-                southPanel!!.add(getNoneLabel(), java.awt.BorderLayout.EAST)
-            }
-            return southPanel!!
+        private fun createSouthPanel() = JPanel().apply {
+            layout = java.awt.BorderLayout()
+            background = colors.getColor(ComponentColorDefaults.Key.BG_TODAY_SELECTOR)
+            border = javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3)
+            add(getTodayLabel(), java.awt.BorderLayout.WEST)
+            add(noneLabel, java.awt.BorderLayout.EAST)
         }
 
         /**
          * This method initializes todayLabel
          */
-        fun getNoneLabel(): JLabel {
-            if (noneLabel == null) {
-                noneLabel = javax.swing.JLabel()
-                noneLabel!!.foreground = colors.getColor(ComponentColorDefaults.Key.FG_TODAY_SELECTOR_ENABLED)
-                noneLabel!!.horizontalAlignment = javax.swing.SwingConstants.CENTER
-                noneLabel!!.addMouseListener(internalController)
-                //TODO get the translations for each language before adding this in
-                //noneLabel.setToolTipText(getText(ComponentTextDefaults.CLEAR));
-                noneLabel!!.icon = icons.clearIcon
-            }
-            return noneLabel!!
+        private fun createNoneLabel() = JLabel().apply {
+            foreground = colors.getColor(ComponentColorDefaults.Key.FG_TODAY_SELECTOR_ENABLED)
+            horizontalAlignment = javax.swing.SwingConstants.CENTER
+            addMouseListener(internalController)
+            // MINOR get the translations for each language before adding this in
+            //noneLabel.setToolTipText(getText(ComponentTextDefaults.CLEAR));
+            icon = icons.clearIcon
         }
 
         fun updateTodayLabel() {
@@ -541,6 +535,10 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             super.setEnabled(enabled)
         }
 
+        fun disableClear() {
+            southPanel.remove(noneLabel)
+        }
+
     }
 
     /**
@@ -701,7 +699,7 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
                         fireActionPerformed()
                     }
                 }
-            } else if (arg0.source === internalView.getNoneLabel()) {
+            } else if (arg0.source === internalView.noneLabel) {
                 internalModel.model.isSelected = false
 
                 if (isDoubleClickAction && arg0.clickCount == 2) {
@@ -925,11 +923,11 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
 
     companion object {
 
-        fun createModel(): DateModel<Calendar> {
+        fun createModel(): DateModel<Calendar?> {
             return UtilCalendarModel()
         }
 
-        private fun createModel(value: Calendar): DateModel<Calendar> {
+        private fun createModel(value: Calendar): DateModel<Calendar?> {
             return UtilCalendarModel(value)
         }
 
@@ -951,5 +949,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
         private val colors = ComponentColorDefaults
         private val formats = ComponentFormatDefaults
     }
+
 
 }

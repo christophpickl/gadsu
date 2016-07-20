@@ -1,19 +1,14 @@
 package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.view.datepicker.view.JDatePanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.jdatepicker.impl.JDatePanelImpl
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.testng.Assert
-import org.uispec4j.Button
-import org.uispec4j.ListBox
-import org.uispec4j.MenuItem
-import org.uispec4j.TextBox
-import org.uispec4j.Trigger
-import org.uispec4j.Window
+import org.uispec4j.*
 import org.uispec4j.interception.PopupMenuInterceptor
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
@@ -30,7 +25,7 @@ class DatePickerPopupContext(
         private val test: SimpleUiTest,
         private val popup: Window,
         private val jWindow: JWindow,
-        private val jDatePanel: JDatePanelImpl) {
+        private val jDatePanel: JDatePanel) {
     fun assertPopupVisible(expected: Boolean) {
         if (expected) {
             test.assertThat(popup.isVisible)
@@ -61,7 +56,7 @@ open class DateSpecPicker(private val test: SimpleUiTest,
             function(DatePickerPopupContext(test, window, jWindow, jDatePanelImpl))
         }
     }
-    fun openPopupByButton(function: (Window, JWindow, JDatePanelImpl) -> Unit) {
+    fun openPopupByButton(function: (Window, JWindow, JDatePanel) -> Unit) {
         log.debug("openPopupByButton(function), button.name={}", openButton.name)
         WindowInterceptor
                 .init(openButton.triggerClick())
@@ -69,7 +64,7 @@ open class DateSpecPicker(private val test: SimpleUiTest,
                     override fun process(dialog: Window): Trigger {
                         log.trace("process(dialog) date picker popup")
                         val popupContentRaw = (dialog.awtComponent as JWindow).rootPane.contentPane.getComponent(0)
-                        if (popupContentRaw !is JDatePanelImpl) {
+                        if (popupContentRaw !is JDatePanel) {
                             throw AssertionError("Expected popup's content to be a JDatePanelImpl, but was: ${popupContentRaw.javaClass.name} ($popupContentRaw)")
                         }
                         MatcherAssert.assertThat(popupContentRaw.name, Matchers.equalTo(popupPanelName))

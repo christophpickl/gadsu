@@ -14,13 +14,13 @@ import javax.swing.event.ChangeListener
 /**
  * You are able to set the format of the date being displayed on the label.
  */
-open class JDatePicker private constructor(
-        private val datePanel: JDatePanel,
+open class JDatePicker constructor(
+        protected val datePanel: JDatePanel,
         formatter: JFormattedTextField.AbstractFormatter = DatePickerFormatter()) : JComponent(), DatePicker {
 
     private var popup: Popup? = null
-    private val formattedTextField: JFormattedTextField
-    private val button: JButton
+    protected val formattedTextField: JFormattedTextField
+    protected val button: JButton
 
     /**
      * Create a JDatePicker with a default calendar model.
@@ -147,10 +147,7 @@ open class JDatePicker private constructor(
         }
     }
 
-    /**
-     * Called internally to hide the popup dates.
-     */
-    private fun hidePopup() {
+    fun hidePopup() {
         if (popup != null) {
             popup!!.hide()
             popup = null
@@ -222,7 +219,7 @@ open class JDatePicker private constructor(
 
     override fun setEnabled(enabled: Boolean) {
         button.isEnabled = enabled
-        datePanel.setEnabled(enabled)
+        datePanel.isEnabled = enabled
         formattedTextField.isEnabled = enabled
 
         super.setEnabled(enabled)

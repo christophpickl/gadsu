@@ -2,29 +2,22 @@ package at.cpickl.gadsu.view.datepicker.view
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.IS_OS_WIN
-import at.cpickl.gadsu.service.DateFormats
-import at.cpickl.gadsu.service.LOGUI
-import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.currentActiveJFrame
 import at.cpickl.gadsu.view.datepicker.UtilDateModel
-import at.cpickl.gadsu.view.datepicker.view.JDatePanel
-import at.cpickl.gadsu.view.datepicker.view.JDatePicker
-import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.logic.beep
+import at.cpickl.gadsu.view.swing.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
+import java.awt.Color
 import java.awt.Component
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
+import java.awt.GridBagConstraints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.Calendar
-import java.util.Date
-import java.util.Properties
-import javax.swing.JButton
-import javax.swing.JFormattedTextField
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
+import java.util.*
+import javax.swing.*
 
 
 //<editor-fold desc="main">
@@ -51,6 +44,7 @@ fun main(args: Array<String>) {
 //                               textViewName: String,
 //                               navigateToDate: DateTime? = null
 //) = MyDatePicker.build(navigateToDate ?: clock.now(), buttonViewName, panelViewName, textViewName)
+
 
 class MyDatePicker(viewNamePrefix: String,
                    panel: JDatePanel,
@@ -88,61 +82,27 @@ class MyDatePicker(viewNamePrefix: String,
     }
 
     private val log = LOGUI(javaClass, viewNamePrefix)
-    private val hidePopupMethod: () -> Unit
-    private val disableClearFuntion: () -> Unit
 
     init {
         name = viewNamePickerPanel(viewNamePrefix)
         transparent()
-        val thiz = this
 
-        val pickerClass = JDatePicker::class.java
-        val pickerClassName = pickerClass.name
-        val panelClass = JDatePanel::class.java
-        val panelClassName = panelClass.name
-
-        val dateTextField = reflectivelyGetFieldAs<JFormattedTextField>(pickerClassName, thiz, "formattedTextField")
-        dateTextField.columns = if (IS_OS_WIN) 8 else 6
-        dateTextField.horizontalAlignment = textFieldAlignment
-
-        val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")
-
-        val button = reflectivelyGetFieldAs<JButton>(pickerClassName, thiz, "button")
         button.name = viewNameButton(viewNamePrefix)
 
-        val hidePopupRef = pickerClass.getDeclaredMethod("hidePopup")
-        hidePopupRef.isAccessible = true
-        hidePopupMethod = { hidePopupRef.invoke(thiz) }
-
-        jFormattedTextField.name = viewNameText(viewNamePrefix)
-        jFormattedTextField.addMouseListener(object : MouseAdapter() {
+        formattedTextField.columns = if (IS_OS_WIN) 8 else 6
+        formattedTextField.horizontalAlignment = textFieldAlignment
+        formattedTextField.name = viewNameText(viewNamePrefix)
+//        val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")
+        formattedTextField.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                eventHandler.actionPerformed(ActionEvent(button, 0, ""))
+                log.trace("textfield clicked; displaying dialog to enter date manually via keyboard.")
+                SwingUtilities.invokeLater { EnterDateByKeyboardDialog({ dateModel.value = it.toDate() }, dateModel.value?.toDateTime()).isVisible = true }
             }
         })
-
-        val internalViewClassname = "org.jdatepicker.impl.JDatePanelImpl\$InternalView"
-        val internalView = reflectivelyGetFieldAs<JPanel>(panelClassName, panel, "internalView")
-        val southPanel = reflectivelyGetFieldAs<JPanel>(internalViewClassname, internalView, "southPanel")
-        val noneLabel = reflectivelyGetFieldAs<JLabel>(internalViewClassname, internalView, "noneLabel")
-        disableClearFuntion = { southPanel.remove(noneLabel) }
 
         addChangeListener {
             log.trace("Value changed to (via textfield text listening): {}", selectedDate())
         }
-
-    }
-
-    private fun <T> reflectivelyGetFieldAs(providerType: String, providerObject: Any, fieldName: String): T {
-        val providerClass = Class.forName(providerType)
-//        println("Reflectively get field '${fieldName}' for: ${providerClass.name}\n" +
-//                providerClass.declaredFields.map { "${it.name}: ${it.type.simpleName}" }
-//                .joinToString(separator = "\n", prefix = "  - "))
-        val fieldRef = providerClass.getDeclaredField(fieldName)
-        fieldRef.isAccessible = true
-        val obj = fieldRef.get(providerObject)
-        @Suppress("UNCHECKED_CAST")
-        return obj as T
     }
 
     fun changeDate(newValue: DateTime?) {
@@ -157,20 +117,16 @@ class MyDatePicker(viewNamePrefix: String,
             return null
         }
         if (dateModel.value !is Date) {
-            throw GadsuException("Expected the datepicker model value to be of type Date, but was: ${dateModel.value.javaClass.name}")
+            throw GadsuException("Expected the datepicker model value to be of type Date, but was: ${dateModel.value?.javaClass?.name}")
         }
 
         return DateTime(dateModel.value).clearTime()
     }
 
-    fun hidePopup() {
-        log.trace("hidePopup()")
-        hidePopupMethod.invoke()
-    }
 
     fun addChangeListener(function: () -> Unit) {
         // so, after the popup opened, and something is selected, it is for sure the formatted textfield value has changed, so rely on that
-        jFormattedTextField.addPropertyChangeListener("value", {
+        formattedTextField.addPropertyChangeListener("value", {
             function()
         })
     }
@@ -180,8 +136,67 @@ class MyDatePicker(viewNamePrefix: String,
      */
     fun disableClear() {
         log.trace("disableClear()")
-        disableClearFuntion.invoke()
+        datePanel.disableClear()
     }
 }
 
 
+private class EnterDateByKeyboardDialog(
+        private val onSuccess: (DateTime) -> Unit,
+        initialDate: DateTime? = null
+) : JDialog(currentActiveJFrame(), "Datum eingeben", true), ClosableWindow {
+
+    private val inpText = JTextField(10)
+
+    init {
+        closeOnEscape()
+        val panel = GridPanel()
+        panel.emptyBorderForDialogs()
+
+        inpText.addActionListener { confirmInput() }
+        inpText.toolTipText = "Format: TT.MM.JJJJ"//DateFormats.DATE
+        if (initialDate != null) {
+            inpText.text = initialDate.formatDate()
+        } else {
+            inpText.text = "31.12.1985"
+            inpText.requestFocus()
+            inpText.selectAll()
+        }
+        val btnOkay = JButton("Okay")
+        btnOkay.addActionListener {
+            confirmInput()
+        }
+
+        with(panel) {
+            c.weightx = 1.0
+            c.fill = GridBagConstraints.HORIZONTAL
+            panel.add(inpText)
+
+            c.weightx = 0.0
+            c.fill = GridBagConstraints.NONE
+            c.gridx++
+            c.insets = Pad.LEFT
+            panel.add(btnOkay)
+        }
+
+        add(panel)
+        pack()
+        setLocationRelativeTo(parent)
+        isResizable = false
+    }
+
+    private fun confirmInput() {
+        try {
+            val dateEntered = inpText.text.parseDate()
+            dispose()
+            onSuccess(dateEntered)
+        } catch (e: IllegalArgumentException) {
+            inpText.changeBackgroundForASec(Color.RED)
+            beep()
+        }
+    }
+
+    override fun closeWindow() {
+        dispose()
+    }
+}
