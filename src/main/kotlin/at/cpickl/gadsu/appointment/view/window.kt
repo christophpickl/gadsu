@@ -10,16 +10,8 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.treatment.PrefilledTreatment
 import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
-import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.MainFrame
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.DisabledTextField
-import at.cpickl.gadsu.view.components.MyFrame
-import at.cpickl.gadsu.view.components.gadsuWidth
-import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.newPersistableEventButton
+import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.view.components.*
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
@@ -35,7 +27,6 @@ import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JLabel
-import javax.swing.JPanel
 
 interface AppointmentWindow {
     fun changeCurrent(newCurrent: Appointment)
@@ -67,11 +58,10 @@ class SwingAppointmentWindow @Inject constructor(
     private val outClient = DisabledTextField()
     private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, ViewNames.Appointment.InputStartDate)
     private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt()}, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 4)
+    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 4).focusTraversalWithTabs()
     private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
 
     private val btnNewTreatment = JButton().apply {
-        gadsuWidth()
         text = "Neue Behandlung erstellen"
         name = ViewNames.Appointment.ButtonNewTreatment
         addActionListener {
@@ -95,11 +85,18 @@ class SwingAppointmentWindow @Inject constructor(
 
     private fun initMainPanel(gcalVisible: Boolean) = FormPanel().apply {
         addFormInput("Klient", outClient)
-        addFormInput(inpStartDate)
-        val durationPanel = JPanel(BorderLayout())
-        durationPanel.add(inpDuration.toComponent(), BorderLayout.CENTER)
-        durationPanel.add(JLabel(" Minuten"), BorderLayout.EAST)
-        addFormInput("Dauer", durationPanel)
+
+        val durationPanel = GridPanel()
+        with(durationPanel) {
+            add(inpStartDate.toComponent())
+            c.gridx++
+            c.insets = Pad.LEFT
+            add(inpDuration.toComponent())
+            c.gridx++
+            c.insets = Pad.NONE
+            add(JLabel(" Minuten"))
+        }
+        addFormInput("Datum", durationPanel)
 
         addFormInput(inpNote)
         addFormInput("", btnNewTreatment)
