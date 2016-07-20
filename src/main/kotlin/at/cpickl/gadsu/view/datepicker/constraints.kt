@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view.datepicker
 
-import org.jdatepicker.DateModel
 import java.util.*
 
 

@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.view.datepicker.view
 
 import at.cpickl.gadsu.view.datepicker.*
-import org.jdatepicker.DateModel
 import java.awt.Component
 import java.awt.GridLayout
 import java.awt.event.*
@@ -15,25 +14,16 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.JTableHeader
 import javax.swing.table.TableModel
 
-
-open class JDatePanel
 /**
  * Create a JDatePanel with a custom date model.
-
  * @param model a custom date model
  */
-@JvmOverloads constructor(model: DateModel<*> = JDatePanel.createModel()) : JComponent(), DatePanel {
+open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()) : JComponent(), DatePanel {
 
     private val actionListeners: MutableSet<ActionListener>
     private val dateConstraints: MutableSet<DateSelectionConstraint>
 
     private var showYearButtons: Boolean = false
-    /* (non-Javadoc)
-     * @see org.jdatepicker.JDatePanel#isDoubleClickAction()
-     */
-    /* (non-Javadoc)
-     * @see org.jdatepicker.JDatePanel#setDoubleClickAction(boolean)
-     */
     override var isDoubleClickAction: Boolean = false
     private val firstDayOfWeek: Int
 
@@ -43,24 +33,18 @@ open class JDatePanel
 
     /**
      * Create a JDatePanel with an initial value, with a UtilCalendarModel.
-
-     * @param value the initial value
      */
     constructor(value: Calendar) : this(createModelFromValue(value)) {
     }
 
     /**
      * Create a JDatePanel with an initial value, with a UtilDateModel.
-
-     * @param value the initial value
      */
     constructor(value: java.util.Date) : this(createModelFromValue(value)) {
     }
 
     /**
      * Create a JDatePanel with an initial value, with a SqlDateModel.
-
-     * @param value the initial value
      */
     constructor(value: java.sql.Date) : this(createModelFromValue(value)) {
     }

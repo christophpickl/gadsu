@@ -5,6 +5,7 @@ import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.*
 import at.cpickl.gadsu.view.components.panels.FormPanel
+import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_SHORT
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters

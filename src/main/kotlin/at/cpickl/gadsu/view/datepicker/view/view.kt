@@ -1,8 +1,9 @@
 package at.cpickl.gadsu.view.datepicker.view
 
-import at.cpickl.gadsu.view.datepicker.ComponentFormatDefaults
+import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.service.DateFormats
+import at.cpickl.gadsu.view.datepicker.DateModel
 import at.cpickl.gadsu.view.datepicker.DateSelectionConstraint
-import org.jdatepicker.DateModel
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.JFormattedTextField
@@ -100,24 +101,21 @@ interface DatePicker : DatePanel {
 
 }
 
-class DateComponentFormatter : JFormattedTextField.AbstractFormatter() {
+class DatePickerFormatter : JFormattedTextField.AbstractFormatter() {
+
+    private val formatter = DateFormats.DATE
 
     override fun valueToString(value: Any?): String {
-        if (value == null) return ""
-        val format = ComponentFormatDefaults.getFormat(ComponentFormatDefaults.Key.SELECTED_DATE_FIELD)
-        val cal = value as Calendar
-        return format.format(cal.time)
-    }
-
-    override fun stringToValue(text: String?): Any? {
-        if (text == null || text == "") {
-            return null
+        if (value is Calendar) {
+            return formatter.print(value.time.time)
         }
-        val format = ComponentFormatDefaults.getFormat(ComponentFormatDefaults.Key.SELECTED_DATE_FIELD)
-        val date = format.parse(text)
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        return calendar
+        if (value === null) {
+            return ""
+        }
+        throw GadsuException("Expected date picker value to be either a GregorianCalender instance or null, but was: $value")
     }
 
+    override fun stringToValue(text: String): Any {
+        return formatter.parseDateTime(text).toDate()
+    }
 }

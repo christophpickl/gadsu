@@ -1,7 +1,5 @@
 package at.cpickl.gadsu.view.datepicker
 
-import org.jdatepicker.AbstractDateModel
-import org.jdatepicker.DateModel
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.*
@@ -95,7 +93,7 @@ interface DateModel<T> {
 
 }
 
-abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
+abstract class AbstractDateModel<T> protected constructor() : DateModel<T?> {
 
     companion object {
         val PROPERTY_YEAR = "year"
@@ -142,31 +140,120 @@ abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
         }
     }
 
-    override fun getDay(): Int {
-        return calendarValue.get(Calendar.DATE)
-    }
+    override var year: Int
+        get() = calendarValue.get(Calendar.YEAR)
+        set(yearValue) {
+            val oldYearValue = calendarValue.get(Calendar.YEAR)
+            val oldMonthValue = calendarValue.get(Calendar.MONTH)
+            val oldDayValue = calendarValue.get(Calendar.DAY_OF_MONTH)
+            val oldValue = value
 
-    override fun getMonth(): Int {
-        return calendarValue.get(Calendar.MONTH)
-    }
+            val newVal = Calendar.getInstance()
+            newVal.set(Calendar.DAY_OF_MONTH, 1)
+            newVal.set(Calendar.MONTH, oldMonthValue)
+            newVal.set(Calendar.YEAR, yearValue)
 
-    override fun getYear(): Int {
-        return calendarValue.get(Calendar.YEAR)
-    }
+            if (newVal.getActualMaximum(Calendar.DAY_OF_MONTH) <= oldDayValue) {
+                newVal.set(Calendar.DAY_OF_MONTH,
+                        newVal.getActualMaximum(Calendar.DAY_OF_MONTH))
+            } else {
+                newVal.set(Calendar.DAY_OF_MONTH, oldDayValue)
+            }
 
-    override fun getValue(): T? {
-        if (!selected) {
-            return null
+            calendarValue.set(Calendar.YEAR, newVal.get(Calendar.YEAR))
+            calendarValue.set(Calendar.DAY_OF_MONTH, newVal.get(Calendar.DAY_OF_MONTH))
+
+            fireChangeEvent()
+            firePropertyChange(PROPERTY_YEAR, oldYearValue, calendarValue.get(Calendar.YEAR))
+            // only fire change event when day actually changed
+            if (calendarValue.get(Calendar.DAY_OF_MONTH) != oldDayValue) {
+                firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DAY_OF_MONTH))
+            }
+            firePropertyChange(PROPERTY_VALUE, oldValue, value)
         }
-        return fromCalendar(calendarValue)
-    }
+    override var month: Int
+        get() = calendarValue.get(Calendar.MONTH)
+        set(monthValue) {
+            val oldYearValue = calendarValue.get(Calendar.YEAR)
+            val oldMonthValue = calendarValue.get(Calendar.MONTH)
+            val oldDayValue = calendarValue.get(Calendar.DAY_OF_MONTH)
+            val oldValue = value
 
-    override fun setDay(day: Int) {
-        val oldDayValue = calendarValue.get(Calendar.DATE)
+            val newVal = Calendar.getInstance()
+            newVal.set(Calendar.DAY_OF_MONTH, 1)
+            newVal.set(Calendar.MONTH, monthValue)
+            newVal.set(Calendar.YEAR, oldYearValue)
+
+            if (newVal.getActualMaximum(Calendar.DAY_OF_MONTH) <= oldDayValue) {
+                newVal.set(Calendar.DAY_OF_MONTH, newVal.getActualMaximum(Calendar.DAY_OF_MONTH))
+            } else {
+                newVal.set(Calendar.DAY_OF_MONTH, oldDayValue)
+            }
+
+            calendarValue.set(Calendar.MONTH, newVal.get(Calendar.MONTH))
+            calendarValue.set(Calendar.DAY_OF_MONTH, newVal.get(Calendar.DAY_OF_MONTH))
+
+            fireChangeEvent()
+            firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
+            // only fire change event when day actually changed
+            if (calendarValue.get(Calendar.DAY_OF_MONTH) != oldDayValue) {
+                firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DAY_OF_MONTH))
+            }
+            firePropertyChange(PROPERTY_VALUE, oldValue, value)
+        }
+    override var day: Int
+        get() = calendarValue.get(Calendar.DATE)
+        set(dayValue) {
+            val oldDayValue = calendarValue.get(Calendar.DATE)
+            val oldValue = value
+            calendarValue.set(Calendar.DATE, dayValue)
+            fireChangeEvent()
+            firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DATE))
+            firePropertyChange(PROPERTY_VALUE, oldValue, value)
+        }
+    override var value: T?
+        get() = if (!selected) null else fromCalendar(calendarValue)
+        set(valueValue) {
+            val oldYearValue = calendarValue.get(Calendar.YEAR)
+            val oldMonthValue = calendarValue.get(Calendar.MONTH)
+            val oldDayValue = calendarValue.get(Calendar.DATE)
+            val oldValue = value
+            val oldSelectedValue = isSelected
+
+            if (valueValue != null) {
+                this.calendarValue = toCalendar(valueValue)
+                setToMidnight()
+                selected = true
+            } else {
+                selected = false
+            }
+
+            fireChangeEvent()
+            firePropertyChange(PROPERTY_YEAR, oldYearValue, calendarValue.get(Calendar.YEAR))
+            firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
+            firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DATE))
+            firePropertyChange(PROPERTY_VALUE, oldValue, value)
+            firePropertyChange("selected", oldSelectedValue, this.selected)
+        }
+    override var isSelected: Boolean
+        get() = selected
+        set(selectedValue) {
+            val oldValue = value
+            val oldSelectedValue = isSelected
+            this.selected = selectedValue
+            fireChangeEvent()
+            firePropertyChange(PROPERTY_VALUE, oldValue, value)
+            firePropertyChange(PROPERTY_SELECTED, oldSelectedValue, this.selected)
+        }
+
+
+
+    override fun addMonth(add: Int) {
+        val oldMonthValue = calendarValue.get(Calendar.MONTH)
         val oldValue = value
-        calendarValue.set(Calendar.DATE, day)
+        calendarValue.add(Calendar.MONTH, add)
         fireChangeEvent()
-        firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DATE))
+        firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
         firePropertyChange(PROPERTY_VALUE, oldValue, value)
     }
 
@@ -179,76 +266,6 @@ abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
         firePropertyChange(PROPERTY_VALUE, oldValue, value)
     }
 
-    override fun setMonth(month: Int) {
-        val oldYearValue = calendarValue.get(Calendar.YEAR)
-        val oldMonthValue = calendarValue.get(Calendar.MONTH)
-        val oldDayValue = calendarValue.get(Calendar.DAY_OF_MONTH)
-        val oldValue = value
-
-        val newVal = Calendar.getInstance()
-        newVal.set(Calendar.DAY_OF_MONTH, 1)
-        newVal.set(Calendar.MONTH, month)
-        newVal.set(Calendar.YEAR, oldYearValue)
-
-        if (newVal.getActualMaximum(Calendar.DAY_OF_MONTH) <= oldDayValue) {
-            newVal.set(Calendar.DAY_OF_MONTH,
-                    newVal.getActualMaximum(Calendar.DAY_OF_MONTH))
-        } else {
-            newVal.set(Calendar.DAY_OF_MONTH, oldDayValue)
-        }
-
-        calendarValue.set(Calendar.MONTH, newVal.get(Calendar.MONTH))
-        calendarValue.set(Calendar.DAY_OF_MONTH, newVal.get(Calendar.DAY_OF_MONTH))
-
-        fireChangeEvent()
-        firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
-        // only fire change event when day actually changed
-        if (calendarValue.get(Calendar.DAY_OF_MONTH) != oldDayValue) {
-            firePropertyChange(PROPERTY_DAY, oldDayValue,
-                    calendarValue.get(Calendar.DAY_OF_MONTH))
-        }
-        firePropertyChange(PROPERTY_VALUE, oldValue, value)
-    }
-
-    override fun addMonth(add: Int) {
-        val oldMonthValue = calendarValue.get(Calendar.MONTH)
-        val oldValue = value
-        calendarValue.add(Calendar.MONTH, add)
-        fireChangeEvent()
-        firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
-        firePropertyChange(PROPERTY_VALUE, oldValue, value)
-    }
-
-    override fun setYear(year: Int) {
-        val oldYearValue = calendarValue.get(Calendar.YEAR)
-        val oldMonthValue = calendarValue.get(Calendar.MONTH)
-        val oldDayValue = calendarValue.get(Calendar.DAY_OF_MONTH)
-        val oldValue = value
-
-        val newVal = Calendar.getInstance()
-        newVal.set(Calendar.DAY_OF_MONTH, 1)
-        newVal.set(Calendar.MONTH, oldMonthValue)
-        newVal.set(Calendar.YEAR, year)
-
-        if (newVal.getActualMaximum(Calendar.DAY_OF_MONTH) <= oldDayValue) {
-            newVal.set(Calendar.DAY_OF_MONTH,
-                    newVal.getActualMaximum(Calendar.DAY_OF_MONTH))
-        } else {
-            newVal.set(Calendar.DAY_OF_MONTH, oldDayValue)
-        }
-
-        calendarValue.set(Calendar.YEAR, newVal.get(Calendar.YEAR))
-        calendarValue.set(Calendar.DAY_OF_MONTH, newVal.get(Calendar.DAY_OF_MONTH))
-
-        fireChangeEvent()
-        firePropertyChange(PROPERTY_YEAR, oldYearValue, calendarValue.get(Calendar.YEAR))
-        // only fire change event when day actually changed
-        if (calendarValue.get(Calendar.DAY_OF_MONTH) != oldDayValue) {
-            firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DAY_OF_MONTH))
-        }
-        firePropertyChange(PROPERTY_VALUE, oldValue, value)
-    }
-
     override fun addYear(add: Int) {
         val oldYearValue = calendarValue.get(Calendar.YEAR)
         val oldValue = value
@@ -256,29 +273,6 @@ abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
         fireChangeEvent()
         firePropertyChange(PROPERTY_YEAR, oldYearValue, calendarValue.get(Calendar.YEAR))
         firePropertyChange(PROPERTY_VALUE, oldValue, value)
-    }
-
-    override fun setValue(value: T?) {
-        val oldYearValue = calendarValue.get(Calendar.YEAR)
-        val oldMonthValue = calendarValue.get(Calendar.MONTH)
-        val oldDayValue = calendarValue.get(Calendar.DATE)
-        val oldValue = getValue()
-        val oldSelectedValue = isSelected
-
-        if (value != null) {
-            this.calendarValue = toCalendar(value)
-            setToMidnight()
-            selected = true
-        } else {
-            selected = false
-        }
-
-        fireChangeEvent()
-        firePropertyChange(PROPERTY_YEAR, oldYearValue, calendarValue.get(Calendar.YEAR))
-        firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
-        firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DATE))
-        firePropertyChange(PROPERTY_VALUE, oldValue, getValue())
-        firePropertyChange("selected", oldSelectedValue, this.selected)
     }
 
     override fun setDate(year: Int, month: Int, day: Int) {
@@ -292,19 +286,6 @@ abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
         firePropertyChange(PROPERTY_MONTH, oldMonthValue, calendarValue.get(Calendar.MONTH))
         firePropertyChange(PROPERTY_DAY, oldDayValue, calendarValue.get(Calendar.DATE))
         firePropertyChange(PROPERTY_VALUE, oldValue, value)
-    }
-
-    override fun isSelected(): Boolean {
-        return selected
-    }
-
-    override fun setSelected(selected: Boolean) {
-        val oldValue = value
-        val oldSelectedValue = isSelected
-        this.selected = selected
-        fireChangeEvent()
-        firePropertyChange(PROPERTY_VALUE, oldValue, value)
-        firePropertyChange(PROPERTY_SELECTED, oldSelectedValue, this.selected)
     }
 
     private fun setToMidnight() {
@@ -322,9 +303,9 @@ abstract class AbstractDateModel<T> protected constructor() : DateModel<T> {
 }
 
 
-class UtilDateModel constructor(value: Date? = null) : AbstractDateModel<Date>() {
+class UtilDateModel constructor(initValue: Date? = null) : AbstractDateModel<Date>() {
     init {
-        setValue(value)
+        value = initValue
     }
 
     override fun fromCalendar(from: Calendar) = Date(from.timeInMillis)
@@ -337,9 +318,9 @@ class UtilDateModel constructor(value: Date? = null) : AbstractDateModel<Date>()
 
 }
 
-class UtilCalendarModel constructor(value: Calendar? = null) : AbstractDateModel<Calendar>() {
+class UtilCalendarModel constructor(initValue: Calendar? = null) : AbstractDateModel<Calendar>() {
     init {
-        setValue(value)
+        value = initValue
     }
 
     override fun fromCalendar(from: Calendar) = from.clone() as Calendar
@@ -347,9 +328,9 @@ class UtilCalendarModel constructor(value: Calendar? = null) : AbstractDateModel
 }
 
 
-class SqlDateModel constructor(value: java.sql.Date? = null) : AbstractDateModel<java.sql.Date>() {
+class SqlDateModel constructor(initValue: java.sql.Date? = null) : AbstractDateModel<java.sql.Date>() {
     init {
-        setValue(value)
+        value = initValue
     }
 
     override fun fromCalendar(from: Calendar) = java.sql.Date(from.timeInMillis)

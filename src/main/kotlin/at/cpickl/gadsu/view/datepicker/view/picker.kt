@@ -1,10 +1,6 @@
 package at.cpickl.gadsu.view.datepicker.view
 
-import at.cpickl.gadsu.view.datepicker.ComponentColorDefaults
-import at.cpickl.gadsu.view.datepicker.ComponentIconDefaults
-import at.cpickl.gadsu.view.datepicker.DateSelectionConstraint
-import at.cpickl.gadsu.view.datepicker.UtilCalendarModel
-import org.jdatepicker.DateModel
+import at.cpickl.gadsu.view.datepicker.*
 import java.awt.*
 import java.awt.event.*
 import java.beans.PropertyChangeEvent
@@ -15,14 +11,12 @@ import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
 
-class JDatePicker
 /**
  * You are able to set the format of the date being displayed on the label.
- * Formatting is described at:
-
- * @param datePanel The DatePanel to use
  */
-private constructor(private val datePanel: JDatePanel) : JComponent(), DatePicker {
+open class JDatePicker private constructor(
+        private val datePanel: JDatePanel,
+        formatter: JFormattedTextField.AbstractFormatter = DatePickerFormatter()) : JComponent(), DatePicker {
 
     private var popup: Popup? = null
     private val formattedTextField: JFormattedTextField
@@ -31,47 +25,39 @@ private constructor(private val datePanel: JDatePanel) : JComponent(), DatePicke
     /**
      * Create a JDatePicker with a default calendar model.
      */
-    constructor() : this(JDatePanel()) {
+    constructor() : this(JDatePanel(), DatePickerFormatter()) {
     }
 
     /**
      * Create a JDatePicker with an initial value, with a UtilCalendarModel.
-
-     * @param value the initial value
      */
     constructor(value: Calendar) : this(JDatePanel(value)) {
     }
 
     /**
      * Create a JDatePicker with an initial value, with a UtilDateModel.
-
-     * @param value the initial value
      */
     constructor(value: java.util.Date) : this(JDatePanel(value)) {
     }
 
     /**
      * Create a JDatePicker with an initial value, with a SqlDateModel.
-
-     * @param value the initial value
      */
     constructor(value: java.sql.Date) : this(JDatePanel(value)) {
     }
 
     /**
      * Create a JDatePicker with a custom date model.
-
      * @param model a custom date model
      */
     constructor(model: DateModel<*>) : this(JDatePanel(model)) {
     }
 
-
     init {
 
         //Initialise Variables
         popup = null
-        datePanel.setBorder(BorderFactory.createLineBorder(colors.getColor(ComponentColorDefaults.Key.POPUP_BORDER)))
+        datePanel.border = BorderFactory.createLineBorder(colors.getColor(ComponentColorDefaults.Key.POPUP_BORDER))
         val internalEventHandler = InternalEventHandler()
 
         //Create Layout
@@ -80,7 +66,8 @@ private constructor(private val datePanel: JDatePanel) : JComponent(), DatePicke
 
         //Create and Add Components
         //Add and Configure TextField
-        formattedTextField = JFormattedTextField(DateComponentFormatter())
+//        formattedTextField = JFormattedTextField(DateComponentFormatter())
+        formattedTextField = JFormattedTextField(formatter)
         val model = datePanel.model
         setTextFieldValue(formattedTextField, model.year, model.month, model.day, model.isSelected)
         formattedTextField.isEditable = false

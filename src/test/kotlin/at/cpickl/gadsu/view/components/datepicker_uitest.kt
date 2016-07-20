@@ -5,7 +5,7 @@ import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.DateSpecPicker
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
-import at.cpickl.gadsu.view.components.inputs.MyDatePicker
+import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import org.joda.time.DateTime
 import org.testng.annotations.Test
 import org.uispec4j.Window

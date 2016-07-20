@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.view.components.inputs
+package at.cpickl.gadsu.view.datepicker.view
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.IS_OS_WIN
@@ -6,10 +6,10 @@ import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOGUI
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.datepicker.UtilDateModel
+import at.cpickl.gadsu.view.datepicker.view.JDatePanel
+import at.cpickl.gadsu.view.datepicker.view.JDatePicker
 import at.cpickl.gadsu.view.swing.transparent
-import org.jdatepicker.impl.JDatePanelImpl
-import org.jdatepicker.impl.JDatePickerImpl
-import org.jdatepicker.impl.UtilDateModel
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
@@ -53,11 +53,11 @@ fun main(args: Array<String>) {
 //) = MyDatePicker.build(navigateToDate ?: clock.now(), buttonViewName, panelViewName, textViewName)
 
 class MyDatePicker(viewNamePrefix: String,
-                   panel: JDatePanelImpl,
-                   val model: UtilDateModel,
+                   panel: JDatePanel,
+                   val dateModel: UtilDateModel,
                    formatter: JFormattedTextField.AbstractFormatter,
                    textFieldAlignment: Int = JTextField.LEFT) :
-        JDatePickerImpl(panel, formatter) {
+        JDatePicker(panel, formatter) {
     companion object {
 
         private val LOG = LoggerFactory.getLogger(MyDatePicker::class.java)
@@ -72,25 +72,18 @@ class MyDatePicker(viewNamePrefix: String,
         fun viewNamePickerPanel(prefix: String) = prefix + VIEWNAME_PICKER_PANEL_SUFFIX
         fun viewNamePopupPanel(prefix: String) = prefix + VIEWNAME_POPUP_PANEL_SUFFIX
 
-        private val LABELS = Properties()
-        init {
-            LABELS.setProperty("text.today", "Heute")
-            LABELS.setProperty("text.month", "Monat")
-            LABELS.setProperty("text.year", "Jahr")
-        }
-
         fun build(initDate: DateTime?, viewNamePrefix: String, textFieldAlignment: Int = JTextField.LEFT): MyDatePicker {
             LOG.trace("build(initDate={}, ..)", initDate)
 
-            val model = UtilDateModel()
+            val dateModel = UtilDateModel()
             // joda uses 1-12, java date uses 0-11
             if (initDate != null) {
-                model.setDate(initDate.year, initDate.monthOfYear - 1, initDate.dayOfMonth)
-                model.isSelected = true // enter date in textfield by default
+                dateModel.setDate(initDate.year, initDate.monthOfYear - 1, initDate.dayOfMonth)
+                dateModel.isSelected = true // enter date in textfield by default
             }
-            val panel = JDatePanelImpl(model, LABELS)
+            val panel = JDatePanel(dateModel)
             panel.name = viewNamePopupPanel(viewNamePrefix)
-            return MyDatePicker(viewNamePrefix, panel, model, DatePickerFormatter(), textFieldAlignment)
+            return MyDatePicker(viewNamePrefix, panel, dateModel, DatePickerFormatter(), textFieldAlignment)
         }
     }
 
@@ -103,9 +96,9 @@ class MyDatePicker(viewNamePrefix: String,
         transparent()
         val thiz = this
 
-        val pickerClass = JDatePickerImpl::class.java
+        val pickerClass = JDatePicker::class.java
         val pickerClassName = pickerClass.name
-        val panelClass = JDatePanelImpl::class.java
+        val panelClass = JDatePanel::class.java
         val panelClassName = panelClass.name
 
         val dateTextField = reflectivelyGetFieldAs<JFormattedTextField>(pickerClassName, thiz, "formattedTextField")
@@ -154,20 +147,20 @@ class MyDatePicker(viewNamePrefix: String,
 
     fun changeDate(newValue: DateTime?) {
         log.trace("changeDate(newValue={})", newValue)
-        model.value = newValue?.toDate()
+        dateModel.value = newValue?.toDate()
     }
 
 
     fun selectedDate(): DateTime? {
-        if (model.value == null) {
-            log.trace("Current datepicker value is not a date but: {}", model.value?.javaClass?.name)
+        if (dateModel.value == null) {
+            log.trace("Current datepicker value is not a date but: {}", dateModel.value?.javaClass?.name)
             return null
         }
-        if (model.value !is Date) {
-            throw GadsuException("Expected the datepicker model value to be of type Date, but was: ${model.value.javaClass.name}")
+        if (dateModel.value !is Date) {
+            throw GadsuException("Expected the datepicker model value to be of type Date, but was: ${dateModel.value.javaClass.name}")
         }
 
-        return DateTime(model.value).clearTime()
+        return DateTime(dateModel.value).clearTime()
     }
 
     fun hidePopup() {
@@ -192,22 +185,3 @@ class MyDatePicker(viewNamePrefix: String,
 }
 
 
-
-class DatePickerFormatter : JFormattedTextField.AbstractFormatter() {
-
-    private val formatter = DateFormats.DATE
-
-    override fun stringToValue(text: String): Any {
-        return formatter.parseDateTime(text).toDate()
-    }
-
-    override fun valueToString(value: Any?): String {
-        if (value is Calendar) {
-            return formatter.print(value.time.time)
-        }
-        if (value === null) {
-            return ""
-        }
-        throw GadsuException("Expected date picker value to be either a GregorianCalender instance or null, but was: $value")
-    }
-}

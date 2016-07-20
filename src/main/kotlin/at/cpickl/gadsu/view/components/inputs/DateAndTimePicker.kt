@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.service.clearSeconds
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import org.joda.time.DateTime
 import javax.swing.JLabel
 import javax.swing.JTextField
