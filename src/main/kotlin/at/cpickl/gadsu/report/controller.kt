@@ -6,6 +6,7 @@ import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGenerator
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -29,7 +30,8 @@ open class ReportController @Inject constructor(
         private val currentClient: CurrentClient,
         private val preferences: Provider<PreferencesData>,
         private val dialogs: Dialogs,
-        private val multiProtocolGenerator: MultiProtocolGenerator
+        private val multiProtocolGenerator: MultiProtocolGenerator,
+        private val multiProtocolRepository: MultiProtocolRepository
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -52,11 +54,15 @@ open class ReportController @Inject constructor(
     }
 
     @Subscribe open fun onCreateMultiProtocolEvent(event: CreateMultiProtocolEvent) {
-        val author = preferences.get().username
-        val printDate = clock.now()
-        val cover = MultiProtocolCoverData(printDate, author)
-
         val protocols = multiProtocolWizard()
+        if (protocols.isEmpty()) {
+            dialogs.show("Sammelprotokoll", "Keine (noch nicht in Sammelprotokoll vorhandene) Behandlungen gefunden :(")
+            return
+        }
+
+        val printDate = clock.now()
+        val author = preferences.get().username
+        val cover = MultiProtocolCoverData(printDate, author)
 
         // TODO use preferences for recent save multi protocol report path
         ChooseFile.savePdf(
@@ -81,13 +87,13 @@ open class ReportController @Inject constructor(
     }
 
     private fun newProtocolReportData(client: Client): ProtocolReportData {
-        val rows = treatmentService.findAllFor(client).sortedBy { it.number }.map { it.toReportData() }
+        val rows = treatmentService.findAllFor(client).sortedBy { it.number }.filter { !multiProtocolRepository.hasBeenProtocolizedYet(it) }.map { it.toReportData() }
         val author = preferences.get().username
         val printDate = clock.now()
         return ProtocolReportData(author, printDate, client.toReportData(), rows)
     }
 }
 
-private fun Treatment.toReportData() = TreatmentReportData(number, note.nullIfEmpty(), date)
+private fun Treatment.toReportData() = TreatmentReportData(id!!, number, note.nullIfEmpty(), date)
 
 private fun Client.toReportData() = ClientReportData(fullName, children.nullIfEmpty(), job.nullIfEmpty(), picture.toReportRepresentation(), CPropsComposer.compose(this))

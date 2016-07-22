@@ -56,18 +56,19 @@ data class ClientReportData(
 }
 
 class TreatmentReportData(
+        val id: String, // only used for DB insert, not for actual report (UI)
         val number: Int,
         val note: String?,
         date: DateTime
 ) {
     companion object {
         val DUMMIES = listOf(
-                TreatmentReportData(1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum.", DateTime.now()),
-                TreatmentReportData(2, "something boring", DateTime.now().plusDays(1)),
-                TreatmentReportData(3, "a little bit better", DateTime.now().plusDays(4)),
-                TreatmentReportData(4, "very goooood", DateTime.now().plusDays(42)),
-                TreatmentReportData(5, "not good", DateTime.now().plusDays(43)),
-                TreatmentReportData(6, "final one", DateTime.now().plusDays(45))
+                TreatmentReportData("", 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum.", DateTime.now()),
+                TreatmentReportData("", 2, "something boring", DateTime.now().plusDays(1)),
+                TreatmentReportData("", 3, "a little bit better", DateTime.now().plusDays(4)),
+                TreatmentReportData("", 4, "very goooood", DateTime.now().plusDays(42)),
+                TreatmentReportData("", 5, "not good", DateTime.now().plusDays(43)),
+                TreatmentReportData("", 6, "final one", DateTime.now().plusDays(45))
         )
     }
 

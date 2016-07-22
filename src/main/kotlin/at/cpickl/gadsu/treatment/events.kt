@@ -40,7 +40,11 @@ class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent() {
 
 class TreatmentChangedEvent(val treatment: Treatment) : AppEvent()
 
-class TreatmentDeletedEvent(val treatment: Treatment) : AppEvent()
+class TreatmentDeletedEvent(
+        val treatment: Treatment,
+        val treatmentHasBeenProtocolizedYet: Boolean // dont calculate when receiving this event, as the treatment has been deleted already in DB ;)
+) : AppEvent() {
+}
 
 class PreviousTreatmentEvent() : UserEvent()
 class NextTreatmentEvent() : UserEvent()

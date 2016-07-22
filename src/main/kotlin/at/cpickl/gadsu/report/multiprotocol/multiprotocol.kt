@@ -2,7 +2,9 @@ package at.cpickl.gadsu.report.multiprotocol
 
 import at.cpickl.gadsu.report.ProtocolGenerator
 import at.cpickl.gadsu.report.ProtocolReportData
+import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.formatDateTimeLong
+import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
 import com.itextpdf.text.Document
 import com.itextpdf.text.Element
@@ -43,12 +45,18 @@ data class MultiProtocolCoverData(
 }
 
 class MultiProtocolGeneratorImpl @Inject constructor(
-        private val protocolGenerator: ProtocolGenerator
-) : MultiProtocolGenerator {
+        private val protocolGenerator: ProtocolGenerator,
+        private val protocolRepository: MultiProtocolRepository,
+        private val clock: Clock,
+        private val bus: EventBus
+        ) : MultiProtocolGenerator {
 
     override fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
         val protocols = mergeProtocols(protocolDatas)
         addCover(protocols, coverData, target)
+
+        protocolRepository.insert(MultiProtocol(null, clock.now(), "dummy description", protocolDatas.flatMap { it.rows.map { it.id } }))
+        bus.post(MultiProtocolGeneratedEvent())
     }
 
     private fun mergeProtocols(protocolDatas: List<ProtocolReportData>): PdfReader {

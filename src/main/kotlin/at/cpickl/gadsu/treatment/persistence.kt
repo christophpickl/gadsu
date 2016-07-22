@@ -6,6 +6,7 @@ import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensureNotPersisted
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
@@ -29,7 +30,7 @@ interface TreatmentRepository {
 
     // used for the treatment progress bar
     // !!! in future exclude those already used in protocol !!!
-    fun countAll(): Int
+    fun countAllNonProtocolized(): Int
 
 
 }
@@ -99,9 +100,15 @@ class TreatmentJdbcRepository @Inject constructor(
         return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
     }
 
-    override fun countAll(): Int {
-        log.debug("countAll()")
-        return jdbcx.count(TABLE)
+    override fun countAllNonProtocolized(): Int {
+        log.debug("countAllNonProtocolized()")
+//        val total = jdbcx.count(TABLE)
+//        val protocolized = jdbcx.queryForObject<Int>("SELECT COUNT(*) FROM $TABLE JOIN ${MultiProtocolJdbcRepository.TABLE_KEYS} ON ($TABLE.id = ${MultiProtocolJdbcRepository.TABLE_KEYS}.id_treatment)",
+//                emptyArray(), RowMapper { rs, i -> rs.getInt(1) })
+//        return total - protocolized
+
+        return jdbcx.queryForObject<Int>("SELECT COUNT(*) FROM $TABLE WHERE id NOT IN (SELECT DISTINCT(id_treatment) FROM ${MultiProtocolJdbcRepository.TABLE_KEYS})",
+                emptyArray(), RowMapper { rs, i -> rs.getInt(1) })
     }
 
     override fun calculateMaxNumberUsed(client: Client): Int? {

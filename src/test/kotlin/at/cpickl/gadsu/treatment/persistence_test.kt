@@ -1,18 +1,16 @@
 package at.cpickl.gadsu.treatment
 
+import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocol
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.testinfra.Expects
+import at.cpickl.gadsu.testinfra.*
 import at.cpickl.gadsu.testinfra.Expects.expect
-import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
-import at.cpickl.gadsu.testinfra.expectPersistenceException
-import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.testinfra.savedValidInstance2
-import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.springframework.dao.DataIntegrityViolationException
@@ -30,13 +28,14 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     private val treatmentNumber1 = unsavedTreatment.copy(number = 1)
     private val treatmentNumber2 = unsavedTreatment.copy(number = 2)
     private val treatmentNumber3 = unsavedTreatment.copy(number = 3)
-
+    private lateinit var protocolRepo: MultiProtocolRepository
     private lateinit var testee: TreatmentJdbcRepository
 
     @BeforeMethod
     fun setUp() {
         idGenerator = SequencedTestableIdGenerator()
         testee = TreatmentJdbcRepository(jdbcx, idGenerator)
+        protocolRepo = MultiProtocolJdbcRepository(jdbcx, idGenerator)
 
 
         ClientJdbcRepository(jdbcx, object : IdGenerator {
@@ -184,6 +183,31 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
 
         assertThat(testee.countAllFor(client), equalTo(2))
         assertThat(testee.countAllFor(client2), equalTo(0))
+    }
+
+    // --------------------------------------------------------------------------- count protocolized
+
+    fun `count protocolized for empty`() {
+        assertThat(testee.countAllNonProtocolized(), equalTo(0))
+    }
+
+    fun `count protocolized, 0 protocolized and 1 unprotocolized should return 1`() {
+        testee.insert(unsavedTreatment)
+
+        assertThat(testee.countAllNonProtocolized(), equalTo(1))
+    }
+
+    fun `count protocolized, 1 protocolized and 2 unprotocolized should return 2`() {
+        val treat1 = testee.insert(unsavedTreatment)
+        insertProtocolEntryFor(treat1)
+        testee.insert(unsavedTreatment)
+        testee.insert(unsavedTreatment)
+
+        assertThat(testee.countAllNonProtocolized(), equalTo(2))
+    }
+
+    private fun insertProtocolEntryFor(treatment: Treatment) {
+        protocolRepo.insert(MultiProtocol(null, DUMMY_CREATED, "testDescription", listOf(treatment.id!!)))
     }
 
     // --------------------------------------------------------------------------- private infra

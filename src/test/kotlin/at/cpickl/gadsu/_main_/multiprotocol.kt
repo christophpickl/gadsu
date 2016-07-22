@@ -9,7 +9,11 @@ import at.cpickl.gadsu.report.JasperProtocolGenerator
 import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.tcm.model.XProps
+import at.cpickl.gadsu.testinfra.SimpleTestableClock
+import com.google.common.eventbus.EventBus
+import org.mockito.Mockito
 import java.io.File
 
 
@@ -26,6 +30,8 @@ fun main(args: Array<String>) {
                     //                          picture = newPicture NO! does not work! :(
             )
     ))
-    MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl())).generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
+
+    MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl()), Mockito.mock(MultiProtocolRepository::class.java), SimpleTestableClock(), EventBus())
+            .generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
     println("DONE")
 }

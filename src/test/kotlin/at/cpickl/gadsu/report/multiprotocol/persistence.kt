@@ -4,6 +4,7 @@ import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.service.toDateTime
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.countTableEntries
+import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
@@ -68,16 +69,27 @@ class MultiProtocolJdbcRepositoryTest : HsqldbTest() {
         )
     }
 
-    fun deleteAllForClient() {
+    fun deleteTreatmentRefs() {
         val client = insertClientViaRepo()
         val treat1 = insertTreatment(Treatment.unsavedValidInstance(client), "ID_TREAT_1")
         testee.insert(MultiProtocol(null, DUMMY_CREATED, "myDescription", listOf(treat1.id!!)))
         assertThat(jdbcx.countTableEntries(TABLE_MULTIPROTOCOL), equalTo(1))
         assertThat(jdbcx.countTableEntries(TABLE_MULTIPROTOCOL_KEYS), equalTo(1))
 
-        testee.deleteAllTreatmentRefsFor(client)
+        testee.deleteTreatmentRefs(treat1)
         assertThat(jdbcx.countTableEntries(TABLE_MULTIPROTOCOL), equalTo(1))
         assertEmptyTable(TABLE_MULTIPROTOCOL_KEYS)
+    }
+
+    fun `hasBeenProtcolized, nope`() {
+        assertThat(testee.hasBeenProtocolizedYet(Treatment.savedValidInstance("client1", "treatment1")), equalTo(false))
+    }
+
+    fun `hasBeenProtcolized, yep`() {
+        val client = insertClientViaRepo()
+        val treat1 = insertTreatment(Treatment.Companion.unsavedValidInstance(client), "ID_TREAT_1")
+        testee.insert(MultiProtocol(null, DUMMY_CREATED, "myDescription", listOf(treat1.id!!)))
+        assertThat(testee.hasBeenProtocolizedYet(treat1), equalTo(true))
     }
 
 }

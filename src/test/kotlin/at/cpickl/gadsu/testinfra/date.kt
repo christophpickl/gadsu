@@ -1,11 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.DateFormats
-import at.cpickl.gadsu.service.clearMinutes
-import at.cpickl.gadsu.service.clearSeconds
-import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.service.parseDateTime
+import at.cpickl.gadsu.service.*
 import org.joda.time.DateTime
 
 
@@ -21,8 +16,9 @@ val TEST_DATE_1985 = DateFormats.DATE.parseDateTime("10.03.1985").clearTime()
 
 class SimpleTestableClock(_now: DateTime? = null): Clock {
 
-    var now = _now ?: TEST_DATETIME1
+    var now: DateTime = _now ?: TEST_DATETIME1
 
     override fun now() = now
     override fun nowWithoutSeconds() = now.clearSeconds()
+
 }

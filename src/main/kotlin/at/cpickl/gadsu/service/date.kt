@@ -64,28 +64,28 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 
 // --------------------------------------------------------------------------- extension methods
 
-fun DateTime.formatTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.print(this)
-fun DateTime.formatDate() = DateFormats.DATE.print(this)
-fun DateTime.formatDateTime() = DateFormats.DATE_TIME.print(this)
-fun DateTime.formatDateTimeTalkative() = DateFormats.DATE_TIME_TALKATIVE.print(this)
-fun DateTime.formatDateTimeSemiLong() = DateFormats.DATE_TIME_SEMILONG.print(this)
-fun DateTime.formatDateTimeLong() = DateFormats.DATE_TIME_LONG.print(this)
-fun DateTime.formatDateTimeFile() = DateFormats.DATE_TIME_FILE.print(this)
+fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
+fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
+fun DateTime.formatDateTime(): String = DateFormats.DATE_TIME.print(this)
+fun DateTime.formatDateTimeTalkative(): String = DateFormats.DATE_TIME_TALKATIVE.print(this)
+fun DateTime.formatDateTimeSemiLong(): String = DateFormats.DATE_TIME_SEMILONG.print(this)
+fun DateTime.formatDateTimeLong(): String = DateFormats.DATE_TIME_LONG.print(this)
+fun DateTime.formatDateTimeFile(): String = DateFormats.DATE_TIME_FILE.print(this)
 
-fun String.parseTimeWithoutSeconds() = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
-fun String.parseDate() = DateFormats.DATE.parseDateTime(this)
-fun String.parseDateTime() = DateFormats.DATE_TIME.parseDateTime(this)
-fun String.parseDateTimeFile() = DateFormats.DATE_TIME_FILE.parseDateTime(this)
+fun String.parseTimeWithoutSeconds(): DateTime = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
+fun String.parseDate(): DateTime = DateFormats.DATE.parseDateTime(this)
+fun String.parseDateTime(): DateTime = DateFormats.DATE_TIME.parseDateTime(this)
+fun String.parseDateTimeFile(): DateTime = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 
 
-fun DateTime.withAllButHourAndMinute(copyReference: DateTime) =
+fun DateTime.withAllButHourAndMinute(copyReference: DateTime): DateTime =
         copyReference.withHourOfDay(this.hourOfDay).withMinuteOfHour(this.minuteOfHour)
 
 
 
-fun DateTime.clearSeconds() = this.withSecondOfMinute(0).withMillisOfSecond(0)
-fun DateTime.clearMinutes() = this.withMinuteOfHour(0).clearSeconds()
-fun DateTime.clearTime() = this.withHourOfDay(0).clearMinutes()
+fun DateTime.clearSeconds(): DateTime = this.withSecondOfMinute(0).withMillisOfSecond(0)
+fun DateTime.clearMinutes(): DateTime = this.withMinuteOfHour(0).clearSeconds()
+fun DateTime.clearTime(): DateTime = this.withHourOfDay(0).clearMinutes()
 
 fun Date.toDateTime() = DateTime(this)
 

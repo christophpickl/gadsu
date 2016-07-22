@@ -2,6 +2,8 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratedEvent
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.colorByPercentage
 import com.google.common.eventbus.Subscribe
@@ -15,7 +17,8 @@ import javax.swing.JPanel
 @Logged
 open class TreatmentGoalController @Inject constructor(
     prefs: Prefs,
-    private val treatmentRepository: TreatmentRepository
+    private val treatmentRepository: TreatmentRepository,
+    private val multiProtocolRepository: MultiProtocolRepository
 ) {
 
     val enabled = prefs.preferencesData.treatmentGoal != null
@@ -23,8 +26,7 @@ open class TreatmentGoalController @Inject constructor(
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         if (enabled) {
-            val currentTreatments = treatmentRepository.countAll()
-            view.updateCurrent(currentTreatments)
+            updateTreatmentsNumber()
         }
     }
 
@@ -33,7 +35,18 @@ open class TreatmentGoalController @Inject constructor(
     }
 
     @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
-        view.decreaseCurrent()
+        if (!event.treatmentHasBeenProtocolizedYet) {
+            view.decreaseCurrent()
+        }
+    }
+
+    @Subscribe open fun onMultiProtocolGeneratedEvent(event: MultiProtocolGeneratedEvent) {
+        updateTreatmentsNumber()
+    }
+
+    private fun updateTreatmentsNumber() {
+        val currentTreatments = treatmentRepository.countAllNonProtocolized()
+        view.updateCurrent(currentTreatments)
     }
 }
 
@@ -60,6 +73,7 @@ class TreatmentGoalView(private val goal: Int, private var current: Int) : JPane
     }
 
     fun updateCurrent(newCurrent: Int) {
+        if (newCurrent < 0) throw IllegalArgumentException("Treatment goal must not be negative! Was: $newCurrent")
         current = newCurrent
         progressText = "$current/$goal"
         percentDone = (current.toDouble() / goal)

@@ -15,6 +15,7 @@ interface Jdbcx {
     fun <E> query2(sql: String, rowMapper: RowMapper<E>, vararg args: Any): MutableList<E>
     fun <E> queryMaybeSingle(rowMapper: RowMapper<E>, sql: String, args: Array<out Any?>): E?
     fun <E> querySingle(rowMapper: RowMapper<E>, sql: String, vararg args: Any?): E
+    fun <E> queryForObject(sql: String, args: Array<Any>, mapper: RowMapper<E>): E
 
     fun update(sql: String, vararg args: Any?): Int
     fun updateSingle(sql: String, vararg args: Any?)
@@ -57,6 +58,11 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
             }
         })
     }
+
+    override fun <E> queryForObject(sql: String, args: Array<Any>, mapper: RowMapper<E>): E {
+        return jdbc.queryForObject(sql, args, mapper)
+    }
+
     override fun <E> querySingle(rowMapper: RowMapper<E>, sql: String, args: Array<out Any?>): E {
         log.trace("querySingle(rowMapper, sql='{}', args)", sql)
         val maybe = queryMaybeSingle(rowMapper, sql, args) ?:

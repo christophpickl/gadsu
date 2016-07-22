@@ -71,7 +71,6 @@ class TreatmentServiceImpl @Inject constructor(
         log.debug("deleteAllFor(client={})", client)
 
         jdbcx.transactionSafe {
-            multiProtocolRepository.deleteAllTreatmentRefsFor(client)
             findAllFor(client).forEach {
                 _delete(it)
             }
@@ -84,8 +83,11 @@ class TreatmentServiceImpl @Inject constructor(
     }
 
     private fun _delete(treatment: Treatment) {
+        val beenProtocolized = multiProtocolRepository.hasBeenProtocolizedYet(treatment) // has to happen before multiProtocolRepository.delete(treat)
+        multiProtocolRepository.deleteTreatmentRefs(treatment)
         repository.delete(treatment)
-        bus.post(TreatmentDeletedEvent(treatment))
+
+        bus.post(TreatmentDeletedEvent(treatment, beenProtocolized))
     }
 
 }
