@@ -14,6 +14,7 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolSwingWindow
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.SimpleTestableClock
 import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.SwingFactory
 import com.google.common.eventbus.EventBus
 import org.mockito.Mockito
 import java.io.File
@@ -25,7 +26,7 @@ fun main(args: Array<String>) {
 }
 
 private fun view() {
-    SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java)).start(treatmentRepository.countAllNonProtocolized()) }
+    SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java), SwingFactory(EventBus(), SimpleTestableClock())).start(2) }
 }
 
 private fun generate() {
