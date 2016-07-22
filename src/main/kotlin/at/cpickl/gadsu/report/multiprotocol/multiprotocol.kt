@@ -24,11 +24,16 @@ class MultiProtocolModule : AbstractModule() {
         bind(MultiProtocolGenerator::class.java).to(MultiProtocolGeneratorImpl::class.java)
         bind(MultiProtocolRepository::class.java).to(MultiProtocolJdbcRepository::class.java)
 
+        bind(MultiProtocolWindow::class.java).to(MultiProtocolSwingWindow::class.java)
     }
 }
 
 interface MultiProtocolGenerator {
-    fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
+
+    fun generatePdf(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
+
+    fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
+
 }
 
 interface ReportMetaData {
@@ -51,9 +56,13 @@ class MultiProtocolGeneratorImpl @Inject constructor(
         private val bus: EventBus
         ) : MultiProtocolGenerator {
 
-    override fun generate(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
+    override fun generatePdf(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
         val protocols = mergeProtocols(protocolDatas)
         addCover(protocols, coverData, target)
+    }
+
+    override fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
+        generatePdf(target, coverData, protocolDatas)
 
         protocolRepository.insert(MultiProtocol(null, clock.now(), "dummy description", protocolDatas.flatMap { it.rows.map { it.id } }))
         bus.post(MultiProtocolGeneratedEvent())

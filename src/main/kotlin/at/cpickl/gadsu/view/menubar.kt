@@ -1,45 +1,22 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.Event
-import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.SHORTCUT_MODIFIER
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.*
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientChangeStateEvent
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.ClientUpdatedEvent
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.ShowInClientsListEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
-import at.cpickl.gadsu.report.CreateMultiProtocolEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
-import at.cpickl.gadsu.service.PrintFormEvent
-import at.cpickl.gadsu.service.FormSaveEvent
-import at.cpickl.gadsu.service.FormType
-import at.cpickl.gadsu.service.CurrentChangedEvent
-import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
-import at.cpickl.gadsu.service.LOG
-import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
+import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
+import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
 import javax.inject.Inject
-import javax.swing.JCheckBoxMenuItem
-import javax.swing.JComponent
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import javax.swing.JMenuItem
-import javax.swing.JPopupMenu
-import javax.swing.KeyStroke
+import javax.swing.*
 
 
 enum class MenuBarEntry {
@@ -79,7 +56,7 @@ open class GadsuMenuBarController @Inject constructor(
             // client must never be null, as menu item will be disabled if there is no client
             // TODO @REFACTOR - rethink this double dispatching. aint necessary :-/
             MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
-            MenuBarEntry.REPORT_MULTI_PROTOCOL -> bus.post(CreateMultiProtocolEvent())
+            MenuBarEntry.REPORT_MULTI_PROTOCOL -> bus.post(RequestCreateMultiProtocolEvent())
 
 //            else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
             MenuBarEntry.RECONNECT_INTERNET_CONNECTION -> bus.post(ReconnectInternetConnectionEvent())

@@ -10,14 +10,25 @@ import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolSwingWindow
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.SimpleTestableClock
+import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import org.mockito.Mockito
 import java.io.File
+import javax.swing.SwingUtilities
 
 
 fun main(args: Array<String>) {
+    view()
+}
+
+private fun view() {
+    SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java)).start(treatmentRepository.countAllNonProtocolized()) }
+}
+
+private fun generate() {
     //    val newPicture = "/gadsu/images/profile_pic-default_man.jpg".toMyImage().toReportRepresentation()
     val dummyClient = ProtocolReportData.DUMMY.client
     val protocols = listOf(ProtocolReportData.DUMMY.copy(
@@ -32,6 +43,8 @@ fun main(args: Array<String>) {
     ))
 
     MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl()), Mockito.mock(MultiProtocolRepository::class.java), SimpleTestableClock(), EventBus())
-            .generate(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
+            .generatePdfPersistAndDispatch(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
     println("DONE")
 }
+
+

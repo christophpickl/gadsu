@@ -4,37 +4,38 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
-import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
-import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGenerator
-import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
+import at.cpickl.gadsu.report.multiprotocol.*
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider
-import org.slf4j.LoggerFactory
+import java.io.File
 import javax.inject.Inject
+import javax.swing.SwingUtilities
 
 
 @Logged
 open class ReportController @Inject constructor(
         private val clientService: ClientService,
         private val treatmentService: TreatmentService,
+        private val treatmentRepository: TreatmentRepository,
         private val protocolGenerator: ProtocolGenerator,
         private val clock: Clock,
         private val currentClient: CurrentClient,
         private val preferences: Provider<PreferencesData>,
         private val dialogs: Dialogs,
         private val multiProtocolGenerator: MultiProtocolGenerator,
-        private val multiProtocolRepository: MultiProtocolRepository
+        private val multiProtocolRepository: MultiProtocolRepository,
+        private val windowProvider: Provider<MultiProtocolWindow>
 ) {
-
-    private val log = LoggerFactory.getLogger(javaClass)
+    private var recentWindow: MultiProtocolWindow? = null
 
     @Subscribe open fun onCreateProtocolEvent(event: CreateProtocolEvent) {
         val client = currentClient.data
@@ -53,11 +54,30 @@ open class ReportController @Inject constructor(
         protocolGenerator.view(report)
     }
 
-    @Subscribe open fun onCreateMultiProtocolEvent(event: CreateMultiProtocolEvent) {
+    @Subscribe open fun onRequestCreateMultiProtocolEvent(event: RequestCreateMultiProtocolEvent) {
+        val protocolizableTreatments = treatmentRepository.countAllNonProtocolized()
+        val window = windowProvider.get()
+        recentWindow = window
+        SwingUtilities.invokeLater { window.start(protocolizableTreatments) }
+    }
+
+    @Subscribe open fun onReallyCreateMultiProtocolEvent(event: ReallyCreateMultiProtocolEvent) {
+        createAndSave() {
+            it, cover, protocols -> multiProtocolGenerator.generatePdfPersistAndDispatch(it, cover, protocols)
+            recentWindow?.closeWindow()
+        }
+    }
+
+    @Subscribe open fun onTestCreateMultiProtocolEvent(event: TestCreateMultiProtocolEvent) {
+        createAndSave() {
+            it, cover, protocols -> multiProtocolGenerator.generatePdf(it, cover, protocols)
+        }
+    }
+
+    private fun createAndSave(onSuccessCallback: (File, MultiProtocolCoverData, List<ProtocolReportData>) -> Unit) {
         val protocols = multiProtocolWizard()
         if (protocols.isEmpty()) {
-            dialogs.show("Sammelprotokoll", "Keine (noch nicht in Sammelprotokoll vorhandene) Behandlungen gefunden :(")
-            return
+            throw IllegalStateException("Expected protocols to have at least one treatment!")
         }
 
         val printDate = clock.now()
@@ -66,20 +86,20 @@ open class ReportController @Inject constructor(
 
         // TODO use preferences for recent save multi protocol report path
         ChooseFile.savePdf(
-            fileTypeLabel = "Sammelprotokoll",
-            onSuccess = {
-                // TODO show progress bar
-                multiProtocolGenerator.generate(it, cover, protocols)
-                dialogs.show(
-                    title = "Sammelprotokoll erstellt",
-                    message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",
-                    type = DialogType.INFO
-                )
-            }
+                fileTypeLabel = "Sammelprotokoll",
+                onSuccess = {
+                    // TODO show progress bar
+                    onSuccessCallback(it, cover, protocols)
+                    dialogs.show(
+                            title = "Sammelprotokoll erstellt",
+                            message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",
+                            type = DialogType.INFO
+                    )
+                }
         )
     }
 
-    private fun multiProtocolWizard(): List<ProtocolReportData>{
+    private fun multiProtocolWizard(): List<ProtocolReportData> {
         // ... use wizard to select data ...
         return clientService.findAll().map {
             newProtocolReportData(it) // just select all ATM

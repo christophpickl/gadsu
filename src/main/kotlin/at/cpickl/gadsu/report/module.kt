@@ -27,9 +27,6 @@ class ReportModule : AbstractModule() {
  */
 class CreateProtocolEvent() : UserEvent()
 
-class CreateMultiProtocolEvent() : UserEvent()
-
-
 
 class ReportException(message: String, cause: Exception? = null) : GadsuException(message, cause)
 

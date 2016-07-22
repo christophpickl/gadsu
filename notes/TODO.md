@@ -1,4 +1,5 @@
 
+- niemals JFrame verwenden (fuer non-mainframes) sondern immer nur window&co
 - zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
 - breitere textfelder: mail, strasse
 
