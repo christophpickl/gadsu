@@ -1,9 +1,11 @@
 package at.cpickl.gadsu.report
 
+import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.report.multiprotocol.*
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
@@ -33,7 +35,8 @@ open class ReportController @Inject constructor(
         private val dialogs: Dialogs,
         private val multiProtocolGenerator: MultiProtocolGenerator,
         private val multiProtocolRepository: MultiProtocolRepository,
-        private val windowProvider: Provider<MultiProtocolWindow>
+        private val windowProvider: Provider<MultiProtocolWindow>,
+        private val prefs: Prefs
 ) {
     private var recentWindow: MultiProtocolWindow? = null
 
@@ -74,6 +77,12 @@ open class ReportController @Inject constructor(
         }
     }
 
+    @Subscribe open fun onQuitEvent(event: QuitEvent) {
+        if (recentWindow != null) {
+            recentWindow!!.closeWindow()
+        }
+    }
+
     private fun createAndSave(onSuccessCallback: (File, MultiProtocolCoverData, List<ProtocolReportData>) -> Unit) {
         val protocols = multiProtocolWizard()
         if (protocols.isEmpty()) {
@@ -84,12 +93,13 @@ open class ReportController @Inject constructor(
         val author = preferences.get().username
         val cover = MultiProtocolCoverData(printDate, author)
 
-        // TODO use preferences for recent save multi protocol report path
         ChooseFile.savePdf(
                 fileTypeLabel = "Sammelprotokoll",
+                currentDirectory = prefs.recentSaveMultiProtocolFolder,
                 onSuccess = {
                     // TODO show progress bar
                     onSuccessCallback(it, cover, protocols)
+                    prefs.recentSaveMultiProtocolFolder = it.parentFile
                     dialogs.show(
                             title = "Sammelprotokoll erstellt",
                             message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",

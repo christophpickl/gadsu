@@ -14,6 +14,7 @@ interface Prefs {
     var windowDescriptor: WindowDescriptor?
     var clientPictureDefaultFolder: File
     var recentSaveReportFolder: File
+    var recentSaveMultiProtocolFolder: File
 
     fun clear()
 }
@@ -32,9 +33,9 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
         private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
         private val KEY_CLIENT_PICTURE_DEFAULT_FOLDER = "CLIENT_PICTURE_DEFAULT_FOLDER"
         private val KEY_RECENT_SAVE_REPORT_FOLDER = "RECENT_SAVE_REPORT_FOLDER"
-
-
+        private val KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER = "KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER"
     }
+
     private val log = LoggerFactory.getLogger(javaClass)
     private var _preferences: Preferences? = null
 
@@ -104,17 +105,32 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 
 
     override var clientPictureDefaultFolder: File
-        get() = File(preferences.get(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, System.getProperty("user.home")))
+        get() = recentFolder(KEY_CLIENT_PICTURE_DEFAULT_FOLDER)
         set(value) {
             log.trace("set clientPictureDefaultFolder(value={})", value.absolutePath)
             preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
         }
     override var recentSaveReportFolder: File
-        get() = File(preferences.get(KEY_RECENT_SAVE_REPORT_FOLDER, System.getProperty("user.home")))
+        get() = recentFolder(KEY_RECENT_SAVE_REPORT_FOLDER)
         set(value) {
             log.trace("set recentSaveReportFolder(value={})", value.absolutePath)
             preferences.put(KEY_RECENT_SAVE_REPORT_FOLDER, value.absolutePath)
         }
+    override var recentSaveMultiProtocolFolder: File
+        get() = recentFolder(KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER)
+        set(value) {
+            log.trace("set recentSaveMultiProtocolFolder(value={})", value.absolutePath)
+            preferences.put(KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER, value.absolutePath)
+        }
+    private fun recentFolder(key: String) : File {
+        val path = preferences.get(key, null) ?: return File(System.getProperty("user.home"))
+        val folder = File(path)
+        if (!folder.exists() || !folder.isDirectory) {
+            log.debug("Recent folder does not exist (anymore), going to return user home directory instead.")
+            return File(System.getProperty("user.home"))
+        }
+        return folder
+    }
 
     override fun clear() {
         log.info("clear()")
