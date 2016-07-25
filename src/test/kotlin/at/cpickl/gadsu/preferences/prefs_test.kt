@@ -13,7 +13,7 @@ import java.util.prefs.Preferences
 
     private val testDescriptor = WindowDescriptor(Point(1, 2), Dimension(300, 400))
     private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", 20)
-    private val testPicFolder = File("testPicFolder/foobar/")
+    private val testPicFolder = File("src/test/resources")
 
     private val prefNode = javaClass
     private var prefs = JavaPrefs(prefNode)
