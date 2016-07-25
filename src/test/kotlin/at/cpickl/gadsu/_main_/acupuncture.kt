@@ -1,10 +1,6 @@
 package at.cpickl.gadsu._main_
 
-import at.cpickl.gadsu.acupuncture.AcupunctureController
-import at.cpickl.gadsu.acupuncture.AcupunctureFrame
-import at.cpickl.gadsu.acupuncture.AcupunctureList
-import at.cpickl.gadsu.acupuncture.AcupunctureServiceImpl
-import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
+import at.cpickl.gadsu.acupuncture.*
 import at.cpickl.gadsu.tcm.model.StaticAcupunctureRepository
 import com.google.common.eventbus.EventBus
 
