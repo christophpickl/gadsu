@@ -51,8 +51,7 @@ open class GadsuMenuBarController @Inject constructor(
     }
 
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
-        // MINOR i dont get kotlin :-/
-        val enforceRemainingBranchesKotlinBug = when (event.entry) {
+        when (event.entry) {
             // client must never be null, as menu item will be disabled if there is no client
             // TODO @REFACTOR - rethink this double dispatching. aint necessary :-/
             MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
@@ -60,7 +59,7 @@ open class GadsuMenuBarController @Inject constructor(
 
 //            else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
             MenuBarEntry.RECONNECT_INTERNET_CONNECTION -> bus.post(ReconnectInternetConnectionEvent())
-        }
+        }.javaClass // enforce compiler to ensure all branches are covered
     }
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {

@@ -13,6 +13,7 @@ open class MyTextArea constructor(
         visibleRows: Int? = null
 ) : JTextArea() {
     init {
+        focusTraversalWithTabs()
         name = viewName
         if (visibleRows != null) {
             rows = visibleRows
