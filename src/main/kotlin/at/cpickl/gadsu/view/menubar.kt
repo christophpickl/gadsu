@@ -85,12 +85,13 @@ open class GadsuMenuBar @Inject constructor(
 
     private val clientSeperator1 = JPopupMenu.Separator()
     private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", { ShowInClientsListEvent(it) })
+    val clientSave = buildItem("Klient speichern", SaveClientEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
     private val clientActivate = buildItem("Klient aktivieren", ClientChangeStateEvent(ClientState.ACTIVE))
     private val clientDeactivate = buildItem("Klient deaktivieren", ClientChangeStateEvent(ClientState.INACTIVE))
     private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
-    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientShowInactives, clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
+    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientShowInactives, clientSave, clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", PreviousTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
     val treatmentNext = buildItem("N\u00e4chste Behandlung", NextTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
@@ -146,6 +147,7 @@ open class GadsuMenuBar @Inject constructor(
     }
 
     private fun menuEdit() = JMenu("Bearbeiten").apply {
+        add(clientSave)
         add(clientActivate)
         add(clientDeactivate)
     }
@@ -171,6 +173,7 @@ open class GadsuMenuBar @Inject constructor(
         log.trace("currentClient(client={})", client)
         val isPersisted = client?.yetPersisted ?: false
         itemProtocol.isEnabled = isPersisted
+
         if (client == null) {
             clientActivate.isVisible = false
             clientDeactivate.isVisible = false
