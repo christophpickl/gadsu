@@ -26,7 +26,12 @@ fun main(args: Array<String>) {
 }
 
 private fun view() {
-    SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java), SwingFactory(EventBus(), SimpleTestableClock())).start(2) }
+    // SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java), SwingFactory(EventBus(), SimpleTestableClock())).start(2) }
+    // SwingUtilities.invokeLater { MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java)).start(treatmentRepository.countAllNonProtocolized()) }
+    SwingUtilities.invokeLater {
+        MultiProtocolSwingWindow(Mockito.mock(MainFrame::class.java), SwingFactory(EventBus(), SimpleTestableClock()))
+                .start(42)
+    }
 }
 
 private fun generate() {
