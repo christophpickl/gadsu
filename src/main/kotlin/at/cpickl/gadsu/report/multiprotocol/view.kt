@@ -19,6 +19,7 @@ interface MultiProtocolWindow : ClosableWindow {
     fun start(protocolizableTreatments: Int)
 }
 
+// change to window instead of frame, and make it modal, so there can only be one window :)
 class MultiProtocolSwingWindow @Inject constructor(
         private val mainFrame: MainFrame,
         //        private val bus: EventBus,
