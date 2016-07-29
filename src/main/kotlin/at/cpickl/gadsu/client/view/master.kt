@@ -26,15 +26,16 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
+import java.util.*
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
 
 interface ClientMasterView {
-    val model: MyListModel<Client>
+    val model: MyListModel<ExtendedClient>
 
-    fun initClients(clients: List<Client>)
-    fun insertClient(index: Int, client: Client)
+    fun initClients(clients: List<ExtendedClient>)
+    fun insertClient(index: Int, client: ExtendedClient)
     /**
      * @param client null to deselect any selected entry
      */
@@ -48,6 +49,9 @@ interface ClientMasterView {
     fun selectPrevious()
     fun selectNext()
 
+    fun treatmentCountIncrease(clientId: String)
+    fun treatmentCountDecrease(clientId: String)
+
 }
 
 
@@ -56,12 +60,12 @@ class SwingClientMasterView @Inject constructor(
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
 
-    override val model = MyListModel<Client>()
-
+    override val model = MyListModel<ExtendedClient>()
     private val log = LoggerFactory.getLogger(javaClass)
+    private val list = JList<ExtendedClient>(model)
+    private var previousSelected: ExtendedClient? = null
+    private val client2extended : MutableMap<Client, ExtendedClient> = HashMap()
 
-    private val list = JList<Client>(model)
-    private var previousSelected: Client? = null
     init {
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
@@ -89,8 +93,8 @@ class SwingClientMasterView @Inject constructor(
 
     private fun initList() {
         list.name = ViewNames.Client.List
-        list.cellRenderer =  object : MyListCellRenderer<Client>() {
-            override fun newCell(value: Client) = ClientCell(value)
+        list.cellRenderer =  object : MyListCellRenderer<ExtendedClient>() {
+            override fun newCell(value: ExtendedClient) = ClientCell(value)
         }
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.layoutOrientation = JList.VERTICAL
@@ -103,7 +107,7 @@ class SwingClientMasterView @Inject constructor(
                 } else {
                     log.trace("List selection changed from ({}) to ({})", previousSelected, list.selectedValue)
                     if (!list.selectedValue.equals(previousSelected)) {
-                        bus.post(ClientSelectedEvent(list.selectedValue, previousSelected))
+                        bus.post(ClientSelectedEvent(list.selectedValue.client, previousSelected?.client))
                         previousSelected = list.selectedValue
                     } else {
                         log.trace("Suppressing selection event as the very same entry was selected again (changes detected).")
@@ -114,7 +118,7 @@ class SwingClientMasterView @Inject constructor(
 
         list.enableSmartPopup(bus, { selectedClient ->
             val list: List<Pair<String, () -> UserEvent>>
-            val menuDeleteClient = Pair<String, () -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(selectedClient) })
+            val menuDeleteClient = Pair<String, () -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(selectedClient.client) })
 
             if (selectedClient.picture.isUnsavedDefaultPicture) {
                 list = listOf(
@@ -124,7 +128,7 @@ class SwingClientMasterView @Inject constructor(
             } else {
                 list = listOf(
                         Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
-                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient) }),
+                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) }),
                         menuDeleteClient
                 )
             }
@@ -135,14 +139,19 @@ class SwingClientMasterView @Inject constructor(
 
     override fun asComponent() = this
 
-    override fun initClients(clients: List<Client>) {
+    override fun initClients(clients: List<ExtendedClient>) {
         log.trace("initClients(clients={})", clients)
+
         model.resetData(clients)
+
+        client2extended.clear()
+        clients.forEach { client2extended.put(it.client, it) }
     }
 
-    override fun insertClient(index: Int, client: Client) {
+    override fun insertClient(index: Int, client: ExtendedClient) {
         log.trace("insertClient(index={}, client={})", index, client)
         model.add(index, client)
+        client2extended.put(client.client, client)
     }
 
     override fun selectClient(client: Client?) {
@@ -151,19 +160,19 @@ class SwingClientMasterView @Inject constructor(
             previousSelected = null
             list.clearSelection()
         } else {
-            list.setSelectedValue(client, true)
+            list.setSelectedValue(client.toExtended(), true)
         }
     }
 
     override fun hasPrevNextNeighbour(client: Client): Pair<Client?, Client?> {
         log.trace("hasPrevNextNeighbour(client={})", client)
-        val index = model.indexOf(client)
+        val index = model.indexOf(client.toExtended())
         if (index == -1) {
             throw GadsuException("Can not compute neighbours for not list containing client: $client")
         }
         val previousNeighbour = if (index == 0) null else model.elementAt(index - 1)
         val nextNeighbour = if (index == model.size - 1) null else model.elementAt(index + 1)
-        return Pair(previousNeighbour, nextNeighbour)
+        return Pair(previousNeighbour?.client, nextNeighbour?.client)
     }
 
     override fun selectPrevious() {
@@ -178,16 +187,34 @@ class SwingClientMasterView @Inject constructor(
 
     override fun changeClient(client: Client) {
         log.trace("changeClient(client={})", client)
-        model.setElementByComparator(client, client.idComparator)
+        val xclient = client.toExtended()
+        model.setElementByComparator(xclient, xclient.idXComparator)
     }
 
     override fun deleteClient(client: Client) {
         log.trace("deleteClient(client={})", client)
-        if (model.containsById(client)) {
-            model.removeElementByComparator(client.idComparator)
+        val xclient = client.toExtended()
+        if (model.containsById(xclient)) {
+            model.removeElementByComparator(xclient.idXComparator)
+            client2extended.remove(client)
         } else {
             log.trace("client not currently displaying in master list (show inactives is disabled)")
         }
     }
+
+    override fun treatmentCountIncrease(clientId: String) {
+        xclientById(clientId).countTreatments++
+    }
+
+    override fun treatmentCountDecrease(clientId: String) {
+        xclientById(clientId).countTreatments--
+    }
+
+    private fun xclientById(clientId: String) =
+            client2extended.values.firstOrNull { it.id == clientId } ?: throw GadsuException("Not found client by ID: '$clientId'! (available: ${client2extended.values}")
+
+    private fun Client.toExtended() = client2extended[this]!!
+    private val ExtendedClient.idXComparator: (ExtendedClient) -> Boolean
+        get() = { that -> this.id.equals(that.id) }
 
 }

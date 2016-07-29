@@ -6,11 +6,7 @@ import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.transparent
 import java.awt.Color
 import java.awt.Component
-import javax.swing.BorderFactory
-import javax.swing.JComponent
-import javax.swing.JList
-import javax.swing.ListCellRenderer
-import javax.swing.UIManager
+import javax.swing.*
 
 
 interface CellView {

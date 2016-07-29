@@ -14,7 +14,6 @@ import java.awt.FlowLayout
 import javax.swing.JButton
 import javax.swing.JPanel
 
-
 fun main(args: Array<String>) {
     Framed.showWithContext({ context ->
 //        ClientTabMain(
