@@ -5,24 +5,8 @@ import at.cpickl.gadsu.client.ShowClientViewEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.treatment.CurrentTreatment
-import at.cpickl.gadsu.treatment.NextTreatmentEvent
-import at.cpickl.gadsu.treatment.OpenTreatmentEvent
-import at.cpickl.gadsu.treatment.PrefilledTreatment
-import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
-import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentBackEvent
-import at.cpickl.gadsu.treatment.TreatmentChangedEvent
-import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
-import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.treatment.TreatmentService
-import at.cpickl.gadsu.treatment.TreatmentViewFactory
-import at.cpickl.gadsu.view.ChangeMainContentEvent
-import at.cpickl.gadsu.view.GadsuMenuBar
-import at.cpickl.gadsu.view.MainContentChangedEvent
-import at.cpickl.gadsu.view.MainContentType
-import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.view.*
 import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.RegisteredKeyListener
 import at.cpickl.gadsu.view.swing.registerMyKeyListener
@@ -59,7 +43,7 @@ open class TreatmentController @Inject constructor(
 
     @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
         val treatmentAfterSave: Treatment
-        val treatmentToSave = event.treatment
+        val treatmentToSave = treatmentView!!.readTreatment()
 
         if (!treatmentToSave.yetPersisted) {
             val insertedTreatment = treatmentService.insert(treatmentToSave)

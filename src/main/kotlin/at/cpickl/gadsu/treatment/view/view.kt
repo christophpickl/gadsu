@@ -1,23 +1,11 @@
 package at.cpickl.gadsu.treatment.view
 
-import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.service.toMinutes
-import at.cpickl.gadsu.treatment.NextTreatmentEvent
-import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
-import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentBackEvent
-import at.cpickl.gadsu.treatment.TreatmentSaveEvent
-import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.MainContent
-import at.cpickl.gadsu.view.MainContentType
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.view.*
 import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -32,35 +20,14 @@ import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.Font
-import java.awt.GridBagConstraints
-import java.awt.Insets
+import java.awt.*
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
-private fun dummyLines(lineCount: Int) = 1.rangeTo(lineCount).map { "$it - eine zeile" }.joinToString("\n")
-
-fun main(args: Array<String>) {
-    GadsuSystemProperty.development.enable()
-
-    val client = Client.INSERT_PROTOTYPE.copy(id = "myId", firstName = "Anna", lastName = "Nym")
-    val treatment = Treatment.insertPrototype(clientId = client.id!!, number = 1, date = "31.12.2016 15:30:00".parseDateTime(),
-            duration = minutes(42),
-            aboutHomework = dummyLines(20), aboutContent = dummyLines(20)
-    )
-    Framed.showWithContext({ context ->
-        SwingTreatmentView(context.swing, client, treatment)
-    }, size = Dimension(800, 600))
-}
-
-
 interface TreatmentView : ModificationAware, MainContent {
+    fun readTreatment(): Treatment
     fun wasSaved(newTreatment: Treatment)
     fun enablePrev(enable: Boolean)
     fun enableNext(enable: Boolean)
@@ -68,7 +35,8 @@ interface TreatmentView : ModificationAware, MainContent {
 
 
 class SwingTreatmentView @Inject constructor(
-        private val swing: SwingFactory,
+        swing: SwingFactory,
+        menuBar: GadsuMenuBar, // this is kind a design hack, but it was quicker to do ;)
         @Assisted private val client: Client,
         @Assisted private var treatment: Treatment
 ) : GridPanel(
@@ -79,10 +47,10 @@ class SwingTreatmentView @Inject constructor(
     override val type = MainContentType.TREATMENT
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent(readTreatment()) }).gadsuWidth()
+    private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent() }).gadsuWidth()
     private val btnBack = swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }).gadsuWidth()
 
-    private val modificationChecker = ModificationChecker(this, btnSave)
+    private val modificationChecker = ModificationChecker(this, btnSave, menuBar.treatmentSave)
 
     private val fields = Fields<Treatment>(modificationChecker)
     private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
@@ -254,7 +222,7 @@ class SwingTreatmentView @Inject constructor(
 
     override fun asComponent() = this
 
-    private fun readTreatment(): Treatment {
+    override fun readTreatment(): Treatment {
         log.trace("readTreatment()")
         // use full-init constructor (not copy method!) so to be aware of changes
         return Treatment(

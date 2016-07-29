@@ -12,6 +12,7 @@ import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
 import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
+import at.cpickl.gadsu.treatment.TreatmentSaveEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
@@ -85,17 +86,18 @@ open class GadsuMenuBar @Inject constructor(
 
     private val clientSeperator1 = JPopupMenu.Separator()
     private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", { ShowInClientsListEvent(it) })
-    val clientSave = buildItem("Klient speichern", SaveClientEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
-    private val clientActivate = buildItem("Klient aktivieren", ClientChangeStateEvent(ClientState.ACTIVE))
-    private val clientDeactivate = buildItem("Klient deaktivieren", ClientChangeStateEvent(ClientState.INACTIVE))
-    private val clientTabMain = buildItem("Tab Allgemein", SelectClientTab(ClientTabType.MAIN), KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
-    private val clientTabTexts = buildItem("Tab Texte", SelectClientTab(ClientTabType.TEXTS), KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
-    private val clientTabTcm = buildItem("Tab TCM", SelectClientTab(ClientTabType.TCM), KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
+    val clientSave = buildItem("Klient speichern", { SaveClientEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
+    private val clientActivate = buildItem("Klient aktivieren", { ClientChangeStateEvent(ClientState.ACTIVE) })
+    private val clientDeactivate = buildItem("Klient deaktivieren", { ClientChangeStateEvent(ClientState.INACTIVE) })
+    private val clientTabMain = buildItem("Tab Allgemein", { SelectClientTab(ClientTabType.MAIN) }, KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
+    private val clientTabTexts = buildItem("Tab Texte", { SelectClientTab(ClientTabType.TEXTS) }, KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
+    private val clientTabTcm = buildItem("Tab TCM", { SelectClientTab(ClientTabType.TCM) }, KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
     private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientShowInactives, clientSave, clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
 
-    val treatmentPrevious = buildItem("Vorherige Behandlung", PreviousTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
-    val treatmentNext = buildItem("N\u00e4chste Behandlung", NextTreatmentEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
-    private val treatmentEntries = listOf(treatmentPrevious, treatmentNext)
+    val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
+    val treatmentNext = buildItem("N\u00e4chste Behandlung", { NextTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
+    val treatmentSave = buildItem("Behandlung speichern", { TreatmentSaveEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
+    private val treatmentEntries = listOf(treatmentPrevious, treatmentNext, treatmentSave)
 
     private val allEntries = listOf(clientEntries, treatmentEntries)
 
@@ -127,27 +129,28 @@ open class GadsuMenuBar @Inject constructor(
         val menuApp = JMenu("Datei")
 
         if (!mac.isEnabled()) {
-            menuApp.addItem("\u00DCber Gadsu", ShowAboutDialogEvent())
-            menuApp.addItem("Einstellungen", ShowPreferencesEvent(), KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, SHORTCUT_MODIFIER))
+            menuApp.addItem("\u00DCber Gadsu", { ShowAboutDialogEvent() })
+            menuApp.addItem("Einstellungen", { ShowPreferencesEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, SHORTCUT_MODIFIER))
         }
 
-        itemReconnect = menuApp.addItem("Internet Verbindung herstellen", MenuBarEntryClickedEvent(MenuBarEntry.RECONNECT_INTERNET_CONNECTION))
+        itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { MenuBarEntryClickedEvent(MenuBarEntry.RECONNECT_INTERNET_CONNECTION) })
         itemReconnect.isVisible = false
 //        val itemExport = JMenuItem("Export")
 //        itemExport.isEnabled = false
 //        menuApp.add(itemExport)
 
-        menuApp.addItem("Akupunkturpunkte", ShopAcupunctureViewEvent())
+        menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()
-            menuApp.addItem("Beenden", QuitEvent())
+            menuApp.addItem("Beenden", { QuitEvent() })
         }
         return menuApp
     }
 
     private fun menuEdit() = JMenu("Bearbeiten").apply {
         add(clientSave)
+        add(treatmentSave)
         add(clientActivate)
         add(clientDeactivate)
     }
@@ -190,7 +193,7 @@ open class GadsuMenuBar @Inject constructor(
         itemProtocol.name = ViewNames.MenuBar.ProtocolGenerate
         itemProtocol.addActionListener { bus.post(MenuBarEntryClickedEvent(MenuBarEntry.REPORT_PROTOCOL)) }
         menuReports.add(itemProtocol)
-        menuReports.addItem("Sammelprotokoll erstellen", MenuBarEntryClickedEvent(MenuBarEntry.REPORT_MULTI_PROTOCOL))
+        menuReports.addItem("Sammelprotokoll erstellen", { MenuBarEntryClickedEvent(MenuBarEntry.REPORT_MULTI_PROTOCOL) })
 
         menuReports.addSeparator()
         menuReports.add(printReportMenu(FormType.ANAMNESE))
@@ -215,15 +218,15 @@ open class GadsuMenuBar @Inject constructor(
         return item
     }
 
-    private fun buildItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {
+    private fun buildItem(label: String, eventBuilder: () -> Event, shortcut: KeyStroke? = null): JMenuItem {
         val item = JMenuItem(label)
-        item.addActionListener { e -> bus.post(event) }
+        item.addActionListener { e -> bus.post(eventBuilder()) }
         if (shortcut != null) item.accelerator = shortcut
         return item
     }
 
-    private fun JMenu.addItem(label: String, event: Any, shortcut: KeyStroke? = null): JMenuItem {
-        val item = buildItem(label, event, shortcut)
+    private fun JMenu.addItem(label: String, eventBuilder: () -> Event, shortcut: KeyStroke? = null): JMenuItem {
+        val item = buildItem(label, eventBuilder, shortcut)
         add(item)
         return item
     }

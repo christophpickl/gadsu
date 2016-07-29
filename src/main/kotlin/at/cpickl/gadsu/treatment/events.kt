@@ -26,11 +26,10 @@ class DeleteTreatmentEvent(val treatment: Treatment) : UserEvent() {
  */
 class TreatmentBackEvent() : UserEvent()
 
-class TreatmentSaveEvent(val treatment: Treatment) : UserEvent() {
-    override fun toString(): String{
-        return "TreatmentSaveEvent(treatment=$treatment)"
-    }
-}
+/**
+ * Save the currently displayed treatment in TreatmentView.
+ */
+class TreatmentSaveEvent() : UserEvent()
 
 class TreatmentCreatedEvent(val treatment: Treatment) : AppEvent() {
     override fun toString() = MoreObjects.toStringHelper(this)
