@@ -1,5 +1,16 @@
 
 - niemals JFrame verwenden (fuer non-mainframes) sondern immer nur window&co
+=======
+@DOKU: describe CLI args (and action args)
+usage: gadsu
+ -?,--help                Print this usage help.
+ -a,--action <arg>        Add a custom action and quit (for debugging purpose).
+ -d,--databaseUrl <arg>   Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is:
+                          'jdbc:hsqldb:file:/Users/wu/.gadsu_dev/database/database').
+ -p,--preferences <arg>   Change the default Java class to be used for preferences node.
+ -x,--debug               Increase log level and register additional console appender.
+
+
 - zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
 - breitere textfelder: mail, strasse
 
