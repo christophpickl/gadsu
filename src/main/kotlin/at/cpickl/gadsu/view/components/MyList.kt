@@ -11,6 +11,7 @@ import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import javax.swing.DefaultListModel
+import javax.swing.DefaultListSelectionModel
 import javax.swing.JList
 import javax.swing.JPanel
 
@@ -42,6 +43,29 @@ open class MyList<T : Comparable<T>>(
             cellRenderer = myCellRenderer
         }
         name = viewName
+    }
+
+    // http://stackoverflow.com/questions/2528344/jlist-deselect-when-clicking-an-already-selected-item
+    fun enableToggleSelectionMode() {
+        selectionModel = object : DefaultListSelectionModel() {
+            private var gestureStarted = false
+            override fun setSelectionInterval(index0: Int, index1: Int) {
+                if (!gestureStarted) {
+                    if (isSelectedIndex(index0)) {
+                        super.removeSelectionInterval(index0, index1)
+                    } else {
+                        super.addSelectionInterval(index0, index1)
+                    }
+                }
+                gestureStarted = true
+            }
+
+            override fun setValueIsAdjusting(isAdjusting: Boolean) {
+                if (!isAdjusting) {
+                    gestureStarted = false
+                }
+            }
+        }
     }
 
     fun addElementAtTop(element: T) {
