@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.*
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
@@ -35,20 +36,24 @@ class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
 
 @Logged
 open class GadsuMenuBarController @Inject constructor(
-        private val menuBar: GadsuMenuBar,
+        private val menu: GadsuMenuBar,
         private val bus: EventBus,
-        private val currentClient: CurrentClient
+        private val currentClient: CurrentClient,
+        private val masterView: ClientMasterView
 ) {
 
     // initialize at startup
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        menuBar.contentType = MainContentType.CLIENT
-        menuBar.currentClient(currentClient.data)
+        menu.contentType = MainContentType.CLIENT
+        menu.currentClient(currentClient.data)
+
+        menu.clientNavigateUp.isEnabled = false
+        menu.clientNavigateDown.isEnabled = false
     }
 
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        menuBar.contentType = event.newContent.type
-        menuBar.currentClient(currentClient.data) // re-initialize menu bar for client specific items
+        menu.contentType = event.newContent.type
+        menu.currentClient(currentClient.data) // re-initialize menu bar for client specific items
     }
 
     @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
@@ -65,12 +70,20 @@ open class GadsuMenuBarController @Inject constructor(
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
         event.forClient {
-            menuBar.currentClient(it)
+            menu.currentClient(it)
+            if (it == null || !it.yetPersisted) {
+                menu.clientNavigateUp.isEnabled = false
+                menu.clientNavigateDown.isEnabled = false
+            } else {
+                val neighbours: Pair<Client?, Client?> = masterView.hasPrevNextNeighbour(it)
+                menu.clientNavigateUp.isEnabled = neighbours.first != null
+                menu.clientNavigateDown.isEnabled = neighbours.second != null
+            }
         }
     }
 
     @Subscribe open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
-        menuBar.currentClient(event.client)
+        menu.currentClient(event.client)
     }
 
 }
@@ -85,14 +98,20 @@ open class GadsuMenuBar @Inject constructor(
     private val itemProtocol = JMenuItem("Protokoll erstellen")
 
     private val clientSeperator1 = JPopupMenu.Separator()
+    private val clientSeperator2 = JPopupMenu.Separator()
     private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", { ShowInClientsListEvent(it) })
     val clientSave = buildItem("Klient speichern", { SaveClientEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
+    val clientNavigateUp = buildItem("Vorheriger Klient", { ClientNavigateUpEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_UP, SHORTCUT_MODIFIER, true))
+    val clientNavigateDown = buildItem("N\u00e4chster Klient", { ClientNavigateDownEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SHORTCUT_MODIFIER, true))
+
     private val clientActivate = buildItem("Klient aktivieren", { ClientChangeStateEvent(ClientState.ACTIVE) })
     private val clientDeactivate = buildItem("Klient deaktivieren", { ClientChangeStateEvent(ClientState.INACTIVE) })
     private val clientTabMain = buildItem("Tab Allgemein", { SelectClientTab(ClientTabType.MAIN) }, KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", { SelectClientTab(ClientTabType.TEXTS) }, KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", { SelectClientTab(ClientTabType.TCM) }, KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
-    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientShowInactives, clientSave, clientActivate, clientDeactivate, clientTabMain, clientTabTexts, clientTabTcm)
+
+    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientSeperator2, clientShowInactives, clientSave, clientActivate, clientDeactivate,
+            clientTabMain, clientTabTexts, clientTabTcm, clientNavigateUp, clientNavigateDown)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
     val treatmentNext = buildItem("N\u00e4chste Behandlung", { NextTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
@@ -157,11 +176,12 @@ open class GadsuMenuBar @Inject constructor(
 
     private fun menuView() = JMenu("Ansicht").apply {
         add(clientTabMain)
-        add(clientSeperator1)
         add(clientTabTexts)
-        add(clientSeperator1)
         add(clientTabTcm)
         add(clientSeperator1)
+        add(clientNavigateUp)
+        add(clientNavigateDown)
+        add(clientSeperator2)
         add(clientShowInactives)
 
         add(treatmentPrevious)

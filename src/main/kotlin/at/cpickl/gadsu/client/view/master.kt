@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client.view
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
@@ -43,6 +44,10 @@ interface ClientMasterView {
 
     fun asComponent(): Component
 
+    fun hasPrevNextNeighbour(client: Client): Pair<Client?, Client?>
+    fun selectPrevious()
+    fun selectNext()
+
 }
 
 
@@ -54,9 +59,9 @@ class SwingClientMasterView @Inject constructor(
     override val model = MyListModel<Client>()
 
     private val log = LoggerFactory.getLogger(javaClass)
+
     private val list = JList<Client>(model)
     private var previousSelected: Client? = null
-
     init {
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
@@ -148,6 +153,27 @@ class SwingClientMasterView @Inject constructor(
         } else {
             list.setSelectedValue(client, true)
         }
+    }
+
+    override fun hasPrevNextNeighbour(client: Client): Pair<Client?, Client?> {
+        log.trace("hasPrevNextNeighbour(client={})", client)
+        val index = model.indexOf(client)
+        if (index == -1) {
+            throw GadsuException("Can not compute neighbours for not list containing client: $client")
+        }
+        val previousNeighbour = if (index == 0) null else model.elementAt(index - 1)
+        val nextNeighbour = if (index == model.size - 1) null else model.elementAt(index + 1)
+        return Pair(previousNeighbour, nextNeighbour)
+    }
+
+    override fun selectPrevious() {
+        log.trace("selectPrevious()")
+        list.selectedIndex = list.selectedIndex - 1
+    }
+
+    override fun selectNext() {
+        log.trace("selectNext()")
+        list.selectedIndex = list.selectedIndex + 1
     }
 
     override fun changeClient(client: Client) {
