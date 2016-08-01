@@ -4,17 +4,14 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
-import at.cpickl.gadsu.view.logic.IndexableModel
-import at.cpickl.gadsu.view.logic.calculateInsertIndex
-import at.cpickl.gadsu.view.logic.enablePopup
-import at.cpickl.gadsu.view.logic.findIndexByComparator
-import at.cpickl.gadsu.view.logic.registerDoubleClicked
+import at.cpickl.gadsu.view.logic.*
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import javax.swing.DefaultListModel
+import javax.swing.DefaultListSelectionModel
 import javax.swing.JList
 import javax.swing.JPanel
 
@@ -48,32 +45,55 @@ open class MyList<T : Comparable<T>>(
         name = viewName
     }
 
-    final fun addElementAtTop(element: T) {
+    // http://stackoverflow.com/questions/2528344/jlist-deselect-when-clicking-an-already-selected-item
+    fun enableToggleSelectionMode() {
+        selectionModel = object : DefaultListSelectionModel() {
+            private var gestureStarted = false
+            override fun setSelectionInterval(index0: Int, index1: Int) {
+                if (!gestureStarted) {
+                    if (isSelectedIndex(index0)) {
+                        super.removeSelectionInterval(index0, index1)
+                    } else {
+                        super.addSelectionInterval(index0, index1)
+                    }
+                }
+                gestureStarted = true
+            }
+
+            override fun setValueIsAdjusting(isAdjusting: Boolean) {
+                if (!isAdjusting) {
+                    gestureStarted = false
+                }
+            }
+        }
+    }
+
+    fun addElementAtTop(element: T) {
         myModel.insertElementAt(element, 0)
     }
 
-    final fun addElementAtBottom(element: T) {
+    fun addElementAtBottom(element: T) {
         myModel.addElement(element)
     }
 
-    final fun addProperIndex(element: T) {
+    fun addProperIndex(element: T) {
         val index = myModel.calculateInsertIndex(element)
         myModel.add(index, element)
     }
 
-    final fun removeElementByComparator(idComparator: (T) -> Boolean) {
+    fun removeElementByComparator(idComparator: (T) -> Boolean) {
         myModel.removeElementByComparator(idComparator)
     }
 
-    final fun setElementByComparator(element: T, idComparator: (T) -> Boolean) {
+    fun setElementByComparator(element: T, idComparator: (T) -> Boolean) {
         myModel.setElementByComparator(element, idComparator)
     }
 
-    final fun resetData(elements: List<T>) {
+    fun resetData(elements: List<T>) {
         myModel.resetData(elements)
     }
 
-    final fun clear() {
+    fun clear() {
         myModel.clear()
     }
 
@@ -99,7 +119,7 @@ open class MyList<T : Comparable<T>>(
 
 class MyListModel<E> : DefaultListModel<E>(), IndexableModel<E> {
     override val indexableSize: Int get() = size
-    override fun indexableElementAt(index: Int) = getElementAt(index)
+    override fun indexableElementAt(index: Int): E = getElementAt(index)
 
     fun setElementByComparator(newValue: E, comparator: (current: E) -> Boolean) {
         val index = findIndexByComparator(comparator)

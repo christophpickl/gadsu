@@ -7,7 +7,7 @@ object Colors {
     // used for ALTERNATE_BG_COLOR in lists
     val LIGHT_GRAY = byHex("#F2F2F2")
 
-    fun byHex(hex: String) = Color.decode(hex)
+    fun byHex(hex: String) = Color.decode(hex)!!
 }
 /*
 Color aColor = new Color(0xFF0096); // Use the hex number syntax

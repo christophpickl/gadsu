@@ -1,21 +1,7 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCreatedEvent
-import at.cpickl.gadsu.client.ClientDeletedEvent
-import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.client.ClientService
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.ClientUnselectedEvent
-import at.cpickl.gadsu.client.ClientUpdatedEvent
-import at.cpickl.gadsu.client.CreateNewClientEvent
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.DeleteClientEvent
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.ShowClientViewEvent
-import at.cpickl.gadsu.client.ShowInClientsListEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
@@ -24,14 +10,14 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
+import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
+import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
-import at.cpickl.gadsu.view.logic.ChangeBehaviour
-import at.cpickl.gadsu.view.logic.ChangesChecker
-import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
-import at.cpickl.gadsu.view.logic.calculateInsertIndex
+import at.cpickl.gadsu.view.logic.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
@@ -44,6 +30,7 @@ open class ClientViewController @Inject constructor(
         private val clock: Clock,
         private val view: ClientView,
         private val clientService: ClientService,
+        private val treatmentRepo: TreatmentRepository,
         private val currentClient: CurrentClient,
         private val dialogs: Dialogs
 ) {
@@ -56,7 +43,7 @@ open class ClientViewController @Inject constructor(
     })
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE)) // initially only display actives
+        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE).map({ extendClient(it) })) // initially only display actives
         bus.post(ChangeMainContentEvent(view))
         bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
     }
@@ -86,10 +73,11 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onClientCreatedEvent(event: ClientCreatedEvent) {
-        val index = view.masterView.model.calculateInsertIndex(event.client)
+        val xclient = extendClient(event.client)
+        val index = view.masterView.model.calculateInsertIndex(xclient)
         currentClient.data = event.client
 
-        view.masterView.insertClient(index, event.client)
+        view.masterView.insertClient(index, xclient)
         view.masterView.selectClient(event.client)
     }
 
@@ -156,7 +144,27 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
         val clients = clientService.findAll(filterState = if(event.showInactives) null else ClientState.ACTIVE)
-        view.masterView.initClients(clients)
+        view.masterView.initClients(clients.map { extendClient(it) })
+    }
+
+    @Subscribe open fun onClientNavigateUpEvent(event: ClientNavigateUpEvent) {
+        view.masterView.selectPrevious()
+    }
+
+    @Subscribe open fun onClientNavigateDownEvent(event: ClientNavigateDownEvent) {
+        view.masterView.selectNext()
+    }
+
+    private fun extendClient(client: Client): ExtendedClient {
+        return ExtendedClient(client, treatmentRepo.countAllFor(client))
+    }
+
+    @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
+        view.masterView.treatmentCountIncrease(event.treatment.clientId)
+    }
+
+    @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
+        view.masterView.treatmentCountDecrease(event.treatment.clientId)
     }
 
     private fun saveClient(client: Client) {

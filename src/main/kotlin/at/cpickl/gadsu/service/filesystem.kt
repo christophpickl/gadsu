@@ -66,11 +66,9 @@ fun File.writeByClasspath(classpath: String, overwrite: Boolean = false) {
     try {
         val buffer = ByteArray(4096)
         var readBytes = input.read(buffer)
-        println("readBytes: $readBytes")
         while (readBytes > 0) {
             output.write(buffer, 0, readBytes)
             readBytes = input.read(buffer)
-            println("readBytes: $readBytes")
         }
     } finally {
         input.close()

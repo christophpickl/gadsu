@@ -195,9 +195,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             add(getCenterPanel(), java.awt.BorderLayout.CENTER)
         }
 
-        /**
-         * This method initializes northPanel
-         */
         private fun createNorthPanel() = JPanel().apply {
             layout = java.awt.BorderLayout()
             name = ""
@@ -208,9 +205,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             add(getNorthCenterPanel(), java.awt.BorderLayout.CENTER)
         }
 
-        /**
-         * This method initializes northCenterPanel
-         */
         private fun getNorthCenterPanel(): JPanel {
             if (northCenterPanel == null) {
                 northCenterPanel = javax.swing.JPanel()
@@ -223,9 +217,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             return northCenterPanel!!
         }
 
-        /**
-         * This method initializes monthLabel
-         */
         fun getMonthLabel(): JLabel {
             if (monthLabel == null) {
                 monthLabel = javax.swing.JLabel()
@@ -237,9 +228,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             return monthLabel!!
         }
 
-        /**
-         * This method initializes yearSpinner
-         */
         private fun getYearSpinner(): JSpinner {
             if (yearSpinner == null) {
                 yearSpinner = javax.swing.JSpinner()
@@ -248,9 +236,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             return yearSpinner!!
         }
 
-        /**
-         * This method initializes southPanel
-         */
         private fun createSouthPanel() = JPanel().apply {
             layout = java.awt.BorderLayout()
             background = colors.getColor(ComponentColorDefaults.Key.BG_TODAY_SELECTOR)
@@ -259,14 +244,10 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             add(noneLabel, java.awt.BorderLayout.EAST)
         }
 
-        /**
-         * This method initializes todayLabel
-         */
         private fun createNoneLabel() = JLabel().apply {
             foreground = colors.getColor(ComponentColorDefaults.Key.FG_TODAY_SELECTOR_ENABLED)
             horizontalAlignment = javax.swing.SwingConstants.CENTER
             addMouseListener(internalController)
-            // MINOR get the translations for each language before adding this in
             //noneLabel.setToolTipText(getText(ComponentTextDefaults.CLEAR));
             icon = icons.clearIcon
         }
@@ -277,9 +258,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             todayLabel!!.text = texts.getText(ComponentTextDefaults.Key.TODAY) + ": " + df.format(now.time)
         }
 
-        /**
-         * This method initializes todayLabel
-         */
         fun getTodayLabel(): JLabel {
             if (todayLabel == null) {
                 todayLabel = javax.swing.JLabel()
@@ -291,9 +269,6 @@ open class JDatePanel constructor(model: DateModel<*> = JDatePanel.createModel()
             return todayLabel!!
         }
 
-        /**
-         * This method initializes centerPanel
-         */
         private fun getCenterPanel(): JPanel {
             if (centerPanel == null) {
                 centerPanel = javax.swing.JPanel()

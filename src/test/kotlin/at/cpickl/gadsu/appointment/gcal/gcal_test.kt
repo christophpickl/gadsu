@@ -17,6 +17,7 @@ fun read(prompt: String): String {
 @Test
 class GCalTest {
 
+    @Suppress("UNCHECKED_CAST")
     private val events = XStream().fromXML(javaClass.getResourceAsStream("/gadsu_test/gcal_events.xml")) as List<Event>
 
     fun foobar() {

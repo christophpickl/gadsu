@@ -107,3 +107,8 @@ class ShowClientViewEvent() : AppEvent()
 class ClientChangeStateEvent(val newState: ClientState) : UserEvent()
 
 class ShowInClientsListEvent(val showInactives: Boolean) : UserEvent()
+
+// vorheriger klient
+class ClientNavigateUpEvent() : UserEvent()
+// naechster klient
+class ClientNavigateDownEvent() : UserEvent()

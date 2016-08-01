@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.view.ExtendedClient
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.image.ImageSelectedEvent
 import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
@@ -24,11 +25,11 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
     val list = window.getListBox(ViewNames.Client.List)!!
 
     @Suppress("UNCHECKED_CAST")
-    val listModel: MyListModel<Client> get() {
+    val listModel: MyListModel<ExtendedClient> get() {
         if (list.awtComponent.model !is MyListModel<*>) {
             throw AssertionError("Expected the client list to be of type MyListModel but was: '${list.awtComponent.model.javaClass.name}'!")
         }
-        return list.awtComponent.model as MyListModel<Client>
+        return list.awtComponent.model as MyListModel<ExtendedClient>
     }
 
     val createButton = window.getButton(ViewNames.Client.CreateButton)!!

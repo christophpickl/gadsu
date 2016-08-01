@@ -83,8 +83,7 @@ open class InternetConnectionControllerImpl @Inject constructor(
 
     @Subscribe open fun onReconnectInternetConnectionEvent(event: ReconnectInternetConnectionEvent) {
         if (_isConnected == true) {
-            // FIXME incomment me
-//            throw IllegalStateException("Already connected!")
+            throw IllegalStateException("Already connected!")
         }
 
         asyncWorker.doInBackground(AsyncDialogSettings(

@@ -57,15 +57,17 @@ class MultiProtocolJdbcRepositoryTest : HsqldbTest() {
         val client = insertClientViaRepo()
         val treat1 = insertTreatment(Treatment.unsavedValidInstance(client), "ID_TREAT_1")
         val treat2 = insertTreatment(Treatment.unsavedValidInstance(client), "ID_TREAT_2")
+        val treat1id = treat1.id!!
+        val treat2id = treat2.id!!
 
-        val goingToInsert = MultiProtocol(null, DUMMY_CREATED, "myDescription", listOf(treat1.id!!, treat2.id!!))
+        val goingToInsert = MultiProtocol(null, DUMMY_CREATED, "myDescription", listOf(treat1id, treat2id))
         val inserted = testee.insert(goingToInsert)
         val idMultiprotocol = inserted.id!!
 
         assertRows(TABLE_MULTIPROTOCOL, MultiProtocolRawMapper, MultiProtocolRaw(idMultiprotocol, goingToInsert.created, goingToInsert.description))
         assertRows(TABLE_MULTIPROTOCOL_KEYS, MultiProtocol2TreatmentMapper,
-                MultiProtocol2Treatment(idMultiprotocol, treat1.id!!),
-                MultiProtocol2Treatment(idMultiprotocol, treat2.id!!)
+                MultiProtocol2Treatment(idMultiprotocol, treat1id),
+                MultiProtocol2Treatment(idMultiprotocol, treat2id)
         )
     }
 

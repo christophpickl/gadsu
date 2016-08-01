@@ -105,6 +105,7 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
     override fun transactionSafe(function: () -> Unit) {
         transactionSafeAndReturn { function() }
     }
+
     override fun <T> transactionSafeAndReturn(function: () -> T): T {
         log.trace("transactionSafeAndReturn(function)")
 

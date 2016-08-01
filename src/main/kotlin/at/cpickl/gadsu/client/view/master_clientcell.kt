@@ -1,53 +1,70 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.MyListCellRenderer
-import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
-import at.cpickl.gadsu.view.swing.scrolled
-import java.awt.Color
-import java.awt.Dimension
+import org.joda.time.DateTime
 import java.awt.GridBagConstraints
 import javax.swing.JComponent
 import javax.swing.JLabel
-import javax.swing.JList
 import javax.swing.JPanel
 
+class ExtendedClient(
+    var client: Client,
+    var countTreatments: Int
+) : IClient, Comparable<ExtendedClient> {
 
-fun main(args: Array<String>) {
-    val model = MyListModel<Client>()
-    val _contact = Client.INSERT_PROTOTYPE.contact
-    model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Max", lastName = "Mustermann", contact = _contact.copy(mail = "max@muster.com")))
-    model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_WOMAN))
-    val list = JList<Client>(model)
-    list.cellRenderer = object : MyListCellRenderer<Client>() {
-        override fun newCell(value: Client) = ClientCell(value)
+    override fun compareTo(other: ExtendedClient): Int {
+        return this.client.compareTo(other.client)
     }
-    Framed.show(list.scrolled(), Dimension(300, 500))
+
+    // by client delegation does not work for mutable var fields :-/
+    override val id: String? get() = client.id
+    override val yetPersisted: Boolean get() = client.yetPersisted
+    override val created: DateTime get() = client.created
+    override val firstName: String get() = client.firstName
+    override val lastName: String get() = client.lastName
+    override val fullName: String get() = client.fullName
+    override val state: ClientState get() = client.state
+    override val contact: Contact get() = client.contact
+    override val birthday: DateTime? get() = client.birthday
+    override val gender: Gender get() = client.gender
+    override val countryOfOrigin: String get() = client.countryOfOrigin
+    override val origin: String get() = client.origin
+    override val relationship: Relationship get() = client.relationship
+    override val job: String get() = client.job
+    override val children: String get() = client.children
+    override val hobbies: String get() = client.hobbies
+    override val note: String get() = client.note
+    override val textImpression: String get() = client.textImpression
+    override val textMedical: String get() = client.textMedical
+    override val textComplaints: String get() = client.textComplaints
+    override val textPersonal: String get() = client.textPersonal
+    override val textObjective: String get() = client.textObjective
+    override val tcmNote: String get() = client.tcmNote
+    override val picture: MyImage get() = client.picture
+    override val cprops: CProps get() = client.cprops
+
 }
 
-
-class ClientCell(val client: Client) : DefaultCellView<Client>(client) {
+class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(client) {
 
     private val name = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
-    private val mail = JLabel("Mail: ${client.contact.mail}")
-    override val applicableForegrounds: Array<JComponent>
+    private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
+    override val applicableForegrounds: Array<JComponent> = arrayOf(name, countTreatments)
 
     init {
-        if (client.state == ClientState.INACTIVE) {
-            name.foreground = Color.LIGHT_GRAY
-        }
-        applicableForegrounds = arrayOf(name, mail)
+//        if (client.state == ClientState.INACTIVE) {
+//            name.foreground = Color.LIGHT_GRAY
+//        }
+//        applicableForegrounds = arrayOf(name, countTreatments)
 
-        val mailPresent = client.contact.mail.isNotEmpty()
         val calculatedRows =
                 1 + // name
-                (if (mailPresent) 1 else 0 ) +
+                1 + // count treatments
                 1 // ui hack to fill vertical space
 
 
@@ -63,10 +80,8 @@ class ClientCell(val client: Client) : DefaultCellView<Client>(client) {
         c.fill = GridBagConstraints.HORIZONTAL
         add(name)
 
-        if (mailPresent) {
-            c.gridy++
-            add(mail)
-        }
+        c.gridy++
+        add(countTreatments)
 
         // fill south gap with a UI hack ;)
         c.gridy++

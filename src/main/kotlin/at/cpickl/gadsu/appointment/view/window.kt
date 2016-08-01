@@ -58,7 +58,7 @@ class SwingAppointmentWindow @Inject constructor(
     private val outClient = DisabledTextField()
     private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, ViewNames.Appointment.InputStartDate)
     private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt()}, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 4).focusTraversalWithTabs()
+    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 4)
     private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
 
     private val btnNewTreatment = JButton().apply {
@@ -140,7 +140,6 @@ class SwingAppointmentWindow @Inject constructor(
     }
 
     override fun showWindow() {
-        // TODO position to a "good" location
         if (isVisible == false) {
             setLocationRelativeTo(mainFrame.asJFrame())
             isVisible = true

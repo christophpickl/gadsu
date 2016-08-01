@@ -39,6 +39,7 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
 
         verify(mockClientRepository).insertWithoutPicture(expectedToSaveClient)
         verify(mockTreatmentRepository).findAllFor(savedClient)
+        verify(mockTreatmentRepository).countAllFor(savedClient)
         verify(mockXPropsRepository).delete(savedClient)
         verify(mockXPropsRepository).insert(savedClient, emptyList())
         verifyNoMoreInteractions(mockClientRepository, mockTreatmentRepository, mockXPropsRepository)

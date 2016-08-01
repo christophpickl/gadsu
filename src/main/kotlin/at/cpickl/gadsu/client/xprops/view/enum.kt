@@ -36,6 +36,7 @@ class CPropEnumView(
         list = MyList("FIXME_VIEWNAME", model, bus, object: MyListCellRenderer<XPropEnumOpt>() {
             override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
         })
+        list.enableToggleSelectionMode()
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         list.visibleRowCount = 1
     }

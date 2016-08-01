@@ -1,17 +1,14 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
+import at.cpickl.gadsu.view.GadsuMenuBar
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.gadsuWidth
@@ -28,11 +25,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.JButton
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
+import javax.swing.*
 
 interface ClientDetailView {
 
@@ -54,9 +47,10 @@ open class SwingClientDetailView @Inject constructor(
         private val currentClient: CurrentClient,
         appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
         treatmentSubview: TreatmentsInClientView, // passed through to TabMain
-        suggester: SuggesterController // passed through to TabMain
+        suggester: SuggesterController, // passed through to TabMain
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
+        menuBar: GadsuMenuBar // this is kind a design hack, but it was quicker to do ;)
 ) : GridPanel(), ClientDetailView, ModificationAware {
 
     private val log = LOG(javaClass)
@@ -64,7 +58,7 @@ open class SwingClientDetailView @Inject constructor(
     private val btnSave = swing.newPersistableEventButton(ViewNames.Client.SaveButton, { SaveClientEvent() }).gadsuWidth()
 
     private val btnCancel = JButton("Abbrechen").gadsuWidth()
-    private val modificationChecker = ModificationChecker(this, btnSave, btnCancel)
+    private val modificationChecker = ModificationChecker(this, btnSave, btnCancel, menuBar.clientSave)
 
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
