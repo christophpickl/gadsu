@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     val service = AcupunctureServiceImpl(repository)
 
     val list = AcupunctureList(bus)
-    val frame = AcupunctureFrame(bus, list)
+    val frame = AcupunctureFrame(list)
     val controller = AcupunctureController(frame, service)
     bus.register(controller)
     bus.post(ShopAcupunctureViewEvent())

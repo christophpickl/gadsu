@@ -31,8 +31,8 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         private val prefs: Prefs,
         private val bus: EventBus
 ) : GCalService {
-    private val log = LOG(javaClass)
 
+    private val log = LOG(javaClass)
     private var repo: GCalRepository? = null
 
     override fun createEvent(gCalEvent: GCalEvent): GCalEventMeta? {

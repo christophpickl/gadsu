@@ -10,6 +10,7 @@ data class GCalEvent(
         val start: org.joda.time.DateTime,
         val end: org.joda.time.DateTime
 )
+
 data class GCalUpdateEvent(
         val id: String,
         val summary: String,
@@ -18,9 +19,9 @@ data class GCalUpdateEvent(
 ) {
     fun updateFields(gevent: Event) {
         gevent
-                .setSummary(summary)
-                .setStart(start.toGEventDateTime())
-                .setEnd(end.toGEventDateTime())
+            .setSummary(summary)
+            .setStart(start.toGEventDateTime())
+            .setEnd(end.toGEventDateTime())
     }
 }
 

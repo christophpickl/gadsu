@@ -27,6 +27,7 @@ class GCalConnectorImpl : GCalConnector {
         private val CREDENTIALS: Reader = InputStreamReader(GCalConnectorImpl::class.java.getResourceAsStream("/gadsu/gcal_client_secret.json"))
         private val DATA_STORE: File = File(GADSU_DIRECTORY, "gcal_datastore.json")
     }
+
     private val log = LOG(javaClass)
 
     private val jsonFactory = JacksonFactory.getDefaultInstance()
