@@ -9,9 +9,9 @@ public class TestViewStarter {
 
     public static Component componentToShow;
 
+    // invoked by ui tests
     public static void main(String[] args) {
-        if (componentToShow == null) { // ??? haha
-            // MINOR asdf
+        if (componentToShow == null) {
             Assert.fail("componentToShow must be set first!");
         }
         Framed.Companion.show(componentToShow, null);

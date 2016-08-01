@@ -136,7 +136,7 @@ open class DevelopmentController @Inject constructor(
                                 note = "Was a quick one"
                         )
                 ).forEach {
-                    treatmentService.insert(it) // TODO dispatching event should happen in service, shouldnt it?!
+                    treatmentService.insert(it)
                     bus.post(TreatmentCreatedEvent(it))
                 }
 

@@ -156,7 +156,6 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun extendClient(client: Client): ExtendedClient {
-        // FIXME change number of treatments dynamically on create/delete treatment
         return ExtendedClient(client, treatmentRepo.countAllFor(client))
     }
 

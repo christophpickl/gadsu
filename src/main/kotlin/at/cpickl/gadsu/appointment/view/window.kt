@@ -140,7 +140,6 @@ class SwingAppointmentWindow @Inject constructor(
     }
 
     override fun showWindow() {
-        // TODO position to a "good" location
         if (isVisible == false) {
             setLocationRelativeTo(mainFrame.asJFrame())
             isVisible = true
