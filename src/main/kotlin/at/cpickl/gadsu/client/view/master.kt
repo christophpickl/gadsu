@@ -64,7 +64,7 @@ class SwingClientMasterView @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
     private val list = JList<ExtendedClient>(model)
     private var previousSelected: ExtendedClient? = null
-    private val client2extended : MutableMap<Client, ExtendedClient> = HashMap()
+    private val client2extended : MutableMap<String, ExtendedClient> = HashMap()
 
     init {
         name = ViewNames.Client.MainPanel
@@ -145,13 +145,13 @@ class SwingClientMasterView @Inject constructor(
         model.resetData(clients)
 
         client2extended.clear()
-        clients.forEach { client2extended.put(it.client, it) }
+        clients.forEach { client2extended.put(it.client.id!!, it) }
     }
 
     override fun insertClient(index: Int, client: ExtendedClient) {
         log.trace("insertClient(index={}, client={})", index, client)
         model.add(index, client)
-        client2extended.put(client.client, client)
+        client2extended.put(client.client.id!!, client)
     }
 
     override fun selectClient(client: Client?) {
@@ -188,6 +188,7 @@ class SwingClientMasterView @Inject constructor(
     override fun changeClient(client: Client) {
         log.trace("changeClient(client={})", client)
         val xclient = client.toExtended()
+        xclient.client = client
         model.setElementByComparator(xclient, xclient.idXComparator)
     }
 
@@ -196,7 +197,7 @@ class SwingClientMasterView @Inject constructor(
         val xclient = client.toExtended()
         if (model.containsById(xclient)) {
             model.removeElementByComparator(xclient.idXComparator)
-            client2extended.remove(client)
+            client2extended.remove(client.id!!)
         } else {
             log.trace("client not currently displaying in master list (show inactives is disabled)")
         }
@@ -213,7 +214,10 @@ class SwingClientMasterView @Inject constructor(
     private fun xclientById(clientId: String) =
             client2extended.values.firstOrNull { it.id == clientId } ?: throw GadsuException("Not found client by ID: '$clientId'! (available: ${client2extended.values}")
 
-    private fun Client.toExtended() = client2extended[this]!!
+    private fun Client.toExtended(): ExtendedClient {
+        return client2extended[this.id!!] ?: throw GadsuException("Internal state error! Could not find extended client by: $this (map: $client2extended)")
+    }
+
     private val ExtendedClient.idXComparator: (ExtendedClient) -> Boolean
         get() = { that -> this.id.equals(that.id) }
 

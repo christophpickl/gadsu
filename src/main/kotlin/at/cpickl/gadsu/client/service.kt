@@ -93,12 +93,11 @@ open class ClientServiceImpl @Inject constructor(
             xpropsService.update(client)
         }
 
-        val dispatchClient: Client
-        if (client.picture.isUnsavedDefaultPicture) {
+        val dispatchClient: Client = if (client.picture.isUnsavedDefaultPicture) {
             // if showing the default picture, check the gender which might have been updated and set new default image
-            dispatchClient = client.copy(picture = client.gender.defaultImage)
+            client.copy(picture = client.gender.defaultImage)
         } else {
-            dispatchClient = client
+            client
         }
         bus.post(ClientUpdatedEvent(dispatchClient))
         return dispatchClient
