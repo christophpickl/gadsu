@@ -28,13 +28,12 @@ import javax.swing.JLabel
 
 
 class AcupunctureFrame @Inject constructor(
-        private val bus: EventBus,
         val list: AcupunctureList
 ) : MyFrame("Akupunktur Datenbank") {
 
-    private val log = LoggerFactory.getLogger(javaClass)
     val inpSearch = SearchTextField()
 
+    private val log = LoggerFactory.getLogger(javaClass)
     private val bigText = HtmlEditorPane()
 
     init {
@@ -76,22 +75,21 @@ class AcupunctureFrame @Inject constructor(
         size = Dimension(650, 500)
     }
 
-    fun changeAcupunct(punct: Acupunct?) {
+    fun clearAcupunct() {
+        bigText.text = "Bitte einen Akupunkturpunkt ausw\u00e4hlen."
+    }
+    fun changeAcupunct(punct: Acupunct) {
         log.debug("changeAcupunct(newAcupunct={})", punct)
-        if (punct == null) {
-            bigText.text = "Bitte einen Akupunkturpunkt ausw\u00e4hlen."
-        } else {
-            val meridian = punct.meridian
-            val element = meridian.element
-            bigText.text = """
-            <h1>${punct.titleLong}</h1>
-            <b>Element</b>: <span color="#${element.color.toHexString()}">${element.label}</span><br/>
-            <b>Extremit${"\u00e4"}t</b>: ${meridian.extremity.label}<br/>
-            <b>Indikationen</b>: ${punct.indications.joinToString()}<br/>
-            <br/>
-            ${punct.note}
-            """
-        }
+        val meridian = punct.meridian
+        val element = meridian.element
+        bigText.text = """
+        <h1>${punct.titleLong}</h1>
+        <b>Element</b>: <span color="#${element.color.toHexString()}">${element.label}</span><br/>
+        <b>Extremit${"\u00e4"}t</b>: ${meridian.extremity.label}<br/>
+        <b>Indikationen</b>: ${punct.indications.joinToString()}<br/>
+        <br/>
+        ${punct.note}
+        """
     }
 
     // MINOR @REFACTOR UI - make reusable in MyFrame for others (controller should take over some more functionality)
@@ -110,7 +108,7 @@ class AcupunctureFrame @Inject constructor(
 
 }
 
-class AcupunctCell(val punct: Acupunct): DefaultCellView<Acupunct>(punct) {
+class AcupunctCell(punct: Acupunct): DefaultCellView<Acupunct>(punct) {
 
     private val txtTitle = JLabel(punct.titleShort).bold()
     private val txtIndications = JLabel(punct.indications.joinToString())

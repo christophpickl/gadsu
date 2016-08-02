@@ -18,11 +18,7 @@ class AcupunctureServiceImpl @Inject constructor (
 ) : AcupunctureService {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val data: List<Acupunct>
-
-    init {
-        data = repository.loadAll() // eager loading
-    }
+    private val data: List<Acupunct> = repository.loadAll() // eager loading
 
     override fun all() = data
 

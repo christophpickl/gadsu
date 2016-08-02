@@ -38,8 +38,8 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Hungry = HungryOpts.BigHunger
 
     enum class HungryOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        BigHunger    (opt("Hungry_BigHunger", "Großen Hunger")),
-        LittleHunger (opt("Hungry_LittleHunger", "Kleinen Hunger")),
+        BigHunger    (opt("Hungry_BigHunger", "Hunger gro\u00df")),
+        LittleHunger (opt("Hungry_LittleHunger", "Hunger klein")),
         DigestionSlow (opt("Hungry_DigestionSlow", "Verdauung träge")),
         DigestionFast (opt("Hungry_DigestionFast", "Verdauung schnell")),
         StoolHard (opt("Hungry_StoolHard", "Stuhl geformt, hart")),
@@ -97,14 +97,21 @@ object XProps : XPropsFinder by XPropsFactory {
         Thin (opt("Tongue_Thin", "Dünn")),
         Long (opt("Tongue_Long", "Lang")),
         Short (opt("Tongue_Short", "Kurz")),
+        Sharp (opt("Tongue_Sharp", "Spitz")),
         Swollen (opt("Tongue_Swollen", "Geschwollen")),
         Red (opt("Tongue_Red", "Rot")),
         Bright (opt("Tongue_Bright", "Hell, blass")),
         YellowFilm (opt("Tongue_YellowFilm", "gelber Belag")),
         WhiteFilm (opt("Tongue_WhiteFilm", "weisser Belag")),
+        // FIXME da ist ein fehler! dh ein flybase skript einbetten, dass darauf ein update macht und das fixt!
         TeethImprints (opt("Tongue_", "Zahnabdrücke")),
+        Midcrack (opt("Tongue_Midcrack", "Mittelriss")),
         Dry (opt("Tongue_Dry", "trocken")),
         Wet (opt("Tongue_Wet", "feucht")),
+
+        RedDots (opt("Tongue_RedDots", "rote Punkte")),
+        ShowWillingly (opt("Tongue_ShowWillingly", "Zeigt gerne")),
+        ShowUnwillingly (opt("Tongue_ShowUnwillingly", "Zeigt z\u00f6gerlich")),
     }
 
     val Tongue = enum("Tongue", "Zunge")
@@ -112,12 +119,26 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Pulse = PulseOpts.Superficial
 
     enum class PulseOpts(override val opt: XPropEnumOpt) : IsEnumOption {
+        // tiefe ================
         Superficial (opt("Pulse_Superficial", "oberflächlich")),
         Deep (opt("Pulse_Deep", "tief")),
+        // frequenz ================
         Fast (opt("Pulse_Fast", "schnell")),
         Slow (opt("Pulse_Slow", "langsam")),
+        // form der pulswelle ================
+        // ausgedehnt, drahtig, lang, kurz
         Full (opt("Pulse_Full", "voll")),
-        Empty (opt("Pulse_Empty", "leer"))
+        Empty (opt("Pulse_Empty", "leer")),
+        Sharp (opt("Pulse_Sharp", "spitz")),
+        Round (opt("Pulse_Round", "rund")),
+        Wiry (opt("Pulse_Wiry", "Drahtig")),
+        Raugh (opt("Pulse_Raugh", "Rauh")),
+
+//        Slippery (opt("Pulse_Slippery", "schl\u00fcpfrig"))
+        // rhythmus ================
+        Rhythmical(opt("Pulse_Rhythmical", "rhythmisch")),
+        Arhythmical (opt("Pulse_Arhythmical", "arhythmisch"))
+
     }
 
     val Pulse = enum("Pulse", "Puls")

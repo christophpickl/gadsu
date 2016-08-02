@@ -1,4 +1,4 @@
-
+* BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
 - niemals JFrame verwenden (fuer non-mainframes) sondern immer nur window&co
 =======
 @DOKU: describe CLI args (and action args)
