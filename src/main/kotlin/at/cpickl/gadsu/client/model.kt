@@ -126,6 +126,7 @@ data class Client(
         return ComparisonChain.start()
                 .compare(this.firstName, other.firstName)
                 .compare(this.lastName, other.lastName)
+                .compare(this.created, other.created)
                 .result()
     }
 
@@ -139,6 +140,7 @@ data class Client(
                 Objects.equal(this.state, that.state) &&
                 Objects.equal(this.firstName, that.firstName) &&
                 Objects.equal(this.lastName, that.lastName) &&
+                Objects.equal(this.nickName, that.nickName) &&
                 Objects.equal(this.contact, that.contact) &&
                 Objects.equal(this.birthday, that.birthday) &&
                 Objects.equal(this.gender, that.gender) &&

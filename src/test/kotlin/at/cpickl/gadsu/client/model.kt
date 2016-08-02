@@ -3,13 +3,10 @@ package at.cpickl.gadsu.client
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.StarSign
-import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.tcm.model.XProps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
-import org.joda.time.DateTime
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
@@ -18,7 +15,7 @@ class ClientTest {
 
     private val contact1 = Contact("1", "1", "1", "1", "1")
     private val cprops1 = CProps.builder().build()
-    private val client1 = Client("1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", contact1, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
+    private val client1 = Client("1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", contact1, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
             "1", "1", "1", "1", "1", "1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
@@ -27,6 +24,7 @@ class ClientTest {
             arrayOf<Any>("state",           { it: Client -> it.copy(state = ClientState.INACTIVE) }),
             arrayOf<Any>("firstName",       { it: Client -> it.copy(firstName = "2") }),
             arrayOf<Any>("lastName",        { it: Client -> it.copy(lastName = "2") }),
+            arrayOf<Any>("nickName",        { it: Client -> it.copy(nickName = "2") }),
             arrayOf<Any>("contact",         { it: Client -> it.copy(contact = contact1.copy(mail = "2")) }),
             arrayOf<Any>("birthday",        { it: Client -> it.copy(birthday = null) }),
             arrayOf<Any>("gender",          { it: Client -> it.copy(gender = Gender.MALE) }),
