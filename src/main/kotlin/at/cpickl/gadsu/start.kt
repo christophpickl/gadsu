@@ -115,7 +115,7 @@ class GadsuGuiceStarter @Inject constructor(
         log.debug("Enabling mac specific handlers.")
         mac.registerAbout { bus.post(ShowAboutDialogEvent()) }
         mac.registerPreferences { bus.post(ShowPreferencesEvent()) }
-        mac.registerQuit { bus.post(QuitEvent()) }
+        mac.registerQuit { bus.post(QuitAskEvent()) }
     }
 
 }

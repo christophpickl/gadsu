@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.AppEvent
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.QuitAskEvent
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Logged
@@ -65,7 +65,7 @@ open class SwingMainFrame @Inject constructor(
         container.layout = BorderLayout()
 
         jMenuBar = gadsuMenuBar
-        addCloseListener { bus.post(QuitEvent()) }
+        addCloseListener { bus.post(QuitAskEvent()) }
 
         contentPane.name = ViewNames.Main.ContentPanel
         contentPane.layout = BorderLayout()

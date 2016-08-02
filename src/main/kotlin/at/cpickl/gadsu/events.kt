@@ -14,4 +14,9 @@ abstract class UserEvent : Event()
 
 class AppStartupEvent : AppEvent()
 
+/**
+ * Check for unsaved changes.
+ */
+class QuitAskEvent : UserEvent()
+
 class QuitEvent : UserEvent()

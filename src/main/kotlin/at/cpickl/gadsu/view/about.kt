@@ -44,11 +44,11 @@ open class AboutController @Inject constructor(
         private val window: AboutWindow
 ) {
 
-    @Subscribe open fun onAbout(@Suppress("UNUSED_PARAMETER") event: ShowAboutDialogEvent) {
+    @Subscribe open fun onShowAboutDialogEvent(@Suppress("UNUSED_PARAMETER") event: ShowAboutDialogEvent) {
         window.isVisible = true
     }
 
-    @Subscribe open fun onQuit(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
+    @Subscribe open fun onQuitEvent(@Suppress("UNUSED_PARAMETER") event: QuitEvent) {
         window.isVisible = false
         window.dispose()
     }

@@ -26,6 +26,7 @@ class ChangesChecker(
     private val log = LOG(javaClass)
 
     fun checkChanges(): ChangeBehaviour {
+        log.trace("checkChanges()")
         if (!callback.isModified()) {
             return ChangeBehaviour.CONTINUE
         }

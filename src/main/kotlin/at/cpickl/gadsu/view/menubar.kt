@@ -162,7 +162,7 @@ open class GadsuMenuBar @Inject constructor(
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()
-            menuApp.addItem("Beenden", { QuitEvent() })
+            menuApp.addItem("Beenden", { QuitAskEvent() })
         }
         return menuApp
     }

@@ -201,9 +201,9 @@ class SwingTreatmentView @Inject constructor(
         if (fields.isAnyModified(treatment)) {
             return true
         }
+        // additional checks not handled by fields instance
         return ComparisonChain.start()
                 .compare(treatment.date, inpDateAndTime.selectedDate) // watch out for nulls!
-                .compare(treatment.note, inpNote.text)
                 .result() != 0
     }
 

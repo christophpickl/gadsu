@@ -7,6 +7,10 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.*
 import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.view.components.Dialogs
+import at.cpickl.gadsu.view.logic.ChangeBehaviour
+import at.cpickl.gadsu.view.logic.ChangesChecker
+import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
 import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.RegisteredKeyListener
 import at.cpickl.gadsu.view.swing.registerMyKeyListener
@@ -25,7 +29,8 @@ open class TreatmentController @Inject constructor(
         private val bus: EventBus,
         private val clock: Clock,
         private val mainFrame: MainFrame, // need a proper handle to register keyboard listener
-        private val menuBar: GadsuMenuBar // do it the simple way: hard wire the dependency ;) could use events instead...
+        private val menuBar: GadsuMenuBar, // do it the simple way: hard wire the dependency ;) could use events instead...
+        private val dialogs: Dialogs
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -33,17 +38,87 @@ open class TreatmentController @Inject constructor(
     private var treatmentView: TreatmentView? = null
     private var registeredEscapeListener: RegisteredKeyListener? = null
 
+    private val changesChecker = ChangesChecker(dialogs, object : ChangesCheckerCallback {
+        override fun isModified() = treatmentView?.isModified() ?: false
+        override fun save() = saveCurrentTreatment()
+    })
+
     @Subscribe open fun onPrepareNewTreatmentEvent(event: PrepareNewTreatmentEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
         changeToTreatmentView(null, event.prefilled)
     }
 
     @Subscribe open fun onOpenTreatmentEvent(event: OpenTreatmentEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
         changeToTreatmentView(event.treatment, null)
     }
 
     @Subscribe open fun onTreatmentSaveEvent(event: TreatmentSaveEvent) {
+        saveCurrentTreatment()
+    }
+
+    @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
+
+        currentTreatment.data = null
+        bus.post(ShowClientViewEvent())
+    }
+
+    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+        if (event.oldContent?.type !=  MainContentType.TREATMENT && event.newContent.type == MainContentType.TREATMENT) {
+            log.trace("Navigating TO treatment view.")
+            registeredEscapeListener = (mainFrame.asJFrame().contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("abortTreatmentView", {
+                log.debug("Escape was hit in treatment view. Dispatching TreatmentBackEvent.")
+                bus.post(TreatmentBackEvent())
+            }))
+        }
+        val moveAway = event.oldContent?.type == MainContentType.TREATMENT && event.newContent.type != MainContentType.TREATMENT
+        if (moveAway) {
+            log.trace("Navigating AWAY from treatment view")
+            // check changes already covered by onTreatmentBackEvent
+            if (registeredEscapeListener != null) {
+                registeredEscapeListener!!.deregisterYourself()
+                registeredEscapeListener = null
+            }
+        }
+        if (treatmentView != null && event.oldContent?.type == MainContentType.TREATMENT) {
+            treatmentView!!.closePreparations()
+        }
+        if (moveAway) {
+            treatmentView = null
+        }
+    }
+    
+    @Subscribe open fun onPreviousTreatmentEvent(event: PreviousTreatmentEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
+        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).first
+        changeToTreatmentView(newTreatment, null)
+    }
+    
+    @Subscribe open fun onNextTreatmentEvent(event: NextTreatmentEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
+            return
+        }
+        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).second
+        changeToTreatmentView(newTreatment, null)
+    }
+
+    fun checkChanges(): ChangeBehaviour {
+        return changesChecker.checkChanges()
+    }
+
+    private fun saveCurrentTreatment() {
         val treatmentAfterSave: Treatment
         val treatmentToSave = treatmentView!!.readTreatment()
+        log.debug("saveCurrentTreatment() ... treatmentToSave={}", treatmentToSave)
 
         if (!treatmentToSave.yetPersisted) {
             val insertedTreatment = treatmentService.insert(treatmentToSave)
@@ -58,43 +133,6 @@ open class TreatmentController @Inject constructor(
 
         currentTreatment.data = treatmentAfterSave
         treatmentView!!.wasSaved(treatmentAfterSave)
-    }
-
-    @Subscribe open fun onTreatmentBackEvent(event: TreatmentBackEvent) {
-        // FIXME check changes for treatment
-
-        currentTreatment.data = null
-        bus.post(ShowClientViewEvent())
-    }
-
-    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        if (event.oldContent?.type !=  MainContentType.TREATMENT && event.newContent.type == MainContentType.TREATMENT) {
-            log.trace("Navigating TO treatment view.")
-            registeredEscapeListener = (mainFrame.asJFrame().contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("abortTreatmentView", {
-                log.debug("Escape was hit in treatment view. Dispatching TreatmentBackEvent.")
-                bus.post(TreatmentBackEvent())
-            }))
-        }
-        if (event.oldContent?.type == MainContentType.TREATMENT && event.newContent.type != MainContentType.TREATMENT) {
-            log.trace("Navigating AWAY from treatment view")
-            if (registeredEscapeListener != null) {
-                registeredEscapeListener!!.deregisterYourself()
-                registeredEscapeListener = null
-            }
-        }
-        if (treatmentView != null && event.oldContent?.type == MainContentType.TREATMENT) {
-            treatmentView!!.closePreparations()
-        }
-    }
-    
-    @Subscribe open fun onPreviousTreatmentEvent(event: PreviousTreatmentEvent) {
-        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).first
-        changeToTreatmentView(newTreatment, null)
-    }
-    
-    @Subscribe open fun onNextTreatmentEvent(event: NextTreatmentEvent) {
-        val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).second
-        changeToTreatmentView(newTreatment, null)
     }
 
     private fun changeToTreatmentView(treatment: Treatment?, prefilled: PrefilledTreatment?) {
