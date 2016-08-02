@@ -31,7 +31,9 @@ interface IClient : HasId, Persistable {
     val created: DateTime
     val firstName: String
     val lastName: String
-    val fullName: String
+    val nickName: String
+    val preferredName: String // either nickName (if set) or firstName
+    val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
     val birthday: DateTime?
@@ -63,6 +65,7 @@ data class Client(
 
         override val firstName: String,
         override val lastName: String,
+        override val nickName: String,
         override val contact: Contact,
         override val birthday: DateTime?,
         override val gender: Gender,
@@ -91,7 +94,7 @@ data class Client(
 
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
-                "", "",
+                "", "", "",
                 // MINOR prefill oesterreich und kinder
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "",
@@ -106,6 +109,14 @@ data class Client(
                 return firstName + " " + lastName
             }
             return firstName + lastName
+        }
+    override val preferredName: String
+        get() {
+            return if (nickName.isNotEmpty()) {
+                nickName
+            } else {
+                firstName
+            }
         }
 
     val idComparator: (Client) -> Boolean

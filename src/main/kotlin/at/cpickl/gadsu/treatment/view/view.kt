@@ -99,7 +99,7 @@ class SwingTreatmentView @Inject constructor(
         c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.bottom(20)
-        add(JLabel("Behandlung #${treatment.number} für ${client.firstName}").withFont(Font.BOLD, 20))
+        add(JLabel("Behandlung #${treatment.number} für ${client.preferredName}").withFont(Font.BOLD, 20))
 
         c.gridy++
         c.fill = GridBagConstraints.HORIZONTAL

@@ -6,6 +6,7 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.differenceDaysWithinYear
 import at.cpickl.gadsu.service.formatDateTimeSemiLong
 import at.cpickl.gadsu.service.isBetweenInclusive
+import at.cpickl.gadsu.service.wrapParenthesisIf
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -33,6 +34,8 @@ class ExtendedClient(
     override val created: DateTime get() = client.created
     override val firstName: String get() = client.firstName
     override val lastName: String get() = client.lastName
+    override val nickName: String get() = client.nickName
+    override val preferredName: String get() = client.preferredName
     override val fullName: String get() = client.fullName
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
@@ -61,7 +64,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
     }
-    private val nameLbl = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
+    private val nameLbl = JLabel("${client.preferredName} ${client.lastName}".wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
     override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, countTreatments, upcomingAppointment)
@@ -69,17 +72,11 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     init {
-//        if (client.state == ClientState.INACTIVE) {
-//            name.foreground = Color.LIGHT_GRAY
-//        }
-//        applicableForegrounds = arrayOf(name, countTreatments)
-
         val calculatedRows =
                 1 + // name
                 1 + // count treatments
                 (if (client.upcomingAppointment == null) 0 else 1) +
                 1 // ui hack to fill vertical space
-
 
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.RIGHT

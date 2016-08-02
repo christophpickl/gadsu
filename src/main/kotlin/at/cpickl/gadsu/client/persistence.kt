@@ -6,11 +6,7 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.ensureNotPersisted
-import at.cpickl.gadsu.persistence.ensurePersisted
-import at.cpickl.gadsu.persistence.toBufferedImage
-import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.persistence.*
 import at.cpickl.gadsu.service.IdGenerator
 import com.google.inject.Inject
 import org.joda.time.DateTime
@@ -82,17 +78,17 @@ class ClientJdbcRepository @Inject constructor(
         }
         val sqlInsert = """
         INSERT INTO $TABLE (
-            id, firstName, lastName, created, birthday,
+            id, firstName, lastName, nickName, created, birthday,
             gender_enum, countryOfOrigin, mail, phone, street,
             zipCode, city, relationship_enum, job, children,
             note
         ) VALUES (
-        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?,
         ?)"""
         jdbcx.update(sqlInsert,
-                newId, client.firstName, client.lastName, client.created.toSqlTimestamp(), client.birthday?.toSqlTimestamp(),
+                newId, client.firstName, client.lastName, client.nickName, client.created.toSqlTimestamp(), client.birthday?.toSqlTimestamp(),
                 client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
                 client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
                 client.note)
@@ -108,13 +104,13 @@ class ClientJdbcRepository @Inject constructor(
 
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    state = ?, firstName = ?, lastName = ?, birthday = ?,
+                    state = ?, firstName = ?, lastName = ?, nickName = ?, birthday = ?,
                     gender_enum = ?, countryOfOrigin = ?, mail = ?, phone = ?, street = ?,
                     zipCode = ?, city = ?, relationship_enum = ?, job = ?, children = ?,
                     note = ?, textImpression = ?, textMedical = ?, textComplaints = ?,
                     textPersonal = ?, textObjective = ?, tcmNote = ?
                 WHERE id = ?""",
-                client.state.sqlCode, client.firstName, client.lastName, client.birthday?.toSqlTimestamp(),
+                client.state.sqlCode, client.firstName, client.lastName, client.nickName, client.birthday?.toSqlTimestamp(),
                 client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
                 client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
                 client.note, client.textImpression, client.textMedical, client.textComplaints,
@@ -149,6 +145,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 ClientState.parseSqlCode(rs.getString("state")),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
+                rs.getString("nickName"),
                 Contact(
                         rs.getString("mail"),
                         rs.getString("phone"),

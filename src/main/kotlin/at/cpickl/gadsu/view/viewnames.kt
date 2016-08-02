@@ -31,6 +31,7 @@ object ClientViewNames {
 
     val InputFirstName = "Client.InputFirstName"
     val InputLastName = "Client.InputLastName"
+    val InputNickName = "Client.InputNickName"
     val InputJob = "Client.InputJob"
 
     val ImageContainer = "Client.ImageContainer"

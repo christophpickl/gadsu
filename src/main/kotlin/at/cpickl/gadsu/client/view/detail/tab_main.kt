@@ -43,6 +43,7 @@ class ClientTabMain(
     // base
     val inpFirstName = fields.newTextField("Vorname", {it.firstName}, ViewNames.Client.InputFirstName)
     val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
+    val inpNickName = fields.newTextField("Spitzname", {it.nickName}, ViewNames.Client.InputNickName)
     val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
     val outStarsign= DisabledTextField()
@@ -74,6 +75,7 @@ class ClientTabMain(
             debugColor = Color.CYAN
             addFormInput(inpFirstName)
             addFormInput(inpLastName)
+            addFormInput(inpNickName)
             addFormInput(inpGender)
             addFormInput(inpBirthday)
             addFormInput("Sternzeichen", outStarsign)

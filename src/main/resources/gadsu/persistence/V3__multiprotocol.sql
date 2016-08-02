@@ -1,4 +1,6 @@
 
+-- deployed with version 1.5
+
 -- #28 multiprotocol generation
 -- ========================================================================= --
 
@@ -16,3 +18,9 @@ CREATE TABLE multiprotocol2treatment (
   FOREIGN KEY (id_multiprotocol) REFERENCES multiprotocol(id),
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
+
+
+-- #38 UI improvements
+-- ========================================================================= --
+
+ALTER TABLE client ADD COLUMN nickName VARCHAR(128) DEFAULT '' NOT NULL;

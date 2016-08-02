@@ -12,6 +12,7 @@ fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
 
 fun String.nullIfEmpty() = if (this.isEmpty()) null else this
 
+fun String.wrapParenthesisIf(condition: Boolean) = if (condition) "($this)" else this
 
 fun String.saveToFile(target: File) {
     Files.write(this, target, Charsets.UTF_8)

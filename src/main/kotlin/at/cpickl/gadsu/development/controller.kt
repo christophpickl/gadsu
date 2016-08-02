@@ -55,7 +55,7 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
 
         arrayOf(
-                Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, ClientState.ACTIVE, "Max", "Mustermann",
+                Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, ClientState.ACTIVE, "Max", "Mustermann", "Maxi",
                         Contact(
                                 mail = "max@mustermann.at",
                                 phone = "0699 11 22 33 432",
