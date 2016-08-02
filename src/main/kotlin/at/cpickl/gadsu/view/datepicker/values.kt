@@ -1,15 +1,14 @@
 package at.cpickl.gadsu.view.datepicker
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.view.Images
 import java.awt.Color
 import java.awt.SystemColor
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.imageio.ImageIO
 import javax.swing.Icon
-import javax.swing.ImageIcon
 
 
 object ComponentColorDefaults {
@@ -97,17 +96,6 @@ object ComponentIconDefaults {
 
     private val CLEAR = "/gadsu/images/datepicker_clear.png"
 
-    private fun loadIcon(path: String): Icon {
-        val stream = ComponentIconDefaults::class.java.getResourceAsStream(path)
-        try {
-            val image = ImageIO.read(stream)
-            return ImageIcon(image)
-        } finally {
-            stream.close()
-        }
-    }
-
-
     enum class Key// TODO
 
     var clearIcon: Icon? = null
@@ -124,7 +112,7 @@ object ComponentIconDefaults {
     init {
         // TODO consider making all the icons vector images which will scale
         try {
-            clearIcon = loadIcon(CLEAR)
+            clearIcon = Images.loadFromClasspath(CLEAR)
             nextMonthIconEnabled = JNextIcon(4, 7, false, true)
             nextYearIconEnabled = JNextIcon(8, 7, true, true)
             previousMonthIconEnabled = JPreviousIcon(4, 7, false, true)

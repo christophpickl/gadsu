@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
     model.addElement(Client.INSERT_PROTOTYPE.copy(firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_WOMAN))
     val list = JList<Client>(model)
     list.cellRenderer = object : MyListCellRenderer<Client>() {
-        override fun newCell(value: Client) = ClientCell(ExtendedClient(value, 42))
+        override fun newCell(value: Client) = ClientCell(ExtendedClient(value, 42, null))
     }
     Framed.show(list.scrolled(), Dimension(300, 500))
 }

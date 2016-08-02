@@ -17,6 +17,20 @@ class DateFormatsTest {
 
 }
 
+@Test
+class DateTimeExtensionTest {
+
+    private val birthday = DateTime.parse("1985-06-16T12:00:00.000")
+    private val now = DateTime.parse("2015-06-15T12:00:00.000")
+
+    fun differenceDaysWithinYear() {
+        assertThat(now.differenceDaysWithinYear(birthday), equalTo(1))
+        assertThat(now.minusDays(1).differenceDaysWithinYear(birthday), equalTo(2))
+        assertThat(now.plusDays(1).differenceDaysWithinYear(birthday), equalTo(0))
+        assertThat(now.plusDays(2).differenceDaysWithinYear(birthday), equalTo(-1)) // birthday was in past
+    }
+}
+
 @Test class DurationTest {
 
     @DataProvider

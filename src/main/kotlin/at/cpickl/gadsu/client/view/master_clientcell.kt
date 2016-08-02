@@ -3,8 +3,12 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.service.differenceDaysWithinYear
 import at.cpickl.gadsu.service.formatDateTimeSemiLong
+import at.cpickl.gadsu.service.isBetweenInclusive
+import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
 import org.joda.time.DateTime
@@ -54,10 +58,15 @@ class ExtendedClient(
 
 class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(client) {
 
-    private val name = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
+    companion object {
+        private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
+    }
+    private val nameLbl = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
-    override val applicableForegrounds: Array<JComponent> = arrayOf(name, countTreatments, upcomingAppointment)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, countTreatments, upcomingAppointment)
+
+    private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     init {
 //        if (client.state == ClientState.INACTIVE) {
@@ -82,7 +91,23 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.weightx = 1.0
         c.gridx++
         c.fill = GridBagConstraints.HORIZONTAL
-        add(name)
+        if (client.hasSoonBirthday()) {
+            add(GridPanel().apply {
+                c.insets = Pad.NONE
+                c.fill = GridBagConstraints.NONE
+                c.weightx = 0.0
+                c.anchor = GridBagConstraints.WEST
+                add(JLabel(BIRTHDAY_ICON))
+
+                c.gridx++
+                c.weightx = 1.0
+                c.insets = Pad.LEFT
+                c.anchor = GridBagConstraints.SOUTHWEST
+                add(nameLbl)
+            })
+        } else {
+            add(nameLbl)
+        }
 
         c.gridy++
         add(countTreatments)

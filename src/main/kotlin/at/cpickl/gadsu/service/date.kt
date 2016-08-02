@@ -89,6 +89,10 @@ fun DateTime.clearTime(): DateTime = this.withHourOfDay(0).clearMinutes()
 
 fun Date.toDateTime() = DateTime(this)
 
+fun DateTime.differenceDaysWithinYear(target: DateTime): Int {
+    val targetCleaned = target.withYear(this.year)
+    return targetCleaned.dayOfYear - this.dayOfYear
+}
 
 // --------------------------------------------------------------------------- clock
 

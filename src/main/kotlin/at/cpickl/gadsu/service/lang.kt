@@ -3,7 +3,7 @@ package at.cpickl.gadsu.service
 import at.cpickl.gadsu.GadsuException
 import com.google.common.io.Files
 import java.io.File
-import java.util.HashMap
+import java.util.*
 
 
 fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
@@ -24,3 +24,5 @@ fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): HashMap<K, V> {
     map.putAll(immutableMap)
     return map
 }
+
+fun Int.isBetweenInclusive(lower: Int, upper: Int) = this >= lower && this <= upper
