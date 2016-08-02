@@ -93,14 +93,14 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Tongue = TongueOpts.Thick
 
     enum class TongueOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        Thick (opt("Tongue_Thick", "Dick")),
-        Thin (opt("Tongue_Thin", "Dünn")),
-        Long (opt("Tongue_Long", "Lang")),
-        Short (opt("Tongue_Short", "Kurz")),
-        Sharp (opt("Tongue_Sharp", "Spitz")),
-        Swollen (opt("Tongue_Swollen", "Geschwollen")),
-        Red (opt("Tongue_Red", "Rot")),
-        Bright (opt("Tongue_Bright", "Hell, blass")),
+        Thick (opt("Tongue_Thick", "dick")),
+        Thin (opt("Tongue_Thin", "dünn")),
+        Long (opt("Tongue_Long", "lang")),
+        Short (opt("Tongue_Short", "kurz")),
+        Sharp (opt("Tongue_Sharp", "spitz")),
+        Swollen (opt("Tongue_Swollen", "geschwollen")),
+        Red (opt("Tongue_Red", "rot")),
+        Bright (opt("Tongue_Bright", "hell, blass")),
         YellowFilm (opt("Tongue_YellowFilm", "gelber Belag")),
         WhiteFilm (opt("Tongue_WhiteFilm", "weisser Belag")),
         // FIXME da ist ein fehler! dh ein flybase skript einbetten, dass darauf ein update macht und das fixt!
@@ -110,8 +110,8 @@ object XProps : XPropsFinder by XPropsFactory {
         Wet (opt("Tongue_Wet", "feucht")),
 
         RedDots (opt("Tongue_RedDots", "rote Punkte")),
-        ShowWillingly (opt("Tongue_ShowWillingly", "Zeigt gerne")),
-        ShowUnwillingly (opt("Tongue_ShowUnwillingly", "Zeigt z\u00f6gerlich")),
+        ShowWillingly (opt("Tongue_ShowWillingly", "zeigt gerne")),
+        ShowUnwillingly (opt("Tongue_ShowUnwillingly", "zeigt z\u00f6gerlich")),
     }
 
     val Tongue = enum("Tongue", "Zunge")
@@ -131,8 +131,8 @@ object XProps : XPropsFinder by XPropsFactory {
         Empty (opt("Pulse_Empty", "leer")),
         Sharp (opt("Pulse_Sharp", "spitz")),
         Round (opt("Pulse_Round", "rund")),
-        Wiry (opt("Pulse_Wiry", "Drahtig")),
-        Raugh (opt("Pulse_Raugh", "Rauh")),
+        Wiry (opt("Pulse_Wiry", "drahtig")),
+        Raugh (opt("Pulse_Raugh", "rauh")),
 
 //        Slippery (opt("Pulse_Slippery", "schl\u00fcpfrig"))
         // rhythmus ================
