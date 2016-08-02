@@ -15,7 +15,9 @@ import org.springframework.jdbc.core.RowMapper
 interface AppointmentRepository {
 
     fun findAllFor(client: Client): List<Appointment>
+    fun findAllFor(clientId: String): List<Appointment>
     fun findAllStartAfter(startPivot: DateTime, client: Client): List<Appointment>
+    fun findAllStartAfter(startPivot: DateTime, clientId: String): List<Appointment>
     fun insert(appointment: Appointment): Appointment
     fun update(appointment: Appointment)
     fun delete(appointment: Appointment)
@@ -35,19 +37,16 @@ class AppointmentJdbcRepository @Inject constructor(
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
-    override fun findAllFor(client: Client): List<Appointment> {
-        return findFor(client, "")
-    }
-    override fun findAllStartAfter(startPivot: DateTime, client: Client): List<Appointment> {
-        return findFor(client, "AND startDate > ?", startPivot.toSqlTimestamp())
-    }
 
-    private fun findFor(client: Client, whereClause: String, vararg args: Any): List<Appointment> {
-        log.debug("findXXX(whereClause={})", whereClause)
-        client.ensurePersisted()
+    override fun findAllFor(client: Client) = findAllFor(client.id!!)
+    override fun findAllFor(clientId: String) = findFor(clientId, "")
+    override fun findAllStartAfter(startPivot: DateTime, client: Client) = findAllStartAfter(startPivot, client.id!!)
+    override fun findAllStartAfter(startPivot: DateTime, clientId: String) = findFor(clientId, "AND startDate > ?", startPivot.toSqlTimestamp())
 
+    private fun findFor(clientId: String, whereClause: String, vararg args: Any): List<Appointment> {
+        log.debug("findFor(clientId={}, whereClause={}, args)", clientId, whereClause)
         val argsMerged = args.toMutableList()
-        argsMerged.add(0, client.id!!)
+        argsMerged.add(0, clientId)
         val appointments = jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? $whereClause ORDER BY startDate",
                 argsMerged.toTypedArray(), Appointment.ROW_MAPPER)
         appointments.sort()

@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.service.formatDateTimeSemiLong
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
@@ -14,7 +15,8 @@ import javax.swing.JPanel
 
 class ExtendedClient(
     var client: Client,
-    var countTreatments: Int
+    var countTreatments: Int,
+    var upcomingAppointment: DateTime?
 ) : IClient, Comparable<ExtendedClient> {
 
     override fun compareTo(other: ExtendedClient): Int {
@@ -54,7 +56,8 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private val name = JLabel(if(client.state == ClientState.INACTIVE) "(${client.fullName})" else client.fullName).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
-    override val applicableForegrounds: Array<JComponent> = arrayOf(name, countTreatments)
+    private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
+    override val applicableForegrounds: Array<JComponent> = arrayOf(name, countTreatments, upcomingAppointment)
 
     init {
 //        if (client.state == ClientState.INACTIVE) {
@@ -65,6 +68,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         val calculatedRows =
                 1 + // name
                 1 + // count treatments
+                (if (client.upcomingAppointment == null) 0 else 1) +
                 1 // ui hack to fill vertical space
 
 
@@ -82,6 +86,11 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
         c.gridy++
         add(countTreatments)
+
+        if (client.upcomingAppointment != null) {
+            c.gridy++
+            add(upcomingAppointment)
+        }
 
         // fill south gap with a UI hack ;)
         c.gridy++

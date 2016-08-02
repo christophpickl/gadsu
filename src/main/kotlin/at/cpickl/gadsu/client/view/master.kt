@@ -21,6 +21,7 @@ import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
@@ -52,6 +53,8 @@ interface ClientMasterView {
     fun treatmentCountIncrease(clientId: String)
     fun treatmentCountDecrease(clientId: String)
 
+    fun changeUpcomingAppointment(clientId: String, date: DateTime?)
+
 }
 
 
@@ -59,13 +62,12 @@ class SwingClientMasterView @Inject constructor(
         private val bus: EventBus,
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
-
     override val model = MyListModel<ExtendedClient>()
+
     private val log = LoggerFactory.getLogger(javaClass)
     private val list = JList<ExtendedClient>(model)
     private var previousSelected: ExtendedClient? = null
     private val client2extended : MutableMap<String, ExtendedClient> = HashMap()
-
     init {
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
@@ -209,6 +211,11 @@ class SwingClientMasterView @Inject constructor(
 
     override fun treatmentCountDecrease(clientId: String) {
         xclientById(clientId).countTreatments--
+    }
+
+    override fun changeUpcomingAppointment(clientId: String, date: DateTime?) {
+        xclientById(clientId).upcomingAppointment = date
+        list.repaint()
     }
 
     private fun xclientById(clientId: String) =

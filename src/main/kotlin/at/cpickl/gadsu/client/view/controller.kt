@@ -1,6 +1,10 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.appointment.AppointmentChangedEvent
+import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
+import at.cpickl.gadsu.appointment.AppointmentSavedEvent
+import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
@@ -17,7 +21,10 @@ import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
-import at.cpickl.gadsu.view.logic.*
+import at.cpickl.gadsu.view.logic.ChangeBehaviour
+import at.cpickl.gadsu.view.logic.ChangesChecker
+import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
+import at.cpickl.gadsu.view.logic.calculateInsertIndex
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
@@ -32,6 +39,7 @@ open class ClientViewController @Inject constructor(
         private val clientService: ClientService,
         private val treatmentRepo: TreatmentRepository,
         private val currentClient: CurrentClient,
+        private val appointmentService: AppointmentService,
         private val dialogs: Dialogs
 ) {
 
@@ -156,7 +164,7 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun extendClient(client: Client): ExtendedClient {
-        return ExtendedClient(client, treatmentRepo.countAllFor(client))
+        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start)
     }
 
     @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
@@ -165,6 +173,22 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
         view.masterView.treatmentCountDecrease(event.treatment.clientId)
+    }
+
+    @Subscribe open fun onAppointmentSavedEvent(event: AppointmentSavedEvent) {
+        recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
+    }
+
+    @Subscribe open fun onAppointmentDeletedEvent(event: AppointmentDeletedEvent) {
+        recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
+    }
+
+    @Subscribe open fun onAppointmentChangedEvent(event: AppointmentChangedEvent) {
+        recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
+    }
+
+    private fun recalcUpcomingAppointmentForExtendedClient(clientId: String) {
+        view.masterView.changeUpcomingAppointment(clientId, appointmentService.upcomingAppointmentFor(clientId)?.start)
     }
 
     private fun saveClient(client: Client) {

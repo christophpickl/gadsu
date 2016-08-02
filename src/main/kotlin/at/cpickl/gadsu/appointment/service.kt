@@ -6,6 +6,7 @@ import at.cpickl.gadsu.appointment.gcal.GCalUpdateEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.LOG
 import com.google.common.eventbus.EventBus
 import javax.inject.Inject
 
@@ -41,6 +42,9 @@ interface AppointmentService {
     fun insertOrUpdate(appointment: Appointment): Appointment
     fun deleteAll(client: Client)
     fun delete(appointment: Appointment)
+
+    fun upcomingAppointmentFor(client: Client): Appointment?
+    fun upcomingAppointmentFor(clientId: String): Appointment?
 }
 
 class AppointmentServiceImpl @Inject constructor(
@@ -51,11 +55,15 @@ class AppointmentServiceImpl @Inject constructor(
         private val clientRepository: ClientRepository
 ) : AppointmentService {
 
+    private val log = LOG(javaClass)
+
     override fun findAllFutureFor(client: Client): List<Appointment> {
+        log.debug("findAllFutureFor(client={})", client)
         return repository.findAllStartAfter(clock.now(), client)
     }
 
     override fun insertOrUpdate(appointment: Appointment): Appointment {
+        log.debug("insertOrUpdate(appointment={})", appointment)
         return if (appointment.yetPersisted) {
             repository.update(appointment)
             if (appointment.gcalId != null) {
@@ -83,6 +91,7 @@ class AppointmentServiceImpl @Inject constructor(
     }
 
     override fun delete(appointment: Appointment) {
+        log.debug("delete(appointment={})", appointment)
         repository.delete(appointment)
         if (appointment.gcalId != null) {
             gcal.deleteEvent(appointment.gcalId)
@@ -91,7 +100,14 @@ class AppointmentServiceImpl @Inject constructor(
     }
 
     override fun deleteAll(client: Client) {
+        log.debug("deleteAll(client={})", client)
         repository.deleteAll(client)
+    }
+
+    override fun upcomingAppointmentFor(client: Client) = upcomingAppointmentFor(client.id!!)
+    override fun upcomingAppointmentFor(clientId: String): Appointment? {
+        log.debug("upcomingAppointmentFor(clientId={})", clientId)
+        return repository.findAllStartAfter(clock.now(), clientId).sorted().firstOrNull()
     }
 
 }
