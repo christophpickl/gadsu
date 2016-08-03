@@ -49,7 +49,7 @@ private fun generate() {
     ))
 
     MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl()), Mockito.mock(MultiProtocolRepository::class.java), SimpleTestableClock(), EventBus())
-            .generatePdfPersistAndDispatch(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols)
+            .generatePdfPersistAndDispatch(File("foobar.pdf"), MultiProtocolCoverData.DUMMY, protocols, "")
     println("DONE")
 }
 
