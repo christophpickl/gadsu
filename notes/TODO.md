@@ -69,4 +69,4 @@ Luxury Ideas
 ------------------------------------------------------------
 * doodle integration (a la steffi)
 * WYSIWYG text editor
-- user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog
+- user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog (daweil nur automatisch wo was wegschneiden)
