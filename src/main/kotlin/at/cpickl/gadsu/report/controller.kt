@@ -66,7 +66,7 @@ open class ReportController @Inject constructor(
 
     @Subscribe open fun onReallyCreateMultiProtocolEvent(event: ReallyCreateMultiProtocolEvent) {
         createAndSave() {
-            it, cover, protocols -> multiProtocolGenerator.generatePdfPersistAndDispatch(it, cover, protocols)
+            it, cover, protocols -> multiProtocolGenerator.generatePdfPersistAndDispatch(it, cover, protocols, event.description)
             recentWindow?.closeWindow()
         }
     }

@@ -32,7 +32,7 @@ interface MultiProtocolGenerator {
 
     fun generatePdf(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
 
-    fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>)
+    fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>, description: String)
 
 }
 
@@ -61,10 +61,10 @@ class MultiProtocolGeneratorImpl @Inject constructor(
         addCover(protocols, coverData, target)
     }
 
-    override fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
+    override fun generatePdfPersistAndDispatch(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>, description: String) {
         generatePdf(target, coverData, protocolDatas)
 
-        protocolRepository.insert(MultiProtocol(null, clock.now(), "dummy description", protocolDatas.flatMap { it.rows.map { it.id } }))
+        protocolRepository.insert(MultiProtocol(null, clock.now(), description, protocolDatas.flatMap { it.rows.map { it.id } }))
         bus.post(MultiProtocolGeneratedEvent())
     }
 

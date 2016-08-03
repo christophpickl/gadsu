@@ -9,7 +9,7 @@ class RequestCreateMultiProtocolEvent() : UserEvent()
 /**
  * Creates the PDF and stores entries in DB (mark treatments as yet protcolized).
  */
-class ReallyCreateMultiProtocolEvent() : UserEvent()
+class ReallyCreateMultiProtocolEvent(val description: String) : UserEvent()
 
 /**
  * Just to have a quick look at the generated PDF.

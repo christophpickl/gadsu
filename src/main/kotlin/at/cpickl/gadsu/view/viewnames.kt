@@ -10,6 +10,7 @@ object ViewNames {
     val Treatment = TreatmentViewNames
     val Acupunct = AcupunctViewNames
     val Preferences = PreferencesViewNames
+    val MultiProtocol = MultiProtocolViewNames
 }
 
 object MainViewNames {
@@ -99,4 +100,10 @@ object AcupunctViewNames {
 
 object PreferencesViewNames {
     val Window = "Preferences.Window"
+}
+
+object MultiProtocolViewNames {
+    val InputDescription = "MultiProtocol.InputDescription"
+    val ButtonPrint = "MultiProtocol.ButtonPrint"
+    val ButtonTestPrint = "MultiProtocol.ButtonTestPrint"
 }

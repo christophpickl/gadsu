@@ -31,6 +31,10 @@ object DummyMainFrame : MainFrame {
 class Framed {
     companion object {
         init {
+            initUi()
+        }
+
+        fun initUi() {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
             JFrame.setDefaultLookAndFeelDecorated(true)
         }
