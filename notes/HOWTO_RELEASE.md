@@ -6,8 +6,7 @@
 
 * check everything has been pushed to GIT!!!
 * check all GitHub issues are closed
-* execute manual smoke tests
-* check the build dir does not exist
+* execute manual smoke tests (app starts, create client, treatment, protocol)
 
 # Release Script
 
@@ -52,9 +51,9 @@ To https://github.com/christophpickl/gadsu.git
 [RELEASE] Time needed: 283 seconds
 [RELEASE] Copy the contents of the artifacts directory: /Users/John/Dev/gadsu/../gadsu_release_build/release_artifacts
 total 327848
--rw-r--r--@ 1 wu  staff  56525158 Jul 14 18:48 Gadsu-1.4.0.dmg
--rw-r--r--  1 wu  staff  55629462 Jul 14 18:48 Gadsu-1.4.0.jar
--rwxr-xr-x  1 wu  staff  55693462 Jul 14 18:48 Gadsu.exe
+-rw-r--r--@ 1 John  staff  56525158 Jul 14 18:48 Gadsu-1.4.0.dmg
+-rw-r--r--  1 John  staff  55629462 Jul 14 18:48 Gadsu-1.4.0.jar
+-rwxr-xr-x  1 John  staff  55693462 Jul 14 18:48 Gadsu.exe
  
 $ 
 ```
@@ -86,5 +85,5 @@ hot stuff:
 
 # Optional
 
-* update screenshot on website
+* update screenshot on website (use the development action to prepare database accordingly)
 
