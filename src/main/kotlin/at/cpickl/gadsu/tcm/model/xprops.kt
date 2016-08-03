@@ -24,12 +24,12 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Sleep = SleepOpts.TiredInMorning
 
     enum class SleepOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        NeedLess (opt("Sleep_NeedLess", "Brauche wenig Schlaf")),
-        NeedMuch (opt("Sleep_NeedMuch", "Brauche viel Schlaf")),
-        TiredInMorning     (opt("Sleep_TiredInMorning", "Morgens müde")),
-        TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
-        ProblemsFallAsleep (opt("Sleep_ProblemsFallAsleep", "Problem einschlafen")),
-        ProblemsSleepThrough (opt("Sleep_ProblemsSleepThrough", "Durchschlafen"))
+        NeedMuch (opt("Sleep_NeedMuch", "viel Schlaf")),
+        NeedLess (opt("Sleep_NeedLess", "wenig Schlaf")),
+        ProblemsFallAsleep (opt("Sleep_ProblemsFallAsleep", "Einschlafprobleme")),
+        ProblemsSleepThrough (opt("Sleep_ProblemsSleepThrough", "Durchschlafprobleme")),
+        TiredInMorning     (opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
+        TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit"))
     }
 
     val Sleep = enum("Sleep", "Schlaf")
@@ -68,7 +68,7 @@ object XProps : XPropsFinder by XPropsFactory {
         SweatEasily (opt("Temperature_SweatEasily", "Schwitze leicht")),
         SweatRarely (opt("Temperature_SweatRarely", "Schwitze selten")),
         SweatDuringNight (opt("Temperature_SweatDuringNight", "Nachtschweiß")),
-        SweatWhenStressed (opt("Temperature_SweatWhenStressed", "Bei Stress"))
+        SweatWhenStressed (opt("Temperature_SweatWhenStressed", "Stressschweiß"))
     }
 
     val Temperature = enum("Temperature", "Temperatur") // verhalten
@@ -77,8 +77,8 @@ object XProps : XPropsFinder by XPropsFactory {
 
     enum class MenstruationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         // see text field: MenstruationTimes
-        Strong (opt("Menstruation_Strong", "Kräftig")),
         Little (opt("Menstruation_Little", "Schwach")),
+        Strong (opt("Menstruation_Strong", "Kräftig")),
         BloodDark (opt("Menstruation_BloodDark", "Blut dunkel")),
         BloodBright (opt("Menstruation_BloodBright", "Blut hell, dünn")),
         PMS (opt("Menstruation_PMS", "PMS")),
@@ -103,15 +103,13 @@ object XProps : XPropsFinder by XPropsFactory {
         Bright (opt("Tongue_Bright", "hell, blass")),
         YellowFilm (opt("Tongue_YellowFilm", "gelber Belag")),
         WhiteFilm (opt("Tongue_WhiteFilm", "weisser Belag")),
-        // FIXME da ist ein fehler! dh ein flybase skript einbetten, dass darauf ein update macht und das fixt!
-        TeethImprints (opt("Tongue_", "Zahnabdrücke")),
-        Midcrack (opt("Tongue_Midcrack", "Mittelriss")),
         Dry (opt("Tongue_Dry", "trocken")),
         Wet (opt("Tongue_Wet", "feucht")),
-
-        RedDots (opt("Tongue_RedDots", "rote Punkte")),
         ShowWillingly (opt("Tongue_ShowWillingly", "zeigt gerne")),
         ShowUnwillingly (opt("Tongue_ShowUnwillingly", "zeigt z\u00f6gerlich")),
+        TeethImprints (opt("Tongue_", "Zahnabdrücke")), // FIXME da ist ein fehler! dh ein flybase skript einbetten, dass darauf ein update macht und das fixt!
+        Midcrack (opt("Tongue_Midcrack", "Mittelriss")),
+        RedDots (opt("Tongue_RedDots", "rote Punkte")),
     }
 
     val Tongue = enum("Tongue", "Zunge")
@@ -150,8 +148,8 @@ object XProps : XPropsFinder by XPropsFactory {
         Bottom (opt("ChiLocation_Bottom", "unten")),
         Weak (opt("ChiLocation_Weak", "leicht")),
         Strong (opt("ChiLocation_Strong", "schwer")),
-        Outside (opt("ChiLocation_Outside", "nach aussen")),
-        Inside (opt("ChiLocation_Inside", "nach innen"))
+        Outside (opt("ChiLocation_Outside", "aussen")),
+        Inside (opt("ChiLocation_Inside", "innen"))
     }
 
     val ChiLocation = enum("ChiLocation", "Qi Status") // Energiekonzentration
