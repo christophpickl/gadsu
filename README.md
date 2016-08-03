@@ -16,7 +16,7 @@
 Gadsu is a Shiatsu tool which helps you in your daily life as a practitioner, mainly keeping track of appointments and treatments for your clients.
 It was initially created because of the need to automatically generate protocols for my [Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years, but growed continuously while being in active use.
 
-![gadsu_screenshot_1.1-SS.png](https://github.com/christophpickl/gadsu/wiki/gadsu_screenshot_1.1-SS.png "Gadsu Screenshot")
+![screenshot-main.png](https://github.com/christophpickl/gadsu/wiki/screenshot-main.png "Gadsu Screenshot")
 
 For more detailed information visit the [Wiki](https://github.com/christophpickl/gadsu/wiki).
 

@@ -58,6 +58,12 @@ total 327848
 $ 
 ```
 
+# Current Workaround
+
+* manually create a tag from the proper comment "[Auto-Release] current release version: 1.4.0"
+* push this tag to github, so you can start drafting a new release afterwords
+* reason: this is due to a bug in the current release script (somehow git tagging does not work!)
+
 # Postdoings
 
 * make a backup of local `~/.gadsu` folder
@@ -66,7 +72,7 @@ $
 * pull changes from remote git repo to local
 * copy the released artifacts to the local __Gadsu/Releases directory
 * draft a new release on github: https://github.com/christophpickl/gadsu/releases
-    * select existing tag, e.g. `v1.4.0`
+    * select existing tag (BUG!), e.g. `v1.4.0`
     * set release title to: `Release 1.4.0`
     * attach all three binary artifacts (exe, dmg, jar); this can take a moment as of 3x50 MB to upload
     * list all resolved issues for this milestone
