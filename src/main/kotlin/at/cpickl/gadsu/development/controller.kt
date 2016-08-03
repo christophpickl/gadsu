@@ -28,7 +28,8 @@ open class DevelopmentController @Inject constructor(
         private val bus: EventBus,
         private val mainFrame: MainFrame,
         private val currentClient: CurrentClient,
-        private val currentTreatment: CurrentTreatment
+        private val currentTreatment: CurrentTreatment,
+        private val screenshotInserter: ScreenshotDataInserter
 ) {
 
     private var devFrame: DevelopmentFrame? = null
@@ -150,6 +151,12 @@ open class DevelopmentController @Inject constructor(
                 }
             }
         }
+    }
+
+    @Subscribe open fun onDevelopmentResetScreenshotDataEvent(event: DevelopmentResetScreenshotDataEvent) {
+        deleteAll()
+
+        screenshotInserter.insertData()
     }
 
     @Subscribe open fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {

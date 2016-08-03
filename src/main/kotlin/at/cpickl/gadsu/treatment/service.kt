@@ -25,6 +25,7 @@ interface TreatmentService {
 
     fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?>
 
+    fun countAllFor(client: Client): Int // delegate to repo
 }
 
 class TreatmentServiceImpl @Inject constructor(
@@ -76,6 +77,8 @@ class TreatmentServiceImpl @Inject constructor(
             }
         }
     }
+
+    override fun countAllFor(client: Client) = repository.countAllFor(client)
 
     override fun calculateNextNumber(client: Client): Int {
         val maxNumber = repository.calculateMaxNumberUsed(client) ?: return 1

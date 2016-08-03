@@ -32,7 +32,6 @@ class SwingClientView @Inject constructor(
     init {
         debugColor = Color.YELLOW
 
-
         c.fill = GridBagConstraints.VERTICAL
         c.weightx = 0.0
         c.weighty = 1.0
@@ -62,9 +61,9 @@ class SwingClientView @Inject constructor(
     }
 
     override fun asComponent() = this
+
     override fun toString(): String{
         return "SwingClientView(type=$type)"
     }
-
 
 }

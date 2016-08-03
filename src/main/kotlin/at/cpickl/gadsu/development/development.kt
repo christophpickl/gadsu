@@ -31,6 +31,7 @@ class Development {
             addItemTo(menuDevelopment, "Development Window", ShowDevWindowEvent(), bus)
             menuDevelopment.addSeparator()
             addItemTo(menuDevelopment, "Reset Data", DevelopmentResetDataEvent(), bus)
+            addItemTo(menuDevelopment, "Reset Screenshot Data", DevelopmentResetScreenshotDataEvent(), bus)
             addItemTo(menuDevelopment, "Clear Data", DevelopmentClearDataEvent(), bus)
         }
 

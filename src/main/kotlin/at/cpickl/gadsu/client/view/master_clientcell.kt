@@ -28,6 +28,10 @@ class ExtendedClient(
         return this.client.compareTo(other.client)
     }
 
+    override fun toString(): String{
+        return "ExtendedClient(client=$client, countTreatments=$countTreatments, upcomingAppointment=$upcomingAppointment)"
+    }
+
     // by client delegation does not work for mutable var fields :-/
     override val id: String? get() = client.id
     override val yetPersisted: Boolean get() = client.yetPersisted
@@ -56,6 +60,7 @@ class ExtendedClient(
     override val tcmNote: String get() = client.tcmNote
     override val picture: MyImage get() = client.picture
     override val cprops: CProps get() = client.cprops
+
 
 }
 

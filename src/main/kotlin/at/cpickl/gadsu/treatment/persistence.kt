@@ -97,7 +97,9 @@ class TreatmentJdbcRepository @Inject constructor(
         log.debug("countAllFor(client={})", client)
         client.ensurePersisted()
 
-        return jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
+        val count = jdbcx.count(TABLE, arrayOf(client.id), "WHERE id_client = ?")
+        log.trace("count result: {}", count)
+        return count
     }
 
     override fun countAllNonProtocolized(): Int {

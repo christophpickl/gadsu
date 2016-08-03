@@ -9,6 +9,7 @@ import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.SelectImageEvent
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyListCellRenderer
@@ -22,7 +23,6 @@ import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import org.joda.time.DateTime
-import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
@@ -64,14 +64,15 @@ class SwingClientMasterView @Inject constructor(
 ) : GridPanel(), ClientMasterView {
     override val model = MyListModel<ExtendedClient>()
 
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LOG(javaClass)
     private val list = JList<ExtendedClient>(model)
     private var previousSelected: ExtendedClient? = null
     private val client2extended : MutableMap<String, ExtendedClient> = HashMap()
+
     init {
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
-        enforceWidth(200)
+        enforceWidth(222)
         initList()
 
 //        c.fill = GridBagConstraints.HORIZONTAL

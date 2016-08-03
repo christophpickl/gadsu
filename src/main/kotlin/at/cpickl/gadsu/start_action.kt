@@ -50,7 +50,9 @@ class HelpArgAction() : BaseArgAction("help") {
     override fun execute(params: Map<String, String>) {
         println("""Available actions:
   --action=help ... prints this help
-  --action="clearPrefs;foo=bar"... reset preferences to factory default""")
+  --action=clearPrefs ... reset preferences to factory default
+  --action=repairDb ... invoke FlyWay's repair method (useful on migrating problems)""")
+        // --action="clearPrefs;foo=bar"... reset preferences to factory default
     }
 }
 

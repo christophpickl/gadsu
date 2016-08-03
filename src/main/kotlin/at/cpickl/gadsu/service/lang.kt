@@ -27,3 +27,9 @@ fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): HashMap<K, V> {
 }
 
 fun Int.isBetweenInclusive(lower: Int, upper: Int) = this >= lower && this <= upper
+
+fun Int.forEach(code: () -> Unit) {
+    for (i in 1..this) {
+        code()
+    }
+}

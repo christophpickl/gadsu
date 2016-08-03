@@ -1,41 +1,17 @@
 * BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
 - niemals JFrame verwenden (fuer non-mainframes) sondern immer nur window&co
-=======
-@DOKU: describe CLI args (and action args)
-usage: gadsu
- -?,--help                Print this usage help.
- -a,--action <arg>        Add a custom action and quit (for debugging purpose).
- -d,--databaseUrl <arg>   Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is:
-                          'jdbc:hsqldb:file:/Users/wu/.gadsu_dev/database/database').
- -p,--preferences <arg>   Change the default Java class to be used for preferences node.
- -x,--debug               Increase log level and register additional console appender.
-
-
 - zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
 - breitere textfelder: mail, strasse
-
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
 
-
-PROTOCOL
-------------------------------------------------------------
-* die TCM properties nicht generisch den text erzeugen, sondern pro feld ein text-template hinterlegen. (oder gar plump als auflistung ausgeben in einem freitextfeld)
-- extra lib fuer pdf handling: mehrere zusammenmergen
-- binary/clientPic in jasper rein
-- dynamische texthoehe fuer jasper
-- schon vorhandenes deckblatt programmatisch was drauf schreiben
-- seitenzahl muesste auch komplett neu vergeben werden, ToC haendisch??
- 
- 
 T-O-D-O
 ============================================================
 
 High
 ------------------------------------------------------------
 
-* when client changes detected, user confirms, then select the clicked one to save one click
-* @UI: automatically scroll to far left in textfields (on update)
+
 
 Med
 ------------------------------------------------------------
@@ -53,21 +29,16 @@ Low
 * konkurrenz analyse
   * http://www.clinicsense.com/tour/
   * http://www.bodyworkbuddy.com/
-* geburtstags reminder
 * alle textfields/areas immer TRIM (???)
 * backup zielordner auswaehlen (sollte nicht dort liegen, wo ~/.gadsu liegt!
-* mehr aktionen ueber menu bar: Klient / Bild Aendern, ...
 * switch to HSQLDB's new UUID type for ID columns
 * @TECH: use custom AOP annotation to ensure transaction safety
 * [2] REFACT: split ClientViewController for master and detail
 * check there are no snapshots during release.sh
 * @UI: https://tips4java.wordpress.com/2010/11/28/combo-box-popup/
 * @Languages check default system property for language (luxury: configurable via preferences)
-* @UI: JDatePicker seems to support JodaTime (see their website) => 
+* @UI: JDatePicker seems to support JodaTime (see their website) 
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
-* enhance window descriptor:
-  * make reusable for others
-  * remember by dispaly
 * when tracing in SqlJdbcX, then avoid linefeeds in log output
 
 Test
