@@ -1,3 +1,17 @@
+* icon idee
+    - zb: jede behandlung hat drei "kuebeln"
+    - rechts gibts eine sidebar mit drei kasterln wo "steinchen" drinnen sind,
+    - zb steinchen inhalt (technik): Le, Bl, ... jedes kann man mit text versehen. oder auch steinchen bein/arm/...?
+    - zb steinchen zustand: kopfweh, schlaf, ...
+    - idea: wenn man auf steinchen doppelklickt, welches schon im kuebel ist, dann geht popup auf, zb um spezifische akupunkturpunkte auszuwaehlen => das verlinken mit akupunkturpunkt
+* @auto updater: if on windows, suggest to download EXE not JAR (check for mac as well)
+* windows improvements:
+    - dont use JFrame but JWindow instead (jframe leads to ugly taskbar icon)
+    - use installer so one can pin the app on the taskbar
+* @appointments: als tooltip when hovered, dann die notiz anzeigen (falls vorhanden)
+* minor BUG: wenn "inaktivieren von klienten", dann list rendering funkt nicht ganz
+* LUXURY: wenn treatment goal setzen, dann kein neustart erforderlich (gleich rendern)
+* @protocol: wenn kein username in preferences eingestellt, dann warning ausgeben (evtl gleich mit moeglichkeit den namen zu setzen direkt!)
 * BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
 - niemals JFrame verwenden (fuer non-mainframes) sondern immer nur window&co
 - zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
