@@ -9,7 +9,6 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.Insets
 
@@ -50,7 +49,6 @@ class SwingClientView @Inject constructor(
             c.gridy++
             c.fill = GridBagConstraints.HORIZONTAL
             c.weighty = 0.0
-            goalController.view.preferredSize = Dimension(goalController.view.preferredSize.width, 28)
             add(goalController.view)
         }
     }
