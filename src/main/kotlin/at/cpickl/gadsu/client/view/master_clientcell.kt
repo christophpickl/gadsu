@@ -1,6 +1,11 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.IClient
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.differenceDaysWithinYear
@@ -12,6 +17,7 @@ import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import java.awt.GridBagConstraints
 import javax.swing.JComponent
@@ -123,9 +129,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.gridy++
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
-        val fillGap = JPanel()
-        fillGap.isOpaque = false
-        add(fillGap)
+        add(JPanel().transparent())
     }
 
 }

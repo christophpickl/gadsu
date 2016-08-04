@@ -3,6 +3,9 @@ package at.cpickl.gadsu.view.swing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Point
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseMotionAdapter
 import javax.swing.JList
 
 val <T> JList<T>.log: Logger
@@ -33,3 +36,27 @@ fun <T> JList<T>.elementAtPoint(point: Point): Pair<Int, T>? {
     return Pair(index, model.getElementAt(index))
 }
 
+interface CurrentHoverIndexHolder {
+    var currentHoverIndex: Int
+}
+
+fun <T> JList<T>.enableHoverListener(indexHolder: CurrentHoverIndexHolder) {
+    addMouseMotionListener(object : MouseMotionAdapter() {
+        // see: http://stackoverflow.com/a/22905949
+        override fun mouseMoved(e: MouseEvent) {
+            val point = Point(e.x, e.y)
+            val index = locationToIndex(point)
+            if (index != indexHolder.currentHoverIndex) {
+                indexHolder.currentHoverIndex = index
+                repaint()
+            }
+        }
+    })
+    addMouseListener(object : MouseAdapter() {
+        // this does NOT get called for mouseMoved
+        override fun mouseExited(e: MouseEvent) {
+            indexHolder.currentHoverIndex = -1
+            repaint()
+        }
+    })
+}

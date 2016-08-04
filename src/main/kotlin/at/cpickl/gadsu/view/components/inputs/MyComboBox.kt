@@ -1,13 +1,17 @@
 package at.cpickl.gadsu.view.components.inputs
 
-import at.cpickl.gadsu.view.components.MyListCellRenderer
+import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.transparent
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Component
-import java.util.*
-import javax.swing.*
+import java.util.Vector
+import javax.swing.JComboBox
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.ListCellRenderer
+import javax.swing.UIManager
 
 
 interface Labeled {
@@ -65,7 +69,7 @@ class LabeledCellRenderer<L : Labeled>(private val original: ListCellRenderer<in
         } else {
             label.opaque()
             if (index % 2 == 1) {
-                label.background = MyListCellRenderer.ALTERNATE_BG_COLOR
+                label.background = Colors.BG_ALTERNATE
             } else {
                 label.background = Color.WHITE
             }

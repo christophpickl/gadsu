@@ -13,7 +13,11 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.ImageIcon
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JScrollPane
+import javax.swing.ListSelectionModel
 
 interface ElFieldForProps<V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
@@ -33,7 +37,8 @@ class CPropEnumView(
     init {
         val model = MyListModel<XPropEnumOpt>()
         model.resetData(xprop.options)
-        list = MyList("FIXME_VIEWNAME", model, bus, object: MyListCellRenderer<XPropEnumOpt>() {
+        // MINOR UI proper view name
+        list = MyList("FIXME_VIEWNAME.XPropEnum.${xprop.key}", model, bus, object: MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true) {
             override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
         })
         list.enableToggleSelectionMode()
@@ -70,6 +75,7 @@ class CPropEnumView(
 }
 
 class XPropEnumCell(val xprop: XPropEnumOpt) : DefaultCellView<XPropEnumOpt>(xprop) {
+
     private val txtLabel = JLabel(xprop.label)
     override val applicableForegrounds: Array<JComponent> = arrayOf(txtLabel)
 

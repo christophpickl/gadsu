@@ -18,6 +18,7 @@ import at.cpickl.gadsu.view.components.containsById
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.enableSmartPopup
+import at.cpickl.gadsu.view.swing.enableHoverListener
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
@@ -27,7 +28,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import java.util.*
+import java.util.HashMap
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -57,6 +58,19 @@ interface ClientMasterView {
 
 }
 
+class ClientList(model: MyListModel<ExtendedClient>) : JList<ExtendedClient>(model){
+    init {
+        name = ViewNames.Client.List
+
+        val myCellRenderer = object : MyListCellRenderer<ExtendedClient>() {
+            override fun newCell(value: ExtendedClient) = ClientCell(value)
+        }
+        cellRenderer = myCellRenderer
+        enableHoverListener(myCellRenderer)
+        selectionMode = ListSelectionModel.SINGLE_SELECTION
+        layoutOrientation = JList.VERTICAL
+    }
+}
 
 class SwingClientMasterView @Inject constructor(
         private val bus: EventBus,
@@ -65,7 +79,7 @@ class SwingClientMasterView @Inject constructor(
     override val model = MyListModel<ExtendedClient>()
 
     private val log = LOG(javaClass)
-    private val list = JList<ExtendedClient>(model)
+    private val list = ClientList(model)
     private var previousSelected: ExtendedClient? = null
     private val client2extended : MutableMap<String, ExtendedClient> = HashMap()
 
@@ -95,13 +109,6 @@ class SwingClientMasterView @Inject constructor(
     }
 
     private fun initList() {
-        list.name = ViewNames.Client.List
-        list.cellRenderer =  object : MyListCellRenderer<ExtendedClient>() {
-            override fun newCell(value: ExtendedClient) = ClientCell(value)
-        }
-        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
-        list.layoutOrientation = JList.VERTICAL
-
         list.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
                 if (list.selectedIndex === -1) {

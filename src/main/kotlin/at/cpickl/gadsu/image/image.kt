@@ -14,9 +14,9 @@ import javax.swing.ImageIcon
 
 interface MyImage {
     companion object {
-        val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.jpg")
-        val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.jpg")
-        val DEFAULT_PROFILE_ALIEN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_alien.jpg")
+        val DEFAULT_PROFILE_MAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_man.png")
+        val DEFAULT_PROFILE_WOMAN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_woman.png")
+        val DEFAULT_PROFILE_ALIEN: MyImage = DefaultImage("/gadsu/images/profile_pic-default_alien.png")
 
         fun byIcon(icon: ImageIcon) = icon.toMyImage()
         fun byBuffered(buffered: BufferedImage) = buffered.toMyImage()
