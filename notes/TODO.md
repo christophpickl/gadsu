@@ -1,3 +1,4 @@
+* @appointment: close window on hit ESC key
 * icon idee
     - zb: jede behandlung hat drei "kuebeln"
     - rechts gibts eine sidebar mit drei kasterln wo "steinchen" drinnen sind,
