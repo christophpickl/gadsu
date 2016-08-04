@@ -54,6 +54,16 @@ Low
 * @UI: JDatePicker seems to support JodaTime (see their website) 
 * read jasper: http://www.tutorialspoint.com/jasper_reports/jasper_report_sections.htm
 * when tracing in SqlJdbcX, then avoid linefeeds in log output
+* testdata creator
+  - 100 clients
+  - random 0-30 treatments
+  - random 0-4 appointments
+  - 70% hat bilder
+  - 50% male/female
+  - birthday sodass alter 20-60 jahre
+* use LocalDateTime, LocalTime
+* use DateRange
+* fuer "when", "in", ... eigene extension methods machen mit synonym um backticks zu umgehen
 
 Test
 ------------------------------------------------------------
@@ -70,3 +80,15 @@ Luxury Ideas
 * doodle integration (a la steffi)
 * WYSIWYG text editor
 - user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog (daweil nur automatisch wo was wegschneiden)
+* GADSU client ranking
+	- smart way of auto-order clients
+	- top clients on top (most points)
+		* TC (0.2pt) - time created: count days diff to today; the more the better
+		* CT (5.0pt) - count treatments: pro behandlung
+		* TLT (1.0pt) - time last treatment: je aktueller, desto mehr punkte; 30 - 0 pkt
+	- SAMPLES (today = 1.6.2010)
+		A: "recht aktueller client"
+			created = vor 2 monaten: 1.4.2010 ... 60 TC * 0.2pt => 12PT
+			treatments = 4 CT * 5pt => 20PT
+			last treat = gestern: 30.5.2010 ... 30 - 1 TLT = 29 * 1.0pt => 29PT
+			===> 12 + 20 + 29 = 61PT
