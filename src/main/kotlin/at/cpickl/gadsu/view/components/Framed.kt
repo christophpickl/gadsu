@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.LogConfigurator
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -31,6 +32,7 @@ object DummyMainFrame : MainFrame {
 class Framed {
     companion object {
         init {
+            LogConfigurator(true).configureLog()
             initUi()
         }
 
@@ -78,7 +80,7 @@ class Framed {
         } else {
             frame.pack()
         }
-//        frame.setLocationRelativeTo(null)
+        frame.setLocationRelativeTo(null)
         EventQueue.invokeLater { frame.isVisible = true }
 //        SwingUtilities.invokeLater { frame.isVisible = true }
     }
