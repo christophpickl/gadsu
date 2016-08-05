@@ -5,7 +5,7 @@ import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratedEvent
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.colorByPercentage
+import at.cpickl.gadsu.view.colorByPercentage
 import at.cpickl.gadsu.view.swing.enforceSize
 import com.google.common.eventbus.Subscribe
 import java.awt.Color

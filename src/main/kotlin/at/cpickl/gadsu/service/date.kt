@@ -7,8 +7,9 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
 
+val ZERO = DateTime(0L).withHourOfDay(0) // get rid of +1 timezone thingy
 
 class DateFormats {
     companion object {
@@ -26,8 +27,6 @@ class DateFormats {
 
 // --------------------------------------------------------------------------- time
 
-// TODO dont do this! stop!
-fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
 
 fun DateTime.ensureNoSeconds() {
     if (!this.equals(this.clearSeconds())) {
@@ -35,26 +34,23 @@ fun DateTime.ensureNoSeconds() {
     }
 }
 
+// TODO dont do this! stop!
+fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
 fun DateTime.ensureQuarterMinute() {
     if (!minuteOfHour.isQuarterMinute()) {
         throw GadsuException("Illegal date: expected minute to be a quarter part but was: $this")
     }
 }
 
+/**
+ * Return a list of 00:00, 00:15, ... 23:45 values.
+ * Cache it, as list and DateTime is immutable :)
+ */
+private val cached_timesList = 0.rangeTo(24 * 4 - 1).map { ZERO.plusMinutes(it * 15) }
+fun timesList(): List<DateTime> = cached_timesList
 
-//    println(timesList().map { it.formatTimeWithoutSeconds() }.joinToString("\n"))
-fun timesList(): List<DateTime> {
-    var current = "00:00".parseTimeWithoutSeconds()
-    return 0.rangeTo(24 * 4 - 1).map {
-        val result = current
-        current = current.plusMinutes(15)
-        result
-    }
-}
-
-fun timesLabeledList(): List<LabeledDateTime> {
-    return timesList().map { LabeledDateTime(it) }.toList()
-}
+private val cached_timesLabeledList = timesList().map { LabeledDateTime(it) }.toList()
+fun timesLabeledList(): List<LabeledDateTime> = cached_timesLabeledList
 
 fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
     return this.hourOfDay == that.hourOfDay &&
@@ -106,17 +102,14 @@ interface Clock {
 }
 
 class RealClock : Clock {
-
-    override fun now() = DateTime.now()
-
+    override fun now() = DateTime.now()!!
     override fun nowWithoutSeconds() = now().clearSeconds()
-
 }
 
 // --------------------------------------------------------------------------- duration
 
 // internally, duration is stored as an Int
-fun minutes(minutes: Int) = Duration.standardMinutes(minutes.toLong())
+fun minutes(minutes: Int) = Duration.standardMinutes(minutes.toLong())!!
 fun Duration.toMinutes(): Int = this.standardMinutes.toInt()
 
 /** E.g.: "45" or "1:30" */
