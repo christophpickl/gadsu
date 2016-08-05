@@ -19,7 +19,7 @@ import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 
-interface ElFieldForProps<V> : ElField<V> {
+interface ElFieldForProps<in V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
 }
 

@@ -22,7 +22,7 @@ class ArgsActionExecutor @Inject constructor(
 
         val actionName = if (!actionUrl.contains(";")) actionUrl else actionUrl.substring(0, actionUrl.indexOf(";"))
         val action = actions.firstOrNull { it.actionName.toLowerCase().equals(actionName.toLowerCase()) } ?:
-                throw ArgsActionException("Invalid action requested '${actionName}'!")
+                throw ArgsActionException("Invalid action requested '$actionName'!")
 
         val params = parseParams(actionUrl)
         // parse args: "action;foo=bar", watch out for "action"

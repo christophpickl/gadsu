@@ -6,8 +6,11 @@ import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.swing.*
-import com.google.common.eventbus.EventBus
+import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.changeBackgroundForASec
+import at.cpickl.gadsu.view.swing.opaque
+import at.cpickl.gadsu.view.swing.scrolled
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
@@ -18,8 +21,7 @@ import javax.swing.JTextArea
 
 
 class DevelopmentFrame(
-        initLocation: Point,
-        private val bus: EventBus
+        initLocation: Point
 ): MyFrame("Development Console") {
 
     private val txtClient = JLabel()

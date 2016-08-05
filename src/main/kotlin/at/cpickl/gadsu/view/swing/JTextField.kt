@@ -14,7 +14,7 @@ fun JTextField.enforceMaxCharacters(enforcedLength: Int) {
         override fun insertString(offset: Int, string: String?, attributes: AttributeSet?) {
             if (string == null) return
             if ((length + string.length) <= enforcedLength) {
-                super.insertString(offset, string, attributes);
+                super.insertString(offset, string, attributes)
             } else {
                 beep()
             }

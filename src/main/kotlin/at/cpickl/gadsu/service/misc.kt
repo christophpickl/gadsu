@@ -27,7 +27,7 @@ class UuidGenerator : IdGenerator {
     override fun generate(): String = UUID.randomUUID().toString()
 }
 
-val LOG_Closeable = LoggerFactory.getLogger(Closeable::class.java)
+val LOG_Closeable = LoggerFactory.getLogger(Closeable::class.java)!!
 fun Closeable.closeQuietly() {
     try {
         close()

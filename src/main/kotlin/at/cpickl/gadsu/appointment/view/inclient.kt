@@ -9,7 +9,7 @@ import at.cpickl.gadsu.view.components.newEventButton
 import javax.inject.Inject
 
 class AppoinmentsInClientView @Inject constructor(
-        private val swing: SwingFactory,
+        swing: SwingFactory,
         list: AppointmentList
 ) : ListyView<Appointment>(list, swing.newEventButton("Neuen Termin erstellen", "ViewName_TODO", { CreateAppointmentEvent() })) {
 

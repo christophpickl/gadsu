@@ -5,7 +5,7 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.MyTableModel
 
 
-interface IndexableModel<E> {
+interface IndexableModel<out E> {
     val indexableSize: Int
     fun indexableElementAt(index: Int): E
 

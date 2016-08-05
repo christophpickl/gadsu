@@ -23,14 +23,14 @@ object XPropsFactory : XPropsFinder {
         if (!xpropByKey.containsKey(key)) {
             throw GadsuException("Invalid xproperty key '$key'!")
         }
-        return xpropByKey.get(key)!!
+        return xpropByKey[key]!!
     }
 
     override fun findEnumValueByKey(key: String): XPropEnumOpt {
         if (!xpropEnumOptByKey.containsKey(key)) {
             throw GadsuException("Invalid xproperty enum value key '$key'!")
         }
-        return xpropEnumOptByKey.get(key)!!
+        return xpropEnumOptByKey[key]!!
     }
 
 

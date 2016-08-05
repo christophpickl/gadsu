@@ -51,14 +51,14 @@ object Languages {
 
 enum class Language(val id: String) {
     DE("DE") {
-        override fun toLocale() = Locale.GERMAN
+        override fun toLocale() = Locale.GERMAN!!
     },
     // FTM disabling english
     //    EN("EN") {
     //        override fun toLocale() = Locale.ENGLISH
     //    },
     TEST_LANG("XXX") {
-        override fun toLocale() = Locale.JAPANESE
+        override fun toLocale() = Locale.JAPANESE!!
     };
 
     companion object {
@@ -73,19 +73,19 @@ enum class Language(val id: String) {
 object LabelsLanguageFinder {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun <T> find(requestType: Class<T>) = findForLanguage<T>(requestType, Languages.language)
+    fun <T> find(requestType: Class<T>) = findForLanguage(requestType, Languages.language)
 
     @VisibleForTesting
     fun <T> findForLanguage(requestType: Class<T>, lang: Language): T {
         val found = findOrDefaultLang(requestType, lang) ?:
-                throw LanguageException("Internal error: No label definition given for request type of '${requestType.name}' and language '${lang}'!")
+                throw LanguageException("Internal error: No label definition given for request type of '${requestType.name}' and language '$lang'!")
         found.isAccessible = true
         @Suppress("UNCHECKED_CAST")
         return found.get(null) as T
     }
 
     private fun <T> findOrDefaultLang(requestType: Class<T>, lang: Language): Field? {
-        var fieldRef = _find(requestType, lang)
+        val fieldRef = _find(requestType, lang)
         if (fieldRef != null) {
             return fieldRef
         }

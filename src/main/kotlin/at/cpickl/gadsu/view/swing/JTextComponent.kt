@@ -5,7 +5,7 @@ import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import javax.swing.text.JTextComponent
 
-val LOG_JTextComponent = LoggerFactory.getLogger(JTextComponent::class.java)
+val LOG_JTextComponent = LoggerFactory.getLogger(JTextComponent::class.java)!!
 
 fun <T : JTextComponent> T.disabled(): T {
     isEditable = false

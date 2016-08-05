@@ -8,8 +8,6 @@ import at.cpickl.gadsu.appointment.view.AppointmentWindow
 import at.cpickl.gadsu.appointment.view.SwingAppointmentWindow
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
-import com.google.inject.binder.AnnotatedBindingBuilder
-import com.google.inject.binder.ScopedBindingBuilder
 
 class AppointmentModule : AbstractModule() {
 

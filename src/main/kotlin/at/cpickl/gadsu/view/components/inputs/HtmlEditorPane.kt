@@ -9,7 +9,7 @@ import javax.swing.event.HyperlinkEvent
 class HtmlEditorPane(initText: String = "") : JEditorPane() {
     init {
         contentType = "text/html"
-        putClientProperty(HONOR_DISPLAY_PROPERTIES, true);
+        putClientProperty(HONOR_DISPLAY_PROPERTIES, true)
         isEditable = false
         isOpaque = false
         // isEnabled = false // dont do this!

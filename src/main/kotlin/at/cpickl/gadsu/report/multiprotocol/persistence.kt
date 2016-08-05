@@ -1,13 +1,11 @@
 package at.cpickl.gadsu.report.multiprotocol
 
-import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensureNotPersisted
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import com.google.inject.Inject
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper

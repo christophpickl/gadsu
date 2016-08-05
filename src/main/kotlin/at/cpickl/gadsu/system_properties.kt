@@ -11,7 +11,7 @@ object GadsuSystemProperty {
 }
 
 abstract class AbstractSystemProperty(val key: String) {
-    final fun clear() {
+    fun clear() {
         System.clearProperty(key)
     }
 }

@@ -1,11 +1,8 @@
 package at.cpickl.gadsu.image
 
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
-import org.slf4j.LoggerFactory
-import java.io.File
 import javax.swing.JButton
 import javax.swing.JComponent
 
@@ -20,16 +17,12 @@ interface ImagePicker {
 }
 
 interface ImagePickerFactory {
-    fun create(viewNamePrefix: String, parentFolder: File): ImagePicker
+    fun create(viewNamePrefix: String): ImagePicker
 }
 
 class SwingImagePicker @Inject constructor (
-        private val bus: EventBus,
-        @Assisted private val viewNamePrefix: String,
-        @Assisted private val parentFolder: File
+        @Assisted private val viewNamePrefix: String
 ) : GridPanel(), ImagePicker {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     init {
         name = "$viewNamePrefix.${ImagePicker.VIEWNAME_SUFFIX_PANEL}"

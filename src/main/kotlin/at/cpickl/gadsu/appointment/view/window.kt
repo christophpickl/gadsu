@@ -36,7 +36,7 @@ interface AppointmentWindow {
 }
 
 class SwingAppointmentWindow @Inject constructor(
-        private val swing: SwingFactory,
+        swing: SwingFactory,
         private val bus: EventBus,
         private val currentClient: CurrentClient,
         private val mainFrame: MainFrame, // unfortunately we need the whole big mainframe to center this window

@@ -69,7 +69,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
         install(VersionModule())
     }
 
-    override protected fun install(module: Module) {
+    override fun install(module: Module) {
         log.trace("Installing guice module: {}", module.javaClass.simpleName)
         super.install(module)
     }

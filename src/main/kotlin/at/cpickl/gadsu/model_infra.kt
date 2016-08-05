@@ -18,5 +18,5 @@ interface SqlEnum {
 }
 fun <E : SqlEnum> parseSqlCodeFor(values: Array<E>, search: String): E {
     return values.firstOrNull { it.sqlCode.equals(search) } ?:
-            throw GadsuException("Unhandled SQL code: '${search}'!")
+            throw GadsuException("Unhandled SQL code: '$search'!")
 }

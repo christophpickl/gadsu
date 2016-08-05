@@ -128,7 +128,7 @@ class AcupunctCell(punct: Acupunct): DefaultCellView<Acupunct>(punct) {
 }
 
 class AcupunctureList @Inject constructor(
-        private val bus: EventBus
+        bus: EventBus
 ) : MyList<Acupunct>(
         ViewNames.Acupunct.List,
         MyListModel<Acupunct>(),

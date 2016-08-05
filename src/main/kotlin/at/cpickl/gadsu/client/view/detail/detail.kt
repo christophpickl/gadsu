@@ -1,7 +1,11 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -25,7 +29,11 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTabbedPane
 
 interface ClientDetailView {
 
@@ -138,7 +146,7 @@ open class SwingClientDetailView @Inject constructor(
     }
 
     override fun readClient(): Client {
-        log.trace("readClient()");
+        log.trace("readClient()")
         return Client(
                 currentClient.data.id,
                 currentClient.data.created,

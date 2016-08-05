@@ -23,6 +23,7 @@ interface XPropsSqlRepository {
 
 
 @VisibleForTesting
+@Suppress("UNUSED")
 val SProp.Companion.ROW_MAPPER: RowMapper<SProp>
     get() = RowMapper { rs, rowNum ->
         val sqlKey = rs.getString("key")

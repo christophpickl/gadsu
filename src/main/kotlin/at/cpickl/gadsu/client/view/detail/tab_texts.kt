@@ -4,7 +4,6 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.focusTraversalWithTabs
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker

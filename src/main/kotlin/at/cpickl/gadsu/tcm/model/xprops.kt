@@ -19,6 +19,7 @@ interface XPropsFinder {
     fun findEnumValueByKey(key: String): XPropEnumOpt
 }
 
+@Suppress("UNUSED")
 object XProps : XPropsFinder by XPropsFactory {
 
     private val eager_Sleep = SleepOpts.TiredInMorning

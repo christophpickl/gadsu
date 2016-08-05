@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
 
 
 class TreatmentsInClientView @Inject constructor(
-        private val swing: SwingFactory,
+        swing: SwingFactory,
         private val treatmentsList: TreatmentList
 ): ListyView<Treatment>(
         treatmentsList,

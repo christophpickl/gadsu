@@ -39,8 +39,8 @@ data class Acupunct(val coordinate: AcupunctCoordinate, val note: String, val in
     val number: Int = coordinate.number
 
     // move to and delegate by AcupunctCoordinate??
-    val titleLong: String get() = "${meridian.labelLong} ${number}"
-    val titleShort: String get() = "${meridian.labelShort} ${number}"
+    val titleLong: String get() = "${meridian.labelLong} $number"
+    val titleShort: String get() = "${meridian.labelShort} $number"
 }
 
 /**

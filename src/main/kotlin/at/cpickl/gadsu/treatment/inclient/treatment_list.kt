@@ -21,7 +21,7 @@ import javax.swing.JLabel
 
 
 class TreatmentList @Inject constructor(
-        private val bus: EventBus
+        bus: EventBus
 ) : MyList<Treatment>(
         ViewNames.Treatment.ListInClientView,
         MyListModel<Treatment>(),

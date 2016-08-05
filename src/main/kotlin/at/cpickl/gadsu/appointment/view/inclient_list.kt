@@ -20,7 +20,7 @@ import javax.swing.JPanel
 
 
 class AppointmentList @Inject constructor(
-        private val bus: EventBus
+        bus: EventBus
 ) : MyList<Appointment>(
         ViewNames.Appointment.ListInClientView,
         MyListModel<Appointment>(),

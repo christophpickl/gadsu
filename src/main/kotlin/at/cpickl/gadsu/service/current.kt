@@ -6,7 +6,6 @@ import at.cpickl.gadsu.treatment.CurrentTreatment
 import com.google.common.base.Objects
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
-import org.slf4j.LoggerFactory
 
 class CurrentModule : AbstractModule() {
     override fun configure() {

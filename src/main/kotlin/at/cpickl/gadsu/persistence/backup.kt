@@ -32,6 +32,7 @@ class BackupModule : AbstractModule() {
 
 data class BackupAssist(val databaseDirectory: File, val backupDirectory: File)
 
+@Suppress("UNUSED")
 fun Version.Companion.parseByFile(fileName: String): Version {
     val isSnapshot = fileName.endsWith("_SS")
     val cleanedFileName = if (isSnapshot) fileName.substring(0, fileName.length - "_SS".length) else fileName

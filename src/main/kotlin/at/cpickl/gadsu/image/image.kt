@@ -79,7 +79,7 @@ enum class ImageSize(private val _dimension: Dimension) {
 /**
  * Default if nothing is selected.
  */
-private class DefaultImage(private val classpath: String) : MyImage {
+private class DefaultImage(classpath: String) : MyImage {
     private val delegate = ClasspathImage(classpath)
 
     override fun toSaveRepresentation() = null // disable persisting default images
@@ -100,7 +100,7 @@ private class ImageIconImage(icon: ImageIcon) : IconifiedImage(icon)
 /**
  * Internally used.
  */
-private class ClasspathImage(private val classpath: String) : IconifiedImage(classpath.readImageIconFromClasspath())
+private class ClasspathImage(classpath: String) : IconifiedImage(classpath.readImageIconFromClasspath())
 
 /**
  * Client selected.
@@ -108,7 +108,7 @@ private class ClasspathImage(private val classpath: String) : IconifiedImage(cla
 private class FileImage(file: File) : IconifiedImage(file.readImageIcon())
 
 
-private abstract class IconifiedImage(private val original: ImageIcon) : MyImage {
+private abstract class IconifiedImage(original: ImageIcon) : MyImage {
 
     private val bytes: ByteArray
     private val big: ImageIcon

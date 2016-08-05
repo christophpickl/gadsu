@@ -6,7 +6,7 @@ import javax.swing.text.AttributeSet
 import javax.swing.text.PlainDocument
 
 /**
- * @see JTextField.enforceMaxCharacters
+ * see JTextField.enforceMaxCharacters
  */
 fun JTextArea.enforceMaxCharacters(enforcedLength: Int) {
     document = object: PlainDocument() {

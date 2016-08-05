@@ -19,9 +19,9 @@ object Colors {
     // used for ALTERNATE_BG_COLOR in lists
     val LIGHT_GRAY = byHex("#F2F2F2")
 
-    val SELECTED_BG = UIManager.getColor("List.selectionBackground")
-    val SELECTED_AND_HOVERED_BG = SELECTED_BG.brighter()
-    val SELECTED_FG = UIManager.getColor("List.selectionForeground")
+    val SELECTED_BG = UIManager.getColor("List.selectionBackground")!!
+    val SELECTED_AND_HOVERED_BG = SELECTED_BG.brighter()!!
+    val SELECTED_FG = UIManager.getColor("List.selectionForeground")!!
 
     val BG_ALTERNATE = Colors.LIGHT_GRAY
     val BG_COLOR_HOVER = byHex("#bed9fe")

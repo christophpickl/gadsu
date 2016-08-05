@@ -65,7 +65,7 @@ class ExportXstreamService : ExportService {
                 export.clients.map {
 
                     // YES, converter might have set to null (although kotlin disallowed)
-                    var maybeMyImage: MyImage? = it.picture
+                    val maybeMyImage: MyImage? = it.picture
                     if (maybeMyImage == null) {
                         it.copy(picture = it.gender.defaultImage)
                     } else {
@@ -95,7 +95,7 @@ class ExportXstreamService : ExportService {
 private class JodaDateTimeConverter : BaseConverter<DateTime>(DateTime::class.java, "dateTime") {
     private val formatter = ISODateTimeFormat.dateTime()
 
-    override fun _marshal(source: DateTime) = formatter.print(source)
+    override fun _marshal(source: DateTime) = formatter.print(source)!!
     override fun _unmarshal(read: String): DateTime = formatter.parseDateTime(read)
 }
 
@@ -130,7 +130,7 @@ abstract private class BaseConverter<T>(private val targetClass: Class<T>, priva
     override final fun unmarshal(reader: HierarchicalStreamReader, context: UnmarshallingContext): T? {
         reader.moveDown()
         val read = reader.value
-        reader.moveUp();
+        reader.moveUp()
         if (read.isEmpty()) {
             return null
         }

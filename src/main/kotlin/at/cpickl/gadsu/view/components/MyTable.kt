@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.logic.IndexableModel
 import at.cpickl.gadsu.view.logic.findIndexByComparator
-import org.slf4j.LoggerFactory
 import java.awt.Point
 import java.util.ArrayList
 import javax.swing.JTable
@@ -16,11 +16,11 @@ import javax.swing.table.AbstractTableModel
 //    ))
 //    private val table = MyTable<Treatment>(model, ViewNames.Treatment.TableInClientView)
 
-class TableColumn<E>(val name: String, val width: Int, val transform: (value: E) -> Any)
+class TableColumn<in E>(val name: String, val width: Int, val transform: (value: E) -> Any)
 
-class MyTable<E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
+class MyTable<out E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
 
-    val log = LoggerFactory.getLogger(javaClass)
+    val log = LOG(javaClass)
 
     init {
         name = viewName
@@ -80,7 +80,7 @@ class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(),
 
     fun setElementByComparator(newValue: E, comparator: (current: E) -> Boolean) {
         val index = findIndexByComparator(comparator)
-        data.set(index, newValue)
+        data[index] = newValue
         fireTableDataChanged()
     }
 

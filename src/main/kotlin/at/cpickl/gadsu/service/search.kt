@@ -4,12 +4,12 @@ import at.cpickl.gadsu.view.components.inputs.SearchTextField
 import org.slf4j.LoggerFactory
 
 
-interface SearchableService<T> {
+interface SearchableService<out T> {
     fun all(): List<T>
     fun find(searchTerm: String): List<T>
 }
 
-interface SearchableList<T> {
+interface SearchableList<in T> {
     fun resetData(elements: List<T>)
 }
 

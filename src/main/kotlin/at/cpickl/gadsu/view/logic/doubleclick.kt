@@ -44,8 +44,8 @@ abstract class DoubleClickMouseListener() : MouseAdapter() {
     }
 
     private fun isProperDoubleClick(event: MouseEvent): Boolean {
-        val isRightButton = (event.getModifiers() and InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK
-        val result = event.getClickCount() == 2 && !previousWasRight && !isRightButton
+        val isRightButton = (event.modifiers and InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK
+        val result = event.clickCount == 2 && !previousWasRight && !isRightButton
         previousWasRight = isRightButton
         return result
     }

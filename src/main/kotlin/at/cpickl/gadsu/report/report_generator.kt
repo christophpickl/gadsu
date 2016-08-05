@@ -20,13 +20,13 @@ interface ReportWithRows {
     val rows: List<Any>
 }
 
-interface GenericReportGenerator<R : ReportWithRows> {
+interface GenericReportGenerator<in R : ReportWithRows> {
     fun savePdfTo(report: R, target: File)
     fun view(report: R)
     fun generateByteStream(report: R): ByteArrayOutputStream
 }
 
-abstract class BaseReportGenerator<R : ReportWithRows>(
+abstract class BaseReportGenerator<in R : ReportWithRows>(
         private val jrxmlClasspath: String,
         private val engine: JasperEngine
 ) : GenericReportGenerator<R> {

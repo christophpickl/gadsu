@@ -62,7 +62,7 @@ fun ImageIcon.size() = Dimension(image.getWidth(imageObserver), image.getHeight(
 // --------------------------------------------------------------------------- internal
 
 private fun _safeReadImageIcon(function: () -> BufferedImage): ImageIcon {
-    return ImageIcon(_safeReadBufferedImage(function));
+    return ImageIcon(_safeReadBufferedImage(function))
 }
 
 private fun _safeReadBufferedImage(function: () -> BufferedImage?): BufferedImage {

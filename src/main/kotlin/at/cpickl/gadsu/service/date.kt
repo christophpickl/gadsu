@@ -9,7 +9,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Date
 
-val ZERO = DateTime(0L).withHourOfDay(0) // get rid of +1 timezone thingy
+val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
 class DateFormats {
     companion object {

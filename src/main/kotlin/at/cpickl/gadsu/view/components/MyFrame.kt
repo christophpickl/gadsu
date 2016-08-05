@@ -1,7 +1,11 @@
 package at.cpickl.gadsu.view.components
 
 import java.awt.Point
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.ImageIcon
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.WindowConstants
 
 open class MyDialog(owner: JFrame, myTitle: String) : JDialog(owner, myTitle, true) {
     init {
@@ -14,7 +18,7 @@ open class MyDialog(owner: JFrame, myTitle: String) : JDialog(owner, myTitle, tr
     }
 }
 
-open class MyFrame(private val myTitle: String) : JFrame() {
+open class MyFrame(myTitle: String) : JFrame() {
     companion object {
         val BORDER_GAP = BorderFactory.createEmptyBorder(10, 15, 10, 15)!!
         private val FRAME_ICON = ImageIcon(MyFrame::class.java.getResource("/gadsu/logo100.png")).image
@@ -26,7 +30,9 @@ open class MyFrame(private val myTitle: String) : JFrame() {
         iconImage = FRAME_ICON
     }
 
-    final val dockPositionRight: Point
+    // required for MainFrame interface
+    @Suppress("UNUSED")
+    val dockPositionRight: Point
         get() = Point(location.x + size.width + 10, location.y)
 
     //    protected fun packAndShow(locationRelativeTo: Component? = null) {

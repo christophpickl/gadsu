@@ -83,7 +83,7 @@ class ElementsStarView(
         var repaintRequired = false
         coordinates.coordinateByElement.forEach { element, coordinate ->
             if (g.hit(coordinate.hitArea, mouseArea, false)) {
-                if (overs.get(element) == false) {
+                if (overs[element] == false) {
 //                    println("hit on [$element] at $point")
                     overs.put(element, true)
                     repaintRequired = true
@@ -91,7 +91,7 @@ class ElementsStarView(
                     bus.post(ElementsOverEvent(element))
                 }
             } else {
-                if (overs.get(element) == true) {
+                if (overs[element] == true) {
                     overs.put(element, false)
                     repaintRequired = true
                     cursor = Cursor.getDefaultCursor()
@@ -118,7 +118,7 @@ class ElementsStarView(
 
     private fun drawCircle(g: Graphics2D) {
         coordinates.coordinateByElement.forEach {
-            g.fillCircleAt(it.value.center, CIRCLE_DIAMETER, it.key.color.brighterIfTrue(overs.get(it.key)!!))
+            g.fillCircleAt(it.value.center, CIRCLE_DIAMETER, it.key.color.brighterIfTrue(overs[it.key]!!))
         }
     }
 

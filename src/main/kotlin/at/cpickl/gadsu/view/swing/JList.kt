@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import javax.swing.JList
 
+@Suppress("UNUSED")
 val <T> JList<T>.log: Logger
     get() = LoggerFactory.getLogger(JList::class.java)
 

@@ -2,7 +2,6 @@ package at.cpickl.gadsu.view
 
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
 
@@ -70,16 +69,14 @@ class ReflectiveMacHandler : MacHandler {
     }
 
     private fun proxyFor(proxyType: Class<*>, methodName: String, callback: (Array<out Any>) -> Unit): Any {
-        return Proxy.newProxyInstance(javaClass.getClassLoader(), arrayOf(proxyType), object : InvocationHandler {
-            override fun invoke(proxy: Any?, method: Method, args: Array<out Any>): Any? {
-                if (method.getName().equals(methodName)) {
-                    log.info("{}#{}() invoked on proxy.", proxyType.getName(), methodName)
-                    callback.invoke(args)
-                    return 1
-                }
-                log.warn("Unhandled proxy method: {}#{}", proxyType.getName(), methodName)
-                return -1
+        return Proxy.newProxyInstance(javaClass.classLoader, arrayOf(proxyType), InvocationHandler { proxy, method, args ->
+            if (method.name.equals(methodName)) {
+                log.info("{}#{}() invoked on proxy.", proxyType.name, methodName)
+                callback.invoke(args)
+                return@InvocationHandler 1
             }
+            log.warn("Unhandled proxy method: {}#{}", proxyType.name, methodName)
+            -1
         })
     }
 

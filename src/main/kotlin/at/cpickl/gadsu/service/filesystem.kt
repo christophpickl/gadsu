@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     File("foo.pdf").writeByClasspath("/gadsu/reports/form/Anamnesebogen.pdf", true)
 }
 
-val LOG_File = LoggerFactory.getLogger(File::class.java)
+val LOG_File = LoggerFactory.getLogger(File::class.java)!!
 
 object ChooseFile {
     fun savePdf(

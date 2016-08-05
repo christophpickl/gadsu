@@ -3,7 +3,12 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
 import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.MyTextArea
-import at.cpickl.gadsu.view.components.inputs.*
+import at.cpickl.gadsu.view.components.inputs.DateAndTimePicker
+import at.cpickl.gadsu.view.components.inputs.Labeled
+import at.cpickl.gadsu.view.components.inputs.MyCheckBox
+import at.cpickl.gadsu.view.components.inputs.MyComboBox
+import at.cpickl.gadsu.view.components.inputs.MyTimePicker
+import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_SHORT
@@ -14,7 +19,8 @@ import com.google.common.base.MoreObjects
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
-import java.util.*
+import java.util.LinkedList
+import java.util.Objects
 import javax.swing.JTextField
 
 
@@ -39,7 +45,7 @@ private fun <V, T> ElField<V>._isModified(uiValue: T, extractValue: (V) -> T, va
 class ElTextField<V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
-        private val viewName: String
+        viewName: String
 // as we use those in the grid panel only, setting columns to 100 is necessary to evenly distribute the horizontal length in multi column form panels!
 ) : JTextField(20), ElField<V> {
 
@@ -65,7 +71,7 @@ class ElTextField<V>(
             .toString()
 }
 
-class ElTextArea<V>(
+class ElTextArea<in V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
         viewName: String,
@@ -104,7 +110,7 @@ class ElCheckBox<in V>(
     override fun toComponent() = delegate
 }
 
-class ElComboBox<V, T : Labeled>(
+class ElComboBox<in V, T : Labeled>(
         private val delegate: MyComboBox<T>,
         override val formLabel: String,
         private val extractValue: (V) -> T
@@ -121,7 +127,7 @@ class ElComboBox<V, T : Labeled>(
     override fun toComponent() = delegate
 }
 
-class ElDatePicker<V>(
+class ElDatePicker<in V>(
         private val delegate: MyDatePicker,
         override val formLabel: String,
         private val extractValue: (V) -> DateTime?
@@ -138,7 +144,7 @@ class ElDatePicker<V>(
     }
 }
 
-class ElTimePicker<V>(
+class ElTimePicker<in V>(
         private val delegate: MyTimePicker,
         override val formLabel: String,
         private val extractValue: (V) -> DateTime
@@ -152,7 +158,7 @@ class ElTimePicker<V>(
     override fun toComponent() = delegate
 }
 
-class ElDateAndTimePicker<V>(
+class ElDateAndTimePicker<in V>(
         val delegate: DateAndTimePicker,
         override val formLabel: String,
         private val extractValue: (V) -> DateTime

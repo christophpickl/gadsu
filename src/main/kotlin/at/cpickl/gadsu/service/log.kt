@@ -153,9 +153,9 @@ private class RollOncePerSessionTriggeringPolicy<E> : TriggeringPolicyBase<E>() 
     override fun isTriggeringEvent(activeFile: File, event: E): Boolean {
         // roll the first time when the event gets called
         if (doRolling) {
-            doRolling = false;
-            return true;
+            doRolling = false
+            return true
         }
-        return false;
+        return false
     }
 }
