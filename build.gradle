@@ -86,11 +86,11 @@ dependencies {
     compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
     compile 'com.google.guava:guava:19.0' // guice comes with 16.0.1
 
-
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3' // hsqldb 2.3.4 leads to the application to hang :-/
     compile 'org.springframework:spring-jdbc:4.3.0.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.0.RELEASE'
     compile 'org.flywaydb:flyway-core:4.0.3'
 
     // REPORTING
@@ -365,7 +365,7 @@ if (!new File("/home/travis").exists()) {
         new File(buildDir, 'launch4j.xml').write(config, 'UTF-8')
     }
 
-    task buildExe(type:Exec) {
+    task buildExe(type: Exec) {
         String launch4jConfigPath = new File(buildDir, 'launch4j.xml').absolutePath
         if (System.getProperty('os.name').toLowerCase().contains('windows')) {
             // launch4jc.exe src/main/buildWin/launch4j.xml

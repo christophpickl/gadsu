@@ -1,9 +1,11 @@
 package at.cpickl.gadsu.report
 
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.report.multiprotocol.ReportMetaData
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.nullIfEmpty
+import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -22,37 +24,34 @@ data class ProtocolReportData(
         val client: ClientReportData,
         override val rows: List<TreatmentReportData>
 ) : ReportWithRows, ReportMetaData {
-    companion object {
-        val DUMMY = ProtocolReportData(
-                author = "Med Wurst",
-                printDate = DateTime.now(),
-                client = ClientReportData(
-                        fullName = "Klient Unbekannt",
-                        children = "2 Kinder",
-                        job = "Doktor",
-                        picture = MyImage.DEFAULT_PROFILE_MAN.toReportRepresentation(),
-                        cprops = null
-                ),
-                rows = TreatmentReportData.DUMMIES
-//                treatments.map {
-//                    TreatmentReportData(it.number, it.note, it.date)
-//                }.sortedBy { it.number } // we need it ascending (but internally set descendant for list view)
-        )
-    }
-
-
+    companion object {} // needed for extension
 }
 
 data class ClientReportData(
-        val fullName: String,
-        val children: String?,
-        val job: String?,
+        val anonymizedName: String,
         val picture: InputStream?,
-        val cprops: String?
+
+        val since: DateTime,
+        val birthday: DateTime?,
+        val birthPlace: String?,
+        val livePlace: String?,
+        val relationship: String?,
+        val children: String?,
+
+        val job: String?,
+        val hobbies: String?,
+
+        val textsNotes: String?,
+        val textsImpression: String?,
+        val textsMedical: String?,
+        val textsComplaints: String?,
+        val textsPersonal: String?,
+        val textsObjective: String?,
+
+        val tcmProps: String?,
+        val tcmNotes: String?
 ) {
-    companion object {
-        // for extensions only
-    }
+    companion object {} // needed for extension
 }
 
 class TreatmentReportData(
@@ -61,18 +60,10 @@ class TreatmentReportData(
         val note: String?,
         date: DateTime
 ) {
-    companion object {
-        val DUMMIES = listOf(
-                TreatmentReportData("", 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum.", DateTime.now()),
-                TreatmentReportData("", 2, "something boring", DateTime.now().plusDays(1)),
-                TreatmentReportData("", 3, "a little bit better", DateTime.now().plusDays(4)),
-                TreatmentReportData("", 4, "very goooood", DateTime.now().plusDays(42)),
-                TreatmentReportData("", 5, "not good", DateTime.now().plusDays(43)),
-                TreatmentReportData("", 6, "final one", DateTime.now().plusDays(45))
-        )
-    }
+    companion object {} // needed for extension
 
     val dateFormatted: String
+
     init {
         dateFormatted = date.formatDate() // MINOR @REPORT - pass regular java Date and let jasper format date
     }
@@ -92,16 +83,41 @@ class JasperProtocolGenerator @Inject constructor(
     }
 
     override fun buildParameters(report: ProtocolReportData) = arrayOf(
-            Pair("client_fullName", report.client.fullName),
-            Pair("client_picture", report.client.picture),
-            Pair("client_job", report.client.job?.nullIfEmpty()),
-            Pair("client_children", report.client.children?.nullIfEmpty()),
-            Pair("client_birthday", "birth as date"),
-            Pair("client_relationship", "rel"),
-            Pair("author", report.author),
             Pair("countTreatments", report.rows.size), // MINOR @REPORT - counting row items is most likely possible to do in jasper itself
-            Pair("printDate", report.printDate.formatDate()),
-            Pair("cprops", report.client.cprops)
+            Pair("client_picture", report.client.picture),
+            Pair("client_name", report.client.anonymizedName),
+            Pair("client_since", report.client.since.formatDate()),
+
+            Pair("client_birthday", report.client.birthday?.formatDate()),
+            Pair("client_birthplace", report.client.birthPlace?.nullIfEmpty()),
+            Pair("client_liveplace", report.client.livePlace?.nullIfEmpty()),
+            Pair("client_relationship", report.client.relationship?.nullIfEmpty()),
+            Pair("client_children", report.client.children?.nullIfEmpty()),
+
+            Pair("client_job", report.client.job?.nullIfEmpty()),
+            Pair("client_hobbys", report.client.hobbies?.nullIfEmpty()),
+
+            Pair("texts_notes", report.client.textsNotes?.nullIfEmpty()),
+            Pair("texts_impression", report.client.textsImpression?.nullIfEmpty()),
+            Pair("texts_medical", report.client.textsMedical?.nullIfEmpty()),
+            Pair("texts_complaints", report.client.textsComplaints?.nullIfEmpty()),
+            Pair("texts_personal", report.client.textsPersonal?.nullIfEmpty()),
+            Pair("texts_objective", report.client.textsObjective?.nullIfEmpty()),
+
+//            Pair("author", report.author),
+//            Pair("printDate", report.printDate.formatDate()),
+            Pair("tcm_properties", report.client.tcmProps),
+            Pair("tcm_notes", report.client.tcmNotes)
     )
+
 }
+
+@VisibleForTesting
+val Client.anonymizedName: String get() {
+    if (lastName.isEmpty()) {
+        return firstName
+    }
+    return firstName + " " + lastName.substring(0, 1) + "."
+}
+
 

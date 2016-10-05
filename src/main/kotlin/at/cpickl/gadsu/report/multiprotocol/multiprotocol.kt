@@ -40,7 +40,7 @@ interface ReportMetaData {
     val printDate: DateTime
     val author: String
 }
-data class MultiProtocolCoverData(
+class MultiProtocolCoverData(
         override val printDate: DateTime,
         override val author: String
 ) : ReportMetaData {

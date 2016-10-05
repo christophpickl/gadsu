@@ -52,4 +52,3 @@ abstract class BaseReportGenerator<in R : ReportWithRows>(
 
     abstract fun buildParameters(report: R): Array<Pair<String, Any?>>
 }
-

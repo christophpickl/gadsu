@@ -29,17 +29,3 @@ class CreateProtocolEvent() : UserEvent()
 
 
 class ReportException(message: String, cause: Exception? = null) : GadsuException(message, cause)
-
-object CPropsComposer {
-    fun compose(client: Client) : String? {
-        if (client.cprops.isEmpty()) {
-            return null
-        }
-        return client.cprops.map { it.onType(object : CPropTypeCallback<String>{
-            override fun onEnum(cprop: CPropEnum): String {
-                return "Sein ${cprop.label} ist verbunden mit ${cprop.clientValue.map { it.label }.joinToString(", ")}."
-            }
-
-        } ) }.joinToString(" ")
-    }
-}

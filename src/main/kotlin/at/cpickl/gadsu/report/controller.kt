@@ -6,7 +6,13 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
-import at.cpickl.gadsu.report.multiprotocol.*
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGenerator
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolWindow
+import at.cpickl.gadsu.report.multiprotocol.ReallyCreateMultiProtocolEvent
+import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
+import at.cpickl.gadsu.report.multiprotocol.TestCreateMultiProtocolEvent
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -126,4 +132,36 @@ open class ReportController @Inject constructor(
 
 private fun Treatment.toReportData() = TreatmentReportData(id!!, number, note.nullIfEmpty(), date)
 
-private fun Client.toReportData() = ClientReportData(fullName, children.nullIfEmpty(), job.nullIfEmpty(), picture.toReportRepresentation(), CPropsComposer.compose(this))
+private fun Client.toReportData() = ClientReportData(
+        anonymizedName = anonymizedName,
+        picture = picture.toReportRepresentation(),
+
+        since = created, // TODO compute date based on first treatment
+        birthday = birthday,
+        birthPlace = birthPlace,
+        livePlace = contact.city,
+        relationship = relationship.label,
+        children = children.nullIfEmpty(),
+        job = job.nullIfEmpty(),
+        hobbies = hobbies,
+
+        textsNotes = note,
+        textsImpression = textImpression,
+        textsMedical = textMedical,
+        textsComplaints = textComplaints,
+        textsPersonal = textPersonal,
+        textsObjective = textObjective,
+
+        tcmProps = CPropsComposer.compose(this),
+        tcmNotes = tcmNote.nullIfEmpty()
+)
+
+private val Client.birthPlace: String get() {
+    if (countryOfOrigin.isEmpty() && origin.isNotEmpty()) {
+        return origin
+    }
+    if (origin.isEmpty() && countryOfOrigin.isNotEmpty()) {
+        return countryOfOrigin
+    }
+    return "$countryOfOrigin ($origin)"
+}

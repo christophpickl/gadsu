@@ -1,3 +1,6 @@
+* BUG: internet connection check at startup false negatives!
+* sort client list (auto-sort by some defined criteria; or sort manually by drag'n'drop)
+* bigger client pic in main tab
 * @appointment: close window on hit ESC key
 * icon idee
     - zb: jede behandlung hat drei "kuebeln"
@@ -15,6 +18,7 @@
 - breitere textfelder: mail, strasse
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
+* @backup: in preferences (anklickbaren a la reveal folder) pfad zum backup ordner + "backup now" button
 
 T-O-D-O
 ============================================================
@@ -33,6 +37,7 @@ Med
 * client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
    - auch so beim namen?
 * ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
+* sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
 
 Low
 ------------------------------------------------------------
