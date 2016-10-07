@@ -45,25 +45,22 @@ class ProtocolGeneratorTest {
         testee = JasperProtocolGenerator(JasperEngineImpl())
     }
 
-    fun `save dummy to PDF file and assert content`() {
+    fun `assert content`() {
         val bytes = testee.generateByteStream(report)
-//        testee.savePdfTo(report, target)
         val asserter = PdfAsserter.byStream(bytes)
 
+//        println("PDF CONTENT:\n${asserter.content}\n")
+
         asserter.containsPdfStrings(
-            "Shiatsu Protokoll",
-            "${report.author}",
-            "${report.printDate.formatDate()}",
-            "Beruf: ${report.client.job}",
-            "Kinder: ${report.client.children}"
-            // assert report.client.cprops
-            // assert report.client.picture ... hard one
+            "Protokoll",
+            report.client.birthPlace!!,
+            report.client.children!!
         )
         asserter.containsPdfStrings(
             report.rows.map {
                 listOf(
                     "Behandlung ${it.number}",
-                    "Datum: ${it.date.toDateTime().formatDate()}"
+                    "Am: ${it.date.toDateTime().formatDate()}"
                     // "${it.note}" ... nah, got some nasty line breaks, and i dont wannaaaa! :-p
                 )
             }.flatten()
@@ -79,7 +76,7 @@ class PdfAsserter(private val bytes: ByteArray) {
         fun byStream(stream: ByteArrayOutputStream) = PdfAsserter(stream.toByteArray())
         // byFile() = IOUtils.toByteArray(FileInputStream(pdfFile))
     }
-    private val content: String = extractPdfText(bytes)
+    val content: String = extractPdfText(bytes)
 
     private fun extractPdfText(bytes: ByteArray): String {
         val pdfDocument = PDDocument.load(ByteArrayInputStream(bytes));
