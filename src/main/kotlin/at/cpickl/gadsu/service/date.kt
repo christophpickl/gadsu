@@ -8,6 +8,7 @@ import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
@@ -65,11 +66,11 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 
 fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
 fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
-fun DateTime.formatDateLong(): String = DateFormats.DATE_LONG.print(this)
+fun DateTime.formatDateLong(locale: Locale = Languages.locale): String = DateFormats.DATE_LONG.withLocale(locale).print(this)
 fun DateTime.formatDateTime(): String = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeTalkative(): String = DateFormats.DATE_TIME_TALKATIVE.print(this)
-fun DateTime.formatDateTimeSemiLong(): String = DateFormats.DATE_TIME_SEMILONG.print(this)
-fun DateTime.formatDateTimeLong(): String = DateFormats.DATE_TIME_LONG.print(this)
+fun DateTime.formatDateTimeSemiLong(locale: Locale = Languages.locale): String = DateFormats.DATE_TIME_SEMILONG.withLocale(locale).print(this)
+fun DateTime.formatDateTimeLong(locale: Locale = Languages.locale): String = DateFormats.DATE_TIME_LONG.withLocale(locale).print(this)
 fun DateTime.formatDateTimeFile(): String = DateFormats.DATE_TIME_FILE.print(this)
 
 fun String.parseTimeWithoutSeconds(): DateTime = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)

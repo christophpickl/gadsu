@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Protocol" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f3f5e28d-a6f8-4c35-8b5f-189f9078503c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="364"/>
+	<property name="ireport.y" value="80"/>
 	<parameter name="countTreatments" class="java.lang.Integer"/>
 	<parameter name="client_picture" class="java.io.InputStream"/>
 	<parameter name="client_name" class="java.lang.String"/>
@@ -58,14 +58,14 @@
 			</textField>
 			<textField pattern="dd.MM.yyyy">
 				<reportElement x="84" y="92" width="141" height="20" uuid="40c12964-1460-407a-8aa6-55863f935490"/>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{client_since}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="145" y="112" width="141" height="20" uuid="a7a59723-29c7-4309-a35d-5ffda46b9223"/>
-				<textElement>
+				<reportElement x="139" y="112" width="77" height="20" uuid="a7a59723-29c7-4309-a35d-5ffda46b9223"/>
+				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{countTreatments}]]></textFieldExpression>
@@ -429,7 +429,7 @@
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="25" width="555" height="1" uuid="cedc6a69-3bb7-4810-9c7a-44d782dc5687"/>
+				<reportElement x="0" y="27" width="555" height="1" uuid="cedc6a69-3bb7-4810-9c7a-44d782dc5687"/>
 			</line>
 		</band>
 	</detail>
