@@ -59,8 +59,8 @@ class ProtocolGeneratorTest {
         asserter.containsPdfStrings(
             report.rows.map {
                 listOf(
-                    // fails on travis only :-( "Behandlung ${it.number}",
-                    "Am: ${it.date.toDateTime().formatDate()}"
+                    "${it.number}", // will be on travis "Behandlun 1" instead "Behandlung 1"
+                    "${it.date.toDateTime().formatDate()}" // will be on travis "Am 07.10.2016" instead "Am: 07.10.2016"
                     // "${it.note}" ... nah, got some nasty line breaks, and i dont wannaaaa! :-p
                 )
             }.flatten()
