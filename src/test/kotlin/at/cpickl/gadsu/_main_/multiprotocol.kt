@@ -1,9 +1,5 @@
 package at.cpickl.gadsu._main_
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.Gender
-import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.report.CPropsComposer
 import at.cpickl.gadsu.report.ClientReportData
 import at.cpickl.gadsu.report.JasperEngineImpl
 import at.cpickl.gadsu.report.JasperProtocolGenerator
@@ -13,7 +9,6 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolSwingWindow
 import at.cpickl.gadsu.report.testInstance
-import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.SimpleTestableClock
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -40,14 +35,14 @@ private fun generate() {
     //    val newPicture = "/gadsu/images/profile_pic-default_man.jpg".toMyImage().toReportRepresentation()
     val dummyClient = ClientReportData.testInstance(anonymizedName = "Foo B.")
     val protocols = listOf(ProtocolReportData.testInstance(
-            client = dummyClient.copy(
-                    tcmProps = CPropsComposer.compose(Client.INSERT_PROTOTYPE.copy(
-                            gender = Gender.MALE,
-                            cprops = CProps.builder().add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning).build()
-                    ))
-                    // "Something fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!"
-                    //                          picture = newPicture NO! does not work! :(
-            )
+            //            client = dummyClient.copy( ... no COPY() available anymore as of no data class anymore (as want to have constructor with non-vals)
+//                    tcmProps = CPropsComposer.compose(Client.INSERT_PROTOTYPE.copy(
+//                            gender = Gender.MALE,
+//                            cprops = CProps.builder().add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning).build()
+//                    ))
+//                    // "Something fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!\nSomething fancy fuchuuuur!"
+//                    //                          picture = newPicture NO! does not work! :(
+//            )
     ))
 
     MultiProtocolGeneratorImpl(JasperProtocolGenerator(JasperEngineImpl()), Mockito.mock(MultiProtocolRepository::class.java), SimpleTestableClock(), EventBus())

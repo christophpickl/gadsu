@@ -36,6 +36,7 @@ fun DateTime.ensureNoSeconds() {
 
 // TODO dont do this! stop!
 fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
+
 fun DateTime.ensureQuarterMinute() {
     if (!minuteOfHour.isQuarterMinute()) {
         throw GadsuException("Illegal date: expected minute to be a quarter part but was: $this")
@@ -47,6 +48,7 @@ fun DateTime.ensureQuarterMinute() {
  * Cache it, as list and DateTime is immutable :)
  */
 private val cached_timesList = 0.rangeTo(24 * 4 - 1).map { ZERO.plusMinutes(it * 15) }
+
 fun timesList(): List<DateTime> = cached_timesList
 
 private val cached_timesLabeledList = timesList().map { LabeledDateTime(it) }.toList()
@@ -54,7 +56,7 @@ fun timesLabeledList(): List<LabeledDateTime> = cached_timesLabeledList
 
 fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
     return this.hourOfDay == that.hourOfDay &&
-           this.minuteOfHour == that.minuteOfHour
+            this.minuteOfHour == that.minuteOfHour
 
 }
 
@@ -76,7 +78,6 @@ fun String.parseDateTimeFile(): DateTime = DateFormats.DATE_TIME_FILE.parseDateT
 
 fun DateTime.withAllButHourAndMinute(copyReference: DateTime): DateTime =
         copyReference.withHourOfDay(this.hourOfDay).withMinuteOfHour(this.minuteOfHour)
-
 
 
 fun DateTime.clearSeconds(): DateTime = this.withSecondOfMinute(0).withMillisOfSecond(0)
@@ -110,6 +111,7 @@ class RealClock : Clock {
 
 // internally, duration is stored as an Int
 fun minutes(minutes: Int) = Duration.standardMinutes(minutes.toLong())!!
+
 fun Duration.toMinutes(): Int = this.standardMinutes.toInt()
 
 /** E.g.: "45" or "1:30" */

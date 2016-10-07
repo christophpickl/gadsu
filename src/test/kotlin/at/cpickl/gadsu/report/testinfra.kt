@@ -64,21 +64,23 @@ fun ProtocolReportData.Companion.testInstance(
                 hobbies = "Radfahren, lesen, schwimmen"
         )
 ) = ProtocolReportData(
-                author = "Med Wurst",
-                printDate = DateTime.now(),
-                client = client,
-                rows = TreatmentReportData.DUMMIES
+        author = "Med Wurst",
+        printDate = DateTime.now(),
+        client = client,
+        rows = TreatmentReportData.DUMMIES
 //                treatments.map {
 //                    TreatmentReportData(it.number, it.note, it.date)
 //                }.sortedBy { it.number } // we need it ascending (but internally set descendant for list view)
-        )
+)
 
 
 val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = listOf(
-            TreatmentReportData("", 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum.", DateTime.now()),
-            TreatmentReportData("", 2, "something boring", DateTime.now().plusDays(1)),
-            TreatmentReportData("", 3, "a little bit better", DateTime.now().plusDays(4)),
-            TreatmentReportData("", 4, "very goooood", DateTime.now().plusDays(42)),
-            TreatmentReportData("", 5, "not good", DateTime.now().plusDays(43)),
-            TreatmentReportData("", 6, "final one", DateTime.now().plusDays(45))
-    )
+        TreatmentReportData("", 1, DateTime.now(), 90,
+                "* fuehlt sich gut", "* wollte immer mithelfen", "* RL BP Haende\n* SP BP nacken", "war angenehme; gut",
+                "mehr sport machen", "=> beim naechsten mal GB machen!!!!", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum."),
+        TreatmentReportData("", 2, DateTime.now().plusDays(1), 60, null, null, null, null, null, null, null),
+        TreatmentReportData("", 3, DateTime.now().plusDays(4), 60, null, null, null, null, null, null, null),
+        TreatmentReportData("", 4, DateTime.now().plusDays(42), 60, null, null, null, null, null, null, null),
+        TreatmentReportData("", 5, DateTime.now().plusDays(43), 60, null, null, null, null, null, null, null),
+        TreatmentReportData("", 6, DateTime.now().plusDays(45), 60, null, null, null, null, null, null, null)
+)

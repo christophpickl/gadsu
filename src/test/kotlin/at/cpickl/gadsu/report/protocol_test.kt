@@ -2,6 +2,7 @@ package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.service.toDateTime
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
@@ -62,7 +63,7 @@ class ProtocolGeneratorTest {
             report.rows.map {
                 listOf(
                     "Behandlung ${it.number}",
-                    "Datum: ${it.dateFormatted}"
+                    "Datum: ${it.date.toDateTime().formatDate()}"
                     // "${it.note}" ... nah, got some nasty line breaks, and i dont wannaaaa! :-p
                 )
             }.flatten()

@@ -38,6 +38,7 @@ Med
    - auch so beim namen?
 * ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
+* when sammelprotokoll print => busy indicator/progress dialog
 
 Low
 ------------------------------------------------------------

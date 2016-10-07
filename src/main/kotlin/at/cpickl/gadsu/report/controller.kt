@@ -17,6 +17,7 @@ import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.nullIfEmpty
+import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
@@ -130,7 +131,8 @@ open class ReportController @Inject constructor(
     }
 }
 
-private fun Treatment.toReportData() = TreatmentReportData(id!!, number, note.nullIfEmpty(), date)
+private fun Treatment.toReportData() = TreatmentReportData(id!!, number, date, duration.toMinutes(),
+        aboutDiscomfort.nullIfEmpty(), aboutDiagnosis.nullIfEmpty(), aboutContent.nullIfEmpty(), aboutFeedback.nullIfEmpty(), aboutHomework.nullIfEmpty(), aboutUpcoming.nullIfEmpty(), note.nullIfEmpty())
 
 private fun Client.toReportData() = ClientReportData(
         anonymizedName = anonymizedName,

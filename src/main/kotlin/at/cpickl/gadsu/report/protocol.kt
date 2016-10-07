@@ -3,12 +3,13 @@ package at.cpickl.gadsu.report
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.report.multiprotocol.ReportMetaData
-import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.service.formatTimeWithoutSeconds
 import at.cpickl.gadsu.service.nullIfEmpty
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -27,12 +28,12 @@ data class ProtocolReportData(
     companion object {} // needed for extension
 }
 
-data class ClientReportData(
+class ClientReportData(
         val anonymizedName: String,
         val picture: InputStream?,
 
-        val since: DateTime,
-        val birthday: DateTime?,
+        since: DateTime,
+        birthday: DateTime?,
         val birthPlace: String?,
         val livePlace: String?,
         val relationship: String?,
@@ -52,20 +53,52 @@ data class ClientReportData(
         val tcmNotes: String?
 ) {
     companion object {} // needed for extension
+
+    val since: Date
+    val birthday: Date?
+
+    init {
+        this.since = since.toDate()
+        this.birthday = birthday?.toDate()
+    }
+
 }
 
+/**
+ * Used by Jasper to render fields in repeating detail band.
+ */
+@Suppress("unused")
 class TreatmentReportData(
         val id: String, // only used for DB insert, not for actual report (UI)
         val number: Int,
-        val note: String?,
-        date: DateTime
+        date: DateTime,
+        duration: Int,
+        val aboutDiscomfort: String?,
+        val aboutDiagnosis: String?,
+        val aboutContent: String?,
+        val aboutFeedback: String?,
+        val aboutHomework: String?,
+        val aboutUpcoming: String?,
+        val note: String?
 ) {
     companion object {} // needed for extension
 
-    val dateFormatted: String
+    val date: Date
+    val time: String
+    val duration: Int
 
     init {
-        dateFormatted = date.formatDate() // MINOR @REPORT - pass regular java Date and let jasper format date
+        this.date = date.toDate()
+        this.time = date.formatTimeWithoutSeconds()
+        this.duration = fakeDurationForProtocolFeedback(duration)
+    }
+
+    private fun fakeDurationForProtocolFeedback(duration: Int): Int {
+        when {
+            duration >= 90 -> return 70
+            duration >= 70 -> return 60
+            else -> return duration
+        }
     }
 }
 
@@ -86,9 +119,9 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("countTreatments", report.rows.size), // MINOR @REPORT - counting row items is most likely possible to do in jasper itself
             Pair("client_picture", report.client.picture),
             Pair("client_name", report.client.anonymizedName),
-            Pair("client_since", report.client.since.formatDate()),
+            Pair("client_since", report.client.since),
 
-            Pair("client_birthday", report.client.birthday?.formatDate()),
+            Pair("client_birthday", report.client.birthday),
             Pair("client_birthplace", report.client.birthPlace?.nullIfEmpty()),
             Pair("client_liveplace", report.client.livePlace?.nullIfEmpty()),
             Pair("client_relationship", report.client.relationship?.nullIfEmpty()),
@@ -104,7 +137,7 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("texts_personal", report.client.textsPersonal?.nullIfEmpty()),
             Pair("texts_objective", report.client.textsObjective?.nullIfEmpty()),
 
-//            Pair("author", report.author),
+            //            Pair("author", report.author),
 //            Pair("printDate", report.printDate.formatDate()),
             Pair("tcm_properties", report.client.tcmProps),
             Pair("tcm_notes", report.client.tcmNotes)
