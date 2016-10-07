@@ -1,6 +1,7 @@
 package at.cpickl.gadsu._main_
 
 import at.cpickl.gadsu.report.ClientReportData
+import at.cpickl.gadsu.report.DUMMY
 import at.cpickl.gadsu.report.JasperEngineImpl
 import at.cpickl.gadsu.report.JasperProtocolGenerator
 import at.cpickl.gadsu.report.ProtocolReportData

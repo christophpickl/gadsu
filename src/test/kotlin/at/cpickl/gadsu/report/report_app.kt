@@ -1,39 +1,41 @@
 package at.cpickl.gadsu.report
 
-import at.cpickl.gadsu.client.Relationship
-import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.LogConfigurator
-import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
-import org.joda.time.DateTime
+import at.cpickl.gadsu.testinfra.SimpleTestableClock
+import com.google.common.eventbus.EventBus
+import org.mockito.Mockito
+import java.io.File
 
 
 fun main(args: Array<String>) {
     LogConfigurator(debugEnabled = true).configureLog()
 
-    // dynamic text height
-    // dont display whole section if empty (when enums are UNKNOWN, or text is empty)
-
-    val report = ProtocolReportData(
-            author = "Dr. Med Wurst",
-            printDate = DateTime.now(),
-            client = ClientReportData.testInstance(
-                    anonymizedName = "Anna N.",
-                    hobbies = "radfahren, schwimmen, laufen, eislaufen, klettern, lesen (Romane), kochen",
-                    birthday = DateTime.now().minusYears(31),
-                    birthPlace = "Wien",
-                    relationship = Relationship.SINGLE.label,
-                    job = "Flugbegleiterin, Studentin (Psychologie und Pharmazie)",
-                    picture = MyImage.TEST_CLIENT_PIC1.toReportRepresentation(),
-                    children = "keine",
-                    // MyImage.DEFAULT_PROFILE_MAN // should NOT be used by report, as default pic not rendered
-                    textsNotes = "erde schwach"
-//                    textsMedical = "* Bein gebrochen links\n* Anus OP"
-//                    tcmProps = "Hunger: Gross\nSchlaf: Viel\nMenstruation: Stark\nFoo: bar\nAnother: Value\nAnd: More",
-//                    tcmNotes = "* @ Zunge rot\n* Husten viel"
-            ),
-            rows = TreatmentReportData.DUMMIES
-    )
-    JasperProtocolGenerator(JasperEngineImpl())
-            .view(report)
-    //            .savePdfTo(report, File("report.pdf"), true)
+    generateAndViewMultiProtocol()
 }
+
+private fun generateAndViewMultiProtocol() {
+    val repo = Mockito.mock(MultiProtocolRepository::class.java)
+    val generator = MultiProtocolGeneratorImpl(
+            JasperProtocolGenerator(JasperEngineImpl()), repo, SimpleTestableClock(), EventBus())
+    val target = File.createTempFile("multi", ".pdf")
+    target.deleteOnExit()
+    generator.generatePdf(target, MultiProtocolCoverData.DUMMY, listOf(ProtocolReportData.testInstance()))
+
+    println("VIEW start: ${target.absolutePath}")
+    val processBuilder = ProcessBuilder("open", target.absolutePath)
+    val process = processBuilder.start()
+    val exitCode = process.waitFor()
+    println("END (exit code: $exitCode)")
+}
+
+private fun generateAndViewProtocol() {
+    JasperProtocolGenerator(JasperEngineImpl())
+            .view(ProtocolReportData.testInstance())
+//            .savePdfTo(report, File("report.pdf"), true)
+}
+
+
+

@@ -9,6 +9,7 @@ import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGenerator
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolStatistics
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolWindow
 import at.cpickl.gadsu.report.multiprotocol.ReallyCreateMultiProtocolEvent
 import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
@@ -16,6 +17,7 @@ import at.cpickl.gadsu.report.multiprotocol.TestCreateMultiProtocolEvent
 import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
@@ -23,8 +25,10 @@ import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider
+import org.jfree.data.time.DateRange
 import java.io.File
 import javax.inject.Inject
 import javax.swing.SwingUtilities
@@ -45,6 +49,19 @@ open class ReportController @Inject constructor(
         private val windowProvider: Provider<MultiProtocolWindow>,
         private val prefs: Prefs
 ) {
+    companion object {
+
+        @VisibleForTesting fun generateStatistics(protocols: List<ProtocolReportData>): MultiProtocolStatistics {
+            val numberOfClients = protocols.size
+            val numberOfTreatments = protocols.sumBy { it.rows.size }
+            val treatmentDateRange = DateRange(
+                    protocols.flatMap { it.rows }.minBy { it.date }!!.date,
+                    protocols.flatMap { it.rows }.maxBy { it.date }!!.date)
+            val totalTreatmentTime = protocols.sumBy { it.rows.sumBy { it.duration } }
+            return MultiProtocolStatistics(numberOfClients, numberOfTreatments, treatmentDateRange, minutes(totalTreatmentTime))
+        }
+    }
+
     private var recentWindow: MultiProtocolWindow? = null
 
     @Subscribe open fun onCreateProtocolEvent(event: CreateProtocolEvent) {
@@ -98,7 +115,7 @@ open class ReportController @Inject constructor(
 
         val printDate = clock.now()
         val author = preferences.get().username
-        val cover = MultiProtocolCoverData(printDate, author)
+        val cover = MultiProtocolCoverData(printDate, author, generateStatistics(protocols))
 
         ChooseFile.savePdf(
                 fileTypeLabel = "Sammelprotokoll",

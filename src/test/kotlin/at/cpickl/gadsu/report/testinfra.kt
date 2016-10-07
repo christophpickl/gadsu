@@ -1,6 +1,13 @@
 package at.cpickl.gadsu.report
 
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
+import at.cpickl.gadsu.report.multiprotocol.MultiProtocolStatistics
+import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.parseDate
+import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
+import org.jfree.data.time.DateRange
 import org.joda.time.DateTime
 import java.io.InputStream
 
@@ -52,27 +59,33 @@ fun ClientReportData.Companion.testInstance(
 fun ProtocolReportData.Companion.testInstance(
         client: ClientReportData = ClientReportData.testInstance(
                 anonymizedName = "Klient U.",
-                picture = MyImage.DEFAULT_PROFILE_MAN.toReportRepresentation(),
+                picture = MyImage.TEST_CLIENT_PIC1.toReportRepresentation(),
 
                 since = DateTime.now(),
-                birthday = DateTime.now(),
+                birthday = DateTime.now().minusYears(31),
                 birthPlace = "Eisenstadt",
                 livePlace = "Wien 1030",
-                relationship = "ledig",
+                relationship = Relationship.SINGLE.label,
                 children = "2 Kinder",
-                job = "Doktor",
-                hobbies = "Radfahren, lesen, schwimmen"
+                job = "Flugbegleiterin, Studentin (Psychologie und Pharmazie)",
+                hobbies = "radfahren, schwimmen, laufen, eislaufen, klettern, lesen (Romane), kochen",
+
+                textsNotes = "erde schwach",
+                textsMedical = "* Bein gebrochen links\n* Anus OP",
+                tcmProps = "Hunger: Gross\nSchlaf: Viel\nMenstruation: Stark\nFoo: bar\nAnother: Value\nAnd: More",
+                tcmNotes = "* @ Zunge rot\n* Husten viel"
         )
 ) = ProtocolReportData(
         author = "Med Wurst",
         printDate = DateTime.now(),
         client = client,
         rows = TreatmentReportData.DUMMIES
-//                treatments.map {
-//                    TreatmentReportData(it.number, it.note, it.date)
-//                }.sortedBy { it.number } // we need it ascending (but internally set descendant for list view)
 )
 
+fun TreatmentReportData.Companion.testInstance(number: Int = 0, date: String, duration: Int): TreatmentReportData {
+    return TreatmentReportData("anyId", number, date.parseDate(), duration,
+            null, null, null, null, null, null, null)
+}
 
 val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = listOf(
         TreatmentReportData("", 1, DateTime.now(), 90,
@@ -84,3 +97,9 @@ val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = lis
         TreatmentReportData("", 5, DateTime.now().plusDays(43), 60, null, null, null, null, null, null, null),
         TreatmentReportData("", 6, DateTime.now().plusDays(45), 60, null, null, null, null, null, null, null)
 )
+
+val MultiProtocolStatistics.Companion.DUMMY: MultiProtocolStatistics get() =
+    MultiProtocolStatistics(1, 6, DateRange("01.01.2012".parseDate().toDate(), "31.12.2012".parseDate().toDate()), minutes(102))
+
+val MultiProtocolCoverData.Companion.DUMMY: MultiProtocolCoverData get() =
+    MultiProtocolCoverData(DateTime.now(), "Christoph Author", MultiProtocolStatistics.DUMMY)

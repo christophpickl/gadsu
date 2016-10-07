@@ -13,10 +13,12 @@ class DateFormatsTest {
     private val date = DateTime.parse("2016-04-20T19:21:13.123")
 
     // ---------------------------------------------------------------------------
+
     //<editor-fold desc="format">
 
     fun `formatTimeWithoutSeconds`() { assertThat(date.formatTimeWithoutSeconds(), equalTo("19:21")) }
     fun `formatDate`() {               assertThat(date.formatDate(),               equalTo("20.04.2016")) }
+    fun `formatDateLong`() {           assertThat(date.formatDateLong(),           equalTo("Wednesday, 20.04.2016")) }
     fun `formatDateTime`() {           assertThat(date.formatDateTime(),           equalTo("20.04.2016 19:21:13")) }
     fun `formatDateTimeTalkative`() {  assertThat(date.formatDateTimeTalkative(),  equalTo("20.04. um 19:21 Uhr")) }
     fun `formatDateTimeSemiLong`() {   assertThat(date.formatDateTimeSemiLong(),   equalTo("Mi, 20.04., 19:21")) }
@@ -26,6 +28,7 @@ class DateFormatsTest {
     //</editor-fold>
 
     // ---------------------------------------------------------------------------
+
     //<editor-fold desc="parse">
     //
     fun `parseTimeWithoutSeconds`() {

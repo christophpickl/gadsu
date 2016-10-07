@@ -95,3 +95,9 @@ Luxury Ideas
 			treatments = 4 CT * 5pt => 20PT
 			last treat = gestern: 30.5.2010 ... 30 - 1 TLT = 29 * 1.0pt => 29PT
 			===> 12 + 20 + 29 = 61PT
+
+
+MULTI PROTOCOL
+------------------------------------------------------------
+* page number
+! BUG: bold formatting gets lost after pdf page merging

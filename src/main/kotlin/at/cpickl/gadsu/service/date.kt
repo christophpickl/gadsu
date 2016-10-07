@@ -15,6 +15,7 @@ class DateFormats {
     companion object {
         val TIME_WITHOUT_SECONDS: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+        val DATE_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yyyy").withLocale(Languages.locale)
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val DATE_TIME_TALKATIVE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM. 'um' HH:mm 'Uhr'")
         // needs I18N (check Language and create am/pm style for EN
@@ -64,6 +65,7 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 
 fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
 fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
+fun DateTime.formatDateLong(): String = DateFormats.DATE_LONG.print(this)
 fun DateTime.formatDateTime(): String = DateFormats.DATE_TIME.print(this)
 fun DateTime.formatDateTimeTalkative(): String = DateFormats.DATE_TIME_TALKATIVE.print(this)
 fun DateTime.formatDateTimeSemiLong(): String = DateFormats.DATE_TIME_SEMILONG.print(this)
@@ -117,14 +119,24 @@ fun Duration.toMinutes(): Int = this.standardMinutes.toInt()
 /** E.g.: "45" or "1:30" */
 fun Duration.formatHourMinutes(): String {
     val totalMinutes = this.toStandardMinutes().minutes
-
-    val hours = (totalMinutes / 60.0).toInt()
-    val minutes = totalMinutes % 60
-
+    val (hours, minutes) = splitHoursMinutes(totalMinutes)
     val minutesString = if (minutes < 10) "0$minutes" else minutes.toString()
 
     if (hours == 0) {
         return minutesString
     }
     return "$hours:$minutesString"
+}
+
+fun Duration.formatHourMinutesLong(): String {
+    val totalMinutes = this.toStandardMinutes().minutes
+    val (hours, minutes) = splitHoursMinutes(totalMinutes)
+
+    return "$hours Stunde${if (hours == 1) "" else "n"} $minutes Minute${if (minutes == 1) "" else "n"}"
+}
+
+private fun splitHoursMinutes(totalMinutes: Int): Pair<Int, Int> {
+    val hours = (totalMinutes / 60.0).toInt()
+    val minutes = totalMinutes % 60
+    return Pair(hours, minutes)
 }

@@ -137,7 +137,7 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("texts_personal", report.client.textsPersonal?.nullIfEmpty()),
             Pair("texts_objective", report.client.textsObjective?.nullIfEmpty()),
 
-            //            Pair("author", report.author),
+//            Pair("author", report.author),
 //            Pair("printDate", report.printDate.formatDate()),
             Pair("tcm_properties", report.client.tcmProps),
             Pair("tcm_notes", report.client.tcmNotes)

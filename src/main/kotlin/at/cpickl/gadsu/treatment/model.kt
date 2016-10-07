@@ -65,8 +65,6 @@ data class Treatment(
 
     companion object {
 
-        // needed for static extension methods as well
-
         val DEFAULT_DURATION = minutes(60)
 
         fun insertPrototype(clientId: String,
