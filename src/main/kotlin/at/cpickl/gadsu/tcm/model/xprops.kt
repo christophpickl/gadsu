@@ -78,11 +78,12 @@ object XProps : XPropsFinder by XPropsFactory {
 
     enum class MenstruationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         // see text field: MenstruationTimes
-        Little (opt("Menstruation_Little", "Schwach")),
-        Strong (opt("Menstruation_Strong", "Kräftig")),
+        Little (opt("Menstruation_Little", "schwach")),
+        Strong (opt("Menstruation_Strong", "kräftig")),
         BloodDark (opt("Menstruation_BloodDark", "Blut dunkel")),
         BloodBright (opt("Menstruation_BloodBright", "Blut hell, dünn")),
         PMS (opt("Menstruation_PMS", "PMS")),
+        Dysmenorrhoea (opt("Menstruation_Dysmenorrhoea", "Regelbeschwerden")),
         Pill (opt("Menstruation_Pill", "Pille, hormonell")),
         Menopause (opt("Menstruation_Menopause", "Wechseljahre")),
         Operations (opt("Menstruation_Operations", "Operationen"))

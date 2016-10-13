@@ -1,8 +1,12 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.*
+import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.Ordered
+import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.orderedValuesOf
+import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -69,8 +73,9 @@ data class Client(
         override val contact: Contact,
         override val birthday: DateTime?,
         override val gender: Gender,
-        /** birth location */
+        /** Geburtsort */
         override val countryOfOrigin: String,
+        /** Wohnort */
         override val origin: String,
         override val relationship: Relationship,
         override val job: String,

@@ -25,11 +25,17 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-
-
+* !!! mit CMD+links/rechts NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
+* hara diagnose form
+* blutdruck input
+* neue anamnese formular ausarbeiten
+* BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
+* dynamic treatment components (hara diagnose, yu punkte, blutdruck; zunge, puls)
+* BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 
 Med
 ------------------------------------------------------------
+* verletzungs medizinisches maxerl (an welchen stellen besonders aufpassen wegen verletzung grafik)
 * @UI: tcm note (and others) use split view (with grab handle to resize) instead!
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
 * [1] add DB constraint that firstName+lastName combination is unique!
@@ -39,6 +45,7 @@ Med
 * ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
 * when sammelprotokoll print => busy indicator/progress dialog
+* to scale images use scalrb
 
 Low
 ------------------------------------------------------------
@@ -80,8 +87,8 @@ Test
 
 Luxury Ideas
 ------------------------------------------------------------
+* WYSIWYG text editor!
 * doodle integration (a la steffi)
-* WYSIWYG text editor
 - user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog (daweil nur automatisch wo was wegschneiden)
 * GADSU client ranking
 	- smart way of auto-order clients

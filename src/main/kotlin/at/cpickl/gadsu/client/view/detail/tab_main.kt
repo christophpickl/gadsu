@@ -48,7 +48,7 @@ class ClientTabMain(
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
     val outStarsign= DisabledTextField()
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
-    val inpOrigin = fields.newTextField("Herkunft", {it.origin}, ViewNames.Client.InputOrigin)
+    val inpOrigin = fields.newTextField("Wohnort", {it.origin}, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
     val inpJob = fields.newTextField("Beruf", {it.job}, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", {it.children}, ViewNames.Client.InputChildren)

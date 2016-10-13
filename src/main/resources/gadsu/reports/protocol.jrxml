@@ -64,7 +64,7 @@
 				<textFieldExpression><![CDATA[$P{client_since}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="139" y="112" width="77" height="20" uuid="a7a59723-29c7-4309-a35d-5ffda46b9223"/>
+				<reportElement x="149" y="112" width="77" height="20" uuid="a7a59723-29c7-4309-a35d-5ffda46b9223"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
