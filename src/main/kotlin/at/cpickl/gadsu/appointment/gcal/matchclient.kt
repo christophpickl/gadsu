@@ -20,12 +20,22 @@ class MatchClientsInDb @Inject constructor(private val clientRepo: ClientReposit
     private val similarityService = StringSimilarityServiceImpl(JaroWinklerStrategy())
 
     override fun findMatchingClients(name: String): List<Client> {
+//        println("findMatchingClients(name='$name')")
         val clients = clientRepo.findAll(ClientState.ACTIVE)
+//        clients.forEach {
+//            println("client name: '${it.firstName}' / '${it.nickName}' / '${it.lastName}'")
+//            println("  Score first name: ${similarityService.score(name, it.firstName)}")
+//            println("  Score nick name: ${similarityService.score(name, it.nickName)}")
+//            println("  Score last name: ${similarityService.score(name, it.lastName)}")
+//        }
         return clients.filter {
-            similarityService.score(name, it.firstName) > SCORE_THRESHOLD ||
-                    similarityService.score(name, it.nickName) > SCORE_THRESHOLD ||
-                    similarityService.score(name, it.lastName) > SCORE_THRESHOLD
+            checkScore(name, it.firstName) || checkScore(name, it.nickName) || checkScore(name, it.lastName)
         }
+    }
+
+    private fun checkScore(searchName: String, someNamePart: String): Boolean {
+        return someNamePart.trim().split(" ").filter { it.trim().isNotEmpty() }
+                .map { similarityService.score(searchName, it.trim()) }.any { it > SCORE_THRESHOLD }
     }
 
 }

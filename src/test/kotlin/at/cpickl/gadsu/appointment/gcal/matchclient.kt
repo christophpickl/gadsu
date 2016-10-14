@@ -5,7 +5,7 @@ import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -20,8 +20,8 @@ import org.testng.annotations.Test
         testee = MatchClientsInDb(ClientJdbcRepository(jdbcx, idGenerator))
 
         caro = newClient("Caroline", "Caro", "Firefox")
-        laura = newClient("Laura", "", "Chrome")
-        ingrid = newClient("Ingrid", "Haudegen", "Explorer")
+        laura = newClient("Laura", "", "Internet Chrome")
+        ingrid = newClient("Ingrid", "Haudegen", "Internet Explorer")
     }
 
     private fun findMatchingClientsProvider(): List<Pair<String, List<Client>>> = listOf(
@@ -32,6 +32,7 @@ import org.testng.annotations.Test
 
             // last name
             testCase("chrome", laura),
+            testCase("inter", laura, ingrid),
 
             // nick name
             testCase("haudeg", ingrid)
@@ -40,7 +41,7 @@ import org.testng.annotations.Test
     // using a dataprovider does not really work here, as we need a client which is generated at runtime
     fun `findMatchingClients by name _ should return clients _`() {
         findMatchingClientsProvider().forEach {
-            assertThat("Search string: '${it.first}'", testee.findMatchingClients(it.first), equalTo(it.second))
+            assertThat("Search string: '${it.first}'", testee.findMatchingClients(it.first), containsInAnyOrder(*it.second.toTypedArray()))
         }
     }
 
