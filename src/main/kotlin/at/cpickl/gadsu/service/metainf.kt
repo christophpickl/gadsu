@@ -50,4 +50,6 @@ class MetaInfLoader : Provider<MetaInf> {
 /**
  * Programmatic representation of the metainf.properties file.
  */
-data class MetaInf(val applicationVersion: Version, val built: DateTime)
+data class MetaInf(val applicationVersion: Version, val built: DateTime) {
+    companion object {} // for extensions only
+}

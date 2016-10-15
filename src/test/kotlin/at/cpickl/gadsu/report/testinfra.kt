@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.report
 
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
@@ -36,6 +37,7 @@ fun ClientReportData.Companion.testInstance(
         ClientReportData(
                 anonymizedName = anonymizedName,
                 picture = picture,
+                gender = Gender.UNKNOWN,
 
                 since = since,
                 birthday = birthday,
@@ -53,7 +55,6 @@ fun ClientReportData.Companion.testInstance(
                 textsObjective = textsObjective,
                 tcmProps = tcmProps,
                 tcmNotes = tcmNotes
-
         )
 
 fun ProtocolReportData.Companion.testInstance(

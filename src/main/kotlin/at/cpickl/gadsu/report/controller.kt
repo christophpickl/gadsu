@@ -29,6 +29,7 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider
 import org.jfree.data.time.DateRange
+import org.joda.time.DateTime
 import java.io.File
 import javax.inject.Inject
 import javax.swing.SwingUtilities
@@ -135,27 +136,31 @@ open class ReportController @Inject constructor(
 
     private fun multiProtocolWizard(): List<ProtocolReportData> {
         // ... use wizard to select data ...
-        return clientService.findAll().map {
-            newProtocolReportData(it) // just select all ATM
-        }.filter { it.rows.isNotEmpty() }.toList()
+        return clientService.findAll()
+                .map { newProtocolReportData(it) } // just select all ATM
+                .filter { it.rows.isNotEmpty() }
+                .sortedBy { it.rows.map { it.date }.sorted().first() }
+                .toList()
     }
 
     private fun newProtocolReportData(client: Client): ProtocolReportData {
         val rows = treatmentService.findAllFor(client).sortedBy { it.number }.filter { !multiProtocolRepository.hasBeenProtocolizedYet(it) }.map { it.toReportData() }
         val author = preferences.get().username
         val printDate = clock.now()
-        return ProtocolReportData(author, printDate, client.toReportData(), rows)
+        val firstTreatment = treatmentService.findFirstFor(client)?.date
+        return ProtocolReportData(author, printDate, client.toReportData(firstTreatment), rows)
     }
 }
 
 private fun Treatment.toReportData() = TreatmentReportData(id!!, number, date, duration.toMinutes(),
         aboutDiscomfort.nullIfEmpty(), aboutDiagnosis.nullIfEmpty(), aboutContent.nullIfEmpty(), aboutFeedback.nullIfEmpty(), aboutHomework.nullIfEmpty(), aboutUpcoming.nullIfEmpty(), note.nullIfEmpty())
 
-private fun Client.toReportData() = ClientReportData(
+private fun Client.toReportData(firstTreatment: DateTime?) = ClientReportData(
         anonymizedName = anonymizedName,
         picture = picture.toReportRepresentation(),
+        gender = gender,
 
-        since = created, // TODO compute date based on first treatment
+        since = firstTreatment,
         birthday = birthday,
         birthPlace = birthPlace,
         livePlace = contact.city,
@@ -176,11 +181,14 @@ private fun Client.toReportData() = ClientReportData(
 )
 
 private val Client.birthPlace: String get() {
-    if (countryOfOrigin.isEmpty() && origin.isNotEmpty()) {
+    if (origin.isNotEmpty() && countryOfOrigin.isEmpty()) {
         return origin
     }
     if (origin.isEmpty() && countryOfOrigin.isNotEmpty()) {
         return countryOfOrigin
     }
-    return "$countryOfOrigin ($origin)"
+    if (origin.isNotEmpty() && countryOfOrigin.isNotEmpty()) {
+        return "$countryOfOrigin ($origin)"
+    }
+    return ""
 }

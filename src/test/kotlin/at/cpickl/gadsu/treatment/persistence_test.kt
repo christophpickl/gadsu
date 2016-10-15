@@ -9,8 +9,15 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocol
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.testinfra.*
+import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.Expects.expect
+import at.cpickl.gadsu.testinfra.HsqldbTest
+import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
+import at.cpickl.gadsu.testinfra.TEST_DATETIME_FOR_TREATMENT_DATE
+import at.cpickl.gadsu.testinfra.expectPersistenceException
+import at.cpickl.gadsu.testinfra.savedValidInstance
+import at.cpickl.gadsu.testinfra.savedValidInstance2
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.springframework.dao.DataIntegrityViolationException
@@ -23,8 +30,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
     private val client = Client.savedValidInstance()
+    private val clientId = client.id!!
     private val client2 = Client.savedValidInstance2()
-    private val unsavedTreatment = Treatment.unsavedValidInstance(client.id!!)
+    private val unsavedTreatment = Treatment.unsavedValidInstance(clientId)
     private val treatmentNumber1 = unsavedTreatment.copy(number = 1)
     private val treatmentNumber2 = unsavedTreatment.copy(number = 2)
     private val treatmentNumber3 = unsavedTreatment.copy(number = 3)
@@ -87,6 +95,16 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         Expects.expectPersistenceException(PersistenceErrorCode.EXPECTED_YET_PERSISTED, {
             testee.findAllFor(unsavedClient)
         })
+    }
+
+    fun `findFirstFor should return earliest treatment`() {
+        insertTreatment(unsavedTreatment.copy(number = 1, date = TEST_DATETIME_FOR_TREATMENT_DATE.plusDays(1)))
+        insertTreatment(unsavedTreatment.copy(number = 2, date = TEST_DATETIME_FOR_TREATMENT_DATE.minusDays(1)))
+        insertTreatment(unsavedTreatment.copy(number = 3, date = TEST_DATETIME_FOR_TREATMENT_DATE))
+
+        val found = testee.findFirstFor(clientId)
+
+        assertThat(found!!.number, equalTo(2))
     }
 
     // --------------------------------------------------------------------------- update

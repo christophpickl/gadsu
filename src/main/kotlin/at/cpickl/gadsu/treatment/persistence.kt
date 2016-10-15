@@ -20,6 +20,8 @@ interface TreatmentRepository {
     // ordered by number DESC
     fun findAllFor(client: Client): List<Treatment>
     fun findAllForRaw(clientId: String): List<Treatment>
+    fun findFirstFor(clientId: String): Treatment?
+
     fun insert(treatment: Treatment): Treatment
     fun update(treatment: Treatment)
 
@@ -32,7 +34,6 @@ interface TreatmentRepository {
     // !!! in future exclude those already used in protocol !!!
     fun countAllNonProtocolized(): Int
 
-
 }
 
 class TreatmentJdbcRepository @Inject constructor(
@@ -44,7 +45,9 @@ class TreatmentJdbcRepository @Inject constructor(
         val TABLE = "treatment"
 
     }
+
     private val log = LoggerFactory.getLogger(javaClass)
+
     override fun findAllFor(client: Client): List<Treatment> {
         client.ensurePersisted()
         return findAllForRaw(client.id!!)
@@ -53,6 +56,11 @@ class TreatmentJdbcRepository @Inject constructor(
     override fun findAllForRaw(clientId: String): List<Treatment> {
         // because of ORDER clause, not needed: treatments.sort()
         return jdbcx.query("SELECT * FROM $TABLE WHERE id_client = ? ORDER BY number DESC", arrayOf(clientId), Treatment.ROW_MAPPER)
+    }
+
+    override fun findFirstFor(clientId: String): Treatment? {
+        return jdbcx.queryMaybeSingle(Treatment.ROW_MAPPER,
+                "SELECT TOP 1 * FROM $TABLE WHERE id_client = ? ORDER BY date ASC", arrayOf(clientId))
     }
 
     override fun insert(treatment: Treatment): Treatment {

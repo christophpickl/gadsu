@@ -5,3 +5,4 @@ JASPER_DIR="/Applications/ireport.app/Contents/MacOS"
 
 echo "Starting Jasper iReport with JDK 7 ..."
 cd ${JASPER_DIR} && ./ireport --jdkhome ${JDK7} &
+echo "Started background process with ID: $!"

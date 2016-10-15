@@ -3,6 +3,7 @@ package at.cpickl.gadsu.report.multiprotocol
 import at.cpickl.gadsu.report.ProtocolGenerator
 import at.cpickl.gadsu.report.ProtocolReportData
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.formatDateLong
 import at.cpickl.gadsu.service.formatHourMinutesLong
@@ -73,8 +74,9 @@ class MultiProtocolGeneratorImpl @Inject constructor(
         private val protocolGenerator: ProtocolGenerator,
         private val protocolRepository: MultiProtocolRepository,
         private val clock: Clock,
-        private val bus: EventBus
-        ) : MultiProtocolGenerator {
+        private val bus: EventBus,
+        private val metaInf: MetaInf
+) : MultiProtocolGenerator {
 
     override fun generatePdf(target: File, coverData: MultiProtocolCoverData, protocolDatas: List<ProtocolReportData>) {
         val protocols = mergeProtocols(protocolDatas)
@@ -132,15 +134,17 @@ class MultiProtocolGeneratorImpl @Inject constructor(
         canvas.writeString(coverData.printDate.formatDateLong(), middleX, boxDateY, align = TextAlign.CENTER)
 
         val column1X = 100F
-        val row1Y = 140F
+        val row1Y = 160F
         val rowDiff = 15F
         val littleFont = Font(Font.FontFamily.UNDEFINED, 8.0F)
+        val tinyFont = Font(Font.FontFamily.UNDEFINED, 6.0F)
         canvas.writeString("Anzahl Klienten: ${coverData.statistics.numberOfClients}", column1X, row1Y, font = littleFont)
         canvas.writeString("Anzahl Behandlungen: ${coverData.statistics.numberOfTreatments}", column1X, row1Y - (rowDiff * 1), font = littleFont)
         canvas.writeString("Behandlungszeitraum: ${coverData.statistics.treatmentDateRange.lowerDate.toDateTime().formatDate()} - ${coverData.statistics.treatmentDateRange.upperDate.toDateTime().formatDate()}",
                 column1X, row1Y - (rowDiff * 2), font = littleFont)
         canvas.writeString("Behandlungszeit Summe: ${coverData.statistics.totalTreatmentTime.formatHourMinutesLong()}", column1X, row1Y - (rowDiff * 3), font = littleFont)
 
+        canvas.writeString("Gadsu v" + metaInf.applicationVersion.toLabel(), 496F, row1Y - (rowDiff * 4), TextAlign.RIGHT, tinyFont)
         stamper.close()
         return PdfReader(tempCoverPdf.absolutePath)
     }
@@ -155,5 +159,6 @@ class MultiProtocolGeneratorImpl @Inject constructor(
 
 private enum class TextAlign(val itextConstant: Int) {
     CENTER(Element.ALIGN_CENTER),
-    LEFT(Element.ALIGN_LEFT)
+    LEFT(Element.ALIGN_LEFT),
+    RIGHT(Element.ALIGN_RIGHT)
 }

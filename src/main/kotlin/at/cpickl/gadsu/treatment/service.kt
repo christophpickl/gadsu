@@ -13,6 +13,8 @@ interface TreatmentService {
 
     fun findAllFor(client: Client): List<Treatment>
 
+    fun findFirstFor(client: Client): Treatment?
+
     fun insert(treatmentToSave: Treatment): Treatment
 
     fun update(treatment: Treatment)
@@ -40,6 +42,10 @@ class TreatmentServiceImpl @Inject constructor(
 
     override fun findAllFor(client: Client): List<Treatment> {
         return repository.findAllFor(client)
+    }
+
+    override fun findFirstFor(client: Client): Treatment? {
+        return repository.findFirstFor(client.id!!)
     }
 
     override fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?> {

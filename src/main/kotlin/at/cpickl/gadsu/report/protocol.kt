@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.report
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.report.multiprotocol.ReportMetaData
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
@@ -31,8 +32,9 @@ data class ProtocolReportData(
 class ClientReportData(
         val anonymizedName: String,
         val picture: InputStream?,
+        val gender: Gender,
 
-        since: DateTime,
+        since: DateTime?,
         birthday: DateTime?,
         val birthPlace: String?,
         val livePlace: String?,
@@ -54,11 +56,11 @@ class ClientReportData(
 ) {
     companion object {} // needed for extension
 
-    val since: Date
+    val since: Date?
     val birthday: Date?
 
     init {
-        this.since = since.toDate()
+        this.since = since?.toDate()
         this.birthday = birthday?.toDate()
     }
 
@@ -120,6 +122,7 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("client_picture", report.client.picture),
             Pair("client_name", report.client.anonymizedName),
             Pair("client_since", report.client.since),
+            Pair("client_salutation", buildSalutation(report.client.gender)),
 
             Pair("client_birthday", report.client.birthday),
             Pair("client_birthplace", report.client.birthPlace?.nullIfEmpty()),
@@ -142,6 +145,11 @@ class JasperProtocolGenerator @Inject constructor(
             Pair("tcm_properties", report.client.tcmProps),
             Pair("tcm_notes", report.client.tcmNotes)
     )
+
+    private fun buildSalutation(gender: Gender): String {
+        val salut = if (gender == Gender.MALE) "Klient" else if (gender == Gender.FEMALE) "Klientin" else "KlientIn"
+        return "$salut seit:"
+    }
 
 }
 
