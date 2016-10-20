@@ -25,7 +25,8 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-* !!! mit CMD+links/rechts NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
+* !!! mit CMD+links/rechts (rauf runter) NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
+
 * hara diagnose form
 * blutdruck input
 * neue anamnese formular ausarbeiten
@@ -45,10 +46,11 @@ Med
 * ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
 * when sammelprotokoll print => busy indicator/progress dialog
-* to scale images use scalrb
+* das datumsfeld fuer den datepicker (zb treatment view) bissi breiter machen; der inhalt steht haarscharf an
 
 Low
 ------------------------------------------------------------
+* to scale images use scalrb
 * [2] check for database lock file
 * konkurrenz analyse
   * http://www.clinicsense.com/tour/

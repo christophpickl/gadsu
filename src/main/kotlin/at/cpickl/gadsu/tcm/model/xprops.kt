@@ -29,8 +29,9 @@ object XProps : XPropsFinder by XPropsFactory {
         NeedLess (opt("Sleep_NeedLess", "wenig Schlaf")),
         ProblemsFallAsleep (opt("Sleep_ProblemsFallAsleep", "Einschlafprobleme")),
         ProblemsSleepThrough (opt("Sleep_ProblemsSleepThrough", "Durchschlafprobleme")),
-        TiredInMorning     (opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
-        TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit"))
+        TiredInMorning (opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
+        TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
+        Dreams (opt("Sleep_Dreams", "Träume"))
     }
 
     val Sleep = enum("Sleep", "Schlaf")
@@ -44,7 +45,8 @@ object XProps : XPropsFinder by XPropsFactory {
         DigestionSlow (opt("Hungry_DigestionSlow", "Verdauung träge")),
         DigestionFast (opt("Hungry_DigestionFast", "Verdauung schnell")),
         StoolHard (opt("Hungry_StoolHard", "Stuhl geformt, hart")),
-        StoolSoft (opt("Hungry_StoolSoft", "Stuhl ungeformt, weich"))
+        StoolSoft (opt("Hungry_StoolSoft", "Stuhl ungeformt, weich")),
+        Farts (opt("Hungry_Farts", "Blähungen"))
     }
 
     val Hungry = enum("Hungry", "Essen") // Verdauung

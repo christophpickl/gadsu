@@ -46,7 +46,7 @@ class ClientTabMain(
     val inpNickName = fields.newTextField("Spitzname", {it.nickName}, ViewNames.Client.InputNickName)
     val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
-    val outStarsign= DisabledTextField()
+    val outStarsign= DisabledTextField() // TODO still focusable, or more precisely: traversable via tab! :(
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Wohnort", {it.origin}, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
