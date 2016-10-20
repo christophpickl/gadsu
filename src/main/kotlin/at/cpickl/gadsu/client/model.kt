@@ -171,11 +171,8 @@ data class Client(
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)
                 .add("id", id)
-                .add("tcmNote", tcmNote)
                 .add("firstName", firstName)
                 .add("lastName", lastName)
-                .add("picture", picture)
-//                .add("cprops", cprops)
                 .toString()
     }
 

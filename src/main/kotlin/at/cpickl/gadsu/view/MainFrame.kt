@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.AppEvent
 import at.cpickl.gadsu.QuitAskEvent
+import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Logged
@@ -11,7 +12,11 @@ import at.cpickl.gadsu.view.swing.isTransparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.Point
 import javax.inject.Inject
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -50,7 +55,7 @@ interface MainFrame {
 open class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         gadsuMenuBar: GadsuMenuBar
-        ) : MainFrame, MyFrame("Gadsu") {
+        ) : MainFrame, MyFrame("Gadsu" + (if (Development.ENABLED) " - DEVELOPMENT" else "")) {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val defaultSize = Dimension(1000, 600)
