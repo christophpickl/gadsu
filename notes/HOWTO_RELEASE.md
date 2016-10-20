@@ -13,7 +13,7 @@
 
 * Start the RELEASE SCRIPT: `$ ./scripts/release.sh` (better to invoke from project directory rather inside the `scripts` folder)
 * Specify release and next dev version; e.g.: `1.4.0` and `1.5.0-SNAPSHOT`
-* Wait until the build is done and find artifacts in the BUILD DIR
+* Wait until the build is done (takes about 5 minutes) and find artifacts in the BUILD DIR
 
 ```
 $ ./scripts/release.sh 
@@ -61,9 +61,10 @@ $
 
 # Current Workaround
 
-* Manually create a tag from the proper comment "[Auto-Release] current release version: 1.4.0"
-* Push this tag to github, so you can start drafting a new release afterwords
-* Reason: this is due to a bug in the current release script (somehow git tagging does not work!)
+* Pull changes made by the release script into your local gadsu repository
+* Manually create a tag from the release commit with message: "[Auto-Release] current release version: 1.4.0"
+* Push this tag to github, so you can start drafting a new release afterwards
+* Reason: this is due to a bug in the current release script (somehow git tagging does not work...)
 
 # Postdoings
 
@@ -79,13 +80,13 @@ $
     * List all resolved issues for this milestone
     * Enter following description and publish:
 ---
-windows users please use the EXE, apple users the DMG and for all other nixes the JAR file.
+Windows users please use the EXE, Apple users the DMG and for all other nixes the platform independent JAR file.
 
-hot stuff:
+New stuff:
 
-* #22 UI Improvements 1.4 user interface
-* #31 Active flag for clients enhancement
-* #33 More client input fields enhancement
+* #11 We did this
+* #22 And that
+* #33 And finally this
 ---
 
 * Create a new milestone, so we always have 3 ahead of us
