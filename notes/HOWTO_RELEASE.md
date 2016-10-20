@@ -4,9 +4,10 @@
 
 # Preconditions
 
-* check everything has been pushed to GIT!!!
-* check all GitHub issues are closed
-* execute manual smoke tests (app starts, create client, treatment, protocol)
+* Check everything has been pushed to GIT!!!
+* Check all GitHub issues are closed
+* Check [TravisCI build](https://travis-ci.org/christophpickl/gadsu) is green
+* Execute manual smoke tests (app starts, create client, treatment, protocol)
 
 # Release Script
 
