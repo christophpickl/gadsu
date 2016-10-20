@@ -62,7 +62,7 @@ $
 # Current Workaround
 
 * Pull changes made by the release script into your local gadsu repository
-* Manually create a tag from the release commit with message: "[Auto-Release] current release version: 1.4.0"
+* Manually create a tag (e.g.: `v1.4.0`) from the release commit with message: "[Auto-Release] current release version: 1.4.0"
 * Push this tag to github, so you can start drafting a new release afterwards
 * Reason: this is due to a bug in the current release script (somehow git tagging does not work...)
 
