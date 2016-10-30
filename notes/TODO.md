@@ -27,6 +27,8 @@ High
 ------------------------------------------------------------
 * !!! mit CMD+links/rechts (rauf runter) NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
 
+* BUG: release version got a "-SNAPSHOT" metainf!
+* BUG: all preferences are lost on new gadsu version
 * hara diagnose form
 * blutdruck input
 * neue anamnese formular ausarbeiten
@@ -47,6 +49,7 @@ Med
 * sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
 * when sammelprotokoll print => busy indicator/progress dialog
 * das datumsfeld fuer den datepicker (zb treatment view) bissi breiter machen; der inhalt steht haarscharf an
+* treatment 30min statt 15min schritte
 
 Low
 ------------------------------------------------------------
