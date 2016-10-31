@@ -131,7 +131,7 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
-//        currentTreatment.data!!
+//       TODO check dyn treats exists for currentTreatment.data!!
 
         val popup = JPopupMenu()
         val title = "foo ${Random().nextInt() % 100}"
@@ -141,6 +141,11 @@ open class TreatmentController @Inject constructor(
         }
         popup.add(foo)
         popup.show(event.popupSpec.component, event.popupSpec.x, event.popupSpec.y)
+    }
+
+    @Subscribe open fun onDynTreatmentRequestDeleteEvent(event: DynTreatmentRequestDeleteEvent) {
+        // FIXME get dyn treat object, remove from treatment
+        treatmentView!!.removeDynTreatmentAt(event.tabIndex)
     }
 
     fun checkChanges(): ChangeBehaviour {

@@ -57,6 +57,7 @@ interface TreatmentView : ModificationAware, MainContent {
     fun enablePrev(enable: Boolean)
     fun enableNext(enable: Boolean)
     fun addDynTreatment(s: String)
+    fun removeDynTreatmentAt(tabIndex: Int)
 }
 
 
@@ -123,6 +124,9 @@ class SwingTreatmentView @Inject constructor(
 
     override fun addDynTreatment(s: String) {
         subTreatmentView.addTab(s, JLabel("Content for $s"))
+    }
+    override fun removeDynTreatmentAt(tabIndex: Int) {
+        subTreatmentView.removeTabAt(tabIndex)
     }
 
     private fun initComponents() {
@@ -211,8 +215,7 @@ class SwingTreatmentView @Inject constructor(
                             val popup = JPopupMenu()
                             val closeItem = JMenuItem("Löschen")
                             closeItem.addActionListener {
-                                // TODO delegate to controller
-                                subTreatmentView.removeTabAt(index)
+                                bus.post(DynTreatmentRequestDeleteEvent(index))
                             }
                             popup.add(closeItem)
                             val tabBounds = subTreatmentView.getBoundsAt(index)
@@ -221,9 +224,6 @@ class SwingTreatmentView @Inject constructor(
                     }
                 }
             }
-//            protected fun createMouseListener(): MouseListener {
-//                return CustomAdapter(tabbedPane)
-//            }
         }
     }
 
