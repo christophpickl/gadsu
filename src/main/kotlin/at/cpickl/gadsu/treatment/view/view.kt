@@ -4,8 +4,18 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
-import at.cpickl.gadsu.treatment.*
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.treatment.NextTreatmentEvent
+import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentBackEvent
+import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.GadsuMenuBar
+import at.cpickl.gadsu.view.MainContent
+import at.cpickl.gadsu.view.MainContentType
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -15,22 +25,38 @@ import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.collect.ComparisonChain
+import com.google.common.eventbus.EventBus
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Font
+import java.awt.GridBagConstraints
+import java.awt.Insets
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 import javax.inject.Inject
 import javax.swing.JLabel
+import javax.swing.JMenuItem
 import javax.swing.JPanel
+import javax.swing.JPopupMenu
+import javax.swing.JTabbedPane
 import javax.swing.JTextField
+import javax.swing.SwingUtilities
+import javax.swing.plaf.basic.BasicTabbedPaneUI
 
 interface TreatmentView : ModificationAware, MainContent {
     fun readTreatment(): Treatment
     fun wasSaved(newTreatment: Treatment)
     fun enablePrev(enable: Boolean)
     fun enableNext(enable: Boolean)
+    fun addDynTreatment(s: String)
 }
 
 
@@ -43,6 +69,10 @@ class SwingTreatmentView @Inject constructor(
         viewName = ViewNames.Treatment.MainPanel,
         _debugColor = Color.YELLOW
 ), TreatmentView {
+
+    companion object {
+        val DYN_TAB_TITLE_ADD = "+"
+    }
 
     override val type = MainContentType.TREATMENT
     private val log = LoggerFactory.getLogger(javaClass)
@@ -68,7 +98,11 @@ class SwingTreatmentView @Inject constructor(
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
+    private val subTreatmentView = JTabbedPane()
+    private val bus: EventBus
+
     init {
+        bus = swing.bus
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
         }
@@ -76,13 +110,19 @@ class SwingTreatmentView @Inject constructor(
         fields.updateAll(treatment)
 
         initComponents()
+        prepareSubTreatmentView()
     }
 
     override fun enablePrev(enable: Boolean) {
         btnPrev.isEnabled = enable
     }
+
     override fun enableNext(enable: Boolean) {
         btnNext.isEnabled = enable
+    }
+
+    override fun addDynTreatment(s: String) {
+        subTreatmentView.addTab(s, JLabel("Content for $s"))
     }
 
     private fun initComponents() {
@@ -116,12 +156,75 @@ class SwingTreatmentView @Inject constructor(
         c.gridwidth = 2
         c.weightx = 1.0
         c.weighty = 1.0
-        add(initTextAreas())
+        add(initMainPanel())
 
         c.gridy++
         c.fill = GridBagConstraints.HORIZONTAL
         c.weighty = 0.0
         add(initButtonPanel())
+    }
+
+    private fun initMainPanel(): Component {
+        val panel = GridPanel()
+        with(panel.c) {
+            fill = GridBagConstraints.BOTH
+            weightx = 1.0
+            weighty = 1.0
+            panel.add(initTextAreas())
+
+            gridx++
+            subTreatmentView.enforceWidth(400)
+            panel.add(subTreatmentView)
+        }
+        return panel
+    }
+
+    private fun prepareSubTreatmentView() {
+        subTreatmentView.addTab(DYN_TAB_TITLE_ADD, JLabel("Füge einen neuen Behandlungsteil hinzu."))
+//        val uiClass = subTreatmentView.ui.javaClass
+        // AquaTabbedPaneContrastUI
+        subTreatmentView.ui = object : BasicTabbedPaneUI() {
+            override fun createMouseListener(): MouseListener {
+                return object : MouseAdapter() {
+                    override fun mousePressed(e: MouseEvent) {
+                        val index = subTreatmentView.ui.tabForCoordinate(subTreatmentView, e.x, e.y)
+                        if (index == -1) {
+                            return
+                        }
+                        val title = subTreatmentView.getTitleAt(index)
+
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            if (title == DYN_TAB_TITLE_ADD) {
+                                val tabBounds = subTreatmentView.getBoundsAt(index)
+                                bus.post(DynTreatmentRequestAddEvent(PopupSpec(subTreatmentView, tabBounds.x, tabBounds.y + tabBounds.height)))
+                            } else {
+                                if (subTreatmentView.selectedIndex != index) {
+                                    subTreatmentView.selectedIndex = index
+                                } else if (subTreatmentView.isRequestFocusEnabled) {
+                                    subTreatmentView.requestFocusInWindow()
+                                }
+                            }
+                        } else if (SwingUtilities.isRightMouseButton(e)) {
+                            if (title == DYN_TAB_TITLE_ADD) {
+                                return
+                            }
+                            val popup = JPopupMenu()
+                            val closeItem = JMenuItem("Löschen")
+                            closeItem.addActionListener {
+                                // TODO delegate to controller
+                                subTreatmentView.removeTabAt(index)
+                            }
+                            popup.add(closeItem)
+                            val tabBounds = subTreatmentView.getBoundsAt(index)
+                            popup.show(subTreatmentView, tabBounds.x, tabBounds.y + tabBounds.height)
+                        }
+                    }
+                }
+            }
+//            protected fun createMouseListener(): MouseListener {
+//                return CustomAdapter(tabbedPane)
+//            }
+        }
     }
 
     private fun initDetailPanel(): Component {
@@ -147,18 +250,8 @@ class SwingTreatmentView @Inject constructor(
     private fun initClientProfile(): Component {
         val panel = GridPanel()
         with(panel.c) {
-//            weightx = 1.0
-//            weighty = 1.0
             fill = GridBagConstraints.BOTH
             panel.add(JLabel(client.picture.toViewMedRepresentation()))
-
-//            gridy++
-//            insets = Pad.TOP
-//            fill = GridBagConstraints.NONE
-//            anchor = GridBagConstraints.CENTER
-//            weightx = 0.0
-//            weighty = 0.0
-//            panel.add(JLabel(client.firstName))
         }
         return panel
     }
@@ -174,10 +267,6 @@ class SwingTreatmentView @Inject constructor(
             add(btnBack)
 
         }, BorderLayout.WEST)
-//        panel.add(JPanel().apply {
-//            transparent()
-//            // nothing in the middle yet ;)
-//        }, BorderLayout.CENTER)
         panel.add(JPanel().apply {
             transparent()
             add(btnPrev)
@@ -242,8 +331,10 @@ class SwingTreatmentView @Inject constructor(
         )
     }
 
-    override fun toString(): String{
+    override fun toString(): String {
         return "SwingTreatmentView(type=$type)"
     }
 
 }
+
+data class PopupSpec(val component: Component, val x: Int, val y: Int)

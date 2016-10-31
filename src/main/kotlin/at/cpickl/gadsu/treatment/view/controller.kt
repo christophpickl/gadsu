@@ -33,8 +33,11 @@ import at.cpickl.gadsu.view.swing.registerMyKeyListener
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
+import java.util.Random
 import javax.inject.Inject
 import javax.swing.JComponent
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
 
 @Logged
 open class TreatmentController @Inject constructor(
@@ -125,6 +128,19 @@ open class TreatmentController @Inject constructor(
         }
         val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).second
         changeToTreatmentView(newTreatment, null)
+    }
+
+    @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
+//        currentTreatment.data!!
+
+        val popup = JPopupMenu()
+        val title = "foo ${Random().nextInt() % 100}"
+        val foo = JMenuItem(title)
+        foo.addActionListener {
+            treatmentView!!.addDynTreatment(title)
+        }
+        popup.add(foo)
+        popup.show(event.popupSpec.component, event.popupSpec.x, event.popupSpec.y)
     }
 
     fun checkChanges(): ChangeBehaviour {
