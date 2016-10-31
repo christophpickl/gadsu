@@ -149,6 +149,7 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 rs.getString("aboutFeedback"),
                 rs.getString("aboutHomework"),
                 rs.getString("aboutUpcoming"),
-                rs.getString("note")
+                rs.getString("note"),
+                mutableListOf() // FIXME #17 implement me
         )
     }

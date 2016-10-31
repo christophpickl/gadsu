@@ -1,0 +1,89 @@
+package at.cpickl.gadsu.treatment
+
+import at.cpickl.gadsu.tcm.model.Meridian
+
+
+interface DynTreatment {
+    /** same as of DynTreatmentManager.title */
+    val title: String
+
+}
+
+interface DynTreatmentManager {
+    /** same as of DynTreatment.title */
+    val title: String
+
+    fun matches(dynTreatments: List<DynTreatment>): Boolean {
+        return dynTreatments.firstOrNull{ it.javaClass == dynTreatmentType() } != null
+    }
+
+    fun create(): DynTreatment
+
+    /*pseudo internal*/fun dynTreatmentType(): Class<out DynTreatment>
+
+}
+
+object DynTreatmentFactory {
+    val all: List<DynTreatmentManager> = listOf(
+            HaraDiagnosisManager,
+            BloodPressureManager
+    )
+
+    fun managersForAllExcept(except: List<DynTreatment>): List<DynTreatmentManager> {
+        return all.filter { !it.matches(except) }
+    }
+}
+
+// HARA
+// =====================================================================================================================
+
+private val HARA_TITLE = "Hara Diagnose"
+
+data class HaraDiagnosis(
+        val kyos: List<Meridian>,
+        val jitsus: List<Meridian>,
+        val bestConnection: Pair<Meridian, Meridian>?,
+        val note: String
+) : DynTreatment {
+    companion object {
+        fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
+    }
+
+    override val title: String get() = HARA_TITLE
+}
+
+object HaraDiagnosisManager : DynTreatmentManager {
+    override val title: String get() = HARA_TITLE
+
+    override fun dynTreatmentType() = HaraDiagnosis::class.java
+
+    override fun create() = HaraDiagnosis.insertPrototype()
+}
+
+// BLOOD
+// =====================================================================================================================
+
+private val BLOOD_TITLE = "Blutdruck"
+
+data class BloodPressureMeasurement(
+        val systolic: Int,
+        val diastolic: Int,
+        val frequency: Int
+)
+data class BloodPressure(
+        val before: BloodPressureMeasurement?,
+        val after: BloodPressureMeasurement?
+) : DynTreatment {
+    companion object {
+        fun insertPrototype() = BloodPressure(null, null)
+    }
+    override val title: String get() = BLOOD_TITLE
+}
+
+object BloodPressureManager : DynTreatmentManager{
+    override val title: String get() = BLOOD_TITLE
+
+    override fun dynTreatmentType() = BloodPressure::class.java
+
+    override fun create() = BloodPressure.insertPrototype()
+}

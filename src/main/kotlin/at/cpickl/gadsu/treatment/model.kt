@@ -54,7 +54,9 @@ data class Treatment(
         /** Text field for "Naechste Behandlung". */
         val aboutUpcoming: String,
         /** Anything else goes here. */
-        val note: String
+        val note: String,
+        /** Optional sub parts of a treatment, like hara diagnosis or heart beat. */
+        val dynTreatments: MutableList<DynTreatment>
 ) :
         Comparable<Treatment>, HasId, Persistable {
 
@@ -78,7 +80,8 @@ data class Treatment(
                             aboutFeedback: String = "",
                             aboutHomework: String = "",
                             aboutUpcoming: String = "",
-                            note: String = ""
+                            note: String = "",
+                            dynTreatments: MutableList<DynTreatment> = mutableListOf(HaraDiagnosis.insertPrototype())
         ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
             return Treatment(
@@ -94,7 +97,8 @@ data class Treatment(
                     aboutFeedback,
                     aboutHomework,
                     aboutUpcoming,
-                    note)
+                    note,
+                    dynTreatments)
         }
     }
     val idComparator: (Treatment) -> Boolean

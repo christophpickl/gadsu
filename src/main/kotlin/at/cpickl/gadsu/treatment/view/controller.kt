@@ -6,6 +6,7 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.CurrentTreatment
+import at.cpickl.gadsu.treatment.DynTreatmentFactory
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
 import at.cpickl.gadsu.treatment.PrefilledTreatment
@@ -27,13 +28,13 @@ import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.logic.ChangeBehaviour
 import at.cpickl.gadsu.view.logic.ChangesChecker
 import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
+import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.RegisteredKeyListener
 import at.cpickl.gadsu.view.swing.registerMyKeyListener
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.slf4j.LoggerFactory
-import java.util.Random
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JMenuItem
@@ -130,21 +131,29 @@ open class TreatmentController @Inject constructor(
         changeToTreatmentView(newTreatment, null)
     }
 
-    @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
-//       TODO check dyn treats exists for currentTreatment.data!!
 
-        val popup = JPopupMenu()
-        val title = "foo ${Random().nextInt() % 100}"
-        val foo = JMenuItem(title)
-        foo.addActionListener {
-            treatmentView!!.addDynTreatment(title)
+    @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
+        val dynTreatmentManagers = DynTreatmentFactory.managersForAllExcept(currentTreatment.data!!.dynTreatments)
+        if (dynTreatmentManagers.isEmpty()) {
+            beep()
+            return
         }
-        popup.add(foo)
+        val popup = JPopupMenu()
+        dynTreatmentManagers.forEach { manager ->
+            val item = JMenuItem(manager.title)
+            item.addActionListener {
+                val dynTreat = manager.create()
+                currentTreatment.data!!.dynTreatments.add(dynTreat)
+                treatmentView!!.addDynTreatment(dynTreat)
+            }
+            popup.add(item)
+        }
         popup.show(event.popupSpec.component, event.popupSpec.x, event.popupSpec.y)
     }
 
     @Subscribe open fun onDynTreatmentRequestDeleteEvent(event: DynTreatmentRequestDeleteEvent) {
-        // FIXME get dyn treat object, remove from treatment
+        val dynTreatment = treatmentView!!.getDynTreatmentAt(event.tabIndex)
+        currentTreatment.data!!.dynTreatments.remove(dynTreatment)
         treatmentView!!.removeDynTreatmentAt(event.tabIndex)
     }
 

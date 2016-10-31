@@ -20,7 +20,8 @@ fun Treatment.Companion.unsavedValidInstance(clientId: String) =
                 aboutFeedback = "",
                 aboutHomework = "",
                 aboutUpcoming = "",
-                note = "note")
+                note = "note",
+                dynTreatments = emptyList())
 
 
 fun Treatment.Companion.unsavedValidInstance(client: Client) =

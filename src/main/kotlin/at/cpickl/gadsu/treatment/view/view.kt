@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
+import at.cpickl.gadsu.treatment.DynTreatment
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
@@ -41,6 +42,7 @@ import java.awt.Insets
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
+import java.util.HashMap
 import javax.inject.Inject
 import javax.swing.JLabel
 import javax.swing.JMenuItem
@@ -56,8 +58,9 @@ interface TreatmentView : ModificationAware, MainContent {
     fun wasSaved(newTreatment: Treatment)
     fun enablePrev(enable: Boolean)
     fun enableNext(enable: Boolean)
-    fun addDynTreatment(s: String)
+    fun addDynTreatment(dynTreatment: DynTreatment)
     fun removeDynTreatmentAt(tabIndex: Int)
+    fun  getDynTreatmentAt(tabIndex: Int): DynTreatment
 }
 
 
@@ -122,11 +125,24 @@ class SwingTreatmentView @Inject constructor(
         btnNext.isEnabled = enable
     }
 
-    override fun addDynTreatment(s: String) {
-        subTreatmentView.addTab(s, JLabel("Content for $s"))
+    private val dynTreatmentsByIndex = HashMap<Int, DynTreatment>()
+    override fun addDynTreatment(dynTreatment: DynTreatment) {
+        // TODO calculate new index, so order is always the same!
+        println("put at: ${subTreatmentView.tabCount}")
+        dynTreatmentsByIndex.put(subTreatmentView.tabCount, dynTreatment)
+        subTreatmentView.addTab(dynTreatment.title, JLabel("foobar ${dynTreatment.title}")) // FIXME custom renderer for each dyn treatment
     }
+
     override fun removeDynTreatmentAt(tabIndex: Int) {
+        println("remove at: $tabIndex")
         subTreatmentView.removeTabAt(tabIndex)
+        dynTreatmentsByIndex.remove(tabIndex)
+        // FIXME recalc indices if some tab was deleted located more to the left! (or dont use index as public API at all!)
+    }
+
+    override fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
+        println("get at: $tabIndex")
+        return dynTreatmentsByIndex[tabIndex]!!
     }
 
     private fun initComponents() {
@@ -327,8 +343,15 @@ class SwingTreatmentView @Inject constructor(
                 inpAboutFeedback.text,
                 inpAboutHomework.text,
                 inpAboutUpcoming.text,
-                inpNote.text
+                inpNote.text,
+                readDynTreatments()
         )
+    }
+
+    private fun readDynTreatments(): MutableList<DynTreatment> {
+        // FIXME #17 implement me
+        println("FIXME implement treatment view readDynTreats()!!!")
+        return mutableListOf()
     }
 
     override fun toString(): String {
