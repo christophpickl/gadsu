@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.treatment.DynTreatment
 import at.cpickl.gadsu.treatment.Treatment
 
 
@@ -21,7 +22,7 @@ fun Treatment.Companion.unsavedValidInstance(clientId: String) =
                 aboutHomework = "",
                 aboutUpcoming = "",
                 note = "note",
-                dynTreatments = emptyList())
+                dynTreatments = mutableListOf<DynTreatment>())
 
 
 fun Treatment.Companion.unsavedValidInstance(client: Client) =

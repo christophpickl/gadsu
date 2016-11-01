@@ -2,6 +2,7 @@ package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.DynTreatment
@@ -29,6 +30,7 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
 import com.google.inject.assistedinject.Assisted
@@ -102,7 +104,7 @@ class SwingTreatmentView @Inject constructor(
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
-    private val subTreatmentView = JTabbedPane()
+    private val subTreatmentView = DynTreatmentTabbedPane()
     private val bus: EventBus
 
     init {
@@ -125,25 +127,15 @@ class SwingTreatmentView @Inject constructor(
         btnNext.isEnabled = enable
     }
 
-    private val dynTreatmentsByIndex = HashMap<Int, DynTreatment>()
     override fun addDynTreatment(dynTreatment: DynTreatment) {
-        // TODO calculate new index, so order is always the same!
-        println("put at: ${subTreatmentView.tabCount}")
-        dynTreatmentsByIndex.put(subTreatmentView.tabCount, dynTreatment)
-        subTreatmentView.addTab(dynTreatment.title, JLabel("foobar ${dynTreatment.title}")) // FIXME custom renderer for each dyn treatment
+        subTreatmentView.addDynTreatment(dynTreatment)
     }
 
     override fun removeDynTreatmentAt(tabIndex: Int) {
-        println("remove at: $tabIndex")
-        subTreatmentView.removeTabAt(tabIndex)
-        dynTreatmentsByIndex.remove(tabIndex)
-        // FIXME recalc indices if some tab was deleted located more to the left! (or dont use index as public API at all!)
+        subTreatmentView.removeDynTreatmentAt(tabIndex)
     }
 
-    override fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
-        println("get at: $tabIndex")
-        return dynTreatmentsByIndex[tabIndex]!!
-    }
+    override fun getDynTreatmentAt(tabIndex: Int) = subTreatmentView.getDynTreatmentAt(tabIndex)
 
     private fun initComponents() {
         c.fill = GridBagConstraints.NONE
@@ -192,6 +184,7 @@ class SwingTreatmentView @Inject constructor(
             weighty = 1.0
             panel.add(initTextAreas())
 
+            // TODO width still does not work properly
             gridx++
             subTreatmentView.enforceWidth(400)
             panel.add(subTreatmentView)
@@ -361,3 +354,58 @@ class SwingTreatmentView @Inject constructor(
 }
 
 data class PopupSpec(val component: Component, val x: Int, val y: Int)
+
+@VisibleForTesting class DynTreatmentTabbedPane : JTabbedPane() {
+    private val log = LOG(javaClass)
+    @VisibleForTesting var index = HashMap<Int, DynTreatment>()
+
+    fun addDynTreatment(dynTreatment: DynTreatment) {
+        val addIndex = calcTabIndex(dynTreatment)
+        log.trace("addDynTreatment(dynTreatment) .. calced index: $addIndex")
+        val tabContent = JLabel("foobar ${dynTreatment.title}") // FIXME custom renderer for each dyn treatment
+        insertTab(dynTreatment.title, null, tabContent, null, addIndex)
+        recalcDynTreatmentsIndicesForAdd(addIndex, dynTreatment)
+    }
+
+    fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
+        log.trace("getDynTreatmentAt(tabIndex=$tabIndex)")
+        return index[tabIndex]!!
+    }
+
+    fun removeDynTreatmentAt(tabIndex: Int) {
+        log.trace("removeDynTreatmentAt(tabIndex=$tabIndex)")
+        removeTabAt(tabIndex)
+        index.remove(tabIndex)
+        recalcDynTreatmentsIndicesForDelete(tabIndex)
+    }
+
+    @VisibleForTesting fun calcTabIndex(toAdd: DynTreatment): Int {
+        var currentIndex = 1
+        for (dyn in index.values) {
+            if (toAdd.tabLocationWeight < dyn.tabLocationWeight) {
+                break
+            }
+            currentIndex++
+        }
+        return currentIndex
+    }
+
+    @VisibleForTesting fun recalcDynTreatmentsIndicesForAdd(addIndex: Int, dynTreatment: DynTreatment) {
+        val newIndex = HashMap<Int, DynTreatment>()
+        index.entries.forEach { entry ->
+            val key = if (entry.key >= addIndex) entry.key + 1 else entry.key
+            newIndex.put(key, entry.value)
+        }
+        newIndex.put(addIndex, dynTreatment)
+        index = newIndex
+    }
+
+    @VisibleForTesting fun recalcDynTreatmentsIndicesForDelete(removedIndex: Int) {
+        val newIndex = HashMap<Int, DynTreatment>()
+        index.entries.forEach { entry ->
+            val key = if (entry.key > removedIndex) entry.key - 1 else entry.key
+            newIndex.put(key, entry.value)
+        }
+        index = newIndex
+    }
+}
