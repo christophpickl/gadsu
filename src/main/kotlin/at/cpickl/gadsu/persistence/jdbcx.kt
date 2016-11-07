@@ -21,6 +21,7 @@ interface Jdbcx {
     fun updateSingle(sql: String, vararg args: Any?)
 
     fun deleteSingle(sql: String, vararg args: Any?)
+    fun deleteTable(tableName: String)
 
     fun transactionSafe(function: () -> Unit)
     fun <T> transactionSafeAndReturn(function: () -> T): T
@@ -91,6 +92,10 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
                         PersistenceErrorCode.EXPECT_DELETED_ONE)
             }
         }
+    }
+
+    override fun deleteTable(tableName: String) {
+        execute("DELETE FROM $tableName")
     }
 
     override fun count(table: String, args: Array<in Any>, optionalWhereClause: String): Int =

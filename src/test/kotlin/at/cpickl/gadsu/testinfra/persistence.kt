@@ -9,6 +9,7 @@ import at.cpickl.gadsu.persistence.FlywayDatabaseManager
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.SpringJdbcx
+import at.cpickl.gadsu.preferences.JdbcPrefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
@@ -25,6 +26,16 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 
+fun setupTestDatabase(javaClazz: Class<Any>): Pair<JDBCDataSource, SpringJdbcx> {
+    val ds = JDBCDataSource()
+    ds.url = "jdbc:hsqldb:mem:testDb${javaClazz.simpleName}"
+    ds.user = "SA"
+    val jdbcx = SpringJdbcx(ds)
+
+    FlywayDatabaseManager(ds).migrateDatabase()
+
+    return Pair(ds, jdbcx)
+}
 
 abstract class HsqldbTest {
     companion object {
@@ -32,15 +43,18 @@ abstract class HsqldbTest {
             TestLogger().configureLog()
         }
     }
+
     protected val TABLE_CLIENT = ClientJdbcRepository.TABLE
     protected val TABLE_TREATMENT = TreatmentJdbcRepository.TABLE
     protected val TABLE_APPOINTMENT = AppointmentJdbcRepository.TABLE
     protected val TABLE_XPROPS = XPropsSqlJdbcRepository.TABLE
     protected val TABLE_MULTIPROTOCOL = MultiProtocolJdbcRepository.TABLE
     protected val TABLE_MULTIPROTOCOL_KEYS = MultiProtocolJdbcRepository.TABLE_KEYS
+    protected val TABLE_PREFERENCES = JdbcPrefs.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf(TABLE_MULTIPROTOCOL_KEYS, TABLE_MULTIPROTOCOL, TABLE_XPROPS, TABLE_APPOINTMENT, TABLE_TREATMENT, TABLE_CLIENT)
+    private val allTables = arrayOf(TABLE_MULTIPROTOCOL_KEYS, TABLE_MULTIPROTOCOL, TABLE_XPROPS, TABLE_APPOINTMENT,
+            TABLE_TREATMENT, TABLE_CLIENT, TABLE_PREFERENCES)
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
@@ -55,14 +69,10 @@ abstract class HsqldbTest {
 
     @BeforeClass
     fun initDb() {
-        val ds = JDBCDataSource()
-        dataSource = ds
-        ds.url = "jdbc:hsqldb:mem:testDb${javaClass.simpleName}"
-        ds.user = "SA"
-        jdbcx = SpringJdbcx(ds)
-        log.info("Using data source URL: ${ds.url}")
-
-        FlywayDatabaseManager(ds).migrateDatabase()
+        val (dataSource, jdbcx) = setupTestDatabase(javaClass)
+        this.dataSource = dataSource
+        this.jdbcx = jdbcx
+        log.info("Using data source URL: ${dataSource.url}")
     }
 
     @BeforeMethod
@@ -74,17 +84,13 @@ abstract class HsqldbTest {
         idGenerator = SequencedTestableIdGenerator()
         currentClient = CurrentClient(bus)
 
-        allTables.forEach { jdbcx.execute("DELETE FROM $it") }
+        allTables.forEach { jdbcx.deleteTable(it) }
     }
 
     @AfterClass
     fun shutdownDb() {
         // could have happened, that @BeforeClass failed, in this case shutting down will fail as a consequence. avoid this!
         dataSource?.connection?.close()
-    }
-
-    protected fun assertEmptyTable(tableName: String) {
-        assertThat("Expected table '$tableName' to be empty.", jdbcx.countTableEntries(tableName), equalTo(0))
     }
 
     protected fun insertClientViaRepo(prototype: Client = Client.unsavedValidInstance()): Client {
@@ -111,12 +117,15 @@ abstract class HsqldbTest {
 
 }
 
+fun SpringJdbcx.assertEmptyTable(tableName: String) {
+    assertThat("Expected table '$tableName' to be empty.", countTableEntries(tableName), equalTo(0))
+}
+
 fun SpringJdbcx.countTableEntries(tableName: String): Int {
     var count: Int? = null
     jdbc.query("SELECT COUNT(*) AS cnt FROM $tableName") { rs -> count = rs.getInt("cnt") }
     return count!!
 }
-
 
 
 fun Expects.expectPersistenceException(errorCode: PersistenceErrorCode, executeAction: () -> Unit) {

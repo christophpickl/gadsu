@@ -32,7 +32,6 @@ import javax.inject.Inject
 //@Guice(modules = arrayOf(ClientModule::class))
 abstract class GuiceIntegrationTest {
     private val preferencesNode = javaClass
-    private val preferencesNodeName = preferencesNode.name
 
     // https://github.com/google/guice/wiki/BoundFields
     @Bind protected lateinit var mockClientRepository: ClientRepository
@@ -63,7 +62,7 @@ abstract class GuiceIntegrationTest {
 
         Guice.createInjector(
                 Modules.override(
-                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, preferencesNodeName, null))
+                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, null))
                 ).with(BoundFieldModule.of(this))
         ).injectMembers(this)
 
@@ -82,7 +81,7 @@ object IntegrationServiceLookuper {
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
                                treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator),
                                multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
-                               ): TreatmentService {
+    ): TreatmentService {
         return TreatmentServiceImpl(treatmentRepository, multiProtocolRepository, jdbcx, bus, clock)
     }
 

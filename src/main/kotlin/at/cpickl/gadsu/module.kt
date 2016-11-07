@@ -60,7 +60,7 @@ class GadsuModule(private val args: Args) : AbstractModule() {
 
         install(ImageModule())
         install(ExportModule())
-        install(PreferencesModule(args.preferencesNode))
+        install(PreferencesModule())
         install(AcupunctureModule())
         install(ReportModule())
 

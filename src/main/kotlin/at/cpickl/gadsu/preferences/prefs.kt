@@ -66,7 +66,7 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             preferences.put(KEY_USERNAME, value.username)
             preferences.put(KEY_CHECK_UPDATES, value.checkUpdates.toString())
             preferences.put(KEY_PROXY, value.proxy ?: "")
-            preferences.put(KEY_GCAL_NAME, value.gcalName?: "")
+            preferences.put(KEY_GCAL_NAME, value.gcalName ?: "")
             preferences.put(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
             preferences.flush()
         }
@@ -122,7 +122,8 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
             log.trace("set recentSaveMultiProtocolFolder(value={})", value.absolutePath)
             preferences.put(KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER, value.absolutePath)
         }
-    private fun recentFolder(key: String) : File {
+
+    private fun recentFolder(key: String): File {
         val path = preferences.get(key, null) ?: return File(System.getProperty("user.home"))
         val folder = File(path)
         if (!folder.exists() || !folder.isDirectory) {
@@ -140,6 +141,12 @@ class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
 
 // MINOR @UI - check if screen size changed, or better: just be sure its not over the max (luxury: save per display setting!)
 data class WindowDescriptor(val location: Point, val size: Dimension) {
+
+    companion object {
+        private val MIN_WIDTH = 100
+        private val MIN_HEIGHT = 100
+    }
+
     // MINOR @UI BUG - could be that there is some minor glitch and size calculation/prefs-storage (java.awt.Dimension[width=3,height=4])
-    val isValidSize = size.width > 100 && size.height > 100
+    val isValidSize = size.width >= MIN_WIDTH && size.height >= MIN_HEIGHT
 }

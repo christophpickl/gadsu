@@ -1,11 +1,7 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.persistence.PersistenceModule
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Options
-import org.apache.commons.cli.ParseException
+import org.apache.commons.cli.*
 
 //fun main(args: Array<String>) {
 //    parseArgs(arrayOf("--help")).help!!()
@@ -41,10 +37,9 @@ interface ArgsParser {
 data class Args(val help: (() -> Unit)?,
                 val databaseUrl: String?,
                 val debug: Boolean,
-                val preferencesNode: String?,
                 val action: String?) {
     companion object {
-        val EMPTY = Args(null, null, false, null, null)
+        val EMPTY = Args(null, null, false, null)
     }
 }
 
@@ -64,15 +59,13 @@ private class CommonsCliArgsParser : ArgsParser {
         private val ACTION_LONG = "action"
         private val HELP_SHORT = "?"
         private val HELP_LONG = "help"
-        private val PREFS_NODE_SHORT = "p"
-        private val PREFS_NODE_LONG = "preferences"
     }
+
     override fun parse(cliArgs: Array<String>): Args {
 
         val options = Options()
         options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: '${PersistenceModule.DEFAULT_DB_URL}').")
         options.addOption(DEBUG_SHORT, DEBUG_LONG, false, "Increase log level and register additional console appender.")
-        options.addOption(PREFS_NODE_SHORT, PREFS_NODE_LONG, true, "Change the default Java class to be used for preferences node.")
         options.addOption(ACTION_SHORT, ACTION_LONG, true, "Add a custom action and quit (for debugging purpose).")
         options.addOption(HELP_SHORT, HELP_LONG, false, "Print this usage help.")
 
@@ -94,10 +87,9 @@ private class CommonsCliArgsParser : ArgsParser {
 
         return Args(
                 null,
-                if(commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null,
+                if (commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null,
                 commands.hasOption(DEBUG_SHORT),
-                if(commands.hasOption(PREFS_NODE_SHORT)) commands.getOptionValue(PREFS_NODE_SHORT) else null,
-                if(commands.hasOption(ACTION_SHORT)) commands.getOptionValue(ACTION_SHORT) else null
+                if (commands.hasOption(ACTION_SHORT)) commands.getOptionValue(ACTION_SHORT) else null
         )
     }
 

@@ -25,11 +25,6 @@ import org.testng.annotations.Test
         parseArgs(arrayOf("--databaseUrl"))
     }
 
-    fun preferences_sunshine() {
-        val fqn = javaClass.name
-        assertThat(parseArgs(arrayOf("--preferences", fqn)).preferencesNode, equalTo(fqn))
-    }
-
     @Test(expectedExceptions = arrayOf(ArgsException::class))
     fun preferences_notGivenArgument_shouldFail() {
         parseArgs(arrayOf("--preferences"))

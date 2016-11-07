@@ -11,6 +11,7 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.HsqldbTest
+import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.copyWithoutCprops
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.treatment.*
@@ -24,7 +25,7 @@ import org.testng.annotations.Test
 class ClientServiceImplIntegrationTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance().copy(cprops = CProps.builder()
-        .add(XProps.Sleep, XProps.SleepOpts.NeedMuch).build()
+            .add(XProps.Sleep, XProps.SleepOpts.NeedMuch).build()
     )
 
     private lateinit var clientRepo: ClientRepository
@@ -59,7 +60,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         assertThat(savedClient, equalTo(unsavedClient.copy(id = "1")))
 
         assertRows(TABLE_CLIENT, Client.ROW_MAPPER, savedClient.copyWithoutCprops())
-        assertEmptyTable(TABLE_TREATMENT)
+        jdbcx.assertEmptyTable(TABLE_TREATMENT)
         assertRows(TABLE_XPROPS, SProp.ROW_MAPPER, SProp("Sleep", "Sleep_NeedMuch"))
 
         busListener.assertContains(ClientCreatedEvent(savedClient))
@@ -73,8 +74,8 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         testee.insertOrUpdate(pleaseUpdateMe)
 
         assertRows(TABLE_CLIENT, Client.ROW_MAPPER, pleaseUpdateMe)
-        assertEmptyTable(TABLE_TREATMENT)
-        assertEmptyTable(TABLE_XPROPS)
+        jdbcx.assertEmptyTable(TABLE_TREATMENT)
+        jdbcx.assertEmptyTable(TABLE_XPROPS)
 
         busListener.assertContains(ClientUpdatedEvent(pleaseUpdateMe))
     }
@@ -85,9 +86,9 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
 
         testee.delete(savedClient)
 
-        assertEmptyTable(TABLE_CLIENT)
-        assertEmptyTable(TABLE_TREATMENT)
-        assertEmptyTable(TABLE_XPROPS)
+        jdbcx.assertEmptyTable(TABLE_CLIENT)
+        jdbcx.assertEmptyTable(TABLE_TREATMENT)
+        jdbcx.assertEmptyTable(TABLE_XPROPS)
     }
 
 }
