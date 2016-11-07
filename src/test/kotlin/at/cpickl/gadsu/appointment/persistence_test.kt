@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest
+import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -50,7 +51,7 @@ import org.testng.annotations.Test
         val updatedApp = savedApp.copy(
                 start = savedApp.start.minusDays(12),
                 end = savedApp.end.minusDays(12)
-                )
+        )
         testee.update(updatedApp)
         assertThat(testee.findAllFor(savedClient), equalTo(listOf(updatedApp)))
     }
@@ -59,7 +60,7 @@ import org.testng.annotations.Test
     fun `delete sunshine`() {
         val savedApp = testee.insert(app1)
         testee.delete(savedApp)
-        assertEmptyTable(TABLE)
+        jdbcx.assertEmptyTable(TABLE)
     }
 
 }

@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client.xprops
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.testinfra.HsqldbTest
+import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
@@ -41,7 +42,7 @@ class XPropsSqlJdbcRepositoryTest : HsqldbTest() {
     fun `delete, single prop inserted`() {
         testee.insert(client, listOf(testProp))
         testee.delete(client)
-        assertEmptyTable(table)
+        jdbcx.assertEmptyTable(table)
     }
 
 }

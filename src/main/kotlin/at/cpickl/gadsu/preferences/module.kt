@@ -6,20 +6,19 @@ import com.google.inject.Scopes
 import javax.inject.Inject
 
 
-class PreferencesModule(private val nodePrefsFqn: String?) : AbstractModule() {
+class PreferencesModule() : AbstractModule() {
     override fun configure() {
 
         bind(PreferencesController::class.java).asEagerSingleton()
         bind(PreferencesWindow::class.java).to(SwingPreferencesFrame::class.java).`in`(Scopes.SINGLETON)
 
-        val nodeClass = if (nodePrefsFqn === null) JavaPrefs::class.java else Class.forName(nodePrefsFqn)
-        bind(Prefs::class.java).toInstance(JavaPrefs(nodeClass))
+        bind(Prefs::class.java).to(JdbcPrefs::class.java).asEagerSingleton()
 
-        bind(PreferencesData::class.java).toProvider(JavaPrefsProviderAdapter::class.java)
+        bind(PreferencesData::class.java).toProvider(PreferencesDataProvider::class.java)
     }
 }
 
-class JavaPrefsProviderAdapter @Inject constructor(
+class PreferencesDataProvider @Inject constructor(
         private val prefs: Prefs
 ) : Provider<PreferencesData> {
 

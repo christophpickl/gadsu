@@ -18,17 +18,17 @@ fun parseArgs(cliArgs: Array<String>): Args {
     return CommonsCliArgsParser().parse(cliArgs)
 }
 
-fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
+fun parseArgsOrHelp(cliArgs: Array<String>, suppressExceptionStacktrace: Boolean = false): Args? {
     val args: Args
     try {
         args = parseArgs(cliArgs)
     } catch (e: ArgsException) {
-        e.help()
+        e.help(if (suppressExceptionStacktrace) null else e)
         return null
     }
 
     if (args.help != null) {
-        args.help.invoke()
+        args.help.invoke(null)
         return null
     }
     return args
@@ -38,17 +38,16 @@ interface ArgsParser {
     fun parse(cliArgs: Array<String>): Args
 }
 
-data class Args(val help: (() -> Unit)?,
+data class Args(val help: ((e: ArgsException?) -> Unit)?,
                 val databaseUrl: String?,
                 val debug: Boolean,
-                val preferencesNode: String?,
                 val action: String?) {
     companion object {
-        val EMPTY = Args(null, null, false, null, null)
+        val EMPTY = Args(null, null, false, null)
     }
 }
 
-class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
+class ArgsException(message: String, cause: Exception, val help: (e: ArgsException?) -> Unit) : GadsuException(message, cause)
 
 
 /**
@@ -64,15 +63,13 @@ private class CommonsCliArgsParser : ArgsParser {
         private val ACTION_LONG = "action"
         private val HELP_SHORT = "?"
         private val HELP_LONG = "help"
-        private val PREFS_NODE_SHORT = "p"
-        private val PREFS_NODE_LONG = "preferences"
     }
+
     override fun parse(cliArgs: Array<String>): Args {
 
         val options = Options()
         options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: '${PersistenceModule.DEFAULT_DB_URL}').")
         options.addOption(DEBUG_SHORT, DEBUG_LONG, false, "Increase log level and register additional console appender.")
-        options.addOption(PREFS_NODE_SHORT, PREFS_NODE_LONG, true, "Change the default Java class to be used for preferences node.")
         options.addOption(ACTION_SHORT, ACTION_LONG, true, "Add a custom action and quit (for debugging purpose).")
         options.addOption(HELP_SHORT, HELP_LONG, false, "Print this usage help.")
 
@@ -80,7 +77,10 @@ private class CommonsCliArgsParser : ArgsParser {
         val commands: CommandLine
         val help = HelpFormatter()
         help.width = 150
-        val helpFunction = { help.printHelp("gadsu", options) }
+        val helpFunction = { e: ArgsException? ->
+            e?.printStackTrace()
+            help.printHelp("gadsu", options)
+        }
 
         try {
             commands = parser.parse(options, cliArgs)
@@ -94,10 +94,9 @@ private class CommonsCliArgsParser : ArgsParser {
 
         return Args(
                 null,
-                if(commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null,
+                if (commands.hasOption(DATABASE_URL_SHORT)) commands.getOptionValue(DATABASE_URL_SHORT) else null,
                 commands.hasOption(DEBUG_SHORT),
-                if(commands.hasOption(PREFS_NODE_SHORT)) commands.getOptionValue(PREFS_NODE_SHORT) else null,
-                if(commands.hasOption(ACTION_SHORT)) commands.getOptionValue(ACTION_SHORT) else null
+                if (commands.hasOption(ACTION_SHORT)) commands.getOptionValue(ACTION_SHORT) else null
         )
     }
 

@@ -3,7 +3,6 @@ package at.cpickl.gadsu._main_
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.GadsuSystemProperty
-import at.cpickl.gadsu.report.ClientReportData
 import at.cpickl.gadsu.report.DUMMY
 import at.cpickl.gadsu.report.JasperEngineImpl
 import at.cpickl.gadsu.report.JasperProtocolGenerator
@@ -75,7 +74,7 @@ private fun view() {
 
 private fun generate() {
     //    val newPicture = "/gadsu/images/profile_pic-default_man.jpg".toMyImage().toReportRepresentation()
-    val dummyClient = ClientReportData.testInstance(anonymizedName = "Foo B.")
+//    val dummyClient = ClientReportData.testInstance(anonymizedName = "Foo B.")
     val protocols = listOf(ProtocolReportData.testInstance(
             //            client = dummyClient.copy( ... no COPY() available anymore as of no data class anymore (as want to have constructor with non-vals)
 //                    tcmProps = CPropsComposer.compose(Client.INSERT_PROTOTYPE.copy(

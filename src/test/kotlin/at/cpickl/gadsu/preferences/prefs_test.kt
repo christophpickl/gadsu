@@ -7,59 +7,65 @@ import org.testng.annotations.Test
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File
-import java.util.prefs.Preferences
 
-@Test class JavaPrefsTest {
+fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
+        WindowDescriptor(Point(0, 0), Dimension(width, height))
 
-    private val testDescriptor = WindowDescriptor(Point(1, 2), Dimension(300, 400))
-    private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", 20)
-    private val testPicFolder = File("/")
+@Test class WindowDescriptorTest {
 
-    private val prefNode = javaClass
-    private var prefs = JavaPrefs(prefNode)
+    fun `windowDescriptor, isValidSize`() {
+        assertThat(WindowDescriptor.newWithSize(200, 200).isValidSize, equalTo(true))
+        assertThat(WindowDescriptor.newWithSize(200, 0).isValidSize, equalTo(false))
+        assertThat(WindowDescriptor.newWithSize(0, 200).isValidSize, equalTo(false))
+        assertThat(WindowDescriptor.newWithSize(0, 0).isValidSize, equalTo(false))
+    }
+
+}
+
+@Test abstract class PrefsTest {
+
+    protected lateinit var prefs: Prefs
+
+    protected abstract fun createPrefs(): Prefs
 
     @BeforeMethod
-    fun initTestee() {
-        clearAllPreferences()
-        prefs = JavaPrefs(prefNode)
+    fun init() {
+        prefs = createPrefs()
     }
 
 
     //<editor-fold desc="windowDescriptor">
+
+    private val validDescriptor = WindowDescriptor.newWithSize(200, 200)
+    private val invalidDescriptor = WindowDescriptor.newWithSize(0, 0)
 
     fun `windowDescriptor, get null at startup`() {
         assertThat(prefs.windowDescriptor, nullValue())
     }
 
     fun `windowDescriptor, set and get sunshine`() {
-        prefs.windowDescriptor = testDescriptor
-        assertThat(prefs.windowDescriptor, equalTo(testDescriptor))
-    }
-
-    fun `windowDescriptor, when too small set, then get will return null startup value`() {
-        val invalidDescriptor = testDescriptor.copy(size = Dimension(0, 0))
-        prefs.windowDescriptor = invalidDescriptor
-
-        assertThat(prefs.windowDescriptor, nullValue())
+        prefs.windowDescriptor = validDescriptor
+        assertThat(prefs.windowDescriptor, equalTo(validDescriptor))
     }
 
     fun `windowDescriptor, set null will override`() {
-        prefs.windowDescriptor = testDescriptor
+        prefs.windowDescriptor = validDescriptor
         prefs.windowDescriptor = null
         assertThat(prefs.windowDescriptor, nullValue())
     }
 
-    fun `windowDescriptor, isValidSize`() {
-        assertThat(testDescriptor.copy(size = Dimension(200, 200)).isValidSize, equalTo(true))
-        assertThat(testDescriptor.copy(size = Dimension(200, 0)).isValidSize, equalTo(false))
-        assertThat(testDescriptor.copy(size = Dimension(0, 200)).isValidSize, equalTo(false))
-        assertThat(testDescriptor.copy(size = Dimension(0, 0)).isValidSize, equalTo(false))
+    fun `windowDescriptor, when too small set, then get will return null startup value`() {
+        prefs.windowDescriptor = invalidDescriptor
+
+        assertThat(prefs.windowDescriptor, nullValue())
     }
 
     //</editor-fold>
 
 
     //<editor-fold desc="preferencesData">
+
+    private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", 20)
 
     fun `preferencesData, default at startup`() {
         assertDefaultPreferencesData()
@@ -70,10 +76,8 @@ import java.util.prefs.Preferences
         assertThat(prefs.preferencesData, equalTo(testData))
     }
 
-    fun `clearPreferencesData, set null will override to default again`() {
-        prefs.preferencesData = testData
-        clearAllPreferences()
-        assertDefaultPreferencesData()
+    private fun assertDefaultPreferencesData() {
+        assertThat(prefs.preferencesData, sameInstance(PreferencesData.DEFAULT))
     }
 
     //</editor-fold>
@@ -81,20 +85,53 @@ import java.util.prefs.Preferences
 
     //<editor-fold desc="clientPicture">
 
+    private val existingFolder = File("/")
+    private val existingFolder2 = File(System.getProperty("user.home"))
+    private val nonExistingFolder = File("/not_existing")
+    private val defaultClientPictureDefaultFolder = File(System.getProperty("user.home"))
+
     fun `clientPictureDefaultFolder, get user home directory at startup`() {
         assertDefaultPicFolder()
     }
 
     fun `clientPictureDefaultFolder, set and get sunshine`() {
-        prefs.clientPictureDefaultFolder = testPicFolder
-        assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(testPicFolder.absolutePath))
+        prefs.clientPictureDefaultFolder = existingFolder
+        assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
+
+    fun `clientPictureDefaultFolder, set non existing folder should return default folder on get`() {
+        prefs.clientPictureDefaultFolder = nonExistingFolder
+        assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(defaultClientPictureDefaultFolder.absolutePath))
+    }
+
+    fun `clientPictureDefaultFolder, set twice will override`() {
+        prefs.clientPictureDefaultFolder = existingFolder
+        prefs.clientPictureDefaultFolder = existingFolder2
+        assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(existingFolder2.absolutePath))
+    }
+
+    private fun assertDefaultPicFolder() {
+        assertThat(prefs.clientPictureDefaultFolder, equalTo(defaultClientPictureDefaultFolder))
     }
 
     //</editor-fold>
 
-    fun `clear, clears all`() {
-        prefs.windowDescriptor = testDescriptor
-        prefs.clientPictureDefaultFolder = testPicFolder
+    fun `recentSaveReportFolder, set and get sunshine`() {
+        prefs.recentSaveReportFolder = existingFolder
+        assertThat(prefs.recentSaveReportFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
+
+    fun `recentSaveMultiProtocolFolder, set and get sunshine`() {
+        prefs.recentSaveMultiProtocolFolder = existingFolder
+        assertThat(prefs.recentSaveMultiProtocolFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
+
+
+    //<editor-fold desc="clear">
+
+    fun `clear, clears all and assert via getters`() {
+        prefs.windowDescriptor = validDescriptor
+        prefs.clientPictureDefaultFolder = existingFolder
         prefs.preferencesData = testData
 
         prefs.clear()
@@ -104,18 +141,6 @@ import java.util.prefs.Preferences
         assertDefaultPicFolder()
     }
 
-
-    private fun assertDefaultPicFolder() {
-        assertThat(prefs.clientPictureDefaultFolder, equalTo(File(System.getProperty("user.home"))))
-    }
-
-    private fun assertDefaultPreferencesData() {
-        assertThat(prefs.preferencesData, sameInstance(PreferencesData.DEFAULT))
-    }
-
-
-    private fun clearAllPreferences() {
-        Preferences.userNodeForPackage(prefNode).clear()
-    }
+    //</editor-fold>
 
 }

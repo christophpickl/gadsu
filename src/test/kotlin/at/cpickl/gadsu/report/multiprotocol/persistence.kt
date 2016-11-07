@@ -2,10 +2,7 @@ package at.cpickl.gadsu.report.multiprotocol
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.service.toDateTime
-import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.countTableEntries
-import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.testinfra.*
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -51,8 +48,8 @@ class MultiProtocolJdbcRepositoryTest : HsqldbTest() {
     }
 
     fun insertMultiprotocol() {
-        assertEmptyTable(TABLE_MULTIPROTOCOL)
-        assertEmptyTable(TABLE_MULTIPROTOCOL_KEYS)
+        jdbcx.assertEmptyTable(TABLE_MULTIPROTOCOL)
+        jdbcx.assertEmptyTable(TABLE_MULTIPROTOCOL_KEYS)
 
         val client = insertClientViaRepo()
         val treat1 = insertTreatment(Treatment.unsavedValidInstance(client), "ID_TREAT_1")
@@ -80,7 +77,7 @@ class MultiProtocolJdbcRepositoryTest : HsqldbTest() {
 
         testee.deleteTreatmentRefs(treat1)
         assertThat(jdbcx.countTableEntries(TABLE_MULTIPROTOCOL), equalTo(1))
-        assertEmptyTable(TABLE_MULTIPROTOCOL_KEYS)
+        jdbcx.assertEmptyTable(TABLE_MULTIPROTOCOL_KEYS)
     }
 
     fun `hasBeenProtcolized, nope`() {

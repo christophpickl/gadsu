@@ -25,11 +25,6 @@ import org.testng.annotations.Test
         parseArgs(arrayOf("--databaseUrl"))
     }
 
-    fun preferences_sunshine() {
-        val fqn = javaClass.name
-        assertThat(parseArgs(arrayOf("--preferences", fqn)).preferencesNode, equalTo(fqn))
-    }
-
     @Test(expectedExceptions = arrayOf(ArgsException::class))
     fun preferences_notGivenArgument_shouldFail() {
         parseArgs(arrayOf("--preferences"))
@@ -45,7 +40,7 @@ import org.testng.annotations.Test
 
         // both should print a help menu on the CLI
         assertThat(parseArgsOrHelp(arrayOf("--help")), nullValue())
-        assertThat(parseArgsOrHelp(arrayOf("--invalidArg")), nullValue())
+        assertThat(parseArgsOrHelp(arrayOf("--invalidArg"), suppressExceptionStacktrace = true), nullValue())
     }
 
     fun `action help`() {
