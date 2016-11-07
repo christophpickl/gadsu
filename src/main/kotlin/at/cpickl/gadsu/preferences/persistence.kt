@@ -119,6 +119,8 @@ class JdbcPrefs @Inject constructor(
     }
 
     private fun storeValue(key: String, value: String) {
+        log.trace("storeValue(key='{}', value='{}')", key, value)
+        jdbcx.update("DELETE FROM $TABLE WHERE data_key = ?", key)
         jdbcx.update("INSERT INTO $TABLE (data_key, data_value) VALUES (?, ?)", key, value)
     }
 

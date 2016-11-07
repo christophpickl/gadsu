@@ -86,6 +86,7 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
     //<editor-fold desc="clientPicture">
 
     private val existingFolder = File("/")
+    private val existingFolder2 = File(System.getProperty("user.home"))
     private val nonExistingFolder = File("/not_existing")
     private val defaultClientPictureDefaultFolder = File(System.getProperty("user.home"))
 
@@ -101,6 +102,12 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
     fun `clientPictureDefaultFolder, set non existing folder should return default folder on get`() {
         prefs.clientPictureDefaultFolder = nonExistingFolder
         assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(defaultClientPictureDefaultFolder.absolutePath))
+    }
+
+    fun `clientPictureDefaultFolder, set twice will override`() {
+        prefs.clientPictureDefaultFolder = existingFolder
+        prefs.clientPictureDefaultFolder = existingFolder2
+        assertThat(prefs.clientPictureDefaultFolder.absolutePath, equalTo(existingFolder2.absolutePath))
     }
 
     private fun assertDefaultPicFolder() {
