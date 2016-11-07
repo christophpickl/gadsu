@@ -21,7 +21,6 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
         assertThat(WindowDescriptor.newWithSize(0, 0).isValidSize, equalTo(false))
     }
 
-
 }
 
 @Test abstract class PrefsTest {
@@ -110,6 +109,16 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
     }
 
     //</editor-fold>
+
+    fun `recentSaveReportFolder, set and get sunshine`() {
+        prefs.recentSaveReportFolder = existingFolder
+        assertThat(prefs.recentSaveReportFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
+
+    fun `recentSaveMultiProtocolFolder, set and get sunshine`() {
+        prefs.recentSaveMultiProtocolFolder = existingFolder
+        assertThat(prefs.recentSaveMultiProtocolFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
 
 
     //<editor-fold desc="clear">

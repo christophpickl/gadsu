@@ -1,11 +1,10 @@
 
 -- deployed with version 1.7
 
--- #59 rewrite preferences to use database instead java prefs api
+-- #59 rewrite preferences to use database instead of java prefs api
 -- ========================================================================= --
 
 CREATE TABLE prefs (
-  id VARCHAR(36) NOT NULL PRIMARY KEY,
-  data_key VARCHAR(128) NOT NULL,
+  data_key VARCHAR(128) NOT NULL PRIMARY KEY,
   data_value VARCHAR(1024) NOT NULL
 );
