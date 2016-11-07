@@ -15,7 +15,8 @@ class TreatmentModule : AbstractModule() {
     override fun configure() {
 
         bind(TreatmentRepository::class.java).to(TreatmentJdbcRepository::class.java).asEagerSingleton()
-
+        bind(HaraDiagnosisRepository::class.java).to(HaraDiagnosisJdbcRepository::class.java).asEagerSingleton()
+        bind(DynTreatmentService::class.java).to(DynTreatmentServiceImpl::class.java).asEagerSingleton()
 
         bind(TreatmentList::class.java).asEagerSingleton()
 

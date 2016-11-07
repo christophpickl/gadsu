@@ -9,6 +9,34 @@ import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
+interface DynTreatmentService {
+    fun deleteAllFor(treatment: Treatment)
+    fun insert(treatment: Treatment)
+}
+
+class DynTreatmentServiceImpl @Inject constructor(
+        private val haraDiagnosisRepository: HaraDiagnosisRepository
+) : DynTreatmentService {
+
+    override fun insert(treatment: Treatment) {
+        treatment.dynTreatments.forEach {
+            it.call(object : DynTreatmentCallback<Unit> {
+                override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) {
+                    haraDiagnosisRepository.insert(treatment.id!!, haraDiagnosis)
+                }
+                override fun onBloodPressure(bloodPressure: BloodPressure) {
+                }
+                override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) {
+                }
+            })
+        }
+    }
+
+    override fun deleteAllFor(treatment: Treatment) {
+
+    }
+}
+
 interface TreatmentService {
 
     fun findAllFor(client: Client): List<Treatment>
@@ -31,7 +59,8 @@ interface TreatmentService {
 }
 
 class TreatmentServiceImpl @Inject constructor(
-        private val repository: TreatmentRepository,
+        private val treatmentRepository: TreatmentRepository,
+        private val dynTreatmentService: DynTreatmentService,
         private val multiProtocolRepository: MultiProtocolRepository,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
@@ -41,17 +70,17 @@ class TreatmentServiceImpl @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
-        return repository.findAllFor(client)
+        return treatmentRepository.findAllFor(client)
     }
 
     override fun findFirstFor(client: Client): Treatment? {
-        return repository.findFirstFor(client.id!!)
+        return treatmentRepository.findFirstFor(client.id!!)
     }
 
     override fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?> {
         pivot.ensurePersisted()
 
-        val treatments = repository.findAllForRaw(pivot.clientId).sortedBy { it.number }
+        val treatments = treatmentRepository.findAllForRaw(pivot.clientId).sortedBy { it.number }
         val index = treatments.indexOfFirst { it.id == pivot.id }
         if (index == -1) throw IllegalStateException("Pivot treatment expected to be persisted yet! $pivot")
 
@@ -63,11 +92,15 @@ class TreatmentServiceImpl @Inject constructor(
 
     override fun insert(treatmentToSave: Treatment): Treatment {
         // i dont think number needs to be manipulated here, nope ...
-        return repository.insert(treatmentToSave.copy(created = clock.now()))
+        val savedTreatment = treatmentRepository.insert(treatmentToSave.copy(created = clock.now()))
+        dynTreatmentService.insert(savedTreatment)
+        return savedTreatment;
     }
 
     override fun update(treatment: Treatment) {
-        repository.update(treatment)
+        dynTreatmentService.deleteAllFor(treatment)
+        dynTreatmentService.insert(treatment)
+        treatmentRepository.update(treatment)
     }
 
     override fun delete(treatment: Treatment) {
@@ -84,17 +117,19 @@ class TreatmentServiceImpl @Inject constructor(
         }
     }
 
-    override fun countAllFor(client: Client) = repository.countAllFor(client)
+    override fun countAllFor(client: Client) = treatmentRepository.countAllFor(client)
 
     override fun calculateNextNumber(client: Client): Int {
-        val maxNumber = repository.calculateMaxNumberUsed(client) ?: return 1
+        val maxNumber = treatmentRepository.calculateMaxNumberUsed(client) ?: return 1
         return maxNumber + 1
     }
 
     private fun _delete(treatment: Treatment) {
         val beenProtocolized = multiProtocolRepository.hasBeenProtocolizedYet(treatment) // has to happen before multiProtocolRepository.delete(treat)
+
         multiProtocolRepository.deleteTreatmentRefs(treatment)
-        repository.delete(treatment)
+        dynTreatmentService.deleteAllFor(treatment)
+        treatmentRepository.delete(treatment)
 
         bus.post(TreatmentDeletedEvent(treatment, beenProtocolized))
     }

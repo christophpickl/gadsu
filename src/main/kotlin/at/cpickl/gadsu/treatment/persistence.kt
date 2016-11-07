@@ -15,6 +15,43 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import javax.inject.Inject
 
+interface HaraDiagnosisRepository {
+    fun insert(treatmentId: String, hara: HaraDiagnosis)
+    fun find(treatmentId: String): HaraDiagnosis?
+}
+
+class HaraDiagnosisJdbcRepository @Inject constructor(
+        private val jdbcx: Jdbcx
+) : HaraDiagnosisRepository {
+    companion object {
+
+        val TABLE = "hara_diagnosis"
+    }
+    private val log = LoggerFactory.getLogger(javaClass)
+
+    override fun find(treatmentId: String): HaraDiagnosis? {
+        return jdbcx.queryMaybeSingle(HaraDiagnosis.ROW_MAPPER, "SELECT * FROM $TABLE WHERE id_treatment = ?", arrayOf(treatmentId))
+    }
+
+    override fun insert(treatmentId: String, hara: HaraDiagnosis) {
+        log.debug("insert(treatmentId={}, hara={})", treatmentId, hara)
+        jdbcx.update("INSERT INTO $TABLE (" +
+                "id_treatment, note) VALUES (?, ?)",
+                treatmentId, hara.note)
+    }
+}
+
+@Suppress("UNUSED")
+val HaraDiagnosis.Companion.ROW_MAPPER: RowMapper<HaraDiagnosis>
+    get() = RowMapper { rs, rowNum ->
+        HaraDiagnosis(
+                // FIXME #17 implement me
+                emptyList(), emptyList(), null, rs.getString("note")
+        )
+    }
+
+
+
 interface TreatmentRepository {
 
     // ordered by number DESC

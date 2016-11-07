@@ -2,6 +2,11 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.tcm.model.Meridian
 
+interface DynTreatmentCallback<T> {
+    fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): T
+    fun onBloodPressure(bloodPressure: BloodPressure): T
+    fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): T
+}
 
 interface DynTreatment {
     /** same as of DynTreatmentManager.title */
@@ -9,6 +14,7 @@ interface DynTreatment {
     /** in order to calculate location (index) in tab bar, so its always the same*/
     val tabLocationWeight: Int
 
+    fun <T> call(back: DynTreatmentCallback<T>): T
 }
 
 interface DynTreatmentManager {
@@ -56,11 +62,15 @@ data class HaraDiagnosis(
         val note: String
 ) : DynTreatment {
     companion object {
+
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
     }
-
     override val title: String get() = HARA_TITLE
     override val tabLocationWeight: Int get() = WEIGHT_HARA
+
+    override fun <T> call(back: DynTreatmentCallback<T>): T {
+        return back.onHaraDiagnosis(this)
+    }
 
 }
 
@@ -93,6 +103,10 @@ data class BloodPressure(
 
     override val title: String get() = BLOOD_TITLE
     override val tabLocationWeight: Int get() = WEIGHT_BLOOD
+
+    override fun <T> call(back: DynTreatmentCallback<T>): T {
+        return back.onBloodPressure(this)
+    }
 }
 
 object BloodPressureManager : DynTreatmentManager {
@@ -119,6 +133,10 @@ data class TongueDiagnosis(
 
     override val title: String get() = TITLE_TONGUE
     override val tabLocationWeight: Int get() = WEIGHT_TONGUE
+
+    override fun <T> call(back: DynTreatmentCallback<T>): T {
+        return back.onTongueDiagnosis(this)
+    }
 }
 
 object TongueDiagnosisManager : DynTreatmentManager {
