@@ -23,13 +23,12 @@ fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
     try {
         args = parseArgs(cliArgs)
     } catch (e: ArgsException) {
-        e.printStackTrace()
-        e.help()
+        e.help(e)
         return null
     }
 
     if (args.help != null) {
-        args.help.invoke()
+        args.help.invoke(null)
         return null
     }
     return args
@@ -39,7 +38,7 @@ interface ArgsParser {
     fun parse(cliArgs: Array<String>): Args
 }
 
-data class Args(val help: (() -> Unit)?,
+data class Args(val help: ((e: ArgsException?) -> Unit)?,
                 val databaseUrl: String?,
                 val debug: Boolean,
                 val action: String?) {
@@ -48,7 +47,7 @@ data class Args(val help: (() -> Unit)?,
     }
 }
 
-class ArgsException(message: String, cause: Exception, val help: () -> Unit) : GadsuException(message, cause)
+class ArgsException(message: String, cause: Exception, val help: (e: ArgsException?) -> Unit) : GadsuException(message, cause)
 
 
 /**
@@ -78,7 +77,10 @@ private class CommonsCliArgsParser : ArgsParser {
         val commands: CommandLine
         val help = HelpFormatter()
         help.width = 150
-        val helpFunction = { help.printHelp("gadsu", options) }
+        val helpFunction = { e: ArgsException? ->
+            e?.printStackTrace()
+            help.printHelp("gadsu", options)
+        }
 
         try {
             commands = parser.parse(options, cliArgs)
