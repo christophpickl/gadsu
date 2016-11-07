@@ -5,7 +5,12 @@ import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.AppointmentServiceImpl
 import at.cpickl.gadsu.appointment.gcal.TestableGCalService
-import at.cpickl.gadsu.client.xprops.*
+import at.cpickl.gadsu.client.xprops.ROW_MAPPER
+import at.cpickl.gadsu.client.xprops.SProp
+import at.cpickl.gadsu.client.xprops.XPropsService
+import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
+import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
@@ -14,7 +19,15 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.copyWithoutCprops
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
-import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.treatment.DynTreatmentService
+import at.cpickl.gadsu.treatment.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.TreatmentServiceImpl
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -36,6 +49,8 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var treatmentService: TreatmentService
     private lateinit var appointmentRepo: AppointmentRepository
     private lateinit var appointmentService: AppointmentService
+    private lateinit var haraDiagnosisRepository: HaraDiagnosisRepository
+    private lateinit var dynTreatmentService: DynTreatmentService
 
     private lateinit var testee: ClientService
 
@@ -46,7 +61,10 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         propsService = XPropsServiceImpl(propsRepo)
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
         multiProtocolRepo = MultiProtocolJdbcRepository(jdbcx, idGenerator)
-        treatmentService = TreatmentServiceImpl(treatmentRepo, multiProtocolRepo, jdbcx, bus, clock)
+        haraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx)
+        dynTreatmentService = DynTreatmentServiceImpl(haraDiagnosisRepository)
+
+        treatmentService = TreatmentServiceImpl(treatmentRepo, dynTreatmentService, multiProtocolRepo, jdbcx, bus, clock)
         appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)
         appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock, TestableGCalService, clientRepo)
 

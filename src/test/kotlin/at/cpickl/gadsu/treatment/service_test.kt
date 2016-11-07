@@ -44,6 +44,20 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 
     // delete, 1 and 3 exists, both got 1 and 2
 
+    fun `dynTreatment insert`() {
+        val testNote = "testNote"
+        val hara = HaraDiagnosis.insertPrototype().copy(note = testNote)
+        val treatment = Treatment.unsavedValidInstance(savedClient).copy(dynTreatments = mutableListOf(hara))
+        val testee = testee()
+        val savedTreatment = testee.insert(treatment)
+
+        val actual = HaraDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!)
+        assertThat(actual, equalTo(hara))
+    }
+
+    // fun `dynTreatment update`() {
+    // fun `dynTreatment delete`() {
+
     private fun testee() = IntegrationServiceLookuper.lookupTreatmentService(jdbcx)
 
 }

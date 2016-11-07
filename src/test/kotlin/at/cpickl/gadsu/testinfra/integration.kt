@@ -10,6 +10,10 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.treatment.DynTreatmentService
+import at.cpickl.gadsu.treatment.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.HaraDiagnosisRepository
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
@@ -80,9 +84,11 @@ object IntegrationServiceLookuper {
                                defaultGeneratedId: String = TEST_UUID1,
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
                                treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator),
+                               haraDiagnosisRepository: HaraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx),
+                               dynTreatmentService: DynTreatmentService = DynTreatmentServiceImpl(haraDiagnosisRepository),
                                multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
-    ): TreatmentService {
-        return TreatmentServiceImpl(treatmentRepository, multiProtocolRepository, jdbcx, bus, clock)
+                               ): TreatmentService {
+        return TreatmentServiceImpl(treatmentRepository, dynTreatmentService, multiProtocolRepository, jdbcx, bus, clock)
     }
 
 }

@@ -13,6 +13,7 @@ import at.cpickl.gadsu.preferences.JdbcPrefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.treatment.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import com.google.common.eventbus.EventBus
@@ -51,10 +52,11 @@ abstract class HsqldbTest {
     protected val TABLE_MULTIPROTOCOL = MultiProtocolJdbcRepository.TABLE
     protected val TABLE_MULTIPROTOCOL_KEYS = MultiProtocolJdbcRepository.TABLE_KEYS
     protected val TABLE_PREFERENCES = JdbcPrefs.TABLE
+    protected val TABLE_DYNTREATMENT_HARA = HaraDiagnosisJdbcRepository.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val allTables = arrayOf(TABLE_MULTIPROTOCOL_KEYS, TABLE_MULTIPROTOCOL, TABLE_XPROPS, TABLE_APPOINTMENT,
-            TABLE_TREATMENT, TABLE_CLIENT, TABLE_PREFERENCES)
+            TABLE_DYNTREATMENT_HARA, TABLE_TREATMENT, TABLE_CLIENT, TABLE_PREFERENCES)
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
