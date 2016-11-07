@@ -18,12 +18,12 @@ fun parseArgs(cliArgs: Array<String>): Args {
     return CommonsCliArgsParser().parse(cliArgs)
 }
 
-fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
+fun parseArgsOrHelp(cliArgs: Array<String>, suppressExceptionStacktrace: Boolean = false): Args? {
     val args: Args
     try {
         args = parseArgs(cliArgs)
     } catch (e: ArgsException) {
-        e.help(e)
+        e.help(if (suppressExceptionStacktrace) null else e)
         return null
     }
 
