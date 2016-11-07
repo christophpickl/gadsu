@@ -34,6 +34,7 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
         val dbManager = FlywayDatabaseManager(dataSource)
         bind(DatabaseManager::class.java).toInstance(dbManager)
         dbManager.migrateDatabase() // do it here, in order it happen first before all other stuff happens
+        // or get the prefs data lazily... val memoizedFoo by lazy { foo(bar) }
 
         install(BackupModule())
     }
