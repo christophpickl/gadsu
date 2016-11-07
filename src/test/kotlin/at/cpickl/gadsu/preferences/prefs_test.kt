@@ -7,7 +7,6 @@ import org.testng.annotations.Test
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File
-import java.util.prefs.Preferences
 
 fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
         WindowDescriptor(Point(0, 0), Dimension(width, height))
@@ -136,24 +135,5 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
     }
 
     //</editor-fold>
-
-}
-
-@Test class JavaPrefsTest : PrefsTest() {
-
-    private val prefNode = javaClass
-
-    @BeforeMethod
-    fun initTestee() {
-        clearAllPreferences()
-    }
-
-    override fun createPrefs(): Prefs {
-        return JavaPrefs(prefNode)
-    }
-
-    private fun clearAllPreferences() {
-        Preferences.userNodeForPackage(prefNode).clear()
-    }
 
 }

@@ -1,11 +1,8 @@
 package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.service.nullIfEmpty
-import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File
-import java.util.prefs.Preferences
 
 
 interface Prefs {
@@ -17,126 +14,6 @@ interface Prefs {
     var recentSaveMultiProtocolFolder: File
 
     fun clear()
-}
-
-class JavaPrefs(private val nodeClass: Class<out Any>) : Prefs {
-    companion object {
-
-        private val KEY_USERNAME = "USERNAME"
-        private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
-        private val KEY_PROXY = "PROXY"
-        private val KEY_GCAL_NAME = "GCAL_NAME"
-        private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
-        private val KEY_WINDOW_X = "WINDOW_X"
-        private val KEY_WINDOW_Y = "WINDOW_Y"
-        private val KEY_WINDOW_WIDTH = "WINDOW_WIDTH"
-        private val KEY_WINDOW_HEIGHT = "WINDOW_HEIGHT"
-        private val KEY_CLIENT_PICTURE_DEFAULT_FOLDER = "CLIENT_PICTURE_DEFAULT_FOLDER"
-        private val KEY_RECENT_SAVE_REPORT_FOLDER = "RECENT_SAVE_REPORT_FOLDER"
-        private val KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER = "KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER"
-    }
-
-    private val log = LoggerFactory.getLogger(javaClass)
-    private var _preferences: Preferences? = null
-
-    private val preferences: Preferences
-        get() {
-            if (_preferences === null) {
-                log.info("Initializing preferences for class: {}", nodeClass.name)
-                _preferences = Preferences.userNodeForPackage(nodeClass)
-            }
-            return _preferences!!
-        }
-
-    override var preferencesData: PreferencesData
-        get() {
-            log.trace("get preferencesData()")
-            val username = preferences.get(KEY_USERNAME, null)
-            if (username === null) { // just check one of them is enough
-                return PreferencesData.DEFAULT
-            }
-            val checkUpdates = preferences.get(KEY_CHECK_UPDATES, null).toBoolean()
-            val proxy = preferences.get(KEY_PROXY, "").nullIfEmpty()
-            val gcalName = preferences.get(KEY_GCAL_NAME, "").nullIfEmpty()
-            val treatmentGoal = preferences.get(KEY_TREATMENT_GOAL, "").nullIfEmpty()?.toInt()
-            return PreferencesData(username, checkUpdates, proxy, gcalName, treatmentGoal)
-        }
-        set(value) {
-            log.trace("set preferencesData(value={})", value)
-            preferences.put(KEY_USERNAME, value.username)
-            preferences.put(KEY_CHECK_UPDATES, value.checkUpdates.toString())
-            preferences.put(KEY_PROXY, value.proxy ?: "")
-            preferences.put(KEY_GCAL_NAME, value.gcalName ?: "")
-            preferences.put(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
-            preferences.flush()
-        }
-
-    override var windowDescriptor: WindowDescriptor?
-        get() {
-            val x = preferences.getInt(KEY_WINDOW_X, -1)
-            if (x === -1) {
-                return null
-            }
-            val y = preferences.getInt(KEY_WINDOW_Y, -1)
-            val width = preferences.getInt(KEY_WINDOW_WIDTH, -1)
-            val height = preferences.getInt(KEY_WINDOW_HEIGHT, -1)
-            return WindowDescriptor(Point(x, y), Dimension(width, height))
-        }
-        set(value) {
-            log.trace("set windowDescriptor(value={})", value)
-            if (value == null) {
-                preferences.remove(KEY_WINDOW_X)
-                preferences.remove(KEY_WINDOW_Y)
-                preferences.remove(KEY_WINDOW_WIDTH)
-                preferences.remove(KEY_WINDOW_HEIGHT)
-                preferences.flush()
-                return
-            }
-            if (!value.isValidSize) {
-                log.trace("ignoring invalid size for window descriptor: {}", value)
-                return
-            }
-            preferences.putInt(KEY_WINDOW_X, value.location.x)
-            preferences.putInt(KEY_WINDOW_Y, value.location.y)
-            preferences.putInt(KEY_WINDOW_WIDTH, value.size.width)
-            preferences.putInt(KEY_WINDOW_HEIGHT, value.size.height)
-            preferences.flush()
-        }
-
-
-    override var clientPictureDefaultFolder: File
-        get() = recentFolder(KEY_CLIENT_PICTURE_DEFAULT_FOLDER)
-        set(value) {
-            log.trace("set clientPictureDefaultFolder(value={})", value.absolutePath)
-            preferences.put(KEY_CLIENT_PICTURE_DEFAULT_FOLDER, value.absolutePath)
-        }
-    override var recentSaveReportFolder: File
-        get() = recentFolder(KEY_RECENT_SAVE_REPORT_FOLDER)
-        set(value) {
-            log.trace("set recentSaveReportFolder(value={})", value.absolutePath)
-            preferences.put(KEY_RECENT_SAVE_REPORT_FOLDER, value.absolutePath)
-        }
-    override var recentSaveMultiProtocolFolder: File
-        get() = recentFolder(KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER)
-        set(value) {
-            log.trace("set recentSaveMultiProtocolFolder(value={})", value.absolutePath)
-            preferences.put(KEY_RECENT_SAVE_MULTIPROTOCOL_FOLDER, value.absolutePath)
-        }
-
-    private fun recentFolder(key: String): File {
-        val path = preferences.get(key, null) ?: return File(System.getProperty("user.home"))
-        val folder = File(path)
-        if (!folder.exists() || !folder.isDirectory) {
-            log.debug("Recent folder does not exist (anymore), going to return user home directory instead.")
-            return File(System.getProperty("user.home"))
-        }
-        return folder
-    }
-
-    override fun clear() {
-        log.info("clear()")
-        preferences.clear()
-    }
 }
 
 // MINOR @UI - check if screen size changed, or better: just be sure its not over the max (luxury: save per display setting!)
