@@ -17,7 +17,6 @@ import org.uispec4j.UISpec4J
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
-import java.util.prefs.Preferences
 
 //@Guice(modules = arrayOf(UiTestModule::class))
 //class UiTestModule : AbstractModule() {
@@ -53,9 +52,6 @@ abstract class SimpleUiTest : UISpecTestCase() {
     fun initUi() {
         log.debug("initUi()")
         super.setUp()
-
-        log.debug("Clearing preferences for node: {}", javaClass.name)
-        Preferences.userNodeForPackage(javaClass).clear()
 
         setAdapter(newMainClassAdapter())
         window = retrieveWindow()
@@ -97,9 +93,7 @@ abstract class UiTest : SimpleUiTest() {
 
 
     override final fun newMainClassAdapter(): MainClassAdapter {
-        return MainClassAdapter(Gadsu::class.java,
-                "--databaseUrl", "jdbc:hsqldb:mem:testDb",
-                "--preferences", javaClass.name)
+        return MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb")
     }
 
     override final fun postInit(window: Window) {

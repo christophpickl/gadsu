@@ -1,7 +1,11 @@
 package at.cpickl.gadsu
 
 import at.cpickl.gadsu.persistence.PersistenceModule
-import org.apache.commons.cli.*
+import org.apache.commons.cli.CommandLine
+import org.apache.commons.cli.DefaultParser
+import org.apache.commons.cli.HelpFormatter
+import org.apache.commons.cli.Options
+import org.apache.commons.cli.ParseException
 
 //fun main(args: Array<String>) {
 //    parseArgs(arrayOf("--help")).help!!()
@@ -19,6 +23,7 @@ fun parseArgsOrHelp(cliArgs: Array<String>): Args? {
     try {
         args = parseArgs(cliArgs)
     } catch (e: ArgsException) {
+        e.printStackTrace()
         e.help()
         return null
     }
