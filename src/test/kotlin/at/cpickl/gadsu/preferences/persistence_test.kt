@@ -9,7 +9,8 @@ import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
-@Test class JdbcPrefsTest : PrefsTest() {
+@Test(groups = arrayOf("hsqldb", "integration"))
+class JdbcPrefsTest : PrefsTest() {
 
     companion object {
         val TABLE = JdbcPrefs.TABLE

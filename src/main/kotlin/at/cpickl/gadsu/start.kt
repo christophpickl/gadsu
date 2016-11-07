@@ -48,7 +48,6 @@ class GadsuGuiceStarter @Inject constructor(
         private val frame: MainFrame,
         private val bus: EventBus,
         private val mac: MacHandler,
-        private val database: DatabaseManager,
         private val mainFrame: MainFrame,
         private val prefs: Prefs
 ) {
@@ -58,7 +57,6 @@ class GadsuGuiceStarter @Inject constructor(
         logInfo()
         enableProxy()
 
-        database.migrateDatabase()
         registerMacHandler()
 
         SwingUtilities.invokeLater {
