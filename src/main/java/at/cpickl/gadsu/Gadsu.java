@@ -17,7 +17,7 @@ public class Gadsu {
     private static final Logger LOG = LoggerFactory.getLogger(Gadsu.class);
 
     public static void main(String[] cliArgs) {
-        Args args = ArgsKt.parseArgsOrHelp(cliArgs);
+        Args args = ArgsKt.parseArgsOrHelp(cliArgs, false);
         if (args == null) {
             return;
         }
