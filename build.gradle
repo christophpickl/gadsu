@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.0.2-1'
+    ext.kotlin_version = '1.0.4'
     repositories {
         mavenCentral()
         maven {
@@ -84,21 +84,21 @@ dependencies {
     compile 'com.google.inject:guice:4.1.0'
     testCompile 'com.google.inject.extensions:guice-grapher:4.1.0'
     compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
-    compile 'com.google.guava:guava:19.0' // guice comes with 16.0.1
+    compile 'com.google.guava:guava:.0' // guice comes with 16.0.1
     compile 'net.ricecode:string-similarity:1.0.0'
 
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3' // hsqldb 2.3.4 leads to the application to hang :-/
-    compile 'org.springframework:spring-jdbc:4.3.0.RELEASE'
-    compile 'org.springframework:spring-context-support:4.3.0.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.3.3.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.3.RELEASE'
     compile 'org.flywaydb:flyway-core:4.0.3'
 
     // REPORTING
-    compile 'net.sf.jasperreports:jasperreports:6.3.0'
+    compile 'net.sf.jasperreports:jasperreports:6.3.1'
     compile 'com.lowagie:itext:2.1.7'
     // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
-    compile 'com.itextpdf:itextpdf:5.5.9' // jasper comes with outdated itext (fortunately got different package name)
+    compile 'com.itextpdf:itextpdf:5.5.10' // jasper comes with outdated itext (fortunately got different package name)
 
     // LOGGING
     // -------------------------------------------------------------------------
@@ -111,10 +111,10 @@ dependencies {
     // -------------------------------------------------------------------------
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
-    compile 'com.google.apis:google-api-services-calendar:v3-rev194-1.22.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev220-1.22.0'
     compile 'com.google.apis:google-api-services-gmail:v1-rev48-1.22.0'
-    compile 'javax.mail:mail:1.4.6'
-    compile 'org.apache.pdfbox:pdfbox:2.0.2'
+    compile 'javax.mail:mail:1.4.7'
+    compile 'org.apache.pdfbox:pdfbox:2.0.3'
 
     // TEST
     // -------------------------------------------------------------------------
