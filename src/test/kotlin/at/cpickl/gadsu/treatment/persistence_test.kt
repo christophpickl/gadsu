@@ -9,15 +9,8 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocol
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.testinfra.Expects
+import at.cpickl.gadsu.testinfra.*
 import at.cpickl.gadsu.testinfra.Expects.expect
-import at.cpickl.gadsu.testinfra.HsqldbTest
-import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
-import at.cpickl.gadsu.testinfra.TEST_DATETIME_FOR_TREATMENT_DATE
-import at.cpickl.gadsu.testinfra.expectPersistenceException
-import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.testinfra.savedValidInstance2
-import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.springframework.dao.DataIntegrityViolationException
@@ -26,7 +19,7 @@ import org.testng.annotations.Test
 
 
 @Test(groups = arrayOf("hsqldb"))
-class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
+class TreatmentJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
     private val client = Client.savedValidInstance()
@@ -51,7 +44,7 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         }).insertWithoutPicture(client.copy(id = null))
     }
 
-    // --------------------------------------------------------------------------- insert
+    //<editor-fold desc="insert">
 
     fun insert_sunshine() {
         val expectedSaved = unsavedTreatment.copy(id = "1")
@@ -74,7 +67,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         })
     }
 
-    // --------------------------------------------------------------------------- find
+    //</editor-fold>
+
+    //<editor-fold desc="find">
 
     @Test(dependsOnMethods = arrayOf("insert_sunshine"))
     fun findAll_sunshine() {
@@ -107,7 +102,20 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         assertThat(found!!.number, equalTo(2))
     }
 
-    // --------------------------------------------------------------------------- update
+    fun `findLastFor should return latest treatment`() {
+        insertTreatment(unsavedTreatment.copy(number = 1, date = TEST_DATETIME_FOR_TREATMENT_DATE.minusDays(1)))
+        insertTreatment(unsavedTreatment.copy(number = 2, date = TEST_DATETIME_FOR_TREATMENT_DATE.plusDays(1)))
+        insertTreatment(unsavedTreatment.copy(number = 3, date = TEST_DATETIME_FOR_TREATMENT_DATE))
+
+        val found = testee.findLastFor(clientId)
+
+        assertThat(found!!.number, equalTo(2))
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="update">
+
 
     @Test(dependsOnMethods = arrayOf("insert_sunshine", "findAll_sunshine"))
     fun `update sunshine`() {
@@ -139,7 +147,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         assertThat(actual, not(equalTo(updated)))
     }
 
-    // --------------------------------------------------------------------------- delete
+    //</editor-fold>
+
+    //<editor-fold desc="delete">
 
     @Test(dependsOnMethods = arrayOf("insert_sunshine", "findAll_sunshine"))
     fun delete_sunshine() {
@@ -163,7 +173,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         })
     }
 
-    // --------------------------------------------------------------------------- calc number
+    //</editor-fold>
+
+    //<editor-fold desc="calc number">
 
     fun `calculateMaxNumberUsed, none existing, should return null`() {
         assertCalculateNumber(null)
@@ -184,7 +196,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         assertThat(testee.calculateMaxNumberUsed(givenClient), equalTo(expectedNumber))
     }
 
-    // --------------------------------------------------------------------------- count
+    //</editor-fold>
+
+    //<editor-fold desc="count">
 
     fun `count, no treatment existing, then 0`() {
         assertThat(testee.countAllFor(client), equalTo(0))
@@ -203,7 +217,9 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
         assertThat(testee.countAllFor(client2), equalTo(0))
     }
 
-    // --------------------------------------------------------------------------- count protocolized
+    //</editor-fold>
+
+    //<editor-fold desc="count protocolized">
 
     fun `count protocolized for empty`() {
         assertThat(testee.countAllNonProtocolized(), equalTo(0))
@@ -227,6 +243,8 @@ class TreatmentSpringJdbcRepositoryTest : HsqldbTest() {
     private fun insertProtocolEntryFor(treatment: Treatment) {
         protocolRepo.insert(MultiProtocol(null, DUMMY_CREATED, "testDescription", listOf(treatment.id!!)))
     }
+
+    //</editor-fold>
 
     // --------------------------------------------------------------------------- private infra
 

@@ -6,7 +6,7 @@ import org.hamcrest.Matchers.*
 import org.joda.time.DateTime
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
-import java.util.Locale
+import java.util.*
 
 @Test
 class DateFormatsTest {
@@ -17,14 +17,37 @@ class DateFormatsTest {
 
     //<editor-fold desc="format">
 
-    fun `formatTimeWithoutSeconds`() { assertThat(date.formatTimeWithoutSeconds(),            equalTo("19:21")) }
-    fun `formatDate`() {               assertThat(date.formatDate(),                          equalTo("20.04.2016")) }
-    fun `formatDateLong`() {           assertThat(date.formatDateLong(Locale.GERMAN),         equalTo("Mittwoch, 20.04.2016")) }
-    fun `formatDateTime`() {           assertThat(date.formatDateTime(),                      equalTo("20.04.2016 19:21:13")) }
-    fun `formatDateTimeTalkative`() {  assertThat(date.formatDateTimeTalkative(),             equalTo("20.04. um 19:21 Uhr")) }
-    fun `formatDateTimeSemiLong`() {   assertThat(date.formatDateTimeSemiLong(Locale.GERMAN), equalTo("Mi, 20.04., 19:21")) }
-    fun `formatDateTimeLong`() {       assertThat(date.formatDateTimeLong(Locale.GERMAN),     equalTo("Mittwoch, 20.04.16, 19:21 Uhr")) }
-    fun `formatDateTimeFile`() {       assertThat(date.formatDateTimeFile(),                  equalTo("2016_04_20_19_21_13")) }
+    fun `formatTimeWithoutSeconds`() {
+        assertThat(date.formatTimeWithoutSeconds(), equalTo("19:21"))
+    }
+
+    fun `formatDate`() {
+        assertThat(date.formatDate(), equalTo("20.04.2016"))
+    }
+
+    fun `formatDateLong`() {
+        assertThat(date.formatDateLong(Locale.GERMAN), equalTo("Mittwoch, 20.04.2016"))
+    }
+
+    fun `formatDateTime`() {
+        assertThat(date.formatDateTime(), equalTo("20.04.2016 19:21:13"))
+    }
+
+    fun `formatDateTimeTalkative`() {
+        assertThat(date.formatDateTimeTalkative(), equalTo("20.04. um 19:21 Uhr"))
+    }
+
+    fun `formatDateTimeSemiLong`() {
+        assertThat(date.formatDateTimeSemiLong(Locale.GERMAN), equalTo("Mi, 20.04., 19:21"))
+    }
+
+    fun `formatDateTimeLong`() {
+        assertThat(date.formatDateTimeLong(Locale.GERMAN), equalTo("Mittwoch, 20.04.16, 19:21 Uhr"))
+    }
+
+    fun `formatDateTimeFile`() {
+        assertThat(date.formatDateTimeFile(), equalTo("2016_04_20_19_21_13"))
+    }
 
     //</editor-fold>
 
@@ -56,6 +79,13 @@ class DateTimeExtensionTest {
         assertThat(now.plusDays(2).differenceDaysWithinYear(birthday), equalTo(-1)) // birthday was in past
     }
 
+    fun differenceDaysTo() {
+        assertThat(now.differenceDaysTo(now), equalTo(0))
+        assertThat(now.differenceDaysTo(now.plusDays(3)), equalTo(3))
+        assertThat(now.differenceDaysTo(now.minusDays(3)), equalTo(3))
+        assertThat(now.differenceDaysTo(now.plusYears(1).plusDays(4)), equalTo(370))
+    }
+
     fun `ensureNoSeconds ok`() {
         now.withSecondOfMinute(0).withMillisOfSecond(0).ensureNoSeconds()
     }
@@ -64,6 +94,7 @@ class DateTimeExtensionTest {
     fun `ensureNoSeconds with second fail`() {
         now.withSecondOfMinute(1).ensureNoSeconds()
     }
+
     @Test(expectedExceptions = arrayOf(GadsuException::class), expectedExceptionsMessageRegExp = ".*must not have seconds.*")
     fun `ensureNoSeconds with millisecond fail`() {
         now.withMillisOfSecond(1).ensureNoSeconds()

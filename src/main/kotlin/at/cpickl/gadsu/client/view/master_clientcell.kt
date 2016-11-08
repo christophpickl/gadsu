@@ -1,17 +1,10 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.Gender
-import at.cpickl.gadsu.client.IClient
-import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.differenceDaysWithinYear
-import at.cpickl.gadsu.service.formatDateTimeSemiLong
-import at.cpickl.gadsu.service.isBetweenInclusive
-import at.cpickl.gadsu.service.wrapParenthesisIf
+import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -25,16 +18,17 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 class ExtendedClient(
-    var client: Client,
-    var countTreatments: Int,
-    var upcomingAppointment: DateTime?
+        var client: Client,
+        var countTreatments: Int,
+        var upcomingAppointment: DateTime?,
+        var recentTreatment: Treatment?
 ) : IClient, Comparable<ExtendedClient> {
 
     override fun compareTo(other: ExtendedClient): Int {
         return this.client.compareTo(other.client)
     }
 
-    override fun toString(): String{
+    override fun toString(): String {
         return "ExtendedClient(client=$client, countTreatments=$countTreatments, upcomingAppointment=$upcomingAppointment)"
     }
 
@@ -75,6 +69,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
     }
+
     private val nameLbl = JLabel("${client.preferredName} ${client.lastName}".wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
@@ -85,9 +80,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     init {
         val calculatedRows =
                 1 + // name
-                1 + // count treatments
-                (if (client.upcomingAppointment == null) 0 else 1) +
-                1 // ui hack to fill vertical space
+                        1 + // count treatments
+                        (if (client.upcomingAppointment == null) 0 else 1) +
+                        (if (client.recentTreatment == null) 0 else 1) +
+                        1 // ui hack to fill vertical space
 
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.RIGHT
@@ -123,6 +119,12 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         if (client.upcomingAppointment != null) {
             c.gridy++
             add(upcomingAppointment)
+        }
+
+        if (client.recentTreatment != null) {
+            c.gridy++
+            val daysAgo = client.recentTreatment!!.date.differenceDaysTo(DateTime.now())
+            add(JLabel("Letzte Behandlung: $daysAgo Tage"))
         }
 
         // fill south gap with a UI hack ;)

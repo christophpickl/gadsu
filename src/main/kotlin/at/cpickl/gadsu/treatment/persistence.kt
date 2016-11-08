@@ -23,6 +23,7 @@ interface TreatmentRepository {
 
     fun findAllForRaw(clientId: String): List<Treatment>
     fun findFirstFor(clientId: String): Treatment?
+    fun findLastFor(clientId: String): Treatment?
 
     fun insert(treatment: Treatment): Treatment
     fun update(treatment: Treatment)
@@ -63,6 +64,11 @@ class TreatmentJdbcRepository @Inject constructor(
     override fun findFirstFor(clientId: String): Treatment? {
         return jdbcx.queryMaybeSingle(Treatment.ROW_MAPPER,
                 "SELECT TOP 1 * FROM $TABLE WHERE id_client = ? ORDER BY date ASC", arrayOf(clientId))
+    }
+
+    override fun findLastFor(clientId: String): Treatment? {
+        return jdbcx.queryMaybeSingle(Treatment.ROW_MAPPER,
+                "SELECT TOP 1 * FROM $TABLE WHERE id_client = ? ORDER BY date DESC", arrayOf(clientId))
     }
 
     override fun insert(treatment: Treatment): Treatment {

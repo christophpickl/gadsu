@@ -4,11 +4,11 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.view.components.inputs.LabeledDateTime
 import at.cpickl.gadsu.view.language.Languages
 import org.joda.time.DateTime
+import org.joda.time.Days
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
@@ -92,6 +92,10 @@ fun Date.toDateTime() = DateTime(this)
 fun DateTime.differenceDaysWithinYear(target: DateTime): Int {
     val targetCleaned = target.withYear(this.year)
     return targetCleaned.dayOfYear - this.dayOfYear
+}
+
+fun DateTime.differenceDaysTo(to: DateTime): Int {
+    return Math.abs(Days.daysBetween(this.toLocalDate(), to.toLocalDate()).days)
 }
 
 // --------------------------------------------------------------------------- clock

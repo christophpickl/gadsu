@@ -151,7 +151,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
-        val clients = clientService.findAll(filterState = if(event.showInactives) null else ClientState.ACTIVE)
+        val clients = clientService.findAll(filterState = if (event.showInactives) null else ClientState.ACTIVE)
         view.masterView.initClients(clients.map { extendClient(it) })
     }
 
@@ -164,7 +164,7 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun extendClient(client: Client): ExtendedClient {
-        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start)
+        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start, treatmentRepo.findLastFor(client.id!!))
     }
 
     @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
