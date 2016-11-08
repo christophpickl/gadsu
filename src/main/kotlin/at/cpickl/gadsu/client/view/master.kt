@@ -28,7 +28,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import java.util.HashMap
+import java.util.*
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -42,6 +42,7 @@ interface ClientMasterView {
      * @param client null to deselect any selected entry
      */
     fun selectClient(client: Client?)
+
     fun changeClient(client: Client)
     fun deleteClient(client: Client)
 
@@ -55,10 +56,11 @@ interface ClientMasterView {
     fun treatmentCountDecrease(clientId: String)
 
     fun changeUpcomingAppointment(clientId: String, date: DateTime?)
+    fun changeRecentTreatmentCount(clientId: String, days: Int?)
 
 }
 
-class ClientList(model: MyListModel<ExtendedClient>) : JList<ExtendedClient>(model){
+class ClientList(model: MyListModel<ExtendedClient>) : JList<ExtendedClient>(model) {
     init {
         name = ViewNames.Client.List
 
@@ -76,12 +78,13 @@ class SwingClientMasterView @Inject constructor(
         private val bus: EventBus,
         swing: SwingFactory
 ) : GridPanel(), ClientMasterView {
+
     override val model = MyListModel<ExtendedClient>()
 
     private val log = LOG(javaClass)
     private val list = ClientList(model)
     private var previousSelected: ExtendedClient? = null
-    private val client2extended : MutableMap<String, ExtendedClient> = HashMap()
+    private val client2extended: MutableMap<String, ExtendedClient> = HashMap()
 
     init {
         name = ViewNames.Client.MainPanel
@@ -116,7 +119,7 @@ class SwingClientMasterView @Inject constructor(
                     // might also happen because of future search, but this should then lead to NO event publishing (client should stay displayed in detail view)
                 } else {
                     log.trace("List selection changed from ({}) to ({})", previousSelected, list.selectedValue)
-                    if (!list.selectedValue.equals(previousSelected)) {
+                    if (list.selectedValue != previousSelected) {
                         bus.post(ClientSelectedEvent(list.selectedValue.client, previousSelected?.client))
                         previousSelected = list.selectedValue
                     } else {
@@ -223,6 +226,11 @@ class SwingClientMasterView @Inject constructor(
 
     override fun changeUpcomingAppointment(clientId: String, date: DateTime?) {
         xclientById(clientId).upcomingAppointment = date
+        list.repaint()
+    }
+
+    override fun changeRecentTreatmentCount(clientId: String, days: Int?) {
+        xclientById(clientId).recentTreatmentCount = days
         list.repaint()
     }
 

@@ -82,7 +82,7 @@ class DateTimeExtensionTest {
     fun differenceDaysTo() {
         assertThat(now.differenceDaysTo(now), equalTo(0))
         assertThat(now.differenceDaysTo(now.plusDays(3)), equalTo(3))
-        assertThat(now.differenceDaysTo(now.minusDays(3)), equalTo(3))
+        assertThat(now.differenceDaysTo(now.minusDays(3)), equalTo(-3))
         assertThat(now.differenceDaysTo(now.plusYears(1).plusDays(4)), equalTo(370))
     }
 

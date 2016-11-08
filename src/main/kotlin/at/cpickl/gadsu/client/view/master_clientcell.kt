@@ -3,8 +3,10 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.*
-import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.service.differenceDaysWithinYear
+import at.cpickl.gadsu.service.formatDateTimeSemiLong
+import at.cpickl.gadsu.service.isBetweenInclusive
+import at.cpickl.gadsu.service.wrapParenthesisIf
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -21,7 +23,7 @@ class ExtendedClient(
         var client: Client,
         var countTreatments: Int,
         var upcomingAppointment: DateTime?,
-        var recentTreatment: Treatment?
+        var recentTreatmentCount: Int?
 ) : IClient, Comparable<ExtendedClient> {
 
     override fun compareTo(other: ExtendedClient): Int {
@@ -68,21 +70,39 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
+
+        private fun labelTextForRecentTreatment(days: Int?): String {
+            if (days != null && days < 0) {
+                return "Datum in der Zukunft?! ;)"
+            }
+            return "Letzte Behandlung: " + when (days) {
+                null -> "N/A"
+                0 -> "Heute"
+                1 -> "1 Tag"
+                else -> "$days Tage"
+            }
+        }
     }
 
     private val nameLbl = JLabel("${client.preferredName} ${client.lastName}".wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
-    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, countTreatments, upcomingAppointment)
+    private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.recentTreatmentCount))
+
+    private val detailLabels = arrayOf(countTreatments, upcomingAppointment, recentTreatmentLabel)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, countTreatments, upcomingAppointment, recentTreatmentLabel)
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     init {
+        val detailFont = countTreatments.font.deriveFont(9.0F)
+        detailLabels.forEach { it.font = detailFont }
+
         val calculatedRows =
                 1 + // name
                         1 + // count treatments
                         (if (client.upcomingAppointment == null) 0 else 1) +
-                        (if (client.recentTreatment == null) 0 else 1) +
+                        (if (client.recentTreatmentCount == null) 0 else 1) +
                         1 // ui hack to fill vertical space
 
         c.anchor = GridBagConstraints.NORTHWEST
@@ -121,12 +141,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
             add(upcomingAppointment)
         }
 
-        if (client.recentTreatment != null) {
+        if (client.recentTreatmentCount != null) {
             c.gridy++
-            val daysAgo = client.recentTreatment!!.date.differenceDaysTo(DateTime.now())
-            add(JLabel("Letzte Behandlung: $daysAgo Tage"))
+            add(recentTreatmentLabel)
         }
-
         // fill south gap with a UI hack ;)
         c.gridy++
         c.fill = GridBagConstraints.BOTH

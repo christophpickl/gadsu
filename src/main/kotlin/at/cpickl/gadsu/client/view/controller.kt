@@ -10,10 +10,8 @@ import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
-import at.cpickl.gadsu.service.Clock
-import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
-import at.cpickl.gadsu.service.LOG
-import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.treatment.TreatmentChangedEvent
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -109,7 +107,7 @@ open class ClientViewController @Inject constructor(
         dialogs.confirmedDelete("den Klienten '${event.client.fullName}'", {
             clientService.delete(event.client)
 
-            if (event.client.id!!.equals(currentClient.data.id)) {
+            if (event.client.id!! == currentClient.data.id) {
                 bus.post(ClientUnselectedEvent(event.client))
             }
         })
@@ -163,16 +161,18 @@ open class ClientViewController @Inject constructor(
         view.masterView.selectNext()
     }
 
-    private fun extendClient(client: Client): ExtendedClient {
-        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start, treatmentRepo.findLastFor(client.id!!))
-    }
-
     @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
         view.masterView.treatmentCountIncrease(event.treatment.clientId)
+        recalcRecentTreatmentCount(event.treatment.clientId)
+    }
+
+    @Subscribe open fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
+        recalcRecentTreatmentCount(event.treatment.clientId)
     }
 
     @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
         view.masterView.treatmentCountDecrease(event.treatment.clientId)
+        recalcRecentTreatmentCount(event.treatment.clientId)
     }
 
     @Subscribe open fun onAppointmentSavedEvent(event: AppointmentSavedEvent) {
@@ -187,8 +187,20 @@ open class ClientViewController @Inject constructor(
         recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
     }
 
+    private fun extendClient(client: Client): ExtendedClient {
+        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start, calcRecentTreatmentCount(client.id!!))
+    }
+
+    private fun calcRecentTreatmentCount(clientId: String): Int? {
+        return treatmentRepo.findLastFor(clientId)?.date?.differenceDaysTo(clock.now())
+    }
+
     private fun recalcUpcomingAppointmentForExtendedClient(clientId: String) {
         view.masterView.changeUpcomingAppointment(clientId, appointmentService.upcomingAppointmentFor(clientId)?.start)
+    }
+
+    private fun recalcRecentTreatmentCount(clientId: String) {
+        view.masterView.changeRecentTreatmentCount(clientId, calcRecentTreatmentCount(clientId))
     }
 
     private fun saveClient(client: Client) {

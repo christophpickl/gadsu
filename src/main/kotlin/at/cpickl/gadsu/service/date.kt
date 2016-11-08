@@ -31,7 +31,7 @@ class DateFormats {
 
 
 fun DateTime.ensureNoSeconds() {
-    if (!this.equals(this.clearSeconds())) {
+    if (this != this.clearSeconds()) {
         throw GadsuException("Illegal date: must not have seconds or milliseconds set! Was: $this")
     }
 }
@@ -95,7 +95,7 @@ fun DateTime.differenceDaysWithinYear(target: DateTime): Int {
 }
 
 fun DateTime.differenceDaysTo(to: DateTime): Int {
-    return Math.abs(Days.daysBetween(this.toLocalDate(), to.toLocalDate()).days)
+    return Days.daysBetween(this.toLocalDate(), to.toLocalDate()).days
 }
 
 // --------------------------------------------------------------------------- clock
