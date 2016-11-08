@@ -37,7 +37,11 @@ High
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 
 Med
-------------------------------------------------------------
+---
+* when client changes detected, user confirms, then select the clicked one to save one click
+* automatically scroll to far left in textfields (on update)
+* mehr aktionen ueber menu bar: Klient / Bild Aendern, ...
+* enhance window descriptor: make reusable for others; remember by display
 * verletzungs medizinisches maxerl (an welchen stellen besonders aufpassen wegen verletzung grafik)
 * @UI: tcm note (and others) use split view (with grab handle to resize) instead!
 * [1] add system property GADSU_DIR which changes the default ~/.gadsu/ setting
@@ -107,7 +111,11 @@ Luxury Ideas
 			treatments = 4 CT * 5pt => 20PT
 			last treat = gestern: 30.5.2010 ... 30 - 1 TLT = 29 * 1.0pt => 29PT
 			===> 12 + 20 + 29 = 61PT
-
+* use the yet existing 5E view; select element to highlight focus to work on
+* ad windows UI: dass tab content transparent ist, ist unter win schirch (wird weiss!); dont use JFrame but JWindow instead (jframe leads to ugly taskbar icon)
+* ad windows install: installs the exe, registers in OS; it should be possible to pin it on the taskbar!!!; create desktop shortcut
+* xml export (base64 encode image; dont need to think about import from XML, or do we?)
+* encrypt DB with password
 
 MULTI PROTOCOL
 ------------------------------------------------------------
