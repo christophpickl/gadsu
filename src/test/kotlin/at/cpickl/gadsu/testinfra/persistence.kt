@@ -13,9 +13,9 @@ import at.cpickl.gadsu.preferences.JdbcPrefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.treatment.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
 import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

@@ -1,14 +1,14 @@
 package at.cpickl.gadsu.treatment.view
 
-import at.cpickl.gadsu.treatment.BloodPressure
-import at.cpickl.gadsu.treatment.DynTreatment
-import at.cpickl.gadsu.treatment.HaraDiagnosis
-import at.cpickl.gadsu.treatment.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.TongueDiagnosis
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.util.HashMap
+import java.util.*
 
 @Test
 class DynTreatmentTabbedPaneTest {

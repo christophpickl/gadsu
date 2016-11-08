@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.treatment
+package at.cpickl.gadsu.treatment.dyn
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*

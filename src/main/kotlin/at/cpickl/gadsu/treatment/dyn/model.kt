@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.treatment
+package at.cpickl.gadsu.treatment.dyn
 
 import at.cpickl.gadsu.tcm.model.Meridian
 
@@ -65,6 +65,7 @@ data class HaraDiagnosis(
 
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
     }
+
     override val title: String get() = HARA_TITLE
     override val tabLocationWeight: Int get() = WEIGHT_HARA
 

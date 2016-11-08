@@ -5,37 +5,10 @@ import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-
-interface DynTreatmentService {
-    fun deleteAllFor(treatment: Treatment)
-    fun insert(treatment: Treatment)
-}
-
-class DynTreatmentServiceImpl @Inject constructor(
-        private val haraDiagnosisRepository: HaraDiagnosisRepository
-) : DynTreatmentService {
-
-    override fun insert(treatment: Treatment) {
-        treatment.dynTreatments.forEach {
-            it.call(object : DynTreatmentCallback<Unit> {
-                override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) {
-                    haraDiagnosisRepository.insert(treatment.id!!, haraDiagnosis)
-                }
-                override fun onBloodPressure(bloodPressure: BloodPressure) {
-                }
-                override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) {
-                }
-            })
-        }
-    }
-
-    override fun deleteAllFor(treatment: Treatment) {
-
-    }
-}
 
 interface TreatmentService {
 
@@ -85,8 +58,8 @@ class TreatmentServiceImpl @Inject constructor(
         if (index == -1) throw IllegalStateException("Pivot treatment expected to be persisted yet! $pivot")
 
         return Pair(
-            if (index == 0) null else treatments[index - 1],
-            if (index == treatments.size - 1) null else treatments[index + 1]
+                if (index == 0) null else treatments[index - 1],
+                if (index == treatments.size - 1) null else treatments[index + 1]
         )
     }
 

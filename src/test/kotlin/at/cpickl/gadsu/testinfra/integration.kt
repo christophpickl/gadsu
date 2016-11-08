@@ -10,14 +10,14 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.treatment.DynTreatmentService
-import at.cpickl.gadsu.treatment.DynTreatmentServiceImpl
-import at.cpickl.gadsu.treatment.HaraDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.HaraDiagnosisRepository
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisRepository
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind
@@ -87,7 +87,7 @@ object IntegrationServiceLookuper {
                                haraDiagnosisRepository: HaraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx),
                                dynTreatmentService: DynTreatmentService = DynTreatmentServiceImpl(haraDiagnosisRepository),
                                multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
-                               ): TreatmentService {
+    ): TreatmentService {
         return TreatmentServiceImpl(treatmentRepository, dynTreatmentService, multiProtocolRepository, jdbcx, bus, clock)
     }
 

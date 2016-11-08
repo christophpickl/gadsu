@@ -2,8 +2,8 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.treatment.DynTreatment
 import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
 
 
 @Suppress("UNUSED")

@@ -2,13 +2,9 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
-import at.cpickl.gadsu.service.Current
-import at.cpickl.gadsu.service.CurrentEvent
-import at.cpickl.gadsu.service.HasId
-import at.cpickl.gadsu.service.clearMinutes
-import at.cpickl.gadsu.service.ensureNoSeconds
-import at.cpickl.gadsu.service.ensureQuarterMinute
-import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -23,6 +19,7 @@ class CurrentTreatment @Inject constructor(bus: EventBus) :
         val ID: String = "treatment"
     }
 }
+
 fun CurrentEvent.forTreatment(function: (Treatment?) -> Unit) {
     if (this.id == CurrentTreatment.ID) function(this.newData as Treatment?)
 }
@@ -101,6 +98,7 @@ data class Treatment(
                     dynTreatments)
         }
     }
+
     val idComparator: (Treatment) -> Boolean
         get() = { that -> this.id.equals(that.id) }
 

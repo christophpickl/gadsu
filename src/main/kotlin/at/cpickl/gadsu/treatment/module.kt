@@ -1,6 +1,10 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisRepository
 import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView

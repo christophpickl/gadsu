@@ -5,6 +5,8 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -19,6 +21,8 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
     fun init() {
         savedClient = insertClientViaRepo()
     }
+
+    //<editor-fold desc="calculateNextNumber">
 
     fun `calculateNextNumber, 0 treatments existing, returns 1`() {
         assertThat(testee().calculateNextNumber(savedClient), equalTo(1))
@@ -44,9 +48,12 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 
     // delete, 1 and 3 exists, both got 1 and 2
 
+    //</editor-fold>
+
+    //<editor-fold desc="dynTreatment">
+
     fun `dynTreatment insert`() {
-        val testNote = "testNote"
-        val hara = HaraDiagnosis.insertPrototype().copy(note = testNote)
+        val hara = HaraDiagnosis(kyos = emptyList(), jitsus = emptyList(), bestConnection = null, note = "testNote")
         val treatment = Treatment.unsavedValidInstance(savedClient).copy(dynTreatments = mutableListOf(hara))
         val testee = testee()
         val savedTreatment = testee.insert(treatment)
@@ -56,7 +63,12 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
     }
 
     // fun `dynTreatment update`() {
-    // fun `dynTreatment delete`() {
+//    @Test(dependsOnMethods = arrayOf("dynTreatment insert"))
+//    fun `dynTreatment delete`() {
+//
+//    }
+
+    //</editor-fold>
 
     private fun testee() = IntegrationServiceLookuper.lookupTreatmentService(jdbcx)
 
