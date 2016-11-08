@@ -75,7 +75,7 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
-        if (event.oldContent?.type !=  MainContentType.TREATMENT && event.newContent.type == MainContentType.TREATMENT) {
+        if (event.oldContent?.type != MainContentType.TREATMENT && event.newContent.type == MainContentType.TREATMENT) {
             log.trace("Navigating TO treatment view.")
             registeredEscapeListener = (mainFrame.asJFrame().contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("abortTreatmentView", {
                 log.debug("Escape was hit in treatment view. Dispatching TreatmentBackEvent.")
@@ -98,7 +98,7 @@ open class TreatmentController @Inject constructor(
             treatmentView = null
         }
     }
-    
+
     @Subscribe open fun onPreviousTreatmentEvent(event: PreviousTreatmentEvent) {
         if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
             return
@@ -106,7 +106,7 @@ open class TreatmentController @Inject constructor(
         val newTreatment = treatmentService.prevAndNext(currentTreatment.data!!).first
         changeToTreatmentView(newTreatment, null)
     }
-    
+
     @Subscribe open fun onNextTreatmentEvent(event: NextTreatmentEvent) {
         if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
             return
@@ -178,11 +178,11 @@ open class TreatmentController @Inject constructor(
             val number = treatmentService.calculateNextNumber(client)
             val startDate = if (prefilled == null) clock.now() else prefilled.start
             val duration = if (prefilled == null) Treatment.DEFAULT_DURATION else minutes(prefilled.duration)
-             nullSafeTreatment = Treatment.insertPrototype(
-                     clientId = client.id!!,
-                     number = number,
-                     date = startDate,
-                     duration = duration)
+            nullSafeTreatment = Treatment.insertPrototype(
+                    clientId = client.id!!,
+                    number = number,
+                    date = startDate,
+                    duration = duration)
         }
 
         currentTreatment.data = nullSafeTreatment

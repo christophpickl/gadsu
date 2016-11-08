@@ -41,7 +41,7 @@ interface TreatmentView : ModificationAware, MainContent {
     fun enableNext(enable: Boolean)
     fun addDynTreatment(dynTreatment: DynTreatment)
     fun removeDynTreatmentAt(tabIndex: Int)
-    fun  getDynTreatmentAt(tabIndex: Int): DynTreatment
+    fun getDynTreatmentAt(tabIndex: Int): DynTreatment
 }
 
 
