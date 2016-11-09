@@ -38,6 +38,7 @@ High
 
 Med
 ---
+* maybe when splitting up into gradle modules, things will speed up?!
 * when client changes detected, user confirms, then select the clicked one to save one click
 * automatically scroll to far left in textfields (on update)
 * mehr aktionen ueber menu bar: Klient / Bild Aendern, ...

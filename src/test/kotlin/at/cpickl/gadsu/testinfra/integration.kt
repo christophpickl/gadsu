@@ -27,7 +27,6 @@ import org.joda.time.DateTime
 import org.mockito.Mockito.mock
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.util.prefs.Preferences
 import javax.inject.Inject
 
 
@@ -35,7 +34,6 @@ import javax.inject.Inject
 // http://testng.org/doc/documentation-main.html#guice-dependency-injection
 //@Guice(modules = arrayOf(ClientModule::class))
 abstract class GuiceIntegrationTest {
-    private val preferencesNode = javaClass
 
     // https://github.com/google/guice/wiki/BoundFields
     @Bind protected lateinit var mockClientRepository: ClientRepository
@@ -54,10 +52,6 @@ abstract class GuiceIntegrationTest {
 
     @BeforeMethod
     fun init() {
-        val prefs = Preferences.userNodeForPackage(preferencesNode)
-        prefs.clear()
-        prefs.flush()
-
         busListener = TestBusListener()
         mockClientRepository = mock(ClientRepository::class.java)
         mockTreatmentRepository = mock(TreatmentRepository::class.java)
