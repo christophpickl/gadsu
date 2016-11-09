@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 @Test(groups = arrayOf("integration", "guice"))
 class ClientIntegrationTest : GuiceIntegrationTest() {
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Inject private var currentClient: CurrentClient? = null
@@ -40,6 +41,7 @@ class ClientIntegrationTest : GuiceIntegrationTest() {
         verify(mockClientRepository).insertWithoutPicture(expectedToSaveClient)
         verify(mockTreatmentRepository).findAllFor(savedClient)
         verify(mockTreatmentRepository).countAllFor(savedClient)
+        verify(mockTreatmentRepository).findLastFor(savedClient.id!!)
         verify(mockXPropsRepository).delete(savedClient)
         verify(mockXPropsRepository).insert(savedClient, emptyList())
         verifyNoMoreInteractions(mockClientRepository, mockTreatmentRepository, mockXPropsRepository)
