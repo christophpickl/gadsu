@@ -210,7 +210,7 @@ class DropHandler : DropTargetListener, Serializable {
 
     override fun drop(event: DropTargetDropEvent) {
         log.trace("drop(event={})", event)
-        val success: Boolean
+        var success: Boolean
         if (event.isDataFlavorSupported(JPanelDataFlavor)) {
             val transferable = event.transferable
             try {

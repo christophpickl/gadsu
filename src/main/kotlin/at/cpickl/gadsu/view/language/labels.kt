@@ -1,9 +1,6 @@
 package at.cpickl.gadsu.view.language
 
-import org.slf4j.LoggerFactory
-
 object Labels {
-    private val log = LoggerFactory.getLogger(javaClass)
 
     val Buttons: Buttons get() = LabelsLanguageFinder.find(Buttons::class.java)
     val Tabs: Tabs get() = LabelsLanguageFinder.find(Tabs::class.java)
