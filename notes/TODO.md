@@ -35,6 +35,8 @@ High
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * dynamic treatment components (hara diagnose, yu punkte, blutdruck; zunge, puls)
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
+* das rendering von spitznamen umaendern (Vorname Spitzname Nachname)
+* bei termine, den uhrzeit dropdown auf 30min intervall umaendern
 
 Med
 ---
