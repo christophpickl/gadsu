@@ -6,11 +6,21 @@ import javax.inject.Inject
 interface DynTreatmentService {
     fun deleteAllFor(treatment: Treatment)
     fun insert(treatment: Treatment)
+    fun findAllFor(treatmentId: String): List<DynTreatment>
 }
 
 class DynTreatmentServiceImpl @Inject constructor(
         private val haraDiagnosisRepository: HaraDiagnosisRepository
 ) : DynTreatmentService {
+
+    override fun findAllFor(treatmentId: String): List<DynTreatment> {
+        val dynTreatments = mutableListOf<DynTreatment>()
+
+        val hara = haraDiagnosisRepository.find(treatmentId)
+        if (hara != null) dynTreatments.add(hara)
+        // FIXME do it compile time safe!
+        return dynTreatments
+    }
 
     override fun insert(treatment: Treatment) {
         treatment.dynTreatments.forEach {

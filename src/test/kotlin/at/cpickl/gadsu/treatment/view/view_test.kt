@@ -56,7 +56,7 @@ class DynTreatmentTabbedPaneTest {
     fun `recalcDynTreatmentsIndicesForAdd`() {
         tabs.index.put(1, dynTreat1Hara)
         tabs.index.put(2, dynTreat3Tongue)
-        tabs.recalcDynTreatmentsIndicesForAdd(2, dynTreat2Blood)
+        tabs.recalcDynTreatmentsIndicesForAddAndAddIt(2, dynTreat2Blood)
         assertThat(tabs.index, allOf<HashMap<Int, DynTreatment>>(
                 hasEntry<Int, DynTreatment>(1, dynTreat1Hara),
                 hasEntry<Int, DynTreatment>(2, dynTreat2Blood),

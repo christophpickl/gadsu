@@ -11,20 +11,6 @@ import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-
-fun main(args: Array<String>) {
-    Framed.showWithContext({
-        val view = TreatmentsInClientView(it.swing, TreatmentList(it.bus))
-        view.enableData(listOf(
-                Treatment.insertPrototype("3", 3, DateTime.now().plusDays(2)),
-                Treatment.insertPrototype("2", 2, DateTime.now().plusDays(1)),
-                Treatment.insertPrototype("1", 1, DateTime.now().plusDays(0))
-        ))
-        view
-    })
-}
-
-
 class TreatmentsInClientView @Inject constructor(
         swing: SwingFactory,
         private val treatmentsList: TreatmentList

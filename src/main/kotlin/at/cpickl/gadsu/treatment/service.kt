@@ -43,7 +43,11 @@ class TreatmentServiceImpl @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
-        return treatmentRepository.findAllFor(client)
+        val treatments = treatmentRepository.findAllFor(client)
+        treatments.forEach {
+            it.dynTreatments.addAll(dynTreatmentService.findAllFor(it.id!!))
+        }
+        return treatments
     }
 
     override fun findFirstFor(client: Client): Treatment? {

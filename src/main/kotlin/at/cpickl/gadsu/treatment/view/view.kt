@@ -5,9 +5,25 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
-import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.tcm.model.Meridian
+import at.cpickl.gadsu.treatment.NextTreatmentEvent
+import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentBackEvent
+import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import at.cpickl.gadsu.treatment.dyn.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
+import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.TongueDiagnosis
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.GadsuMenuBar
+import at.cpickl.gadsu.view.MainContent
+import at.cpickl.gadsu.view.MainContentType
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
@@ -18,6 +34,7 @@ import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
 import com.google.common.annotations.VisibleForTesting
@@ -25,13 +42,26 @@ import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
 import com.google.inject.assistedinject.Assisted
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Font
+import java.awt.GridBagConstraints
+import java.awt.Insets
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
-import javax.swing.*
+import javax.swing.JCheckBox
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JMenuItem
+import javax.swing.JPanel
+import javax.swing.JPopupMenu
+import javax.swing.JTabbedPane
+import javax.swing.JTextField
+import javax.swing.SwingUtilities
 import javax.swing.plaf.basic.BasicTabbedPaneUI
 
 interface TreatmentView : ModificationAware, MainContent {
@@ -165,6 +195,7 @@ class SwingTreatmentView @Inject constructor(
 
             // TODO width still does not work properly
             gridx++
+            weightx = 0.0
             subTreatmentView.enforceWidth(400)
             panel.add(subTreatmentView)
         }
@@ -173,6 +204,8 @@ class SwingTreatmentView @Inject constructor(
 
     private fun prepareSubTreatmentView() {
         subTreatmentView.addTab(DYN_TAB_TITLE_ADD, JLabel("Füge einen neuen Behandlungsteil hinzu."))
+
+        treatment.dynTreatments.forEach { addDynTreatment(it) }
 //        val uiClass = subTreatmentView.ui.javaClass
         // AquaTabbedPaneContrastUI
         subTreatmentView.ui = object : BasicTabbedPaneUI() {
@@ -316,14 +349,8 @@ class SwingTreatmentView @Inject constructor(
                 inpAboutHomework.text,
                 inpAboutUpcoming.text,
                 inpNote.text,
-                readDynTreatments()
+                subTreatmentView.readDynTreatments()
         )
-    }
-
-    private fun readDynTreatments(): MutableList<DynTreatment> {
-        // FIXME #17 implement me
-        println("FIXME implement treatment view readDynTreats()!!!")
-        return mutableListOf()
     }
 
     override fun toString(): String {
@@ -334,21 +361,90 @@ class SwingTreatmentView @Inject constructor(
 
 data class PopupSpec(val component: Component, val x: Int, val y: Int)
 
+interface DynTreatmentRenderer {
+    val dynTreatment: DynTreatment
+    val view: JComponent
+
+    fun readDynTreatment(): DynTreatment
+}
+
+open class TriStateCheckBox<T>(val item: T) : JCheckBox() {
+
+}
+
+class MeridianTriStateCheckBox(meridian: Meridian) : TriStateCheckBox<Meridian>(meridian)
+
+class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer {
+
+    private val checkLu = MeridianTriStateCheckBox(Meridian.Lung)
+    private val checkLe = MeridianTriStateCheckBox(Meridian.Liver)
+    private val allChecks = listOf(checkLu, checkLe)
+
+    private val inpNote = MyTextArea("HaraDiagnosisRenderer.inpNote", 2)
+
+    override val dynTreatment: DynTreatment get() = haraDiagnosis
+    override val view: JComponent by lazy {
+        val panel = GridPanel()
+        // FIXME enable check for changes!
+        panel.add(JLabel("Lu"))
+        panel.c.gridx++
+        panel.add(checkLu)
+
+        panel.c.gridx = 0
+        panel.c.gridy++
+        panel.add(JLabel("Le"))
+        panel.c.gridx++
+        panel.add(checkLe)
+
+        panel.c.gridx = 0
+        panel.c.gridy++
+        panel.c.gridwidth = 2
+        panel.add(inpNote.scrolled())
+
+        checkLu.isSelected = haraDiagnosis.kyos.contains(Meridian.Lung)
+        checkLe.isSelected = haraDiagnosis.kyos.contains(Meridian.Liver)
+        // jitsus
+        inpNote.text = haraDiagnosis.note
+
+        panel
+    }
+
+    override fun readDynTreatment(): DynTreatment {
+        return HaraDiagnosis(allChecks.filter { it.isSelected }.map { it.item }, emptyList(), null, inpNote.text)
+    }
+
+}
+
+
 @VisibleForTesting class DynTreatmentTabbedPane : JTabbedPane() {
     private val log = LOG(javaClass)
-    @VisibleForTesting var index = HashMap<Int, DynTreatment>()
+    @VisibleForTesting var index = HashMap<Int, DynTreatmentRenderer>()
 
     fun addDynTreatment(dynTreatment: DynTreatment) {
         val addIndex = calcTabIndex(dynTreatment)
         log.trace("addDynTreatment(dynTreatment) .. calced index: $addIndex")
-        val tabContent = JLabel("foobar ${dynTreatment.title}") // FIXME custom renderer for each dyn treatment
-        insertTab(dynTreatment.title, null, tabContent, null, addIndex)
-        recalcDynTreatmentsIndicesForAdd(addIndex, dynTreatment)
+
+        val renderer = dynTreatment.call(object : DynTreatmentCallback<DynTreatmentRenderer> {
+            override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): DynTreatmentRenderer {
+                return HaraDiagnosisRenderer(haraDiagnosis)
+            }
+
+            override fun onBloodPressure(bloodPressure: BloodPressure): DynTreatmentRenderer {
+                throw UnsupportedOperationException("not implemented")
+            }
+
+            override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): DynTreatmentRenderer {
+                throw UnsupportedOperationException("not implemented")
+            }
+        })
+
+        insertTab(dynTreatment.title, null, renderer.view, null, addIndex)
+        recalcDynTreatmentsIndicesForAddAndAddIt(addIndex, renderer)
     }
 
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
         log.trace("getDynTreatmentAt(tabIndex=$tabIndex)")
-        return index[tabIndex]!!
+        return index[tabIndex]!!.dynTreatment
     }
 
     fun removeDynTreatmentAt(tabIndex: Int) {
@@ -358,10 +454,14 @@ data class PopupSpec(val component: Component, val x: Int, val y: Int)
         recalcDynTreatmentsIndicesForDelete(tabIndex)
     }
 
+    fun readDynTreatments(): MutableList<DynTreatment> {
+        return index.values.map { it.readDynTreatment() }.toMutableList()
+    }
+
     @VisibleForTesting fun calcTabIndex(toAdd: DynTreatment): Int {
         var currentIndex = 1
-        for (dyn in index.values) {
-            if (toAdd.tabLocationWeight < dyn.tabLocationWeight) {
+        for (renderer in index.values) {
+            if (toAdd.tabLocationWeight < renderer.dynTreatment.tabLocationWeight) {
                 break
             }
             currentIndex++
@@ -369,18 +469,18 @@ data class PopupSpec(val component: Component, val x: Int, val y: Int)
         return currentIndex
     }
 
-    @VisibleForTesting fun recalcDynTreatmentsIndicesForAdd(addIndex: Int, dynTreatment: DynTreatment) {
-        val newIndex = HashMap<Int, DynTreatment>()
+    @VisibleForTesting fun recalcDynTreatmentsIndicesForAddAndAddIt(addIndex: Int, renderer: DynTreatmentRenderer) {
+        val newIndex = HashMap<Int, DynTreatmentRenderer>()
         index.entries.forEach { entry ->
             val key = if (entry.key >= addIndex) entry.key + 1 else entry.key
             newIndex.put(key, entry.value)
         }
-        newIndex.put(addIndex, dynTreatment)
+        newIndex.put(addIndex, renderer)
         index = newIndex
     }
 
     @VisibleForTesting fun recalcDynTreatmentsIndicesForDelete(removedIndex: Int) {
-        val newIndex = HashMap<Int, DynTreatment>()
+        val newIndex = HashMap<Int, DynTreatmentRenderer>()
         index.entries.forEach { entry ->
             val key = if (entry.key > removedIndex) entry.key - 1 else entry.key
             newIndex.put(key, entry.value)
