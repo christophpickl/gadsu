@@ -45,13 +45,14 @@ class TreatmentServiceImpl @Inject constructor(
     override fun findAllFor(client: Client): List<Treatment> {
         val treatments = treatmentRepository.findAllFor(client)
         treatments.forEach {
-            it.dynTreatments.addAll(dynTreatmentService.findAllFor(it.id!!))
+            enrichTreatment(it)
         }
         return treatments
     }
 
+
     override fun findFirstFor(client: Client): Treatment? {
-        return treatmentRepository.findFirstFor(client.id!!)
+        return enrichTreatment(treatmentRepository.findFirstFor(client.id!!))
     }
 
     override fun prevAndNext(pivot: Treatment): Pair<Treatment?, Treatment?> {
@@ -61,17 +62,16 @@ class TreatmentServiceImpl @Inject constructor(
         val index = treatments.indexOfFirst { it.id == pivot.id }
         if (index == -1) throw IllegalStateException("Pivot treatment expected to be persisted yet! $pivot")
 
-        return Pair(
-                if (index == 0) null else treatments[index - 1],
-                if (index == treatments.size - 1) null else treatments[index + 1]
-        )
+        val first = enrichTreatment(if (index == 0) null else treatments[index - 1])
+        val second = enrichTreatment(if (index == treatments.size - 1) null else treatments[index + 1])
+        return Pair(first, second)
     }
 
     override fun insert(treatmentToSave: Treatment): Treatment {
         // i dont think number needs to be manipulated here, nope ...
         val savedTreatment = treatmentRepository.insert(treatmentToSave.copy(created = clock.now()))
         dynTreatmentService.insert(savedTreatment)
-        return savedTreatment;
+        return enrichTreatment(savedTreatment)!!
     }
 
     override fun update(treatment: Treatment) {
@@ -99,6 +99,14 @@ class TreatmentServiceImpl @Inject constructor(
     override fun calculateNextNumber(client: Client): Int {
         val maxNumber = treatmentRepository.calculateMaxNumberUsed(client) ?: return 1
         return maxNumber + 1
+    }
+
+    private fun enrichTreatment(treatment: Treatment?): Treatment? {
+        if (treatment == null) {
+            return treatment
+        }
+        treatment.dynTreatments.addAll(dynTreatmentService.findAllFor(treatment.id!!))
+        return treatment
     }
 
     private fun _delete(treatment: Treatment) {
