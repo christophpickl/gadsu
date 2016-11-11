@@ -2,9 +2,10 @@ package at.cpickl.gadsu.view.language
 
 object Labels {
 
-    val Buttons: Buttons get() = LabelsLanguageFinder.find(Buttons::class.java)
-    val Tabs: Tabs get() = LabelsLanguageFinder.find(Tabs::class.java)
-    val XProps: XPropsLabels get() = LabelsLanguageFinder.find(XPropsLabels::class.java)
+    // resulted in a compile error with kotlin 1.0.5 :(
+    val Buttons: Buttons get() = Buttons_DE //LabelsLanguageFinder.find(Buttons::class.java)
+    val Tabs: Tabs get() = Tabs_DE //LabelsLanguageFinder.find(Tabs::class.java)
+    val XProps: XPropsLabels get() = XPropsLabels_DE //LabelsLanguageFinder.find(XPropsLabels::class.java)
 
     val Buttons_DE = object : Buttons {
         override val Insert = "Neu anlegen"
