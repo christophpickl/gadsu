@@ -38,24 +38,18 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.Font
-import java.awt.Graphics
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import javax.inject.Inject
-import javax.swing.Icon
-import javax.swing.JCheckBox
 import javax.swing.JLabel
 import javax.swing.JMenuItem
 import javax.swing.JPanel
 import javax.swing.JPopupMenu
 import javax.swing.JTextField
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
 import javax.swing.plaf.basic.BasicTabbedPaneUI
 
 interface TreatmentView : ModificationAware, MainContent {
@@ -354,85 +348,3 @@ class SwingTreatmentView @Inject constructor(
 }
 
 data class PopupSpec(val component: Component, val x: Int, val y: Int)
-
-/* tri-state checkbox has 3 selection states:
- * 0 unselected
- * 1 mid-state selection
- * 2 fully selected
- */
-open class TCheckBox(text: String, tSelect: Int) : JCheckBox(text, tSelect > 1), Icon, ActionListener {
-
-    companion object {
-        private val CONSIDER_MID_AS_SELECTED = true
-        private val ICON: Icon = UIManager.getIcon("CheckBox.icon")
-        private val MID_SEL_PROP = "SelectionState"
-    }
-
-    var selectionState: Int
-        get() = if (getClientProperty(MID_SEL_PROP) != null)
-            getClientProperty(MID_SEL_PROP) as Int
-        else if (super.isSelected())
-            2
-        else
-            0
-        set(value) {
-            when (value) {
-                2 -> isSelected = true
-                1, 0 -> isSelected = false
-                else -> throw IllegalArgumentException("selectionState = $value")
-            }
-            putClientProperty(MID_SEL_PROP, value)
-        }
-
-    init {
-        putClientProperty(MID_SEL_PROP, 0)
-        icon = this
-        selectionState = tSelect
-        @Suppress("LeakingThis") addActionListener(this)
-    }
-
-    override fun isSelected() =
-        if (CONSIDER_MID_AS_SELECTED && selectionState > 0)
-            true
-        else
-            super.isSelected()
-
-    override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
-        ICON.paintIcon(c, g, x, y)
-        if (selectionState != 1) return
-
-        val w = iconWidth
-        val h = iconHeight
-        g.color = if (c.isEnabled) Color(51, 51, 51) else Color(122, 138, 153)
-        g.fillRect(x + 4, y + 4, w - 8, h - 8)
-
-        if (!c.isEnabled) return
-        g.color = Color(81, 81, 81)
-        g.drawRect(x + 4, y + 4, w - 9, h - 9)
-    }
-
-    override fun getIconWidth() = ICON.iconWidth
-
-    override fun getIconHeight() = ICON.iconHeight
-
-    override fun actionPerformed(e: ActionEvent) {
-        if (selectionState == 0)
-            isSelected = false
-
-        putClientProperty(MID_SEL_PROP, if (selectionState == 2)
-            0
-        else
-            selectionState + 1)
-
-        // test
-        println(">>>>IS SELECTED: " + isSelected)
-        println(">>>>IN MID STATE: " + (selectionState == 1))
-    }
-
-}
-
-open class TriStateCheckBox<T>(val item: T) : JCheckBox() {
-
-}
-
-

@@ -5,9 +5,9 @@ import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
-import at.cpickl.gadsu.treatment.view.TCheckBox
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.inputs.NumberField
+import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import org.mockito.Mockito
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
     }, Dimension(800, 200))
 }
 
-fun triState() = TCheckBox("some text", 0)
+fun triState() = TriCheckBox<String>("", "some text", 0)
 
 fun treatmentGoal() = JPanel().apply {
     layout = BorderLayout()

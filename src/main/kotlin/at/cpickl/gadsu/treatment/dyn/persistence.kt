@@ -19,6 +19,8 @@ class HaraDiagnosisJdbcRepository @Inject constructor(
 
     companion object {
         val TABLE = "hara_diagnosis"
+        val TABLE_KYO = "hara_diagnosis_kyo"
+        val TABLE_JITSU = "hara_diagnosis_jitsu"
     }
 
     private val log = LoggerFactory.getLogger(javaClass)

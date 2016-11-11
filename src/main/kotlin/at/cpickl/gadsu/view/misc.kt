@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view
 
 import org.slf4j.LoggerFactory
+import java.awt.Graphics
 import javax.swing.FocusManager
 import javax.swing.JFrame
 

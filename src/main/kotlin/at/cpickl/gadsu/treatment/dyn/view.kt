@@ -2,8 +2,8 @@ package at.cpickl.gadsu.treatment.dyn
 
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.tcm.model.Meridian
-import at.cpickl.gadsu.treatment.view.TriStateCheckBox
 import at.cpickl.gadsu.view.components.MyTextArea
+import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.annotations.VisibleForTesting
@@ -12,6 +12,7 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JTabbedPane
 
+
 interface DynTreatmentRenderer {
     val dynTreatment: DynTreatment
     val view: JComponent
@@ -19,7 +20,6 @@ interface DynTreatmentRenderer {
     fun readDynTreatment(): DynTreatment
 }
 
-class MeridianTriStateCheckBox(meridian: Meridian) : TriStateCheckBox<Meridian>(meridian)
 class BloodPressureRenderer(private val bloodPressure: BloodPressure) : DynTreatmentRenderer {
     override val dynTreatment: DynTreatment get() = bloodPressure
     override val view: JComponent get() = JLabel("bloooood")
@@ -32,15 +32,29 @@ class TongueDiagnosisRenderer(private val tongueDiagnosis: TongueDiagnosis) : Dy
     override fun readDynTreatment() = TongueDiagnosis("tongue noteeee")
 }
 
+
+class KyoJitsuCheckBox(val meridian: Meridian) : TriCheckBox<Meridian>(meridian) {
+    val isKyo: Boolean get() = selectionState == STATE_HALF
+    val isJitsu: Boolean get() = selectionState == STATE_FULL
+
+    fun initSelectionState(kyos: List<Meridian>, jitsus: List<Meridian>) {
+        selectionState =
+                if (kyos.contains(meridian)) STATE_HALF
+                else if (jitsus.contains(meridian)) STATE_FULL
+                else STATE_NONE
+    }
+}
+
 class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer {
 
-    private val checkLu = MeridianTriStateCheckBox(Meridian.Lung)
-    private val checkLe = MeridianTriStateCheckBox(Meridian.Liver)
+    private val checkLu = KyoJitsuCheckBox(Meridian.Lung)
+    private val checkLe = KyoJitsuCheckBox(Meridian.Liver)
     private val allChecks = listOf(checkLu, checkLe)
 
     private val inpNote = MyTextArea("HaraDiagnosisRenderer.inpNote", 2)
 
     override val dynTreatment: DynTreatment get() = haraDiagnosis
+
     override val view: JComponent by lazy {
         val panel = GridPanel()
         // FIXME enable check for changes!
@@ -59,16 +73,18 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         panel.c.gridwidth = 2
         panel.add(inpNote.scrolled())
 
-        checkLu.isSelected = haraDiagnosis.kyos.contains(Meridian.Lung)
-        checkLe.isSelected = haraDiagnosis.kyos.contains(Meridian.Liver)
-        // jitsus
+        checkLu.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus)
+
         inpNote.text = haraDiagnosis.note
 
         panel
     }
 
     override fun readDynTreatment(): DynTreatment {
-        return HaraDiagnosis(allChecks.filter { it.isSelected }.map { it.item }, emptyList(), null, inpNote.text)
+        return HaraDiagnosis(
+                allChecks.filter { it.isKyo }.map { it.meridian },
+                allChecks.filter { it.isJitsu }.map { it.meridian },
+                null, inpNote.text)
     }
 
 }
