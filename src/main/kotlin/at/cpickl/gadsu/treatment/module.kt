@@ -3,8 +3,14 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.RepositoryFacade
+import at.cpickl.gadsu.treatment.dyn.RepositoryFacadeImpl
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
@@ -20,7 +26,13 @@ class TreatmentModule : AbstractModule() {
 
         bind(TreatmentRepository::class.java).to(TreatmentJdbcRepository::class.java).asEagerSingleton()
         bind(HaraDiagnosisRepository::class.java).to(HaraDiagnosisJdbcRepository::class.java).asEagerSingleton()
+        bind(BloodPressureRepository::class.java).to(BloodPressureJdbcRepository::class.java).asEagerSingleton()
+        bind(TongueDiagnosisRepository::class.java).to(TongueDiagnosisJdbcRepository::class.java).asEagerSingleton()
+
         bind(DynTreatmentService::class.java).to(DynTreatmentServiceImpl::class.java).asEagerSingleton()
+
+        bind(RepositoryFacade::class.java).to(RepositoryFacadeImpl::class.java).asEagerSingleton()
+
 
         bind(TreatmentList::class.java).asEagerSingleton()
 

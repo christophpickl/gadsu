@@ -8,7 +8,6 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
-import at.cpickl.gadsu.treatment.dyn.WEIGHT_HARA
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -37,7 +36,6 @@ data class HaraDiagnosis(
     }
 
     override val title: String get() = HARA_TITLE
-    override val tabLocationWeight: Int get() = WEIGHT_HARA
 
     override fun <T> call(back: DynTreatmentCallback<T>): T {
         return back.onHaraDiagnosis(this)
@@ -75,13 +73,13 @@ class HaraDiagnosisJdbcRepository @Inject constructor(
         return HaraDiagnosis(kyos, jitsus, rawHara.connections, rawHara.note)
     }
 
-    override fun insert(treatmentId: String, hara: HaraDiagnosis) {
-        log.debug("insert(treatmentId={}, hara={})", treatmentId, hara)
+    override fun insert(treatmentId: String, dynTreatment: HaraDiagnosis) {
+        log.debug("insert(treatmentId={}, dynTreatment={})", treatmentId, dynTreatment)
 
         jdbcx.update("INSERT INTO $TABLE (id_treatment, connection1, connection2, note) VALUES (?, ?, ?, ?)",
-                treatmentId, hara.bestConnection?.first?.sqlCode, hara.bestConnection?.second?.sqlCode, hara.note)
-        hara.kyos.forEach { jdbcx.update("INSERT INTO $TABLE_KYO (id_treatment, meridian) VALUES (?, ?)", treatmentId, it.sqlCode) }
-        hara.jitsus.forEach { jdbcx.update("INSERT INTO $TABLE_JITSU (id_treatment, meridian) VALUES (?, ?)", treatmentId, it.sqlCode) }
+                treatmentId, dynTreatment.bestConnection?.first?.sqlCode, dynTreatment.bestConnection?.second?.sqlCode, dynTreatment.note)
+        dynTreatment.kyos.forEach { jdbcx.update("INSERT INTO $TABLE_KYO (id_treatment, meridian) VALUES (?, ?)", treatmentId, it.sqlCode) }
+        dynTreatment.jitsus.forEach { jdbcx.update("INSERT INTO $TABLE_JITSU (id_treatment, meridian) VALUES (?, ?)", treatmentId, it.sqlCode) }
     }
 
     override fun delete(treatmentId: String) {

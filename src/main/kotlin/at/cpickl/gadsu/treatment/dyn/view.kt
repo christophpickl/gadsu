@@ -2,9 +2,11 @@ package at.cpickl.gadsu.treatment.dyn
 
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
 import com.google.common.annotations.VisibleForTesting
 import java.util.HashMap
 import javax.swing.JComponent
@@ -30,18 +32,9 @@ interface DynTreatmentRenderer {
         log.trace("addDynTreatment(dynTreatment) .. calced index: $addIndex")
 
         val renderer = dynTreatment.call(object : DynTreatmentCallback<DynTreatmentRenderer> {
-            override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): DynTreatmentRenderer {
-                return HaraDiagnosisRenderer(haraDiagnosis)
-            }
-
-            override fun onBloodPressure(bloodPressure: BloodPressure): DynTreatmentRenderer {
-                // FIXME
-                throw UnsupportedOperationException("not implemented")
-            }
-
-            override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): DynTreatmentRenderer {
-                throw UnsupportedOperationException("not implemented")
-            }
+            override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = HaraDiagnosisRenderer(haraDiagnosis)
+            override fun onBloodPressure(bloodPressure: BloodPressure) = BloodPressureRenderer(bloodPressure)
+            override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = TongueDiagnosisRenderer(tongueDiagnosis)
         })
 
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)
@@ -68,7 +61,8 @@ interface DynTreatmentRenderer {
     @VisibleForTesting fun calcTabIndex(toAdd: DynTreatment): Int {
         var currentIndex = 1
         for (renderer in index.values) {
-            if (toAdd.tabLocationWeight < renderer.dynTreatment.tabLocationWeight) {
+            if (DynTreatmentsFactory.dynTreatmentsFor(toAdd).order <
+                    DynTreatmentsFactory.dynTreatmentsFor(renderer.dynTreatment).order) {
                 break
             }
             currentIndex++

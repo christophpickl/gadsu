@@ -6,8 +6,14 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureMeasurement
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -59,13 +65,36 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
                 jitsus = listOf(Meridian.LargeIntestine, Meridian.SmallIntestine),
                 bestConnection = Pair(Meridian.Lung, Meridian.LargeIntestine),
                 note = "testNote")
-        val treatment = Treatment.unsavedValidInstance(savedClient).copy(dynTreatments = mutableListOf(hara))
+
+        val savedTreatment = createAndSaveTreatment(hara)
+
+        assertThat(HaraDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!), equalTo(hara))
+    }
+
+    fun `dynTreatment insert treatment with tongue should return tongue`() {
+        val tongue = TongueDiagnosis(note = "foobar")
+
+        val savedTreatment = createAndSaveTreatment(tongue)
+
+        assertThat(TongueDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!), equalTo(tongue))
+    }
+
+    fun `dynTreatment insert treatment with blood should return blood`() {
+        val blood = BloodPressure(
+                BloodPressureMeasurement(80, 120, 60),
+                BloodPressureMeasurement(70, 110, 50)
+        )
+
+        val savedTreatment = createAndSaveTreatment(blood)
+
+        assertThat(BloodPressureJdbcRepository(jdbcx).find(savedTreatment.id!!), equalTo(blood))
+    }
+
+    private fun createAndSaveTreatment(withDynTreatment: DynTreatment): Treatment {
+        val treatment = Treatment.unsavedValidInstance(savedClient).copy(dynTreatments = mutableListOf(withDynTreatment))
         val testee = testee()
 
-        val savedTreatment = testee.insert(treatment)
-
-        val actual = HaraDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!)
-        assertThat(actual, equalTo(hara))
+        return testee.insert(treatment)
     }
 
     // fun `dynTreatment update`() {

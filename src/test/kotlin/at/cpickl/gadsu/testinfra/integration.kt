@@ -16,8 +16,14 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.RepositoryFacade
+import at.cpickl.gadsu.treatment.dyn.RepositoryFacadeImpl
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind
@@ -79,7 +85,13 @@ object IntegrationServiceLookuper {
                                idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
                                treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator),
                                haraDiagnosisRepository: HaraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx),
-                               dynTreatmentService: DynTreatmentService = DynTreatmentServiceImpl(haraDiagnosisRepository),
+                               tongueDiagnosisRepository: TongueDiagnosisRepository = TongueDiagnosisJdbcRepository(jdbcx),
+                               bloodPressureRepository: BloodPressureRepository = BloodPressureJdbcRepository(jdbcx),
+                               repositoryFacade: RepositoryFacade = RepositoryFacadeImpl(
+                                       haraDiagnosisRepository,
+                                       tongueDiagnosisRepository,
+                                       bloodPressureRepository),
+                               dynTreatmentService: DynTreatmentService = DynTreatmentServiceImpl(repositoryFacade),
                                multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
     ): TreatmentService {
         return TreatmentServiceImpl(treatmentRepository, dynTreatmentService, multiProtocolRepository, jdbcx, bus, clock)

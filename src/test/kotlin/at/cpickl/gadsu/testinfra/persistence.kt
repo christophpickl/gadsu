@@ -15,7 +15,9 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -55,6 +57,8 @@ abstract class HsqldbTest {
     protected val TABLE_DYNTREATMENT_HARA = HaraDiagnosisJdbcRepository.TABLE
     protected val TABLE_DYNTREATMENT_HARA_KYO = HaraDiagnosisJdbcRepository.TABLE_KYO
     protected val TABLE_DYNTREATMENT_HARA_JITSU = HaraDiagnosisJdbcRepository.TABLE_JITSU
+    protected val TABLE_DYNTREATMENT_TONGUE = TongueDiagnosisJdbcRepository.TABLE
+    protected val TABLE_DYNTREATMENT_BLOOD = BloodPressureJdbcRepository.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val allTables = arrayOf(
@@ -65,6 +69,8 @@ abstract class HsqldbTest {
             TABLE_DYNTREATMENT_HARA_KYO,
             TABLE_DYNTREATMENT_HARA_JITSU,
             TABLE_DYNTREATMENT_HARA,
+            TABLE_DYNTREATMENT_TONGUE,
+            TABLE_DYNTREATMENT_BLOOD,
             TABLE_TREATMENT,
             TABLE_CLIENT,
             TABLE_PREFERENCES

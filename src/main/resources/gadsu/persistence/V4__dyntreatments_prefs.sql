@@ -27,6 +27,24 @@ CREATE TABLE hara_diagnosis_jitsu (
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
 
+CREATE TABLE tongue_diagnosis (
+  id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  note VARCHAR(5120) NOT NULL,
+
+  FOREIGN KEY (id_treatment) REFERENCES treatment(id)
+);
+
+CREATE TABLE blood_pressure (
+  id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  before_systolic INT,
+  before_diastolic INT,
+  before_frequency INT,
+  after_systolic INT,
+  after_diastolic INT,
+  after_frequency INT,
+
+  FOREIGN KEY (id_treatment) REFERENCES treatment(id)
+);
 
 -- #59 rewrite preferences to use database instead of java prefs api
 -- ========================================================================= --

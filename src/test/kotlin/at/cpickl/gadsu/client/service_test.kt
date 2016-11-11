@@ -5,7 +5,12 @@ import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.AppointmentServiceImpl
 import at.cpickl.gadsu.appointment.gcal.TestableGCalService
-import at.cpickl.gadsu.client.xprops.*
+import at.cpickl.gadsu.client.xprops.ROW_MAPPER
+import at.cpickl.gadsu.client.xprops.SProp
+import at.cpickl.gadsu.client.xprops.XPropsService
+import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
+import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
+import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
@@ -14,11 +19,20 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.copyWithoutCprops
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
-import at.cpickl.gadsu.treatment.*
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.TreatmentRepository
+import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.TreatmentServiceImpl
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
+import at.cpickl.gadsu.treatment.dyn.RepositoryFacadeImpl
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -41,6 +55,8 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var appointmentRepo: AppointmentRepository
     private lateinit var appointmentService: AppointmentService
     private lateinit var haraDiagnosisRepository: HaraDiagnosisRepository
+    private lateinit var tongueDiagnosisRepository: TongueDiagnosisRepository
+    private lateinit var bloodPressureRepository: BloodPressureRepository
     private lateinit var dynTreatmentService: DynTreatmentService
 
     private lateinit var testee: ClientService
@@ -53,7 +69,11 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
         multiProtocolRepo = MultiProtocolJdbcRepository(jdbcx, idGenerator)
         haraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx)
-        dynTreatmentService = DynTreatmentServiceImpl(haraDiagnosisRepository)
+        tongueDiagnosisRepository = TongueDiagnosisJdbcRepository(jdbcx)
+        bloodPressureRepository = BloodPressureJdbcRepository(jdbcx)
+
+        val repositoryFacade = RepositoryFacadeImpl(haraDiagnosisRepository, tongueDiagnosisRepository, bloodPressureRepository)
+        dynTreatmentService = DynTreatmentServiceImpl(repositoryFacade)
 
         treatmentService = TreatmentServiceImpl(treatmentRepo, dynTreatmentService, multiProtocolRepo, jdbcx, bus, clock)
         appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)

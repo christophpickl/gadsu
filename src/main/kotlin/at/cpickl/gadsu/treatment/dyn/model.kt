@@ -13,11 +13,54 @@ interface DynTreatmentCallback<T> {
     fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): T
 }
 
+interface DynTreatmentsCallback<T> {
+    fun onHaraDiagnosis(): T
+    fun onBloodPressure(): T
+    fun onTongueDiagnosis(): T
+}
+
+private var dynTreatmentsOrderCounter: Int = 0
+enum class DynTreatments {
+    // watch out: order here is of relevance!
+    HARA { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onHaraDiagnosis() },
+    TONGUE { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onTongueDiagnosis() },
+    BLOOD { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onBloodPressure() };
+
+    val order: Int
+
+    init {
+        order = dynTreatmentsOrderCounter++
+    }
+
+    abstract fun <T> call(back: DynTreatmentsCallback<T>): T
+}
+
+
+object DynTreatmentsFactory {
+
+    private val all: Map<Class<out DynTreatment>, DynTreatments>
+
+    init {
+        val tmp = mutableMapOf<Class<out DynTreatment>, DynTreatments>()
+        DynTreatments.values().forEach {
+            it.call(object : DynTreatmentsCallback<Unit> {
+                override fun onHaraDiagnosis() { tmp.put(HaraDiagnosis::class.java, DynTreatments.HARA) }
+                override fun onBloodPressure() { tmp.put(BloodPressure::class.java, DynTreatments.BLOOD) }
+                override fun onTongueDiagnosis() { tmp.put(TongueDiagnosis::class.java, DynTreatments.TONGUE) }
+            })
+        }
+        all = tmp
+    }
+
+    fun dynTreatmentsFor(dynTreatment: DynTreatment): DynTreatments {
+        return all[dynTreatment.javaClass] ?: throw IllegalArgumentException("Unhandled: $dynTreatment")
+    }
+}
+
+
 interface DynTreatment {
     /** same as of DynTreatmentManager.title */
     val title: String
-    /** in order to calculate location (index) in tab bar, so its always the same*/
-    val tabLocationWeight: Int
 
     fun <T> call(back: DynTreatmentCallback<T>): T
 }
@@ -37,21 +80,22 @@ interface DynTreatmentManager {
 }
 
 object DynTreatmentFactory {
-    val all: List<DynTreatmentManager> = listOf(
-            HaraDiagnosisManager,
-            BloodPressureManager,
-            TongueDiagnosisManager
-            // ...
-            // register new dyn treatments here!
-            // ...
-    )
+
+    val all: List<DynTreatmentManager>
+
+    init {
+        val tmp = mutableListOf<DynTreatmentManager>()
+        DynTreatments.values().forEach {
+            it.call(object : DynTreatmentsCallback<Unit> {
+                override fun onHaraDiagnosis() { tmp.add(HaraDiagnosisManager) }
+                override fun onBloodPressure() { tmp.add(BloodPressureManager) }
+                override fun onTongueDiagnosis() { tmp.add(TongueDiagnosisManager) }
+            })
+        }
+        all = tmp
+    }
 
     fun managersForAllExcept(except: List<DynTreatment>): List<DynTreatmentManager> {
         return all.filter { !it.matches(except) }
     }
 }
-
-// TODO make a enum of all dynTreats and use that for ordering instead
-val WEIGHT_HARA = 100
-val WEIGHT_BLOOD = 200
-val WEIGHT_TONGUE = 300
