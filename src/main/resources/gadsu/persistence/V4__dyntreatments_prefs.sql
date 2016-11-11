@@ -6,20 +6,22 @@
 
 CREATE TABLE hara_diagnosis (
   id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  connection1 CHAR(2), -- best connection of meridians, might be null
+  connection2 CHAR(2), -- best connection of meridians, might be null
   note VARCHAR(5120) NOT NULL,
 
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
 
 CREATE TABLE hara_diagnosis_kyo (
-  id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  id_treatment VARCHAR(36) NOT NULL,
   meridian CHAR(2) NOT NULL,
 
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
 
 CREATE TABLE hara_diagnosis_jitsu (
-  id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  id_treatment VARCHAR(36) NOT NULL,
   meridian CHAR(2) NOT NULL,
 
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)

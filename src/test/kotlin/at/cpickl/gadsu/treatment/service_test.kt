@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
@@ -52,10 +53,15 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 
     //<editor-fold desc="dynTreatment">
 
-    fun `dynTreatment insert`() {
-        val hara = HaraDiagnosis(kyos = emptyList(), jitsus = emptyList(), bestConnection = null, note = "testNote")
+    fun `dynTreatment insert treatment with hara should return hara`() {
+        val hara = HaraDiagnosis(
+                kyos = listOf(Meridian.Lung, Meridian.Spleen),
+                jitsus = listOf(Meridian.LargeIntestine, Meridian.SmallIntestine),
+                bestConnection = Pair(Meridian.Lung, Meridian.LargeIntestine),
+                note = "testNote")
         val treatment = Treatment.unsavedValidInstance(savedClient).copy(dynTreatments = mutableListOf(hara))
         val testee = testee()
+
         val savedTreatment = testee.insert(treatment)
 
         val actual = HaraDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!)

@@ -7,7 +7,7 @@ import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.annotations.VisibleForTesting
-import java.util.HashMap
+import java.util.*
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JTabbedPane
@@ -74,6 +74,7 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         panel.add(inpNote.scrolled())
 
         checkLu.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus)
+        checkLe.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus)
 
         inpNote.text = haraDiagnosis.note
 

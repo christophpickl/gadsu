@@ -53,10 +53,22 @@ abstract class HsqldbTest {
     protected val TABLE_MULTIPROTOCOL_KEYS = MultiProtocolJdbcRepository.TABLE_KEYS
     protected val TABLE_PREFERENCES = JdbcPrefs.TABLE
     protected val TABLE_DYNTREATMENT_HARA = HaraDiagnosisJdbcRepository.TABLE
+    protected val TABLE_DYNTREATMENT_HARA_KYO = HaraDiagnosisJdbcRepository.TABLE_KYO
+    protected val TABLE_DYNTREATMENT_HARA_JITSU = HaraDiagnosisJdbcRepository.TABLE_JITSU
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val allTables = arrayOf(TABLE_MULTIPROTOCOL_KEYS, TABLE_MULTIPROTOCOL, TABLE_XPROPS, TABLE_APPOINTMENT,
-            TABLE_DYNTREATMENT_HARA, TABLE_TREATMENT, TABLE_CLIENT, TABLE_PREFERENCES)
+    private val allTables = arrayOf(
+            TABLE_MULTIPROTOCOL_KEYS,
+            TABLE_MULTIPROTOCOL,
+            TABLE_XPROPS,
+            TABLE_APPOINTMENT,
+            TABLE_DYNTREATMENT_HARA_KYO,
+            TABLE_DYNTREATMENT_HARA_JITSU,
+            TABLE_DYNTREATMENT_HARA,
+            TABLE_TREATMENT,
+            TABLE_CLIENT,
+            TABLE_PREFERENCES
+    )
 
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
