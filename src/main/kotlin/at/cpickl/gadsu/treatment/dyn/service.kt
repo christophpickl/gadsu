@@ -1,6 +1,10 @@
 package at.cpickl.gadsu.treatment.dyn
 
 import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import javax.inject.Inject
 
 interface DynTreatmentService {

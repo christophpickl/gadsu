@@ -1,6 +1,11 @@
 package at.cpickl.gadsu.treatment.dyn
 
-import at.cpickl.gadsu.tcm.model.Meridian
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureManager
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisManager
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisManager
 
 interface DynTreatmentCallback<T> {
     fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): T
@@ -46,104 +51,7 @@ object DynTreatmentFactory {
     }
 }
 
-private val WEIGHT_HARA = 100
-private val WEIGHT_BLOOD = 200
-private val WEIGHT_TONGUE = 300
-
-// HARA
-// =====================================================================================================================
-
-private val HARA_TITLE = "Hara Diagnose"
-
-data class HaraDiagnosis(
-        val kyos: List<Meridian>,
-        val jitsus: List<Meridian>,
-        val bestConnection: Pair<Meridian, Meridian>?,
-        val note: String
-) : DynTreatment {
-    companion object {
-
-        fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
-    }
-
-    override val title: String get() = HARA_TITLE
-    override val tabLocationWeight: Int get() = WEIGHT_HARA
-
-    override fun <T> call(back: DynTreatmentCallback<T>): T {
-        return back.onHaraDiagnosis(this)
-    }
-
-}
-
-object HaraDiagnosisManager : DynTreatmentManager {
-    override val title: String get() = HARA_TITLE
-
-    override fun dynTreatmentType() = HaraDiagnosis::class.java
-
-    override fun create() = HaraDiagnosis.insertPrototype()
-}
-
-// BLOOD
-// =====================================================================================================================
-
-private val BLOOD_TITLE = "Blutdruck"
-
-data class BloodPressureMeasurement(
-        val systolic: Int,
-        val diastolic: Int,
-        val frequency: Int
-)
-
-data class BloodPressure(
-        val before: BloodPressureMeasurement?,
-        val after: BloodPressureMeasurement?
-) : DynTreatment {
-    companion object {
-        fun insertPrototype() = BloodPressure(null, null)
-    }
-
-    override val title: String get() = BLOOD_TITLE
-    override val tabLocationWeight: Int get() = WEIGHT_BLOOD
-
-    override fun <T> call(back: DynTreatmentCallback<T>): T {
-        return back.onBloodPressure(this)
-    }
-}
-
-object BloodPressureManager : DynTreatmentManager {
-    override val title: String get() = BLOOD_TITLE
-
-    override fun dynTreatmentType() = BloodPressure::class.java
-
-    override fun create() = BloodPressure.insertPrototype()
-}
-
-
-// TONGUE
-// =====================================================================================================================
-
-private val TITLE_TONGUE = "Zungendiagnose"
-
-data class TongueDiagnosis(
-        // TODO enum opts
-        val note: String
-) : DynTreatment {
-    companion object {
-        fun insertPrototype() = TongueDiagnosis("")
-    }
-
-    override val title: String get() = TITLE_TONGUE
-    override val tabLocationWeight: Int get() = WEIGHT_TONGUE
-
-    override fun <T> call(back: DynTreatmentCallback<T>): T {
-        return back.onTongueDiagnosis(this)
-    }
-}
-
-object TongueDiagnosisManager : DynTreatmentManager {
-    override val title: String get() = TITLE_TONGUE
-
-    override fun dynTreatmentType() = TongueDiagnosis::class.java
-
-    override fun create() = TongueDiagnosis.insertPrototype()
-}
+// TODO make a enum of all dynTreats and use that for ordering instead
+val WEIGHT_HARA = 100
+val WEIGHT_BLOOD = 200
+val WEIGHT_TONGUE = 300

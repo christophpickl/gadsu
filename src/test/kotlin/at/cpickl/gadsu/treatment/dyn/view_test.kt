@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.treatment.dyn
 
-import at.cpickl.gadsu.treatment.dyn.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.BloodPressureRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentTabbedPane
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisRenderer
-import at.cpickl.gadsu.treatment.dyn.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRenderer
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.TongueDiagnosisRenderer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*

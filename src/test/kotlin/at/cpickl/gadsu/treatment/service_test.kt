@@ -6,8 +6,8 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod

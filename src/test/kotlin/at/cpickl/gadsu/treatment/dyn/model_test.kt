@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.treatment.dyn
 
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisManager
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.testng.annotations.Test

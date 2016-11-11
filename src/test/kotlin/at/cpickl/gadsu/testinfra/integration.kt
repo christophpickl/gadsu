@@ -16,8 +16,8 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind

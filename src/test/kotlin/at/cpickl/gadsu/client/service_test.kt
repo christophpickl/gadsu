@@ -17,8 +17,8 @@ import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.treatment.*
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod

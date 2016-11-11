@@ -4,7 +4,7 @@ import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
-import at.cpickl.gadsu.treatment.dyn.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import com.google.common.base.MoreObjects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
