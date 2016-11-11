@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
+import at.cpickl.gadsu.treatment.view.TCheckBox
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import org.mockito.Mockito
@@ -25,9 +26,12 @@ fun main(args: Array<String>) {
 //                TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
 //                SuggesterControllerImpl(SuggesterImpl(mockClientRepo()))
 //        )
-        treatmentGoal()
+//        treatmentGoal()
+        triState()
     }, Dimension(800, 200))
 }
+
+fun triState() = TCheckBox("some text", 0)
 
 fun treatmentGoal() = JPanel().apply {
     layout = BorderLayout()
