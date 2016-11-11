@@ -113,6 +113,7 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         })
 
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)
+        selectedIndex = addIndex
         recalcDynTreatmentsIndicesForAddAndAddIt(addIndex, renderer)
     }
 

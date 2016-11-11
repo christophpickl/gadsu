@@ -194,6 +194,11 @@ class SwingTreatmentView @Inject constructor(
         subTreatmentView.addTab(DYN_TAB_TITLE_ADD, JLabel("Füge einen neuen Behandlungsteil hinzu."))
 
         treatment.dynTreatments.forEach { addDynTreatment(it) }
+
+        if (treatment.dynTreatments.isNotEmpty()) {
+            subTreatmentView.selectedIndex = 1 // preselect first diagnosis tab
+        }
+
 //        val uiClass = subTreatmentView.ui.javaClass
         // AquaTabbedPaneContrastUI
         subTreatmentView.ui = object : BasicTabbedPaneUI() {
