@@ -143,14 +143,14 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
 
     override val view: JComponent by lazy {
         val panel = GridPanel()
-        // FIXME enable check for changes!
-        panel.add(JLabel("Lu"))
+
+        panel.add(JLabel(checkLu.meridian.labelShort))
         panel.c.gridx++
         panel.add(checkLu)
 
         panel.c.gridx = 0
         panel.c.gridy++
-        panel.add(JLabel("Le"))
+        panel.add(JLabel(checkLe.meridian.labelShort))
         panel.c.gridx++
         panel.add(checkLe)
 

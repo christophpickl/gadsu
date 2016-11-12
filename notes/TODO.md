@@ -57,6 +57,12 @@ Med
 * when sammelprotokoll print => busy indicator/progress dialog
 * das datumsfeld fuer den datepicker (zb treatment view) bissi breiter machen; der inhalt steht haarscharf an
 * treatment 30min statt 15min schritte
+* wenn exception geworfen, dann im error dialog nicht nur URL anklickbar zu github issue, sondern auch log file direkt aufmachen (zb unter macos "open xxx")
+* @check modifications: wenn klient bearbeiten, dann anderen klient gehen, dann dialog "speichern" klick, dann sollte der andere klient ausgewaehlt sein, nicht der alte (sonst ist ein zweiter unnoetiger klick notwendig)
+* BUG: wenn aenderung verwerfen, treatment list ist leer!
+* BUG: treatment list selection onNew
+* BUG: in TCM lists (not preselected)
+* das "erstellt am" feld dezenter machen; er hat probiert reinzuklicken, weils so im "flow der eingabe" im weg steht
 
 Low
 ------------------------------------------------------------
