@@ -1,5 +1,6 @@
-package at.cpickl.gadsu.service
+package at.cpickl.gadsu.mail
 
+import at.cpickl.gadsu.service.LOG
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -13,10 +14,38 @@ import com.google.api.services.gmail.Gmail
 import com.google.api.services.gmail.GmailScopes
 import com.google.api.services.gmail.model.Message
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStreamReader
 import java.util.Properties
+import javax.mail.Session
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
+
+
+interface MailSender {
+    fun send(mail: Mail)
+}
+
+data class Mail(
+        val recipients: List<String>,
+        val subject: String,
+        val body: String
+) {
+    init {
+        if (recipients.isEmpty()) {
+            throw IllegalArgumentException("Recipients must not be empty! ($this)")
+        }
+    }
+}
+
+class GMailSender : MailSender {
+    
+    private val log = LOG(javaClass)
+    
+    override fun send(mail: Mail) {
+        log.info("send(mail={})", mail)
+    }
+}
 
 // also see: GCalConnector
 
@@ -36,7 +65,7 @@ class GConector {
 
         val SCOPES = listOf(GmailScopes.GMAIL_SEND)
 
-        val DATA_STORE_DIR = java.io.File(System.getProperty("user.home"), ".gadsu/gmail_datastore")
+        val DATA_STORE_DIR = File(System.getProperty("user.home"), ".gadsu/gmail_datastore")
         val DATA_STORE_FACTORY = FileDataStoreFactory(DATA_STORE_DIR)
 
         val flow = GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
@@ -55,7 +84,7 @@ class GConector {
 }
 
 fun createMail(): MimeMessage {
-    val session = javax.mail.Session.getDefaultInstance(Properties(), null)
+    val session = Session.getDefaultInstance(Properties(), null)
     val email = MimeMessage(session)
 
     val from = "christoph.pickl@gmail.com"
@@ -74,7 +103,7 @@ fun createMessageWithEmail(emailContent: MimeMessage): Message {
     val bytes = buffer.toByteArray()
     val encodedEmail = Base64.encodeBase64URLSafeString(bytes)
     val message = Message()
-    message.setRaw(encodedEmail)
+    message.raw = encodedEmail
     return message
 }
 

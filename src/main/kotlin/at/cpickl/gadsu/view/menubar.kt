@@ -1,16 +1,37 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.*
+import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.Event
+import at.cpickl.gadsu.QuitAskEvent
+import at.cpickl.gadsu.SHORTCUT_MODIFIER
+import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientChangeStateEvent
+import at.cpickl.gadsu.client.ClientNavigateDownEvent
+import at.cpickl.gadsu.client.ClientNavigateUpEvent
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.ShowInClientsListEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
+import at.cpickl.gadsu.mail.RequestPrepareMailEvent
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
 import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.CurrentChangedEvent
+import at.cpickl.gadsu.service.FormSaveEvent
+import at.cpickl.gadsu.service.FormType
+import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
+import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.PrintFormEvent
+import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
@@ -18,13 +39,20 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
 import javax.inject.Inject
-import javax.swing.*
+import javax.swing.JCheckBoxMenuItem
+import javax.swing.JComponent
+import javax.swing.JMenu
+import javax.swing.JMenuBar
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
+import javax.swing.KeyStroke
 
 
 enum class MenuBarEntry {
     REPORT_PROTOCOL,
     REPORT_MULTI_PROTOCOL,
-    RECONNECT_INTERNET_CONNECTION
+    RECONNECT_INTERNET_CONNECTION,
+    SEND_MAIL
 }
 
 class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
@@ -65,6 +93,7 @@ open class GadsuMenuBarController @Inject constructor(
 
 //            else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
             MenuBarEntry.RECONNECT_INTERNET_CONNECTION -> bus.post(ReconnectInternetConnectionEvent())
+            MenuBarEntry.SEND_MAIL -> bus.post(RequestPrepareMailEvent())
         }.javaClass // enforce compiler to ensure all branches are covered
     }
 
@@ -150,6 +179,7 @@ open class GadsuMenuBar @Inject constructor(
         if (!mac.isEnabled()) {
             menuApp.addItem("\u00DCber Gadsu", { ShowAboutDialogEvent() })
             menuApp.addItem("Einstellungen", { ShowPreferencesEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, SHORTCUT_MODIFIER))
+            menuApp.addSeparator()
         }
 
         itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { MenuBarEntryClickedEvent(MenuBarEntry.RECONNECT_INTERNET_CONNECTION) })
@@ -159,6 +189,7 @@ open class GadsuMenuBar @Inject constructor(
 //        menuApp.add(itemExport)
 
         menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
+        menuApp.addItem("Mails versenden", { MenuBarEntryClickedEvent(MenuBarEntry.SEND_MAIL) })
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()
