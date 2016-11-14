@@ -65,7 +65,7 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
 
     //<editor-fold desc="preferencesData">
 
-    private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", 20)
+    private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", "gmail@gmail.com", 20)
 
     fun `preferencesData, default at startup`() {
         assertDefaultPreferencesData()
