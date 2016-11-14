@@ -41,28 +41,28 @@ class ClientTabMain(
     private val fields = Fields<Client>(modificationChecker)
 
     // base
-    val inpFirstName = fields.newTextField("Vorname", {it.firstName}, ViewNames.Client.InputFirstName)
-    val inpLastName = fields.newTextField("Nachname", {it.lastName}, ViewNames.Client.InputLastName)
-    val inpNickName = fields.newTextField("Spitzname", {it.nickName}, ViewNames.Client.InputNickName)
-    val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", {it.gender}, ViewNames.Client.InputGender)
-    val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", {it.birthday}, ViewNames.Client.InputBirthdayPrefix)
-    val outStarsign= DisabledTextField() // TODO still focusable, or more precisely: traversable via tab! :(
-    val inpCountryOfOrigin = fields.newTextField("Geburtsort", {it.countryOfOrigin}, ViewNames.Client.InputCountryOfOrigin)
-    val inpOrigin = fields.newTextField("Wohnort", {it.origin}, ViewNames.Client.InputOrigin)
-    val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", {it.relationship}, ViewNames.Client.InputRelationship)
-    val inpJob = fields.newTextField("Beruf", {it.job}, ViewNames.Client.InputJob)
-    val inpChildren = fields.newTextField("Kinder", {it.children}, ViewNames.Client.InputChildren)
-    val inpHobbies = fields.newTextField("Hobbies", {it.hobbies}, ViewNames.Client.InputHobbies)
+    val inpFirstName = fields.newTextField("Vorname", { it.firstName }, ViewNames.Client.InputFirstName)
+    val inpLastName = fields.newTextField("Nachname", { it.lastName }, ViewNames.Client.InputLastName)
+    val inpNickName = fields.newTextField("Spitzname", { it.nickName }, ViewNames.Client.InputNickName)
+    val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
+    val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
+    val outStarsign = DisabledTextField() // TODO still focusable, or more precisely: traversable via tab! :(
+    val inpCountryOfOrigin = fields.newTextField("Geburtsort", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
+    val inpOrigin = fields.newTextField("Wohnort", { it.origin }, ViewNames.Client.InputOrigin)
+    val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", { it.relationship }, ViewNames.Client.InputRelationship)
+    val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)
+    val inpChildren = fields.newTextField("Kinder", { it.children }, ViewNames.Client.InputChildren)
+    val inpHobbies = fields.newTextField("Hobbies", { it.hobbies }, ViewNames.Client.InputHobbies)
     val outCreated = DisabledTextField()
 
     // contact
-    val inpMail = fields.newTextField("Mail", {it.contact.mail}, ViewNames.Client.InputMail)
-    val inpPhone = fields.newTextField("Telefon", {it.contact.phone}, ViewNames.Client.InputPhone)
-    val inpStreet = fields.newTextField("Strasse", {it.contact.street}, ViewNames.Client.InputStreet)
-    val inpZipCode = fields.newTextField("PLZ", {it.contact.zipCode}, ViewNames.Client.InputZipCode)
-    val inpCity = fields.newTextField("Stadt", {it.contact.city}, ViewNames.Client.InputCity)
+    val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail)
+    val inpPhone = fields.newTextField("Telefon", { it.contact.phone }, ViewNames.Client.InputPhone)
+    val inpStreet = fields.newTextField("Strasse", { it.contact.street }, ViewNames.Client.InputStreet)
+    val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)
+    val inpCity = fields.newTextField("Stadt", { it.contact.city }, ViewNames.Client.InputCity)
 
-    val inpNote = fields.newTextArea("Notiz", {it.note}, ViewNames.Client.InputNote)
+    val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote)
 
     init {
         debugColor = Color.ORANGE
@@ -131,7 +131,7 @@ class ClientTabMain(
     }
 
     private fun initListsPanel(appointmentsSubView: AppoinmentsInClientView, treatmentsSubview: TreatmentsInClientView) = GridPanel().apply {
-        with (c) {
+        with(c) {
             weightx = 1.0
             weighty = 0.5
             fill = GridBagConstraints.BOTH
