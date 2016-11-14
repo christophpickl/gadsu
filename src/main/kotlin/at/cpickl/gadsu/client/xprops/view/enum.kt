@@ -37,8 +37,7 @@ class CPropEnumView(
     init {
         val model = MyListModel<XPropEnumOpt>()
         model.resetData(xprop.options)
-        // MINOR UI proper view name
-        list = MyList("FIXME_VIEWNAME.XPropEnum.${xprop.key}", model, bus, object: MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true) {
+        list = MyList("CPropEnumView.XPropEnum.${xprop.key}", model, bus, object: MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true) {
             override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
         })
         list.enableToggleSelectionMode()

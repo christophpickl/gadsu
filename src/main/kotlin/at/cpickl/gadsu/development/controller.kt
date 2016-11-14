@@ -74,7 +74,7 @@ open class DevelopmentController @Inject constructor(
         arrayOf(
                 Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, ClientState.ACTIVE, "Max", "Mustermann", "Maxi",
                         Contact(
-                                mail = "max@mustermann.at",
+                                mail = "gadsu1@discard.email",
                                 phone = "0699 11 22 33 432",
                                 street = "Hauptstrasse 22/11/A",
                                 zipCode = "1010",

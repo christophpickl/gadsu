@@ -12,14 +12,25 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.ClosableWindow
+import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.closeOnEscape
+import at.cpickl.gadsu.view.swing.disableFocusable
+import at.cpickl.gadsu.view.swing.disabled
+import at.cpickl.gadsu.view.swing.isTransparent
+import at.cpickl.gadsu.view.swing.selectAllOnFocus
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 
 interface PreferencesWindow : ClosableWindow {
@@ -31,6 +42,7 @@ interface PreferencesWindow : ClosableWindow {
     var txtLatestBackup: String
     var txtProxy: String
     var txtGcalName: String
+    var txtGmailAddress: String
     val btnCheckUpdate: EventButton
 }
 
@@ -51,6 +63,7 @@ class SwingPreferencesFrame @Inject constructor(
     private val inpUsername = JTextField()
     private val inpProxy = JTextField()
     private val inpGcalName = JTextField()
+    private val inpGmailAddress = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
     private val inpTreatmentGoal = NumberField(4).selectAllOnFocus()
 
@@ -76,6 +89,11 @@ class SwingPreferencesFrame @Inject constructor(
         set(value) {
             inpGcalName.text = value
         }
+    override var txtGmailAddress: String
+        get() = inpGmailAddress.text
+        set(value) {
+            inpGmailAddress.text = value
+        }
 
     init {
         closeOnEscape()
@@ -91,6 +109,7 @@ class SwingPreferencesFrame @Inject constructor(
                     GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
             addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
             addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
+            addDescriptiveFormInput("GMail Addresse", inpGmailAddress, "Trage hier deine GMail Adresse ein für das Versenden von E-Mails.")
             addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
 
             addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
@@ -140,6 +159,7 @@ class SwingPreferencesFrame @Inject constructor(
         inpCheckUpdates.isSelected = preferencesData.checkUpdates
         inpProxy.text = preferencesData.proxy ?: ""
         inpGcalName.text = preferencesData.gcalName ?: ""
+        inpGmailAddress.text = preferencesData.gmailAddress ?: ""
         inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
     }
 
@@ -148,6 +168,7 @@ class SwingPreferencesFrame @Inject constructor(
             inpCheckUpdates.isSelected,
             inpProxy.text.nullIfEmpty(),
             inpGcalName.text.nullIfEmpty(),
+            inpGmailAddress.text.nullIfEmpty(),
             if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue
     )
 

@@ -11,7 +11,7 @@ class ServiceModule() : AbstractModule() {
         log.trace("configure()")
 
         bind(Clock::class.java).to(RealClock::class.java).`in`(Scopes.SINGLETON)
-
+        bind(GoogleConnector::class.java).to(GoogleConnectorImpl::class.java).`in`(Scopes.SINGLETON)
         bind(IdGenerator::class.java).to(UuidGenerator::class.java).`in`(Scopes.SINGLETON)
 
         bind(MetaInf::class.java).toProvider(MetaInfLoader::class.java).`in`(Scopes.SINGLETON)

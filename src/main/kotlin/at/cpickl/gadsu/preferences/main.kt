@@ -12,6 +12,7 @@ data class PreferencesData(
         val checkUpdates: Boolean,
         val proxy: String?,
         val gcalName: String?,
+        var gmailAddress: String?,
         val treatmentGoal: Int?
 ) {
     companion object {
@@ -20,6 +21,7 @@ data class PreferencesData(
                 checkUpdates = true,
                 proxy = null,
                 gcalName = null,
+                gmailAddress = null,
                 treatmentGoal = null
         )
     }

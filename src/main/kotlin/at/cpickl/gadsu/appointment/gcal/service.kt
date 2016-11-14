@@ -2,6 +2,7 @@ package at.cpickl.gadsu.appointment.gcal
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.GoogleConnector
 import at.cpickl.gadsu.service.InternetConnectionLostEvent
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
 import at.cpickl.gadsu.service.LOG
@@ -27,7 +28,7 @@ interface GCalService {
 
 @Logged
 open class InternetConnectionAwareGCalService @Inject constructor(
-        private val connector: GCalConnector,
+        private val connector: GoogleConnector,
         private val prefs: Prefs,
         private val bus: EventBus
 ) : GCalService {
@@ -65,7 +66,7 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         log.info("Connecting to Google Calendar API.")
         val calendar: Calendar
         try {
-            calendar = connector.connect()
+            calendar = connector.connectCalendar()
         } catch (e: UnknownHostException) {
             bus.post(InternetConnectionLostEvent())
             return OfflineGCalRepository

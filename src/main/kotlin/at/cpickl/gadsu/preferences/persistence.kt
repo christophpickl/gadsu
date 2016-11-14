@@ -22,6 +22,7 @@ class JdbcPrefs @Inject constructor(
         private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
         private val KEY_PROXY = "PROXY"
         private val KEY_GCAL_NAME = "GCAL_NAME"
+        private val KEY_GMAIL_ADDRESS = "GMAIL_ADDRESS"
         private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
 
         private val KEY_WINDOW_X = "WINDOW_X"
@@ -44,9 +45,10 @@ class JdbcPrefs @Inject constructor(
             val checkUpdates = queryValue(KEY_CHECK_UPDATES)!!.toBoolean()
             val proxy = queryValue(KEY_PROXY)?.nullIfEmpty()
             val gcalName = queryValue(KEY_GCAL_NAME)?.nullIfEmpty()
+            val gmailAddress = queryValue(KEY_GMAIL_ADDRESS)?.nullIfEmpty()
             val treatmentGoal = queryValue(KEY_TREATMENT_GOAL)?.nullIfEmpty()?.toInt()
 
-            return PreferencesData(username, checkUpdates, proxy, gcalName, treatmentGoal)
+            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, treatmentGoal)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
@@ -54,6 +56,7 @@ class JdbcPrefs @Inject constructor(
             storeValue(KEY_CHECK_UPDATES, value.checkUpdates.toString())
             storeValue(KEY_PROXY, value.proxy ?: "")
             storeValue(KEY_GCAL_NAME, value.gcalName ?: "")
+            storeValue(KEY_GMAIL_ADDRESS, value.gmailAddress?: "")
             storeValue(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
         }
 
