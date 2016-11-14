@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.mail.MailPreferencesData
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.nullIfEmpty
 import com.google.common.annotations.VisibleForTesting
@@ -24,6 +25,10 @@ class JdbcPrefs @Inject constructor(
         private val KEY_GCAL_NAME = "GCAL_NAME"
         private val KEY_GMAIL_ADDRESS = "GMAIL_ADDRESS"
         private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
+
+        private val KEY_MAIL_SUBJECT = "MAIL_SUBJECT"
+        private val KEY_MAIL_BODY = "MAIL_BODY"
+        private val KEY_MAIL_RECIPIENT_IDS = "MAIL_RECIPIENT_IDS"
 
         private val KEY_WINDOW_X = "WINDOW_X"
         private val KEY_WINDOW_Y = "WINDOW_Y"
@@ -58,6 +63,21 @@ class JdbcPrefs @Inject constructor(
             storeValue(KEY_GCAL_NAME, value.gcalName ?: "")
             storeValue(KEY_GMAIL_ADDRESS, value.gmailAddress?: "")
             storeValue(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
+        }
+
+    override var mailPreferencesData: MailPreferencesData
+        get() {
+            log.trace("get mailPreferencesData()")
+            val recipientIds = (queryValue(KEY_MAIL_RECIPIENT_IDS) ?: "").split(delimiters = ",")
+            val subject = queryValue(KEY_MAIL_SUBJECT) ?: "Betreff"
+            val body = queryValue(KEY_MAIL_BODY) ?: "Mail Nachricht"
+            return MailPreferencesData(recipientIds, subject, body)
+        }
+        set(value) {
+            log.trace("set mailPreferencesData(value={})", value)
+            storeValue(KEY_MAIL_RECIPIENT_IDS, value.recipientClientIds.joinToString(separator = ","))
+            storeValue(KEY_MAIL_SUBJECT, value.subject)
+            storeValue(KEY_MAIL_BODY, value.body)
         }
 
     override var windowDescriptor: WindowDescriptor?

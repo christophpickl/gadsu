@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view
 
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
 import at.cpickl.gadsu.view.swing.enableSmallWindowStyle
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints

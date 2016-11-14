@@ -5,8 +5,11 @@ import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
-import java.awt.*
-import javax.swing.BorderFactory
+import java.awt.Color
+import java.awt.Component
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import java.awt.Insets
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -59,10 +62,6 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
         c.weightx = if (fillType == GridBagFill.Both || fillType == GridBagFill.Horizontal) 1.0 else 0.0
         c.weighty = if (fillType == GridBagFill.Both || fillType == GridBagFill.Vertical) 1.0 else 0.0
         add(JPanel().transparent()) // some nice UI hack ;)
-    }
-
-    fun emptyBorderForDialogs() {
-        border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
     }
 
 }

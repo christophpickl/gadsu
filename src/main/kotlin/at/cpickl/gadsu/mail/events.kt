@@ -6,4 +6,4 @@ class RequestPrepareMailEvent : UserEvent()
 
 class RequestSendMailEvent : UserEvent()
 
-class MailWindowClosedEvent : UserEvent()
+class MailWindowClosedEvent(val shouldPersistState: Boolean) : UserEvent()

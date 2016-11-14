@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.mail.MailPreferencesData
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File
@@ -12,6 +13,7 @@ interface Prefs {
     var clientPictureDefaultFolder: File
     var recentSaveReportFolder: File
     var recentSaveMultiProtocolFolder: File
+    var mailPreferencesData: MailPreferencesData
 
     fun clear()
 }

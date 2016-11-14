@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.mail
 
-
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.MainFrame
@@ -16,6 +15,7 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.closeOnEscape
+import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
@@ -24,22 +24,23 @@ import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 import javax.swing.ListSelectionModel
 
-
 interface MailView : ClosableWindow {
     fun start()
     fun destroy()
+    fun asJFrame(): JFrame
 
     fun initClients(clients: List<Client>)
     fun initSelectedClients(selectedClients: List<Client>)
     fun initSubject(subject: String)
     fun initBody(body: String)
 
-    fun readRecipients(): List<String>
+    fun readRecipients(): List<Client>
     fun readSubject(): String
     fun readBody(): String
 }
@@ -47,7 +48,7 @@ interface MailView : ClosableWindow {
 class MailSwingView @Inject constructor(
         private val mainFrame: MainFrame,
         private val bus: EventBus
-) : MyFrame("Send Mail"), MailView {
+) : MyFrame("Mails versenden"), MailView {
 
     private val log = LOG(javaClass)
 
@@ -65,38 +66,69 @@ class MailSwingView @Inject constructor(
 
     init {
         closeOnEscape()
-        addCloseListener { doClose() }
+        addCloseListener { doClose(true) }
 
         // see ClientList
         inpClients.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         inpClients.enableToggleSelectionMode()
 
-        contentPane.layout = BorderLayout()
+        val rootPanel = GridPanel()
+        rootPanel.emptyBorderForDialogs()
 
-        contentPane.add(inpClients.scrolled(), BorderLayout.WEST)
+        rootPanel.c.weightx = 0.0
+        rootPanel.c.weighty = 1.0
+        rootPanel.c.fill = GridBagConstraints.VERTICAL
+        rootPanel.c.insets = Pad.RIGHT
+        rootPanel.add(inpClients.scrolled())
 
-        contentPane.add(GridPanel().apply {
-            c.weightx = 1.0
+        rootPanel.c.gridx++
+        rootPanel.c.weightx = 1.0
+        rootPanel.c.weighty = 1.0
+        rootPanel.c.fill = GridBagConstraints.BOTH
+        rootPanel.c.insets = Pad.ZERO
+        rootPanel.add(GridPanel().apply {
+            c.weightx = 0.0
             c.weighty = 0.0
+            c.fill = GridBagConstraints.NONE
+            add(JLabel("Betreff: "))
+
+            c.gridx++
+            c.weightx = 1.0
             c.fill = GridBagConstraints.HORIZONTAL
             add(inpSubject)
 
+            c.gridx = 0
             c.gridy++
+            c.gridwidth = 2
             c.weighty = 1.0
             c.fill = GridBagConstraints.BOTH
             add(inpBody.scrolled())
+        })
 
-        }, BorderLayout.CENTER)
-
-        contentPane.add(GridPanel().apply {
+        rootPanel.c.gridx = 0
+        rootPanel.c.gridy++
+        rootPanel.c.gridwidth = 2
+        rootPanel.c.weightx = 1.0
+        rootPanel.c.weighty = 0.0
+        rootPanel.c.fill = GridBagConstraints.HORIZONTAL
+        rootPanel.c.anchor = GridBagConstraints.CENTER
+        rootPanel.add(GridPanel().apply {
             add(JButton("Senden").apply {
                 addActionListener { bus.post(RequestSendMailEvent()) }
             })
-        }, BorderLayout.SOUTH)
+            c.gridx++
+            add(JButton("Abbrechen").apply {
+                addActionListener { doClose(false) }
+            })
+
+        })
+
+        contentPane.layout = BorderLayout()
+        contentPane.add(rootPanel, BorderLayout.CENTER)
     }
 
     override fun start() {
-        // TODO copied from SwingPreferencesFrame => reuse instead
+        // MINOR copied from SwingPreferencesFrame => reuse instead
         if (yetCreated == false) {
             yetCreated = true
             pack()
@@ -109,6 +141,8 @@ class MailSwingView @Inject constructor(
             requestFocus()
         }
     }
+
+    override fun asJFrame() = this
 
     override fun initClients(clients: List<Client>) {
         clientsModel.resetData(clients)
@@ -126,14 +160,14 @@ class MailSwingView @Inject constructor(
         inpBody.text = body
     }
 
-    override fun readRecipients() = inpClients.selectedValuesList.map { it.contact.mail }
+    override fun readRecipients() = inpClients.selectedValuesList.map { it }
 
     override fun readSubject() = inpSubject.text!!
 
     override fun readBody() = inpBody.text!!
 
     override fun closeWindow() {
-        doClose()
+        doClose(true)
     }
 
     override fun destroy() {
@@ -141,9 +175,9 @@ class MailSwingView @Inject constructor(
         dispose()
     }
 
-    private fun doClose() {
+    private fun doClose(shouldPersistState: Boolean) {
         isVisible = false
-        bus.post(MailWindowClosedEvent())
+        bus.post(MailWindowClosedEvent(shouldPersistState))
     }
 }
 

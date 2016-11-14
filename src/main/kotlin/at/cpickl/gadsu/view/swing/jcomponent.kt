@@ -1,11 +1,25 @@
 package at.cpickl.gadsu.view.swing
 
 import at.cpickl.gadsu.service.LOG
-import java.awt.*
-import java.awt.event.*
-import java.util.*
+import java.awt.Color
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.Font
+import java.awt.Point
+import java.awt.event.ActionEvent
+import java.awt.event.InputEvent
+import java.awt.event.KeyEvent
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.util.Timer
-import javax.swing.*
+import java.util.TimerTask
+import javax.swing.AbstractAction
+import javax.swing.ActionMap
+import javax.swing.BorderFactory
+import javax.swing.InputMap
+import javax.swing.JComponent
+import javax.swing.JScrollPane
+import javax.swing.KeyStroke
 
 class MyKeyListener(
         val actionCommand: String,
@@ -125,4 +139,8 @@ fun <T : JComponent> T.transparent(): T {
 fun <T : JComponent> T.opaque(): T {
     isOpaque = true
     return this
+}
+
+fun JComponent.emptyBorderForDialogs() {
+    border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
 }
