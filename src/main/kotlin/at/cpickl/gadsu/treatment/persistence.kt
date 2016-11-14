@@ -158,6 +158,6 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 rs.getString("aboutHomework"),
                 rs.getString("aboutUpcoming"),
                 rs.getString("note"),
-                mutableListOf() // FIXME #17 implement me
+                mutableListOf() // dynTreats are loaded later on separately
         )
     }

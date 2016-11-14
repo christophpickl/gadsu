@@ -2,13 +2,22 @@ package at.cpickl.gadsu.view.datepicker.view
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.IS_OS_WIN
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.LOGUI
+import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.service.parseDate
+import at.cpickl.gadsu.service.toDateTime
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.currentActiveJFrame
 import at.cpickl.gadsu.view.datepicker.UtilDateModel
 import at.cpickl.gadsu.view.logic.beep
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.ClosableWindow
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.changeBackgroundForASec
+import at.cpickl.gadsu.view.swing.closeOnEscape
+import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
+import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -16,8 +25,12 @@ import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.*
-import javax.swing.*
+import java.util.Date
+import javax.swing.JButton
+import javax.swing.JDialog
+import javax.swing.JFormattedTextField
+import javax.swing.JTextField
+import javax.swing.SwingUtilities
 
 
 //<editor-fold desc="main">
@@ -89,10 +102,10 @@ class MyDatePicker(viewNamePrefix: String,
 
         button.name = viewNameButton(viewNamePrefix)
 
+        formattedTextField.isFocusable = false
         formattedTextField.columns = if (IS_OS_WIN) 8 else 6
         formattedTextField.horizontalAlignment = textFieldAlignment
         formattedTextField.name = viewNameText(viewNamePrefix)
-//        val eventHandler = reflectivelyGetFieldAs<ActionListener>(pickerClassName, thiz, "internalEventHandler")
         formattedTextField.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 log.trace("textfield clicked; displaying dialog to enter date manually via keyboard.")

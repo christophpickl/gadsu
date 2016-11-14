@@ -1,12 +1,32 @@
 package at.cpickl.gadsu.view.datepicker.view
 
-import at.cpickl.gadsu.view.datepicker.*
-import java.awt.*
-import java.awt.event.*
+import at.cpickl.gadsu.view.datepicker.ComponentColorDefaults
+import at.cpickl.gadsu.view.datepicker.ComponentIconDefaults
+import at.cpickl.gadsu.view.datepicker.DateModel
+import at.cpickl.gadsu.view.datepicker.DateSelectionConstraint
+import at.cpickl.gadsu.view.datepicker.UtilCalendarModel
+import java.awt.AWTEvent
+import java.awt.Component
+import java.awt.Container
+import java.awt.Dimension
+import java.awt.Toolkit
+import java.awt.event.AWTEventListener
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+import java.awt.event.HierarchyBoundsListener
+import java.awt.event.HierarchyEvent
+import java.awt.event.MouseEvent
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import java.util.*
-import javax.swing.*
+import java.util.Calendar
+import java.util.HashSet
+import javax.swing.BorderFactory
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JFormattedTextField
+import javax.swing.Popup
+import javax.swing.PopupFactory
+import javax.swing.SpringLayout
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
@@ -99,7 +119,7 @@ open class JDatePicker constructor(
 
         //Add event listeners
         addHierarchyBoundsListener(internalEventHandler)
-        //TODO        addAncestorListener(listener)
+        // addAncestorListener(listener)
         button.addActionListener(internalEventHandler)
         formattedTextField.addPropertyChangeListener("value", internalEventHandler)
         datePanel.addActionListener(internalEventHandler)

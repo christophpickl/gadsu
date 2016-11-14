@@ -7,7 +7,8 @@ import java.awt.SystemColor
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Properties
 import javax.swing.Icon
 
 
@@ -96,7 +97,7 @@ object ComponentIconDefaults {
 
     private val CLEAR = "/gadsu/images/datepicker_clear.png"
 
-    enum class Key// TODO
+    enum class Key
 
     var clearIcon: Icon? = null
     var nextMonthIconEnabled: Icon? = null
@@ -110,7 +111,6 @@ object ComponentIconDefaults {
     var popupButtonIcon: Icon? = null
 
     init {
-        // TODO consider making all the icons vector images which will scale
         try {
             clearIcon = Images.loadFromClasspath(CLEAR)
             nextMonthIconEnabled = JNextIcon(4, 7, false, true)

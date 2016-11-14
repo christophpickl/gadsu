@@ -79,7 +79,6 @@ abstract class HsqldbTest {
     private var dataSource: JDBCDataSource? = null
     protected lateinit var jdbcx: SpringJdbcx
 
-    // MINOR @TEST - delete mock, and use testable implementations instead
     protected lateinit var bus: EventBus
     protected lateinit var busListener: TestBusListener
     protected lateinit var clock: Clock

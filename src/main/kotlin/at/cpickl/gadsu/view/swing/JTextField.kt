@@ -9,7 +9,7 @@ import javax.swing.text.DocumentFilter
 import javax.swing.text.PlainDocument
 
 fun JTextField.enforceMaxCharacters(enforcedLength: Int) {
-    // MINOR @UI - instead of replace, maybe delegate to original document?!
+    // instead of replace, maybe delegate to original document?!?
     document = object : PlainDocument() {
         override fun insertString(offset: Int, string: String?, attributes: AttributeSet?) {
             if (string == null) return

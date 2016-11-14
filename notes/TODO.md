@@ -40,6 +40,7 @@ High
 
 Med
 ---
+* upgrade to gradle 3
 * maybe when splitting up into gradle modules, things will speed up?!
 * when client changes detected, user confirms, then select the clicked one to save one click
 * automatically scroll to far left in textfields (on update)
@@ -66,6 +67,7 @@ Med
 
 Low
 ------------------------------------------------------------
+* split the app into gradle modules
 * to scale images use scalrb
 * [2] check for database lock file
 * konkurrenz analyse

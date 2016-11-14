@@ -181,7 +181,6 @@ class SwingTreatmentView @Inject constructor(
             weighty = 1.0
             panel.add(initTextAreas())
 
-            // TODO width still does not work properly
             gridx++
             weightx = 0.0
             subTreatmentView.enforceWidth(400)

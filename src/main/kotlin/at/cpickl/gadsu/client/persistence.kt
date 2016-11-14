@@ -6,7 +6,11 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.*
+import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensureNotPersisted
+import at.cpickl.gadsu.persistence.ensurePersisted
+import at.cpickl.gadsu.persistence.toBufferedImage
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
 import com.google.inject.Inject
 import org.joda.time.DateTime
@@ -179,14 +183,11 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
 
 
 private fun readFromBlob(blob: Blob?, gender: Gender): MyImage {
-    // MINOR TEST write a test for this
-    if (blob != null) {
-        val buffered = blob.toBufferedImage()
-        if (buffered != null) {
-            log.trace("Loading image for client from database BLOB.")
-            //    Files.write(blob.toByteArray(), File("readFromBlob.jpg"))
-            return buffered.toMyImage()
-        }
+    val buffered = blob?.toBufferedImage()
+    if (buffered != null) {
+        log.trace("Loading image for client from database BLOB.")
+        // Files.write(blob.toByteArray(), File("readFromBlob.jpg"))
+        return buffered.toMyImage()
     }
     log.trace("No picture stored for client, returning default image based on gender.")
     return gender.defaultImage
