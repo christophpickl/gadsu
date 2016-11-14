@@ -19,11 +19,13 @@ import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JButton
+import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
 
 interface MultiProtocolWindow : ClosableWindow {
     fun start(protocolizableTreatments: Int)
+    fun asJFrame(): JFrame
 }
 
 // change to window instead of frame, and make it modal, so there can only be one window :)
@@ -65,6 +67,8 @@ class MultiProtocolSwingWindow @Inject constructor(
         setLocationRelativeTo(mainFrame.asJFrame())
         isVisible = true
     }
+
+    override fun asJFrame() = this
 
     override fun closeWindow() {
         hideAndClose()

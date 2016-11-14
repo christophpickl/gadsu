@@ -24,7 +24,11 @@ interface AsyncWorker {
 
 }
 
-data class AsyncDialogSettings(val title: String, val message: String)
+data class AsyncDialogSettings(
+        val title: String,
+        val message: String,
+        val parentFrame: JFrame? = null
+)
 
 
 class AsyncSwingWorker : AsyncWorker {
@@ -33,7 +37,8 @@ class AsyncSwingWorker : AsyncWorker {
         val dialog = if (settings == null) {
             null
         } else {
-            AsyncDialog(settings, currentActiveJFrame()).apply { SwingUtilities.invokeLater { this.isVisible = true } }
+            AsyncDialog(settings, settings.parentFrame ?: currentActiveJFrame())
+                    .apply { SwingUtilities.invokeLater { this.isVisible = true } }
         }
         val closeDialog = {
             dialog?.isVisible = false

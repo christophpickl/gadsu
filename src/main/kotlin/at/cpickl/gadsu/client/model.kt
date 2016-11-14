@@ -100,7 +100,6 @@ data class Client(
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
                 "", "", "",
-                // MINOR prefill oesterreich und kinder
                 Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "",
                 "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)

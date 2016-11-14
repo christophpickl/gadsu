@@ -23,6 +23,8 @@ import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.view.AsyncDialogSettings
+import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.annotations.VisibleForTesting
@@ -48,7 +50,8 @@ open class ReportController @Inject constructor(
         private val multiProtocolGenerator: MultiProtocolGenerator,
         private val multiProtocolRepository: MultiProtocolRepository,
         private val windowProvider: Provider<MultiProtocolWindow>,
-        private val prefs: Prefs
+        private val prefs: Prefs,
+        private val asyncWorker: AsyncWorker
 ) {
     companion object {
 
@@ -122,14 +125,26 @@ open class ReportController @Inject constructor(
                 fileTypeLabel = "Sammelprotokoll",
                 currentDirectory = prefs.recentSaveMultiProtocolFolder,
                 onSuccess = {
-                    // TODO show progress bar
-                    onSuccessCallback(it, cover, protocols)
-                    prefs.recentSaveMultiProtocolFolder = it.parentFile
-                    dialogs.show(
-                            title = "Sammelprotokoll erstellt",
-                            message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${it.absolutePath}",
-                            type = DialogType.INFO
+                    val itt = it
+                    asyncWorker.doInBackground(
+                            AsyncDialogSettings("Sammelprotokoll", "Generiere Sammelprotokoll ...", recentWindow!!.asJFrame()),
+                            { onSuccessCallback(itt, cover, protocols) },
+                            {
+                                prefs.recentSaveMultiProtocolFolder = itt.parentFile
+                                dialogs.show(
+                                        title = "Sammelprotokoll erstellt",
+                                        message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${itt.absolutePath}",
+                                        type = DialogType.INFO
+                                )},
+                            {
+                                dialogs.show(
+                                        title = "Sammelprotokoll Fehler",
+                                        message = "Beim Erstellen des Sammelprotokolls ist ein Fehler aufgetreten!",
+                                        type = DialogType.ERROR
+                                )
+                            }
                     )
+
                 }
         )
     }
@@ -140,7 +155,6 @@ open class ReportController @Inject constructor(
                 .map { newProtocolReportData(it) } // just select all ATM
                 .filter { it.rows.isNotEmpty() }
                 .sortedBy { it.rows.map { it.date }.sorted().first() }
-                .toList()
     }
 
     private fun newProtocolReportData(client: Client): ProtocolReportData {
