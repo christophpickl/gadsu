@@ -5,12 +5,33 @@ import at.cpickl.gadsu.appointment.AppointmentChangedEvent
 import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCreatedEvent
+import at.cpickl.gadsu.client.ClientDeletedEvent
+import at.cpickl.gadsu.client.ClientNavigateDownEvent
+import at.cpickl.gadsu.client.ClientNavigateUpEvent
+import at.cpickl.gadsu.client.ClientSelectedEvent
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.ClientUnselectedEvent
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.CreateNewClientEvent
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.DeleteClientEvent
+import at.cpickl.gadsu.client.InvalidMailException
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.ShowClientViewEvent
+import at.cpickl.gadsu.client.ShowInClientsListEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
+import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.differenceDaysTo
 import at.cpickl.gadsu.treatment.TreatmentChangedEvent
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentDeletedEvent
@@ -216,7 +237,15 @@ open class ClientViewController @Inject constructor(
             return
         }
 
-        clientService.insertOrUpdate(client)
+        try {
+            clientService.insertOrUpdate(client)
+        } catch(e: InvalidMailException) {
+            dialogs.show(
+                    title = "Speichern fehlgeschlagen",
+                    message = "Die angegebene Email Adresse ist ungültig: ${client.contact.mail}",
+                    type = DialogType.ERROR
+            )
+        }
     }
 
     fun checkChanges(): ChangeBehaviour {

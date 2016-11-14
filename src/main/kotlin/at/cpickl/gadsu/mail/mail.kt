@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStreamReader
 import java.util.Properties
+import java.util.regex.Pattern
 import javax.mail.Session
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
@@ -117,4 +118,10 @@ fun main(args: Array<String>) {
 
     println("Message id: " + sent.getId());
     println(sent.toPrettyString());
+}
+
+private val mailPattern = Pattern.compile("""^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$""")
+fun String.isNotValidMail() = !this.isValidMail()
+fun String.isValidMail(): Boolean {
+    return mailPattern.matcher(this).matches()
 }

@@ -4,6 +4,7 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage
+import at.cpickl.gadsu.mail.isNotValidMail
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -18,7 +19,12 @@ interface ClientService {
 
 
     fun findAll(filterState: ClientState? = null): List<Client>
-    fun insertOrUpdate(client: Client): Client // return type needed for development reset data (only?!)
+
+    /**
+     * throws InvalidMailException
+     */
+    fun insertOrUpdate(client: Client): Client// return type needed for development reset data (only?!)
+
     fun delete(client: Client)
 
     fun savePicture(client: Client)
@@ -26,6 +32,8 @@ interface ClientService {
 
     fun findById(id: String): Client
 }
+
+class InvalidMailException(message: String) : RuntimeException(message)
 
 @Logged
 open class ClientServiceImpl @Inject constructor(
@@ -54,10 +62,17 @@ open class ClientServiceImpl @Inject constructor(
 
     override fun insertOrUpdate(client: Client): Client {
         log.info("insertOrUpdate(client={})", client)
+        validateClient(client)
         if (!client.yetPersisted) {
             return insertClient(client)
         }
         return updateClient(client)
+    }
+
+    private fun validateClient(client: Client) {
+        if (client.contact.mail.isNotBlank() && client.contact.mail.isNotValidMail()) {
+            throw InvalidMailException("Invalid email address: '${client.contact.mail}'!")
+        }
     }
 
     private fun insertClient(client: Client): Client {
