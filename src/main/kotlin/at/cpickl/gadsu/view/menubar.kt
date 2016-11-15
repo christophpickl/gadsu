@@ -128,10 +128,10 @@ open class GadsuMenuBar @Inject constructor(
 
     private val clientSeperator1 = JPopupMenu.Separator()
     private val clientSeperator2 = JPopupMenu.Separator()
-    private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", { ShowInClientsListEvent(it) })
+    private val clientShowInactives = buildCheckBoxItem("Inaktive Klienten anzeigen", ::ShowInClientsListEvent)
     val clientSave = buildItem("Klient speichern", { SaveClientEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
-    val clientNavigateUp = buildItem("Vorheriger Klient", { ClientNavigateUpEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_UP, SHORTCUT_MODIFIER, true))
-    val clientNavigateDown = buildItem("N\u00e4chster Klient", { ClientNavigateDownEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SHORTCUT_MODIFIER, true))
+    val clientNavigateUp = buildItem("Vorheriger Klient", { ClientNavigateUpEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK, true))
+    val clientNavigateDown = buildItem("N\u00e4chster Klient", { ClientNavigateDownEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK, true))
 
     private val clientActivate = buildItem("Klient aktivieren", { ClientChangeStateEvent(ClientState.ACTIVE) })
     private val clientDeactivate = buildItem("Klient deaktivieren", { ClientChangeStateEvent(ClientState.INACTIVE) })
@@ -142,8 +142,8 @@ open class GadsuMenuBar @Inject constructor(
     private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientSeperator2, clientShowInactives, clientSave, clientActivate, clientDeactivate,
             clientTabMain, clientTabTexts, clientTabTcm, clientNavigateUp, clientNavigateDown)
 
-    val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SHORTCUT_MODIFIER, true))
-    val treatmentNext = buildItem("N\u00e4chste Behandlung", { NextTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SHORTCUT_MODIFIER, true))
+    val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK, true))
+    val treatmentNext = buildItem("N\u00e4chste Behandlung", { NextTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK, true))
     val treatmentSave = buildItem("Behandlung speichern", { TreatmentSaveEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
     private val treatmentEntries = listOf(treatmentPrevious, treatmentNext, treatmentSave)
 
