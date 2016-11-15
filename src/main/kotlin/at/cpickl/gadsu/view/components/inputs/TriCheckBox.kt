@@ -3,13 +3,13 @@ package at.cpickl.gadsu.view.components.inputs
 import at.cpickl.gadsu.view.drawStringCentered
 import java.awt.Color
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.Icon
 import javax.swing.JCheckBox
-import javax.swing.UIManager
 
 
 /**
@@ -32,9 +32,9 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
         private val WIDTH: Int
         private val HEIGHT: Int
         init {
-            val icon = UIManager.getIcon("CheckBox.icon")!!
-            WIDTH = icon.iconWidth
-            HEIGHT = icon.iconHeight
+//            val icon = UIManager.getIcon("CheckBox.icon")!!
+            WIDTH = 20//icon.iconWidth
+            HEIGHT = 20//icon.iconHeight
         }
     }
 
@@ -54,10 +54,14 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
             putClientProperty(MID_SEL_PROP, value)
         }
 
+
     init {
-        icon = this
         selectionState = preSelect
-        @Suppress("LeakingThis") addActionListener(this)
+        preferredSize = Dimension(WIDTH, HEIGHT)
+        @Suppress("LeakingThis")
+        icon = this
+        @Suppress("LeakingThis")
+        addActionListener(this)
     }
 
     override fun isSelected() =
@@ -67,19 +71,17 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
                 super.isSelected()
 
     override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
-        val w = WIDTH
-        val h = HEIGHT
 
         g.color = Color.WHITE
-        g.fillRect(0, 0, w, h)
+        g.fillRect(0, 0, WIDTH, HEIGHT)
         g.color = Color.BLACK
-        g.drawRect(0, 0, w, h)
+        g.drawRect(0, 0, WIDTH, HEIGHT)
 
         if (selectionState != 0) {
             g.color = Color.BLACK
             val oldFont = g.font
             g.font = Font("Arial", Font.BOLD, 20)
-            g.drawStringCentered(if (selectionState == 1) "-" else "+", w, h, 3)
+            g.drawStringCentered(if (selectionState == 1) "-" else "+", WIDTH, HEIGHT, 3)
             g.font = oldFont
         }
     }

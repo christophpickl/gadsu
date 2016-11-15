@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
@@ -12,6 +11,7 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureMeasurement
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.MeridianAndPosition
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import org.hamcrest.MatcherAssert.assertThat
@@ -61,9 +61,9 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 
     fun `dynTreatment insert treatment with hara should return hara`() {
         val hara = HaraDiagnosis(
-                kyos = listOf(Meridian.Lung, Meridian.Spleen),
-                jitsus = listOf(Meridian.LargeIntestine, Meridian.SmallIntestine),
-                bestConnection = Pair(Meridian.Lung, Meridian.LargeIntestine),
+                kyos = listOf(MeridianAndPosition.LungLeft, MeridianAndPosition.Spleen),
+                jitsus = listOf(MeridianAndPosition.LargeIntestineLeft, MeridianAndPosition.SmallIntestineLeft),
+                bestConnection = Pair(MeridianAndPosition.LungLeft, MeridianAndPosition.LargeIntestineLeft),
                 note = "testNote")
 
         val savedTreatment = createAndSaveTreatment(hara)
