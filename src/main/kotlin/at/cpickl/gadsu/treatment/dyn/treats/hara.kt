@@ -7,9 +7,11 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
+import at.cpickl.gadsu.treatment.view.InvalidTreatmentInputException
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.withFont
 import org.slf4j.LoggerFactory
@@ -36,6 +38,17 @@ data class HaraDiagnosis(
 
     companion object {
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
+    }
+
+    init {
+        if (bestConnection != null) {
+            if (!kyos.contains(bestConnection.first)) {
+                throw IllegalArgumentException("Kyo best connection '${bestConnection.first}' not contained in: $kyos")
+            }
+            if (!jitsus.contains(bestConnection.second)) {
+                throw IllegalArgumentException("Jitsu best connection '${bestConnection.second}' not contained in: $jitsus")
+            }
+        }
     }
 
     override val title: String get() = HARA_TITLE
@@ -165,16 +178,21 @@ class HaraDiagnosisJdbcRepository @Inject constructor(
     override fun insert(treatmentId: String, dynTreatment: HaraDiagnosis) {
         log.debug("insert(treatmentId={}, dynTreatment={})", treatmentId, dynTreatment)
 
-        jdbcx.update("INSERT INTO $TABLE (id_treatment, connection1Meridian, connection1Position, connection1Meridian, connection1Position, note) " +
+        jdbcx.update("INSERT INTO $TABLE (id_treatment, connection1Meridian, connection1Position, " +
+                "connection2Meridian, connection2Position, note) " +
                 "VALUES (?, ?, ?, ?, ?, ?)",
                 treatmentId,
                 dynTreatment.bestConnection?.first?.meridian?.sqlCode, dynTreatment.bestConnection?.first?.position?.sqlCode,
                 dynTreatment.bestConnection?.second?.meridian?.sqlCode, dynTreatment.bestConnection?.second?.position?.sqlCode,
                 dynTreatment.note)
-        dynTreatment.kyos.forEach { jdbcx.update("INSERT INTO $TABLE_KYO (id_treatment, meridian, position) VALUES (?, ?, ?)",
-                treatmentId, it.meridian.sqlCode, it.position.sqlCode) }
-        dynTreatment.jitsus.forEach { jdbcx.update("INSERT INTO $TABLE_JITSU (id_treatment, meridian, position) VALUES (?, ?, ?)",
-                treatmentId, it.meridian.sqlCode, it.position.sqlCode) }
+        dynTreatment.kyos.forEach {
+            jdbcx.update("INSERT INTO $TABLE_KYO (id_treatment, meridian, position) VALUES (?, ?, ?)",
+                    treatmentId, it.meridian.sqlCode, it.position.sqlCode)
+        }
+        dynTreatment.jitsus.forEach {
+            jdbcx.update("INSERT INTO $TABLE_JITSU (id_treatment, meridian, position) VALUES (?, ?, ?)",
+                    treatmentId, it.meridian.sqlCode, it.position.sqlCode)
+        }
     }
 
     override fun delete(treatmentId: String) {
@@ -216,7 +234,10 @@ private object MeridianAndPositionMapper : RowMapper<MeridianAndPosition> {
 // VIEW
 // =====================================================================================================================
 
-class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<MeridianAndPosition>(meridianAndPos) {
+class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<MeridianAndPosition>(
+        item = meridianAndPos,
+        enableAltSelection = true // represents the connection thingy
+) {
     val isKyo: Boolean get() = selectionState == STATE_HALF
     val isJitsu: Boolean get() = selectionState == STATE_FULL
 
@@ -229,7 +250,7 @@ class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<Me
 
     fun renderWithLabel() = GridPanel().apply {
         c.anchor = GridBagConstraints.CENTER
-        add(JLabel(meridianAndPos.meridian.labelShort).withFont(Font.PLAIN, 9))
+        add(JLabel(meridianAndPos.meridian.labelShort).withFont(Font.PLAIN, 11))
         c.gridy++
         add(this@KyoJitsuCheckBox)
     }
@@ -254,9 +275,14 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         panel.c.gridy++
         panel.c.fill = GridBagConstraints.BOTH
         panel.c.weighty = 1.0
+        panel.c.insets = Pad.all(8)
         panel.add(inpNote.scrolled())
 
         mapOfCheckboxes.values.forEach { it.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus) }
+        if (haraDiagnosis.bestConnection != null) {
+            mapOfCheckboxes[haraDiagnosis.bestConnection.first]!!.altSelectionState = true
+            mapOfCheckboxes[haraDiagnosis.bestConnection.second]!!.altSelectionState = true
+        }
         inpNote.text = haraDiagnosis.note
 
         panel
@@ -286,14 +312,12 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
             add(meridian(MeridianAndPosition.LungLeft))
 
             c.gridy++
-            c.gridx = 3
-            add(meridian(MeridianAndPosition.Spleen))
-
-            c.gridy++
             c.gridx = 1
             add(meridian(MeridianAndPosition.UrinaryBladderRight))
             c.gridx = 2
             add(meridian(MeridianAndPosition.KidneyRight))
+            c.gridx = 3
+            add(meridian(MeridianAndPosition.Spleen))
             c.gridx = 4
             add(meridian(MeridianAndPosition.KidneyLeft))
             c.gridx = 5
@@ -324,8 +348,34 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         return HaraDiagnosis(
                 mapOfCheckboxes.values.filter { it.isKyo }.map { it.meridianAndPos },
                 mapOfCheckboxes.values.filter { it.isJitsu }.map { it.meridianAndPos },
-                null, // FIXME implement connection
+                readBestConnection(),
                 inpNote.text)
+    }
+
+    private fun readBestConnection(): Pair<MeridianAndPosition, MeridianAndPosition>? {
+        val connectionsSelected = mapOfCheckboxes.filter { it.value.altSelectionState }
+
+        if (connectionsSelected.isEmpty()) {
+            return null
+        }
+
+        if (connectionsSelected.size == 2) {
+            val connectionIt = connectionsSelected.iterator()
+            val connection1 = connectionIt.next().value
+            val connection2 = connectionIt.next().value
+
+            if (!(connection1.isKyo && connection2.isJitsu ||
+                    connection1.isJitsu && connection2.isKyo)) {
+                throw InvalidTreatmentInputException("Both connections are jitsu!",
+                        "Es muss immer ein Kyo und ein Jitsu Meridian ausgewählt werden!")
+            }
+            val kyoConnection = if (connection1.isKyo) connection1 else connection2
+            val jitsuConnection = if (connection1.isJitsu) connection1 else connection2
+            return Pair(kyoConnection.meridianAndPos, jitsuConnection.meridianAndPos)
+        }
+
+        throw InvalidTreatmentInputException("Invalid amount of connections selected: ${connectionsSelected.size} ($connectionsSelected)",
+                "Es müssen genau 0 oder 2 Meridianverbindungen ausgewählt werden, es waren aber ${connectionsSelected.size} ausgewählt!")
     }
 
 }

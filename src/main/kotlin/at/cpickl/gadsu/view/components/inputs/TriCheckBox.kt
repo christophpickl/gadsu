@@ -18,7 +18,12 @@ import javax.swing.JCheckBox
  * 1 mid-state selection
  * 2 fully selected
  */
-open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int = STATE_NONE) :
+open class TriCheckBox<out T>(
+        val item: T,
+        text: String? = null,
+        preSelect: Int = STATE_NONE,
+        private val enableAltSelection: Boolean = false
+) :
         JCheckBox(text, preSelect > STATE_HALF), Icon, ActionListener {
 
     companion object {
@@ -29,14 +34,26 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
 
         private val CONSIDER_MID_AS_SELECTED = true
         private val MID_SEL_PROP = "SelectionState"
+        private val ALT_SEL_PROP = "AlternateSelectionState"
         private val WIDTH: Int
         private val HEIGHT: Int
+
         init {
 //            val icon = UIManager.getIcon("CheckBox.icon")!!
             WIDTH = 20//icon.iconWidth
             HEIGHT = 20//icon.iconHeight
         }
     }
+
+
+    var altSelectionState: Boolean
+        get() = if (getClientProperty(ALT_SEL_PROP) != null)
+            getClientProperty(ALT_SEL_PROP) as Boolean
+        else
+            false
+        set(value) {
+            putClientProperty(ALT_SEL_PROP, value)
+        }
 
     var selectionState: Int
         get() = if (getClientProperty(MID_SEL_PROP) != null)
@@ -72,8 +89,13 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
 
     override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
 
-        g.color = Color.WHITE
+        if (enableAltSelection && altSelectionState) {
+            g.color = Color.YELLOW
+        } else {
+            g.color = Color.WHITE
+        }
         g.fillRect(0, 0, WIDTH, HEIGHT)
+
         g.color = Color.BLACK
         g.drawRect(0, 0, WIDTH, HEIGHT)
 
@@ -84,12 +106,17 @@ open class TriCheckBox<out T>(val item: T, text: String? = null, preSelect: Int 
             g.drawStringCentered(if (selectionState == 1) "-" else "+", WIDTH, HEIGHT, 3)
             g.font = oldFont
         }
+
     }
 
     override fun getIconWidth() = WIDTH
     override fun getIconHeight() = HEIGHT
 
     override fun actionPerformed(e: ActionEvent) {
+        if (enableAltSelection && (e.modifiers and (ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)) {
+            altSelectionState = !altSelectionState
+            return
+        }
         if (selectionState == STATE_NONE) isSelected = false
         selectionState = if (selectionState == STATE_FULL) STATE_NONE else selectionState + 1
     }
