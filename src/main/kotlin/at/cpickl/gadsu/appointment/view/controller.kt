@@ -12,15 +12,6 @@ import at.cpickl.gadsu.service.Logged
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
 
-
-// FIXME s in general for #19 appointment
-// !!! view size distribution of appointment vs treatment
-// - cleanup window form:
-//   * start end time in separate row
-//   * check if end > start
-//   * bigger
-// - center window on show
-// - be able to save at very first show
 @Logged
 open class AppoinmentsInClientViewController @Inject constructor(
         private val view: AppoinmentsInClientView,

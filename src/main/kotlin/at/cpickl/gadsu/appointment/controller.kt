@@ -47,8 +47,6 @@ open class AppointmentControllerImpl @Inject constructor(
     }
 
     @Subscribe open fun onDeleteAppointmentEvent(event: DeleteAppointmentEvent) {
-        // FIXME check if window is open with this appointment
-
         dialogs.confirmedDelete("den Termin am ${event.appointment.start.formatDateTimeTalkative()}", {
             service.delete(event.appointment)
             if (window.isShowing(event.appointment)) {

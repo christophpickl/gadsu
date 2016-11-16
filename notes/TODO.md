@@ -67,7 +67,12 @@ Med
 * in appointment window, mit ESC dialog close
 
 Low
-------------------------------------------------------------
+---
+* ad appointment:
+    * view size distribution of appointment vs treatment
+    * cleanup window form: start end time in separate row; check if end > start; bigger
+    * center window on show
+    * be able to save at very first show
 * split the app into gradle modules
 * to scale images use scalrb
 * [2] check for database lock file
