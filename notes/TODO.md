@@ -64,6 +64,7 @@ Med
 * BUG: treatment list selection onNew
 * BUG: in TCM lists (not preselected)
 * das "erstellt am" feld dezenter machen; er hat probiert reinzuklicken, weils so im "flow der eingabe" im weg steht
+* in appointment window, mit ESC dialog close
 
 Low
 ------------------------------------------------------------

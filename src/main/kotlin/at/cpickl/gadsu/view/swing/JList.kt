@@ -3,6 +3,8 @@ package at.cpickl.gadsu.view.swing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Point
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
@@ -12,6 +14,19 @@ import javax.swing.JList
 val <T> JList<T>.log: Logger
     get() = LoggerFactory.getLogger(JList::class.java)
 
+
+fun <E> JList<E>.registerEnterPressed(listener: (Int, E) -> Unit) {
+    val list = this
+    list.addKeyListener(object : KeyAdapter() {
+        override fun keyReleased(e: KeyEvent) {
+            if (e.keyCode != KeyEvent.VK_ENTER) {
+                return
+            }
+            listener.invoke(selectedIndex, selectedValue)
+            e.consume()
+        }
+    })
+}
 
 
 fun <T> JList<T>.myLocationToIndex(point: Point): Int {

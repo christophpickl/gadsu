@@ -31,15 +31,16 @@ class TreatmentList @Inject constructor(
         }
 ) {
     init {
-        initSinglePopup("L\u00f6schen", { DeleteTreatmentEvent(it) })
-        initDoubleClicked { OpenTreatmentEvent(it) }
+        initSinglePopup("L\u00f6schen", ::DeleteTreatmentEvent)
+        initDoubleClicked(::OpenTreatmentEvent)
+        initEnterPressed(::OpenTreatmentEvent)
     }
 
 }
 
 class TreatmentCell(val treatment: Treatment): DefaultCellView<Treatment>(treatment), CellView {
     private val lblNumber = JLabel("${treatment.number}.")
-    private val lblDate = JLabel("${treatment.date.formatDateTimeLong()}")
+    private val lblDate = JLabel(treatment.date.formatDateTimeLong())
 
     override val applicableForegrounds: Array<JComponent> = arrayOf(lblNumber, lblDate)
 

@@ -30,15 +30,16 @@ class AppointmentList @Inject constructor(
         }
 ) {
     init {
-        initSinglePopup("L\u00f6schen", { DeleteAppointmentEvent(it) })
-        initDoubleClicked { OpenAppointmentEvent(it) }
+        initSinglePopup("L\u00f6schen", ::DeleteAppointmentEvent)
+        initDoubleClicked(::OpenAppointmentEvent)
+        initEnterPressed(::OpenAppointmentEvent)
     }
 
 }
 
 class AppointmentCell(val appointment: Appointment): DefaultCellView<Appointment>(appointment), CellView {
 
-    private val lblDate = JLabel("${appointment.start.formatDateTimeSemiLong()}")
+    private val lblDate = JLabel(appointment.start.formatDateTimeSemiLong())
     private val hasNoteIndicator = JLabel(" [...]")
 
     override val applicableForegrounds: Array<JComponent> = arrayOf(lblDate, hasNoteIndicator)

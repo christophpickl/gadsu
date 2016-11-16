@@ -11,6 +11,7 @@ import at.cpickl.gadsu.view.logic.findIndexByComparator
 import at.cpickl.gadsu.view.logic.registerDoubleClicked
 import at.cpickl.gadsu.view.swing.enableHoverListener
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.registerEnterPressed
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
@@ -106,6 +107,10 @@ open class MyList<T : Comparable<T>>(
 
     protected fun initDoubleClicked(eventFunction: (T) -> UserEvent) {
         registerDoubleClicked { row, element -> bus.post(eventFunction(element)) }
+    }
+
+    protected fun initEnterPressed(eventFunction: (T) -> UserEvent) {
+        registerEnterPressed { row, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initSinglePopup(label: String, eventFunction: (T) -> UserEvent) {
