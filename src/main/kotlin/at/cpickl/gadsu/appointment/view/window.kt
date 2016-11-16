@@ -10,8 +10,16 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.OpenWebpageEvent
 import at.cpickl.gadsu.treatment.PrefilledTreatment
 import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
-import at.cpickl.gadsu.view.*
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.DisabledTextField
+import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.gadsuWidth
+import at.cpickl.gadsu.view.components.newEventButton
+import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
@@ -30,6 +38,7 @@ import javax.swing.JLabel
 
 interface AppointmentWindow {
     fun changeCurrent(newCurrent: Appointment)
+    fun isShowing(appointment: Appointment): Boolean
     fun showWindow()
     fun hideWindow()
     fun close()
@@ -45,6 +54,7 @@ class SwingAppointmentWindow @Inject constructor(
         // TODO make it a dialog. but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
 //) : MyDialog(mainFrame.asJFrame(), "Termin"), AppointmentWindow, ModificationAware {
 ) : MyFrame("Termin"), AppointmentWindow, ModificationAware {
+
     private var current: Appointment = Appointment.insertPrototype("xxx", DateTime(0))
 
     private val log = LOG(javaClass)
@@ -113,12 +123,7 @@ class SwingAppointmentWindow @Inject constructor(
         }
     }
 
-    private fun readInput(): Appointment {
-        val startDate = inpStartDate.selectedDate
-        val endTime = startDate.plusMinutes(inpDuration.numberValue)
-        val endDate = startDate.withHourOfDay(endTime.hourOfDay).withMinuteOfHour(endTime.minuteOfHour)
-        return Appointment(current.id, current.clientId, current.created, startDate, endDate, inpNote.text, current.gcalId, current.gcalUrl)
-    }
+    override fun isShowing(appointment: Appointment) = current.id == appointment.id
 
     override fun changeCurrent(newCurrent: Appointment) {
         current = newCurrent
@@ -129,10 +134,6 @@ class SwingAppointmentWindow @Inject constructor(
         btnNewTreatment.isEnabled = current.yetPersisted
         fields.updateAll(current)
         modificationChecker.disableAll()
-    }
-
-    private fun onOpenGCal() {
-        bus.post(OpenWebpageEvent(URL(current.gcalUrl!!)))
     }
 
     override fun isModified(): Boolean {
@@ -155,4 +156,16 @@ class SwingAppointmentWindow @Inject constructor(
     override fun close() {
         hideAndClose()
     }
+
+    private fun readInput(): Appointment {
+        val startDate = inpStartDate.selectedDate
+        val endTime = startDate.plusMinutes(inpDuration.numberValue)
+        val endDate = startDate.withHourOfDay(endTime.hourOfDay).withMinuteOfHour(endTime.minuteOfHour)
+        return Appointment(current.id, current.clientId, current.created, startDate, endDate, inpNote.text, current.gcalId, current.gcalUrl)
+    }
+
+    private fun onOpenGCal() {
+        bus.post(OpenWebpageEvent(URL(current.gcalUrl!!)))
+    }
+
 }
