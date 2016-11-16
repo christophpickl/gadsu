@@ -1,6 +1,11 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.IClient
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.differenceDaysWithinYear
@@ -45,6 +50,7 @@ class ExtendedClient(
     override val fullName: String get() = client.fullName
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
+    override val wantReceiveDoodleMails = client.wantReceiveDoodleMails
     override val birthday: DateTime? get() = client.birthday
     override val gender: Gender get() = client.gender
     override val countryOfOrigin: String get() = client.countryOfOrigin

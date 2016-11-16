@@ -12,11 +12,13 @@ import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toBufferedImage
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
+import at.cpickl.gadsu.service.nullOrWith2
 import com.google.inject.Inject
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.sql.Blob
+import java.sql.Timestamp
 
 private val log = LoggerFactory.getLogger("at.cpickl.gadsu.client.persistence")
 
@@ -110,13 +112,13 @@ class ClientJdbcRepository @Inject constructor(
                 UPDATE $TABLE SET
                     state = ?, firstName = ?, lastName = ?, nickName = ?, birthday = ?,
                     gender_enum = ?, countryOfOrigin = ?, mail = ?, phone = ?, street = ?,
-                    zipCode = ?, city = ?, relationship_enum = ?, job = ?, children = ?,
+                    zipCode = ?, city = ?, wantReceiveDoodleMails = ?, relationship_enum = ?, job = ?, children = ?,
                     note = ?, textImpression = ?, textMedical = ?, textComplaints = ?,
                     textPersonal = ?, textObjective = ?, tcmNote = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickName, client.birthday?.toSqlTimestamp(),
                 client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
-                client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
+                client.contact.zipCode, client.contact.city, client.wantReceiveDoodleMails, client.relationship.sqlCode, client.job, client.children,
                 client.note, client.textImpression, client.textMedical, client.textComplaints,
                 client.textPersonal, client.textObjective, client.tcmNote,
                 // no picture, xprops
@@ -157,8 +159,8 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("zipCode"),
                         rs.getString("city")
                 ),
-                if (rs.getTimestamp("birthday") == null) null
-                else DateTime(rs.getTimestamp("birthday")),
+                rs.getBoolean("wantReceiveDoodleMails"),
+                rs.getTimestamp("birthday").nullOrWith2<Timestamp?, DateTime?>(::DateTime),
                 gender,
                 rs.getString("countryOfOrigin"),
                 rs.getString("origin"),

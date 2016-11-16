@@ -3,7 +3,7 @@ package at.cpickl.gadsu.service
 import at.cpickl.gadsu.GadsuException
 import com.google.common.io.Files
 import java.io.File
-import java.util.*
+import java.util.HashMap
 
 
 fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
@@ -16,6 +16,21 @@ fun String.wrapParenthesisIf(condition: Boolean) = if (condition) "($this)" else
 
 fun String.saveToFile(target: File) {
     Files.write(this, target, Charsets.UTF_8)
+}
+
+fun <T> T?.nullOrWith(wither: (T) -> T): T? {
+    if (this == null) {
+        return null
+    }
+    return wither(this)
+}
+
+
+fun <IN, OUT> IN?.nullOrWith2(wither: (IN) -> OUT): OUT? {
+    if (this == null) {
+        return null
+    }
+    return wither(this)
 }
 
 

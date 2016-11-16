@@ -40,7 +40,9 @@ class ModificationChecker(
     }
 
     fun enableChangeListener(delegate: MyCheckBox): MyCheckBox {
-        // FIXME implement me
+        delegate.addChangeListener {
+            checkModificationsAndUpdateIsEnabledField()
+        }
         return delegate
     }
 

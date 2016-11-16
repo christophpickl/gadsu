@@ -111,7 +111,7 @@ object XProps : XPropsFinder by XPropsFactory {
         Wet (opt("Tongue_Wet", "feucht")),
         ShowWillingly (opt("Tongue_ShowWillingly", "zeigt gerne")),
         ShowUnwillingly (opt("Tongue_ShowUnwillingly", "zeigt z\u00f6gerlich")),
-        TeethImprints (opt("Tongue_", "Zahnabdrücke")), // FIXME da ist ein fehler! dh ein flybase skript einbetten, dass darauf ein update macht und das fixt!
+        TeethImprints (opt("Tongue_", "Zahnabdrücke")),
         Midcrack (opt("Tongue_Midcrack", "Mittelriss")),
         RedDots (opt("Tongue_RedDots", "rote Punkte")),
     }

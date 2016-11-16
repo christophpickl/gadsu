@@ -162,6 +162,7 @@ open class SwingClientDetailView @Inject constructor(
                         zipCode = tabMain.inpZipCode.text,
                         city = tabMain.inpCity.text
                 ),
+                tabMain.inpWantReceiveDoodleMails.delegate.isSelected,
                 tabMain.inpBirthday.selectedDate,
                 tabMain.inpGender.selectedItemTyped,
                 tabMain.inpCountryOfOrigin.text,

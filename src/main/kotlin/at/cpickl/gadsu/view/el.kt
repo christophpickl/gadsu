@@ -100,7 +100,7 @@ class ElNumberField<V>(
 }
 
 class ElCheckBox<in V>(
-        private val delegate: MyCheckBox,
+        val delegate: MyCheckBox,
         override val formLabel: String,
         private val extractValue: (V) -> Boolean
 ) : ElField<V> {
@@ -195,6 +195,7 @@ class Fields<V>(private val modifications: ModificationChecker) {
         fields.add(field)
         return field
     }
+
     fun newTextArea(label: String, extractValue: (V) -> String, viewName: String, visibleRows: Int? = null): ElTextArea<V> {
         val field = ElTextArea(label, extractValue, viewName, visibleRows)
         modifications.enableChangeListener(field)
@@ -202,8 +203,12 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun newCheckBox(label: String, extractValue: (V) -> Boolean, viewName: String): ElCheckBox<V> {
-        val realField = MyCheckBox().apply { name = viewName }
+    fun newCheckBox(label: String, sideLabel: String, extractValue: (V) -> Boolean, viewName: String, preSelected: Boolean = false): ElCheckBox<V> {
+        val realField = MyCheckBox().apply {
+            name = viewName
+            text = sideLabel
+            isSelected = preSelected
+        }
         val field = ElCheckBox(realField, label, extractValue)
         modifications.enableChangeListener(realField)
         fields.add(field)

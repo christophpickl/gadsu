@@ -61,7 +61,7 @@ class ClientTabMain(
     val inpStreet = fields.newTextField("Strasse", { it.contact.street }, ViewNames.Client.InputStreet)
     val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", { it.contact.city }, ViewNames.Client.InputCity)
-
+    val inpWantReceiveDoodleMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveDoodleMails }, ViewNames.Client.InputReceiveDoodleMails, true)
     val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote)
 
     init {
@@ -97,6 +97,7 @@ class ClientTabMain(
             addFormInput(inpStreet)
             addFormInput(inpZipCode)
             addFormInput(inpCity)
+            addFormInput(inpWantReceiveDoodleMails)
         }
         // this is nearly the same, as the min width of the baseForm (135 for the textfield column, and some more for the label width)
         contactForm.enforceWidth(200)

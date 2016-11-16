@@ -40,6 +40,7 @@ interface IClient : HasId, Persistable {
     val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
+    val wantReceiveDoodleMails: Boolean
     val birthday: DateTime?
     val gender: Gender
     /** birth location */
@@ -71,6 +72,7 @@ data class Client(
         override val lastName: String,
         override val nickName: String,
         override val contact: Contact,
+        override val wantReceiveDoodleMails: Boolean,
         override val birthday: DateTime?,
         override val gender: Gender,
         /** Geburtsort */
@@ -100,7 +102,7 @@ data class Client(
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
                 "", "", "",
-                Contact.INSERT_PROTOTYPE, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
+                Contact.INSERT_PROTOTYPE, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "",
                 "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }

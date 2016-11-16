@@ -58,3 +58,8 @@ CREATE TABLE prefs (
   data_key VARCHAR(512) NOT NULL PRIMARY KEY,
   data_value VARCHAR(5120) NOT NULL
 );
+
+-- #58 send bulk mails (for doodle polls)
+-- ========================================================================= --
+
+ALTER TABLE client ADD COLUMN wantReceiveDoodleMails BOOLEAN DEFAULT TRUE NOT NULL;

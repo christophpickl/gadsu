@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.mail
 
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.preferences.Prefs
@@ -35,7 +36,7 @@ open class MailController @Inject constructor(
             )
             return
         }
-        val mailEnabledClients = clientService.findAll(ClientState.ACTIVE).filter { it.contact.mail.isNotBlank() }
+        val mailEnabledClients = clientService.findAllForMail()
         view.initClients(mailEnabledClients)
 
         val mailPrefs = prefs.mailPreferencesData
@@ -97,6 +98,10 @@ open class MailController @Inject constructor(
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
         view.destroy()
+    }
+
+    private fun ClientService.findAllForMail(): List<Client> {
+        return findAll(ClientState.ACTIVE).filter { it.wantReceiveDoodleMails && it.contact.mail.isNotBlank() }
     }
 
 }

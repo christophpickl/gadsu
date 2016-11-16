@@ -80,6 +80,7 @@ open class DevelopmentController @Inject constructor(
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
+                        true,
                         DateFormats.DATE.parseDateTime("26.10.1986"),
                         Gender.MALE,
                         "\u00d6sterreich",
@@ -115,7 +116,7 @@ open class DevelopmentController @Inject constructor(
         ).forEach {
             val saved = clientService.insertOrUpdate(it)
 
-            if (saved.firstName.equals("Max")) {
+            if (saved.firstName == "Max") {
                 val firstDate = "31.12.2001 14:15:00".parseDateTime()
                 val clientId = saved.id!!
                 val clientWithPic = saved.copy(picture = it.picture)

@@ -4,7 +4,13 @@ import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.ClientUpdatedEvent
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
@@ -17,7 +23,7 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import java.io.File
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Inject
 import javax.swing.SwingUtilities
 
@@ -39,6 +45,7 @@ class ScreenshotDataInserter @Inject constructor(
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
+                        true,
                         DateFormats.DATE.parseDateTime("26.10.1986"),
                         Gender.MALE,
                         "\u00d6sterreich",

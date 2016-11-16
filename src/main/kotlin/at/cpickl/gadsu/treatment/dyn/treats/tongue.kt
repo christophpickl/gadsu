@@ -20,7 +20,6 @@ import javax.swing.JComponent
 private val TITLE_TONGUE = "Zungendiagnose"
 
 data class TongueDiagnosis(
-        // FIXME #17 enum opts (display some nice image in UI)
         val note: String // um zu speichern wo zb die schwellung ist, etc.
 ) : DynTreatment {
     companion object {
