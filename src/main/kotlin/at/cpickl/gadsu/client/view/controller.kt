@@ -27,6 +27,7 @@ import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.image.DeleteImageEvent
+import at.cpickl.gadsu.image.RequestClientPictureSaveEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
 import at.cpickl.gadsu.service.LOG
@@ -132,6 +133,13 @@ open class ClientViewController @Inject constructor(
                 bus.post(ClientUnselectedEvent(event.client))
             }
         })
+    }
+
+    @Subscribe open fun onRequestClientPictureSaveEvent(event: RequestClientPictureSaveEvent) {
+        if (changesChecker.checkChanges() == ChangeBehaviour.CONTINUE) {
+            clientService.savePicture(event.client)
+            currentClient.data = event.client
+        }
     }
 
     @Subscribe open fun onDeleteImageEvent(event: DeleteImageEvent) {

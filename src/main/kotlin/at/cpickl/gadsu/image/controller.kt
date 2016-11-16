@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Logged
@@ -15,13 +16,14 @@ import javax.inject.Inject
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
+class RequestClientPictureSaveEvent(val client: Client) : UserEvent()
+
 @Logged
 open class ClientImageController @Inject constructor(
         private val bus: EventBus,
         private val frame: MainFrame,
         private val prefs: Prefs,
         private val currentClient: CurrentClient,
-        private val clientService: ClientService,
         private val dialogs: Dialogs
 ) {
     companion object {
@@ -54,7 +56,7 @@ open class ClientImageController @Inject constructor(
     }
 
     @Subscribe open fun onImageSelectedEvent(event: ImageSelectedEvent) {
-        if (!event.viewNamePrefix.equals(CLIENT_VIEWNAME_PREFIX)) {
+        if (event.viewNamePrefix != CLIENT_VIEWNAME_PREFIX) {
             log.debug("Aborting image selection, as was not dispatched for client view.")
             return
         }
@@ -75,9 +77,7 @@ open class ClientImageController @Inject constructor(
 
         val newPicture = file.toMyImage()
         val newClient = currentClient.data.copy(picture = newPicture)
-        clientService.savePicture(newClient)
-
-        currentClient.data = newClient
+        bus.post(RequestClientPictureSaveEvent(newClient))
     }
 
 }
