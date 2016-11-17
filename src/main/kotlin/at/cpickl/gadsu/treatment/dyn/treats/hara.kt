@@ -11,6 +11,7 @@ import at.cpickl.gadsu.treatment.view.InvalidTreatmentInputException
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.addChangeListener
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.withFont
@@ -256,13 +257,13 @@ class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<Me
     }
 }
 
-class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer {
+class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer {
 
     private val mapOfCheckboxes = MeridianAndPosition.values().associate { Pair(it, KyoJitsuCheckBox(it)) }
 
     private val inpNote = MyTextArea("HaraDiagnosisRenderer.inpNote", 2)
 
-    override val dynTreatment: DynTreatment get() = haraDiagnosis
+    override var originalDynTreatment: DynTreatment = haraDiagnosis
 
     override val view: JComponent by lazy {
         val panel = GridPanel()
@@ -286,10 +287,6 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         inpNote.text = haraDiagnosis.note
 
         panel
-    }
-
-    override fun isModified(): Boolean {
-        return false
     }
 
     private fun kyoJitsuPanel(): JComponent {
@@ -346,7 +343,15 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         }
     }
 
-    private fun meridian(meridian: MeridianAndPosition) = mapOfCheckboxes[meridian]!!.renderWithLabel()
+    override fun isModified(): Boolean {
+        try {
+            // first check the validation in here, if it fails, dont let the user potentially save the subtreatment
+            readBestConnection()
+        } catch(e: InvalidTreatmentInputException) {
+            return false
+        }
+        return originalDynTreatment != readDynTreatment()
+    }
 
     override fun readDynTreatment(): DynTreatment {
         return HaraDiagnosis(
@@ -355,6 +360,13 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
                 readBestConnection(),
                 inpNote.text)
     }
+
+    override fun registerOnChange(changeListener: () -> Unit) {
+        mapOfCheckboxes.values.forEach { it.addChangeListener { changeListener() } }
+        inpNote.addChangeListener { changeListener() }
+    }
+
+    private fun meridian(meridian: MeridianAndPosition) = mapOfCheckboxes[meridian]!!.renderWithLabel()
 
     private fun readBestConnection(): Pair<MeridianAndPosition, MeridianAndPosition>? {
         val connectionsSelected = mapOfCheckboxes.filter { it.value.altSelectionState }

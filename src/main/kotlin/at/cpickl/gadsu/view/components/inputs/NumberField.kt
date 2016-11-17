@@ -8,12 +8,28 @@ import java.util.regex.Pattern
 import javax.swing.JTextField
 
 
-open class NumberField(columns: Int = 100) : JTextField(columns) {
+open class NumberField(columns: Int = 100, initValue: Int? = null) : JTextField(columns) {
     companion object {
         private val NUMBER_REGEXP = Pattern.compile("""\d+""")
     }
+
     private val log = LOG(javaClass)
+
+    var numberValue: Int
+        get() {
+            if (text.trim().isEmpty()) {
+                return 0
+            }
+            return text.toInt()
+        }
+        set(value) {
+            text = value.toString()
+        }
+
     init {
+        if (initValue != null) {
+            numberValue = initValue
+        }
         enforceCharactersByRegexp(NUMBER_REGEXP)
         addFocusListener(object : FocusListener {
             override fun focusGained(e: FocusEvent) {
@@ -29,17 +45,6 @@ open class NumberField(columns: Int = 100) : JTextField(columns) {
 
         horizontalAlignment = JTextField.RIGHT
     }
-
-    var numberValue: Int
-        get() {
-            if (text.trim().isEmpty()) {
-                return 0
-            }
-            return text.toInt()
-        }
-        set(value) {
-            text = value.toString()
-        }
 
 }
 

@@ -101,10 +101,11 @@ class SwingTreatmentView @Inject constructor(
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
-    private val subTreatmentView = DynTreatmentTabbedPane()
+    private val subTreatmentView = DynTreatmentTabbedPane(treatment)
     private val bus: EventBus
 
     init {
+        modificationChecker.enableChangeListener(subTreatmentView)
         bus = swing.bus
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
@@ -306,7 +307,9 @@ class SwingTreatmentView @Inject constructor(
         // additional checks not handled by fields instance
         return ComparisonChain.start()
                 .compare(treatment.date, inpDateAndTime.selectedDate) // watch out for nulls!
-                .result() != 0 && subTreatmentView.isModified()
+                .result() != 0
+                ||
+                subTreatmentView.isModified()
     }
 
     override fun wasSaved(newTreatment: Treatment) {
@@ -314,6 +317,7 @@ class SwingTreatmentView @Inject constructor(
         treatment = newTreatment
 
         fields.updateAll(newTreatment)
+        subTreatmentView.wasSaved(newTreatment)
         btnSave.changeLabel(treatment)
         modificationChecker.trigger()
     }

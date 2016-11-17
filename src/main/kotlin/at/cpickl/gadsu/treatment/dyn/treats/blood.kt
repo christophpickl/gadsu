@@ -8,6 +8,7 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.addChangeListener
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.awt.GridBagConstraints
@@ -104,12 +105,12 @@ private fun mapMeasurement(rs: ResultSet, columnPrefix: String): BloodPressureMe
 // VIEW
 // =====================================================================================================================
 
-class BloodPressureRenderer(private val bloodPressure: BloodPressure) : DynTreatmentRenderer {
+class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer {
 
     private val beforeMeasure = BloodMeasurementPanel(bloodPressure.before)
     private val afterMeasure = BloodMeasurementPanel(bloodPressure.after)
 
-    override val dynTreatment: DynTreatment get() = bloodPressure
+    override var originalDynTreatment: DynTreatment = bloodPressure
 
     override val view: JComponent by lazy {
         val panel = GridPanel()
@@ -125,17 +126,18 @@ class BloodPressureRenderer(private val bloodPressure: BloodPressure) : DynTreat
 
     override fun readDynTreatment() = BloodPressure(beforeMeasure.readMeasurement(), afterMeasure.readMeasurement())
 
-    override fun isModified(): Boolean {
-        return false
+    override fun registerOnChange(changeListener: () -> Unit) {
+        beforeMeasure.registerOnChange(changeListener)
+        afterMeasure.registerOnChange(changeListener)
     }
-
 }
 
 private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : GridPanel() {
 
-    private val inpSystolic = NumberField(4)
-    private val inpDiastolic = NumberField(4)
-    private val inpFrequency = NumberField(4)
+    private val inpSystolic = NumberField(4, 0)
+    private val inpDiastolic = NumberField(4, 0)
+    private val inpFrequency = NumberField(4, 0)
+    private val inputs = arrayOf(inpSystolic, inpDiastolic, inpFrequency)
 
     init {
         c.weightx = 0.0
@@ -183,5 +185,9 @@ private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : Gr
             return null
         }
         return BloodPressureMeasurement(systolic, diastolic, frequency)
+    }
+
+    fun registerOnChange(changeListener: () -> Unit) {
+        inputs.forEach { it.addChangeListener { changeListener() } }
     }
 }

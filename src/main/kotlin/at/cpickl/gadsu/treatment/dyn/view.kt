@@ -1,12 +1,14 @@
 package at.cpickl.gadsu.treatment.dyn
 
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
+import at.cpickl.gadsu.view.logic.ChangeAware
 import com.google.common.annotations.VisibleForTesting
 import java.util.HashMap
 import javax.swing.JComponent
@@ -14,19 +16,30 @@ import javax.swing.JTabbedPane
 
 
 interface DynTreatmentRenderer {
-    val dynTreatment: DynTreatment
+
+    /** will be reset after save */
+    var originalDynTreatment: DynTreatment
     val view: JComponent
 
     fun readDynTreatment(): DynTreatment
-    fun isModified(): Boolean
+
+    fun registerOnChange(changeListener: () -> Unit)
+    fun isModified(): Boolean {
+        return originalDynTreatment != readDynTreatment()
+    }
+
 }
 
-
-@VisibleForTesting class DynTreatmentTabbedPane : JTabbedPane() {
+@VisibleForTesting class DynTreatmentTabbedPane(private var originalTreatment: Treatment) : JTabbedPane(), ChangeAware {
 
     private val log = LOG(javaClass)
-
     @VisibleForTesting var index = HashMap<Int, DynTreatmentRenderer>()
+
+    private lateinit var lateChangeListener: () -> Unit
+    override fun onChange(changeListener: () -> Unit) {
+        this.lateChangeListener = changeListener
+    }
+
 
     fun addDynTreatment(dynTreatment: DynTreatment) {
         val addIndex = calcTabIndex(dynTreatment)
@@ -41,11 +54,14 @@ interface DynTreatmentRenderer {
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)
         selectedIndex = addIndex
         recalcDynTreatmentsIndicesForAddAndAddIt(addIndex, renderer)
+
+        renderer.registerOnChange(lateChangeListener)
+        lateChangeListener()
     }
 
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
         log.trace("getDynTreatmentAt(tabIndex=$tabIndex)")
-        return index[tabIndex]!!.dynTreatment
+        return index[tabIndex]!!.originalDynTreatment
     }
 
     fun removeDynTreatmentAt(tabIndex: Int) {
@@ -53,6 +69,7 @@ interface DynTreatmentRenderer {
         removeTabAt(tabIndex)
         index.remove(tabIndex)
         recalcDynTreatmentsIndicesForDelete(tabIndex)
+        lateChangeListener()
     }
 
     fun readDynTreatments(): MutableList<DynTreatment> {
@@ -63,7 +80,7 @@ interface DynTreatmentRenderer {
         var currentIndex = 1
         for (renderer in index.values) {
             if (DynTreatmentsFactory.dynTreatmentsFor(toAdd).order <
-                    DynTreatmentsFactory.dynTreatmentsFor(renderer.dynTreatment).order) {
+                    DynTreatmentsFactory.dynTreatmentsFor(renderer.originalDynTreatment).order) {
                 break
             }
             currentIndex++
@@ -90,5 +107,29 @@ interface DynTreatmentRenderer {
         index = newIndex
     }
 
-    fun isModified() = index.values.any { it.isModified() }
+    fun isModified(): Boolean {
+        return originalTreatment.areDynTreatmentsModified(index.values) ||
+                index.values.any { it.isModified() }
+    }
+
+    fun wasSaved(newTreatment: Treatment) {
+        originalTreatment = newTreatment
+        index.values.forEach {
+            it.originalDynTreatment = newTreatment.dynTreatmentByType(it.originalDynTreatment.javaClass)
+        }
+    }
+
+    private fun Treatment.dynTreatmentByType(dynTreatment: Class<DynTreatment>): DynTreatment {
+        return this.dynTreatments.first { it.javaClass == dynTreatment }
+    }
+
+}
+
+@VisibleForTesting fun Treatment.areDynTreatmentsModified(renderers: Collection<DynTreatmentRenderer>): Boolean {
+    val xx = dynTreatments.map { it.javaClass }.sortedBy { it.name }
+    val yy = renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
+    val zz = xx != yy
+    return zz
+//    return dynTreatments.map { it.javaClass }.sortedBy { it.name } !=
+//            renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
 }

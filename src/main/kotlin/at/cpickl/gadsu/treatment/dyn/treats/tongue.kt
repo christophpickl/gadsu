@@ -8,6 +8,7 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.addChangeListener
 import at.cpickl.gadsu.view.swing.scrolled
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
@@ -83,11 +84,12 @@ val TongueDiagnosis.Companion.ROW_MAPPER: RowMapper<TongueDiagnosis>
 // VIEW
 // =====================================================================================================================
 
-class TongueDiagnosisRenderer(private val tongueDiagnosis: TongueDiagnosis) : DynTreatmentRenderer {
+class TongueDiagnosisRenderer(tongueDiagnosis: TongueDiagnosis) : DynTreatmentRenderer {
 
+    // FIXME add tongue diagnosis enums
     private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2)
 
-    override val dynTreatment: DynTreatment get() = tongueDiagnosis
+    override var originalDynTreatment: DynTreatment = tongueDiagnosis
 
     override val view: JComponent by lazy {
         val panel = GridPanel()
@@ -101,8 +103,8 @@ class TongueDiagnosisRenderer(private val tongueDiagnosis: TongueDiagnosis) : Dy
 
     override fun readDynTreatment() = TongueDiagnosis(inpNote.text)
 
-    override fun isModified(): Boolean {
-        return false
+    override fun registerOnChange(changeListener: () -> Unit) {
+        inpNote.addChangeListener { changeListener() }
     }
 
 }

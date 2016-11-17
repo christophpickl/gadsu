@@ -17,6 +17,10 @@ interface ModificationAware {
     fun isModified(): Boolean
 }
 
+interface ChangeAware {
+    fun onChange(changeListener: () -> Unit)
+}
+
 class ModificationChecker(
         private val modificationAware: ModificationAware,
         private vararg val enableDisableComponents: Component
@@ -63,6 +67,13 @@ class ModificationChecker(
             }
         }
         return delegate
+    }
+
+    fun <C : ChangeAware> enableChangeListener(changeAware: C): C {
+        changeAware.onChange {
+            checkModificationsAndUpdateIsEnabledField()
+        }
+        return changeAware
     }
 
     fun trigger() {

@@ -115,6 +115,7 @@ open class TriCheckBox<out T>(
     override fun actionPerformed(e: ActionEvent) {
         if (enableAltSelection && (e.modifiers and (ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)) {
             altSelectionState = !altSelectionState
+            // maybe fire changed event
             return
         }
         if (selectionState == STATE_NONE) isSelected = false
