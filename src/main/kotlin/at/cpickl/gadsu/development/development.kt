@@ -13,6 +13,7 @@ class Development {
 
         val ENABLED: Boolean = GadsuSystemProperty.development.isEnabledOrFalse()
         val COLOR_ENABLED = ENABLED && false
+        val SHOW_DEV_WINDOW_AT_STARTUP = ENABLED && false
 
         init {
             if (ENABLED) {

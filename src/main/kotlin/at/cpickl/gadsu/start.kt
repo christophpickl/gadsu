@@ -2,7 +2,6 @@ package at.cpickl.gadsu
 
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.ShowDevWindowEvent
-import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.persistence.GADSU_DATABASE_DIRECTORY
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
@@ -64,7 +63,9 @@ class GadsuGuiceStarter @Inject constructor(
             frame.start()
 
             if (Development.ENABLED) {
-                bus.post(ShowDevWindowEvent())
+                if (Development.SHOW_DEV_WINDOW_AT_STARTUP) {
+                    bus.post(ShowDevWindowEvent())
+                }
                 mainFrame.requestFocus()
             }
         }
