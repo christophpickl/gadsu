@@ -22,11 +22,22 @@ interface DynTreatmentsCallback<T> {
 private var dynTreatmentsOrderCounter: Int = 0
 enum class DynTreatments {
     // watch out: order here is of relevance!
-    HARA { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onHaraDiagnosis() },
-    TONGUE { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onTongueDiagnosis() },
-    BLOOD { override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onBloodPressure() };
+    HARA {
+        override val dynTreatmentType: Class<out DynTreatment> get() = HaraDiagnosis::class.java
+        override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onHaraDiagnosis()
+    },
+    TONGUE {
+        override val dynTreatmentType: Class<out DynTreatment> get() = TongueDiagnosis::class.java
+        override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onTongueDiagnosis()
+    },
+    BLOOD {
+        override val dynTreatmentType: Class<out DynTreatment> get() = BloodPressure::class.java
+        override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onBloodPressure()
+    };
 
     val order: Int
+
+    abstract val dynTreatmentType: Class<out DynTreatment>
 
     init {
         order = dynTreatmentsOrderCounter++
@@ -69,7 +80,7 @@ interface DynTreatmentManager {
     /** same as of DynTreatment.title */
     val title: String
 
-    fun matches(dynTreatments: List<Class<DynTreatment>>): Boolean {
+    fun matches(dynTreatments: List<Class<out DynTreatment>>): Boolean {
         return dynTreatments.firstOrNull { it == dynTreatmentType() } != null
     }
 
@@ -95,7 +106,7 @@ object DynTreatmentFactory {
         all = tmp
     }
 
-    fun managersForAllExcept(except: List<Class<DynTreatment>>): List<DynTreatmentManager> {
+    fun managersForAllExcept(except: List<Class<out DynTreatment>>): List<DynTreatmentManager> {
         return all.filter { !it.matches(except) }
     }
 }

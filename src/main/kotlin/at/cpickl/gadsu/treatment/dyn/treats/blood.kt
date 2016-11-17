@@ -27,14 +27,18 @@ data class BloodPressureMeasurement(
         val systolic: Int,
         val diastolic: Int,
         val frequency: Int
-)
+) {
+    companion object {
+        fun insertPrototype() = BloodPressureMeasurement(0, 0, 0)
+    }
+}
 
 data class BloodPressure(
-        val before: BloodPressureMeasurement?,
-        val after: BloodPressureMeasurement?
+        val before: BloodPressureMeasurement,
+        val after: BloodPressureMeasurement
 ) : DynTreatment {
     companion object {
-        fun insertPrototype() = BloodPressure(null, null)
+        fun insertPrototype() = BloodPressure(BloodPressureMeasurement.insertPrototype(), BloodPressureMeasurement.insertPrototype())
     }
 
     override val title: String get() = BLOOD_TITLE
@@ -77,8 +81,8 @@ class BloodPressureJdbcRepository @Inject constructor(
 
         jdbcx.update("INSERT INTO $TABLE (id_treatment, before_systolic, before_diastolic, before_frequency, after_systolic, after_diastolic, after_frequency) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 treatmentId,
-                dynTreatment.before?.systolic, dynTreatment.before?.diastolic, dynTreatment.before?.frequency,
-                dynTreatment.after?.systolic, dynTreatment.after?.diastolic, dynTreatment.after?.frequency)
+                dynTreatment.before.systolic, dynTreatment.before.diastolic, dynTreatment.before.frequency,
+                dynTreatment.after.systolic, dynTreatment.after.diastolic, dynTreatment.after.frequency)
     }
 
     override fun delete(treatmentId: String) {
@@ -94,9 +98,8 @@ val BloodPressure.Companion.ROW_MAPPER: RowMapper<BloodPressure>
         BloodPressure(mapMeasurement(rs, "before"), mapMeasurement(rs, "after"))
     }
 
-private fun mapMeasurement(rs: ResultSet, columnPrefix: String): BloodPressureMeasurement? {
+private fun mapMeasurement(rs: ResultSet, columnPrefix: String): BloodPressureMeasurement {
     val systolic = rs.getInt("${columnPrefix}_systolic")
-    if (rs.wasNull()) return null
     val diastolic = rs.getInt("${columnPrefix}_diastolic")
     val frequency = rs.getInt("${columnPrefix}_frequency")
     return BloodPressureMeasurement(systolic, diastolic, frequency)
@@ -176,19 +179,15 @@ private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : Gr
         }
     }
 
-    fun readMeasurement(): BloodPressureMeasurement? {
+    fun readMeasurement(): BloodPressureMeasurement {
         val systolic = inpSystolic.numberValue
         val diastolic = inpDiastolic.numberValue
         val frequency = inpFrequency.numberValue
 
-        if (systolic == 0 || diastolic == 0 || frequency == 0) {
-            return null
-        }
         return BloodPressureMeasurement(systolic, diastolic, frequency)
     }
 
     fun registerOnChange(changeListener: () -> Unit) {
-        // FIXME does not work properly!!!
         inputs.forEach { it.addChangeListener { changeListener() } }
     }
 }

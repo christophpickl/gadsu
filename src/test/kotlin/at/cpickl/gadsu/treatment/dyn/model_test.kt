@@ -17,12 +17,12 @@ class DynTreatmentFactoryTest {
 
     fun `managersForAllExcept given all except should return empty managers`() {
         assertThat(
-                DynTreatmentFactory.managersForAllExcept(DynTreatmentFactory.all.map { it.create() }),
+                DynTreatmentFactory.managersForAllExcept(DynTreatments.values().map { it.dynTreatmentType }),
                 empty())
     }
 
     fun `managersForAllExcept given hara as except should return all except hara manager`() {
-        val except = listOf<DynTreatment>(HaraDiagnosis.insertPrototype())
+        val except = listOf<Class<out DynTreatment>>(HaraDiagnosis::class.java)
         assertThat(
                 DynTreatmentFactory.managersForAllExcept(except),
                 allOf(

@@ -41,12 +41,12 @@ CREATE TABLE tongue_diagnosis (
 
 CREATE TABLE blood_pressure (
   id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
-  before_systolic INT,
-  before_diastolic INT,
-  before_frequency INT,
-  after_systolic INT,
-  after_diastolic INT,
-  after_frequency INT,
+  before_systolic INT NOT NULL,
+  before_diastolic INT NOT NULL,
+  before_frequency INT NOT NULL,
+  after_systolic INT NOT NULL,
+  after_diastolic INT NOT NULL,
+  after_frequency INT NOT NULL,
 
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
