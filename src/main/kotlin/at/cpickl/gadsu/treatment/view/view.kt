@@ -60,6 +60,7 @@ interface TreatmentView : ModificationAware, MainContent {
     fun addDynTreatment(dynTreatment: DynTreatment)
     fun removeDynTreatmentAt(tabIndex: Int)
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment
+    fun getAllDynTreatmentClasses(): List<Class<DynTreatment>>
 }
 
 
@@ -134,6 +135,7 @@ class SwingTreatmentView @Inject constructor(
     }
 
     override fun getDynTreatmentAt(tabIndex: Int) = subTreatmentView.getDynTreatmentAt(tabIndex)
+    override fun getAllDynTreatmentClasses() = subTreatmentView.getAllDynTreatmentClasses()
 
     private fun initComponents() {
         c.fill = GridBagConstraints.NONE

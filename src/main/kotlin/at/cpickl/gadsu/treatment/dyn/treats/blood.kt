@@ -188,6 +188,7 @@ private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : Gr
     }
 
     fun registerOnChange(changeListener: () -> Unit) {
+        // FIXME does not work properly!!!
         inputs.forEach { it.addChangeListener { changeListener() } }
     }
 }

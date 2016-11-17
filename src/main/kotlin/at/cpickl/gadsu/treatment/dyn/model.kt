@@ -69,8 +69,8 @@ interface DynTreatmentManager {
     /** same as of DynTreatment.title */
     val title: String
 
-    fun matches(dynTreatments: List<DynTreatment>): Boolean {
-        return dynTreatments.firstOrNull { it.javaClass == dynTreatmentType() } != null
+    fun matches(dynTreatments: List<Class<DynTreatment>>): Boolean {
+        return dynTreatments.firstOrNull { it == dynTreatmentType() } != null
     }
 
     fun create(): DynTreatment
@@ -95,7 +95,7 @@ object DynTreatmentFactory {
         all = tmp
     }
 
-    fun managersForAllExcept(except: List<DynTreatment>): List<DynTreatmentManager> {
+    fun managersForAllExcept(except: List<Class<DynTreatment>>): List<DynTreatmentManager> {
         return all.filter { !it.matches(except) }
     }
 }

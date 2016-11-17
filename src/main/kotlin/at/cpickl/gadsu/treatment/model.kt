@@ -2,7 +2,13 @@ package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.Current
+import at.cpickl.gadsu.service.CurrentEvent
+import at.cpickl.gadsu.service.HasId
+import at.cpickl.gadsu.service.clearMinutes
+import at.cpickl.gadsu.service.ensureNoSeconds
+import at.cpickl.gadsu.service.ensureQuarterMinute
+import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import com.google.common.base.MoreObjects
@@ -53,7 +59,7 @@ data class Treatment(
         /** Anything else goes here. */
         val note: String,
         /** Optional sub parts of a treatment, like hara diagnosis or heart beat. */
-        val dynTreatments: MutableList<DynTreatment>
+        val dynTreatments: List<DynTreatment>
 ) :
         Comparable<Treatment>, HasId, Persistable {
 

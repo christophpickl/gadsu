@@ -134,7 +134,8 @@ open class TreatmentController @Inject constructor(
 
 
     @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
-        val dynTreatmentManagers = DynTreatmentFactory.managersForAllExcept(currentTreatment.data!!.dynTreatments)
+        val existingDynTreats = treatmentView!!.getAllDynTreatmentClasses()
+        val dynTreatmentManagers = DynTreatmentFactory.managersForAllExcept(existingDynTreats)
         if (dynTreatmentManagers.isEmpty()) {
             beep()
             return
@@ -144,7 +145,6 @@ open class TreatmentController @Inject constructor(
             val item = JMenuItem(manager.title)
             item.addActionListener {
                 val dynTreat = manager.create()
-                currentTreatment.data!!.dynTreatments.add(dynTreat)
                 treatmentView!!.addDynTreatment(dynTreat)
             }
             popup.add(item)
@@ -153,8 +153,6 @@ open class TreatmentController @Inject constructor(
     }
 
     @Subscribe open fun onDynTreatmentRequestDeleteEvent(event: DynTreatmentRequestDeleteEvent) {
-        val dynTreatment = treatmentView!!.getDynTreatmentAt(event.tabIndex)
-        currentTreatment.data!!.dynTreatments.remove(dynTreatment)
         treatmentView!!.removeDynTreatmentAt(event.tabIndex)
     }
 

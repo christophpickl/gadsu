@@ -43,11 +43,7 @@ class TreatmentServiceImpl @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client): List<Treatment> {
-        val treatments = treatmentRepository.findAllFor(client)
-        treatments.forEach {
-            enrichTreatment(it)
-        }
-        return treatments
+        return treatmentRepository.findAllFor(client).map { enrichTreatment(it)!! }
     }
 
 
@@ -103,10 +99,10 @@ class TreatmentServiceImpl @Inject constructor(
 
     private fun enrichTreatment(treatment: Treatment?): Treatment? {
         if (treatment == null) {
-            return treatment
+            return null
         }
-        treatment.dynTreatments.addAll(dynTreatmentService.findAllFor(treatment.id!!))
-        return treatment
+        val dynTreats = dynTreatmentService.findAllFor(treatment.id!!)
+        return treatment.copy(dynTreatments = dynTreats)
     }
 
     private fun _delete(treatment: Treatment) {

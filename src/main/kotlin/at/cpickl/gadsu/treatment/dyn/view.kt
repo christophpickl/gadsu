@@ -64,6 +64,10 @@ interface DynTreatmentRenderer {
         return index[tabIndex]!!.originalDynTreatment
     }
 
+    fun getAllDynTreatmentClasses(): List<Class<DynTreatment>> {
+        return index.values.map { it.originalDynTreatment.javaClass }
+    }
+
     fun removeDynTreatmentAt(tabIndex: Int) {
         log.trace("removeDynTreatmentAt(tabIndex=$tabIndex)")
         removeTabAt(tabIndex)
@@ -72,8 +76,8 @@ interface DynTreatmentRenderer {
         lateChangeListener()
     }
 
-    fun readDynTreatments(): MutableList<DynTreatment> {
-        return index.values.map { it.readDynTreatment() }.toMutableList()
+    fun readDynTreatments(): List<DynTreatment> {
+        return index.values.map { it.readDynTreatment() }
     }
 
     @VisibleForTesting fun calcTabIndex(toAdd: DynTreatment): Int {
