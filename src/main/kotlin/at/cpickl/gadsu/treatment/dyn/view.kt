@@ -10,6 +10,7 @@ import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
 import at.cpickl.gadsu.view.logic.ChangeAware
 import com.google.common.annotations.VisibleForTesting
+import com.google.common.eventbus.EventBus
 import java.util.HashMap
 import javax.swing.JComponent
 import javax.swing.JTabbedPane
@@ -30,7 +31,10 @@ interface DynTreatmentRenderer {
 
 }
 
-@VisibleForTesting class DynTreatmentTabbedPane(private var originalTreatment: Treatment) : JTabbedPane(), ChangeAware {
+@VisibleForTesting class DynTreatmentTabbedPane(
+        private var originalTreatment: Treatment,
+        private val bus: EventBus
+) : JTabbedPane(), ChangeAware {
 
     private val log = LOG(javaClass)
     @VisibleForTesting var index = HashMap<Int, DynTreatmentRenderer>()
@@ -48,7 +52,7 @@ interface DynTreatmentRenderer {
         val renderer = dynTreatment.call(object : DynTreatmentCallback<DynTreatmentRenderer> {
             override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = HaraDiagnosisRenderer(haraDiagnosis)
             override fun onBloodPressure(bloodPressure: BloodPressure) = BloodPressureRenderer(bloodPressure)
-            override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = TongueDiagnosisRenderer(tongueDiagnosis)
+            override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = TongueDiagnosisRenderer(tongueDiagnosis, bus)
         })
 
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)

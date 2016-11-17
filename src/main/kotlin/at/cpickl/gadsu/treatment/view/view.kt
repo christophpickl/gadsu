@@ -102,7 +102,7 @@ class SwingTreatmentView @Inject constructor(
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
-    private val subTreatmentView = DynTreatmentTabbedPane(treatment)
+    private val subTreatmentView = DynTreatmentTabbedPane(treatment, swing.bus)
     private val bus: EventBus
 
     init {

@@ -42,7 +42,8 @@ open class MyList<T : Comparable<T>>(
         viewName: String,
         protected val myModel: MyListModel<T>,
         private val bus: EventBus,
-        myCellRenderer: MyListCellRenderer<T>? = null
+        myCellRenderer: MyListCellRenderer<T>? = null,
+        val label: String? = null
 ) : JList<T>(myModel) {
 
     init {
@@ -129,9 +130,16 @@ open class MyList<T : Comparable<T>>(
 }
 
 
-class MyListModel<E> : DefaultListModel<E>(), IndexableModel<E> {
+class MyListModel<E>(initElements: List<E>? = null) : DefaultListModel<E>(), IndexableModel<E> {
+
     override val indexableSize: Int get() = size
     override fun indexableElementAt(index: Int): E = getElementAt(index)
+
+    init {
+        if (initElements != null) {
+            resetData(initElements)
+        }
+    }
 
     fun setElementByComparator(newValue: E, comparator: (current: E) -> Boolean) {
         val index = findIndexByComparator(comparator)
@@ -143,9 +151,10 @@ class MyListModel<E> : DefaultListModel<E>(), IndexableModel<E> {
         removeElementAt(index)
     }
 
-    fun resetData(newElements: List<E>) {
+    fun resetData(newElements: List<E>): MyListModel<E> {
         removeAllElements()
         newElements.forEach { addElement(it) }
+        return this
     }
 
 }

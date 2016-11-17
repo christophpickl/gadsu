@@ -8,6 +8,7 @@ import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
+import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod
@@ -19,13 +20,13 @@ import java.util.HashMap
     private val dynTreat1Hara = HaraDiagnosis.insertPrototype()
     private val dynTreat1HaraRenderer = HaraDiagnosisRenderer(dynTreat1Hara)
     private val dynTreat2Tongue = TongueDiagnosis.insertPrototype()
-    private val dynTreat2TongueRenderer = TongueDiagnosisRenderer(dynTreat2Tongue)
+    private val dynTreat2TongueRenderer = TongueDiagnosisRenderer(dynTreat2Tongue, EventBus())
     private val dynTreat3Blood = BloodPressure.insertPrototype()
     private val dynTreat3BloodRenderer = BloodPressureRenderer(dynTreat3Blood)
     private lateinit var tabs: DynTreatmentTabbedPane
 
     @BeforeMethod fun init() {
-        tabs = DynTreatmentTabbedPane(Treatment.unsavedValidInstance("clientId"))
+        tabs = DynTreatmentTabbedPane(Treatment.unsavedValidInstance("clientId"), EventBus())
     }
 
     fun `calcTabIndex given empty index should return 1`() {
@@ -77,7 +78,7 @@ import java.util.HashMap
     private val haraDiagnosis = HaraDiagnosis.insertPrototype()
     private val haraRenderer = HaraDiagnosisRenderer(haraDiagnosis)
     private val tongueDiagnosis = TongueDiagnosis.insertPrototype()
-    private val tongueRenderer = TongueDiagnosisRenderer(tongueDiagnosis)
+    private val tongueRenderer = TongueDiagnosisRenderer(tongueDiagnosis, EventBus())
 
     fun `areDynTreatmentsModified`() {
         assertModified(emptyList(), emptyList(), false)
