@@ -125,6 +125,10 @@ class BloodPressureRenderer(private val bloodPressure: BloodPressure) : DynTreat
 
     override fun readDynTreatment() = BloodPressure(beforeMeasure.readMeasurement(), afterMeasure.readMeasurement())
 
+    override fun isModified(): Boolean {
+        return false
+    }
+
 }
 
 private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : GridPanel() {

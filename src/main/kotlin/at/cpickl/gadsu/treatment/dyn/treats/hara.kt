@@ -288,6 +288,10 @@ class HaraDiagnosisRenderer(private val haraDiagnosis: HaraDiagnosis) : DynTreat
         panel
     }
 
+    override fun isModified(): Boolean {
+        return false
+    }
+
     private fun kyoJitsuPanel(): JComponent {
         return GridPanel().apply {
             c.insets = Insets(1, 1, 1, 1)

@@ -306,7 +306,7 @@ class SwingTreatmentView @Inject constructor(
         // additional checks not handled by fields instance
         return ComparisonChain.start()
                 .compare(treatment.date, inpDateAndTime.selectedDate) // watch out for nulls!
-                .result() != 0
+                .result() != 0 && subTreatmentView.isModified()
     }
 
     override fun wasSaved(newTreatment: Treatment) {

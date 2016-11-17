@@ -18,6 +18,7 @@ interface DynTreatmentRenderer {
     val view: JComponent
 
     fun readDynTreatment(): DynTreatment
+    fun isModified(): Boolean
 }
 
 
@@ -88,4 +89,6 @@ interface DynTreatmentRenderer {
         }
         index = newIndex
     }
+
+    fun isModified() = index.values.any { it.isModified() }
 }

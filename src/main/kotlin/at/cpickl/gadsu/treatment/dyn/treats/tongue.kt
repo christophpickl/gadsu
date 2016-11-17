@@ -100,5 +100,10 @@ class TongueDiagnosisRenderer(private val tongueDiagnosis: TongueDiagnosis) : Dy
     }
 
     override fun readDynTreatment() = TongueDiagnosis(inpNote.text)
+
+    override fun isModified(): Boolean {
+        return false
+    }
+
 }
 
