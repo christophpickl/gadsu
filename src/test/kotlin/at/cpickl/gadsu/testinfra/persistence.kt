@@ -58,6 +58,7 @@ abstract class HsqldbTest {
     protected val TABLE_DYNTREATMENT_HARA_KYO = HaraDiagnosisJdbcRepository.TABLE_KYO
     protected val TABLE_DYNTREATMENT_HARA_JITSU = HaraDiagnosisJdbcRepository.TABLE_JITSU
     protected val TABLE_DYNTREATMENT_TONGUE = TongueDiagnosisJdbcRepository.TABLE
+    protected val TABLE_DYNTREATMENT_TONGUE_PROPERTIES = TongueDiagnosisJdbcRepository.TABLE_PROPERTIES
     protected val TABLE_DYNTREATMENT_BLOOD = BloodPressureJdbcRepository.TABLE
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -70,6 +71,7 @@ abstract class HsqldbTest {
             TABLE_DYNTREATMENT_HARA_JITSU,
             TABLE_DYNTREATMENT_HARA,
             TABLE_DYNTREATMENT_TONGUE,
+            TABLE_DYNTREATMENT_TONGUE_PROPERTIES,
             TABLE_DYNTREATMENT_BLOOD,
             TABLE_TREATMENT,
             TABLE_CLIENT,

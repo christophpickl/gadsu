@@ -14,6 +14,7 @@ import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.MeridianAndPosition
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
@@ -72,7 +73,13 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
     }
 
     fun `dynTreatment insert treatment with tongue should return tongue`() {
-        val tongue = TongueDiagnosis(note = "foobar")
+        val tongue = TongueDiagnosis(
+                listOf(TongueProperty.Color.Pale),
+                listOf(TongueProperty.Shape.Swollen),
+                listOf(TongueProperty.Coat.Yellow),
+                listOf(TongueProperty.Special.RedDots),
+                "testNote"
+        )
 
         val savedTreatment = createAndSaveTreatment(tongue)
 

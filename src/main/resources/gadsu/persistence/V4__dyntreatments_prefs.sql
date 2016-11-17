@@ -39,6 +39,14 @@ CREATE TABLE tongue_diagnosis (
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
 
+CREATE TABLE tongue_diagnosis_properties (
+  id_treatment VARCHAR(36) NOT NULL,
+  sql_code VARCHAR(128) NOT NULL,
+
+  PRIMARY KEY (id_treatment, sql_code),
+  FOREIGN KEY (id_treatment) REFERENCES treatment(id)
+);
+
 CREATE TABLE blood_pressure (
   id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
   before_systolic INT NOT NULL,
