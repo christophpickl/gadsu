@@ -171,12 +171,12 @@ class TreatmentUiTest : UiTest() {
 
     // --------------------------------------------------------------------------- check changes
 
-    fun `Save button is enabled when inserting new, so it is allowed to save an empty one`() {
+    fun `Save button is not enabled when inserting new, so it is not allowed to save an empty one`() {
         saveClient(client)
 
         driver.openNewButton.click()
 
-        assertThat(driver.saveButton.isEnabled)
+        assertThat(not(driver.saveButton.isEnabled))
     }
 
     // MINOR @TEST - create new treatment and insert, update it, then check if updates propagated to treatment table in client view
