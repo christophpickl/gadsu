@@ -102,9 +102,11 @@ class TreatmentUiTest : UiTest() {
         saveClient(client)
         driver.openNewButton.click()
         driver.assertSaveButtonLabel("Neu anlegen")
+        driver.inputNote.text = "a"
 
         driver.saveButton.click()
         driver.assertSaveButtonLabel("Speichern")
+        assertThat(not(driver.saveButton.isEnabled))
     }
 
 
