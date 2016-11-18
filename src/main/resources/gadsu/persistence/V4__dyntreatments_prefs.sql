@@ -59,6 +59,22 @@ CREATE TABLE blood_pressure (
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
 
+
+CREATE TABLE pulse_diagnosis (
+  id_treatment VARCHAR(36) NOT NULL PRIMARY KEY,
+  note VARCHAR(5120) NOT NULL,
+
+  FOREIGN KEY (id_treatment) REFERENCES treatment(id)
+);
+
+CREATE TABLE pulse_diagnosis_properties (
+  id_treatment VARCHAR(36) NOT NULL,
+  sql_code VARCHAR(128) NOT NULL,
+
+  PRIMARY KEY (id_treatment, sql_code),
+  FOREIGN KEY (id_treatment) REFERENCES treatment(id)
+);
+
 -- #59 rewrite preferences to use database instead of java prefs api
 -- ========================================================================= --
 

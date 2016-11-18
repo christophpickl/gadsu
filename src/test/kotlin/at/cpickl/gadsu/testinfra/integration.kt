@@ -22,6 +22,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import com.google.common.eventbus.EventBus
@@ -87,10 +89,12 @@ object IntegrationServiceLookuper {
                                haraDiagnosisRepository: HaraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx),
                                tongueDiagnosisRepository: TongueDiagnosisRepository = TongueDiagnosisJdbcRepository(jdbcx),
                                bloodPressureRepository: BloodPressureRepository = BloodPressureJdbcRepository(jdbcx),
+                               pulseDiagnosisRepository: PulseDiagnosisRepository = PulseDiagnosisJdbcRepository(jdbcx),
                                repositoryFacade: RepositoryFacade = RepositoryFacadeImpl(
                                        haraDiagnosisRepository,
                                        tongueDiagnosisRepository,
-                                       bloodPressureRepository),
+                                       bloodPressureRepository,
+                                       pulseDiagnosisRepository),
                                dynTreatmentService: DynTreatmentService = DynTreatmentServiceImpl(repositoryFacade),
                                multiProtocolRepository: MultiProtocolRepository = MultiProtocolJdbcRepository(jdbcx, idGenerator)
     ): TreatmentService {

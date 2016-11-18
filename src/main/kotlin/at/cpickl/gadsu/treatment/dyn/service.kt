@@ -5,6 +5,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import javax.inject.Inject
@@ -25,7 +27,8 @@ interface RepositoryFacade {
 class RepositoryFacadeImpl @Inject constructor(
         private val haraDiagnosisRepository: HaraDiagnosisRepository,
         private val tongueDiagnosisRepository: TongueDiagnosisRepository,
-        private val bloodPressureRepository: BloodPressureRepository
+        private val bloodPressureRepository: BloodPressureRepository,
+        private val pulseDiagnosisRepository: PulseDiagnosisRepository
 ) : RepositoryFacade {
 
     val reposByType: Map<DynTreatments, DynTreatmentRepository<out DynTreatment>>
@@ -37,6 +40,7 @@ class RepositoryFacadeImpl @Inject constructor(
                 override fun onHaraDiagnosis() { tmp.put(it, haraDiagnosisRepository) }
                 override fun onTongueDiagnosis() { tmp.put(it, tongueDiagnosisRepository) }
                 override fun onBloodPressure() { tmp.put(it, bloodPressureRepository) }
+                override fun onPulseDiagnosis() { tmp.put(it, pulseDiagnosisRepository) }
             })
         }
         reposByType = tmp
@@ -49,13 +53,16 @@ class RepositoryFacadeImpl @Inject constructor(
         // reposByType[dynTreatmentType]!!.insert(treatmentId, dynTreatment) ... NOPE, not possible as of generics
         dynTreatment.call(object : DynTreatmentCallback<Unit>{
             override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) {
-                haraDiagnosisRepository.insert(treatmentId, dynTreatment as HaraDiagnosis)
+                haraDiagnosisRepository.insert(treatmentId, haraDiagnosis)
             }
             override fun onBloodPressure(bloodPressure: BloodPressure) {
-                bloodPressureRepository.insert(treatmentId, dynTreatment as BloodPressure)
+                bloodPressureRepository.insert(treatmentId, bloodPressure)
             }
             override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) {
-                tongueDiagnosisRepository.insert(treatmentId, dynTreatment as TongueDiagnosis)
+                tongueDiagnosisRepository.insert(treatmentId, tongueDiagnosis)
+            }
+            override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) {
+                pulseDiagnosisRepository.insert(treatmentId, pulseDiagnosis)
             }
         })
     }

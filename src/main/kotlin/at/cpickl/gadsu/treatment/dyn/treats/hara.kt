@@ -51,7 +51,7 @@ data class HaraDiagnosis(
         }
     }
 
-    override val title: String get() = HARA_TITLE
+    override val title = HARA_TITLE
 
     override fun <T> call(back: DynTreatmentCallback<T>): T {
         return back.onHaraDiagnosis(this)

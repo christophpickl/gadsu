@@ -131,7 +131,7 @@ data class TongueDiagnosis(
         fun insertPrototype() = TongueDiagnosis(emptyList(), emptyList(), emptyList(), emptyList(), "")
     }
 
-    override val title: String get() = TITLE_TONGUE
+    override val title = TITLE_TONGUE
 
     override fun <T> call(back: DynTreatmentCallback<T>): T {
         return back.onTongueDiagnosis(this)
@@ -238,6 +238,7 @@ private class TonguePropertableCellView<T : TonguePropertable>(value: T) : Defau
     }
 }
 
+
 //private class TongueList<T : TonguePropertable>(
 //        viewNameSuffix: String,
 //        values: Array<T>,
@@ -248,7 +249,6 @@ private class TonguePropertableCellView<T : TonguePropertable>(value: T) : Defau
 //        visibleRowCount = 3
 //    }
 //}
-
 class TongueDiagnosisRenderer(
         tongueDiagnosis: TongueDiagnosis,
         bus: EventBus

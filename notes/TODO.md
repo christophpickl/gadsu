@@ -68,6 +68,8 @@ Med
 
 Low
 ---
+* search for clients
+* use some nice drag'n'drop feature
 * ad appointment:
     * view size distribution of appointment vs treatment
     * cleanup window form: start end time in separate row; check if end > start; bigger

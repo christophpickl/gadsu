@@ -6,6 +6,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRenderer
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
 import at.cpickl.gadsu.view.logic.ChangeAware
@@ -57,6 +59,7 @@ interface DynTreatmentRenderer {
             override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = HaraDiagnosisRenderer(haraDiagnosis)
             override fun onBloodPressure(bloodPressure: BloodPressure) = BloodPressureRenderer(bloodPressure)
             override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = TongueDiagnosisRenderer(tongueDiagnosis, bus)
+            override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = PulseDiagnosisRenderer(pulseDiagnosis)
         })
 
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)

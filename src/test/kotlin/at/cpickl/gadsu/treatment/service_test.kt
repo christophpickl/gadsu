@@ -12,6 +12,9 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureMeasurement
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.MeridianAndPosition
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty
@@ -95,6 +98,14 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
         val savedTreatment = createAndSaveTreatment(blood)
 
         assertThat(BloodPressureJdbcRepository(jdbcx).find(savedTreatment.id!!), equalTo(blood))
+    }
+
+    fun `dynTreatment insert treatment with pulse diagnosis should return pulse`() {
+        val pulse = PulseDiagnosis(listOf(PulseProperty.Deep), "testNote")
+
+        val savedTreatment = createAndSaveTreatment(pulse)
+
+        assertThat(PulseDiagnosisJdbcRepository(jdbcx).find(savedTreatment.id!!), equalTo(pulse))
     }
 
     private fun createAndSaveTreatment(withDynTreatment: DynTreatment): Treatment {

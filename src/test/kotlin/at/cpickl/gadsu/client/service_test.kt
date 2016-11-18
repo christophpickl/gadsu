@@ -31,6 +31,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisJdbcRepository
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import org.hamcrest.MatcherAssert.assertThat
@@ -57,6 +59,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var haraDiagnosisRepository: HaraDiagnosisRepository
     private lateinit var tongueDiagnosisRepository: TongueDiagnosisRepository
     private lateinit var bloodPressureRepository: BloodPressureRepository
+    private lateinit var pulseDiagnosisRepository: PulseDiagnosisRepository
     private lateinit var dynTreatmentService: DynTreatmentService
 
     private lateinit var testee: ClientService
@@ -71,8 +74,10 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         haraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx)
         tongueDiagnosisRepository = TongueDiagnosisJdbcRepository(jdbcx)
         bloodPressureRepository = BloodPressureJdbcRepository(jdbcx)
+        pulseDiagnosisRepository = PulseDiagnosisJdbcRepository(jdbcx)
 
-        val repositoryFacade = RepositoryFacadeImpl(haraDiagnosisRepository, tongueDiagnosisRepository, bloodPressureRepository)
+        val repositoryFacade = RepositoryFacadeImpl(haraDiagnosisRepository, tongueDiagnosisRepository,
+                bloodPressureRepository, pulseDiagnosisRepository)
         dynTreatmentService = DynTreatmentServiceImpl(repositoryFacade)
 
         treatmentService = TreatmentServiceImpl(treatmentRepo, dynTreatmentService, multiProtocolRepo, jdbcx, bus, clock)

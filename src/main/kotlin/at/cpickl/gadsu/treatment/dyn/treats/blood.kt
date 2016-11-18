@@ -47,7 +47,7 @@ data class BloodPressure(
         )
     }
 
-    override val title: String get() = BLOOD_TITLE
+    override val title = BLOOD_TITLE
 
     override fun <T> call(back: DynTreatmentCallback<T>): T {
         return back.onBloodPressure(this)

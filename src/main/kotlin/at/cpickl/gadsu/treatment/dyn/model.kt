@@ -4,6 +4,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureManager
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisManager
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisManager
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisManager
 
@@ -11,12 +13,14 @@ interface DynTreatmentCallback<T> {
     fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): T
     fun onBloodPressure(bloodPressure: BloodPressure): T
     fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): T
+    fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis): T
 }
 
 interface DynTreatmentsCallback<T> {
     fun onHaraDiagnosis(): T
     fun onBloodPressure(): T
     fun onTongueDiagnosis(): T
+    fun onPulseDiagnosis(): T
 }
 
 private var dynTreatmentsOrderCounter: Int = 0
@@ -33,7 +37,12 @@ enum class DynTreatments {
     BLOOD {
         override val dynTreatmentType: Class<out DynTreatment> get() = BloodPressure::class.java
         override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onBloodPressure()
-    };
+    },
+    PULSE {
+        override val dynTreatmentType: Class<out DynTreatment> get() = PulseDiagnosis::class.java
+        override fun <T> call(back: DynTreatmentsCallback<T>): T = back.onPulseDiagnosis()
+    }
+    ;
 
     val order: Int
 
@@ -58,6 +67,7 @@ object DynTreatmentsFactory {
                 override fun onHaraDiagnosis() { tmp.put(HaraDiagnosis::class.java, DynTreatments.HARA) }
                 override fun onBloodPressure() { tmp.put(BloodPressure::class.java, DynTreatments.BLOOD) }
                 override fun onTongueDiagnosis() { tmp.put(TongueDiagnosis::class.java, DynTreatments.TONGUE) }
+                override fun onPulseDiagnosis() { tmp.put(PulseDiagnosis::class.java, DynTreatments.PULSE) }
             })
         }
         all = tmp
@@ -101,6 +111,7 @@ object DynTreatmentFactory {
                 override fun onHaraDiagnosis() { tmp.add(HaraDiagnosisManager) }
                 override fun onBloodPressure() { tmp.add(BloodPressureManager) }
                 override fun onTongueDiagnosis() { tmp.add(TongueDiagnosisManager) }
+                override fun onPulseDiagnosis() { tmp.add(PulseDiagnosisManager) }
             })
         }
         all = tmp
