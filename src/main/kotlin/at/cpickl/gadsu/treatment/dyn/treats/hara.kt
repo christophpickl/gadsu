@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.awt.Font
 import java.awt.GridBagConstraints
-import java.awt.Insets
 import java.sql.ResultSet
 import javax.inject.Inject
 import javax.swing.JComponent
@@ -40,7 +39,7 @@ data class HaraDiagnosis(
     companion object {
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
     }
-
+// FIXME when no dynTreat is there, and it is saved + navigate away and back => hara diagnosis is here again, but should be gone (only auto-insert for new treats)
     init {
         if (bestConnection != null) {
             if (!kyos.contains(bestConnection.first)) {
@@ -251,7 +250,7 @@ class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<Me
 
     fun renderWithLabel() = GridPanel().apply {
         c.anchor = GridBagConstraints.CENTER
-        add(JLabel(meridianAndPos.meridian.labelShort).withFont(Font.PLAIN, 11))
+        add(JLabel(meridianAndPos.meridian.labelShort).withFont(Font.PLAIN, 12))
         c.gridy++
         add(this@KyoJitsuCheckBox)
     }
@@ -276,7 +275,7 @@ class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer
         panel.c.gridy++
         panel.c.fill = GridBagConstraints.BOTH
         panel.c.weighty = 1.0
-        panel.c.insets = Pad.all(8)
+        panel.c.insets = Pad.all(DynTreatmentRenderer.GAP)
         panel.add(inpNote.scrolled())
 
         mapOfCheckboxes.values.forEach { it.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus) }
@@ -291,7 +290,7 @@ class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer
 
     private fun kyoJitsuPanel(): JComponent {
         return GridPanel().apply {
-            c.insets = Insets(1, 1, 1, 1)
+            c.insets = Pad.all(2)
 
             c.gridx = 2
             add(meridian(MeridianAndPosition.GallBladder))
@@ -339,7 +338,6 @@ class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer
             add(meridian(MeridianAndPosition.SmallIntestineLeft))
             c.gridx = 5
             add(meridian(MeridianAndPosition.LargeIntestineLeft))
-
         }
     }
 

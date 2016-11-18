@@ -5,6 +5,7 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty.*
 import at.cpickl.gadsu.view.components.DefaultCellView
@@ -15,14 +16,17 @@ import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.addChangeListener
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.ListSelectionModel
 
 // MODEL
 // =====================================================================================================================
@@ -44,31 +48,30 @@ enum class TongueProperty {;
 
     enum class Color(override val label: String, override val sqlCode: String) : TonguePropertable {
         Pale("blass", "PALE"),
-        Pink("rosa", "PINK"), // normal
-        Red("rot", "RED")
+        Pink("rosa", "PINK"),
+        Red("rot", "RED"),
+        DarkRed("dunkel rot", "DARK RED"),
+        VioletRed("rötlich violet", "VIOLET RED"),
+        VioletBlue("bläulich violet", "VIOLET BLUE"),
+        Blue("blau", "BLUE"),
         ;
 
-        //    1. dunkel-rot
-//    1. roetlich-violett
-//    1. blaeulich-violett
-//    1. blau
         companion object {
             fun mapApplicable(raws: List<RawTonguePropertable>) = mapApplicableFor(Color.values(), raws)
         }
     }
 
-
     enum class Shape(override val label: String, override val sqlCode: String) : TonguePropertable {
-        Thin("dünn", "THIN"),
-        Swollen("geschwollen", "SWOLLEN")
+        Thin("dünn", "THIN SHAPE"),
+        Swollen("geschwollen", "SWOLLEN"),
+        Stiff("steif", "STIFF"),
+        Flaccid("schlaff", "FLACCID"),
+        Long("lang", "LONG"),
+        Short("kurz", "SHORT"),
+        Cracked("rissig", "CRACKED"),
+        Shaky("zitternd", "SHAKY"),
+        OneSideAligned("einseitig ausgerichtet", "ONESIDE ALIGNED")
         ;
-//    1. steif
-//    1. schlaff (flaccid)
-//    1. lang
-//    1. kurz
-//    1. rissig
-//    1. zitternd
-//    1. einseitig ausgerichtet
 
         companion object {
             fun mapApplicable(raws: List<RawTonguePropertable>) = mapApplicableFor(Shape.values(), raws)
@@ -76,21 +79,19 @@ enum class TongueProperty {;
     }
 
     enum class Coat(override val label: String, override val sqlCode: String) : TonguePropertable {
+        // color
         White("weiß", "WHITE"),
-        Yellow("gelb", "YELLOW")
+        Yellow("gelb", "YELLOW"),
+        Grey("grau", "GREY"),
+        Black("schwarz", "BLACK"),
+        // thickness
+        Thick("dick", "THICK"),
+        Thin("dünn", "THIN COAT"),
+        Missing("komplett fehlend", "MISSING"),
+        PartlyMissing("teilweise fehlend", "PARTLY MISSING"),
+        Rooted("mit Wurzel", "ROOTED"),
+        Unrooted("ohne Wurzel", "UNROOTED"),
         ;
-//    1. Farbe
-//        1. weiss
-//        1. gelb
-//        1. grau
-//        1. schwarz
-//    1. Dicke
-//        1. dick
-//        1. duenn
-//        1. komplett fehlend
-//        1. teilweise fehlend
-//        1. mit wurzel
-//        1. ohne wurzel
 
         companion object {
             fun mapApplicable(raws: List<RawTonguePropertable>) = mapApplicableFor(Coat.values(), raws)
@@ -98,10 +99,18 @@ enum class TongueProperty {;
     }
 
     enum class Special(override val label: String, override val sqlCode: String) : TonguePropertable {
-        RedDots("Rote Punkte", "RED DOTS"),
-        MiddleCrack("Mittelriss", "MID CRACK");
-        // risse
-        // unterseite von zunge
+        ShowsQuick("schnell zeigen", "SHOWS QUICK"),
+        ShowsHesitate("zögerlich zeigen", "SHOWS HESITATE"),
+        RedDots("Rote Papillen", "RED DOTS"),
+        MiddleCrack("Mittelriss", "MID CRACK"),
+        HorizontalCrack("Querriss", "HORIZONTAL CRACK"),
+        BelowTongueBlue("Unterseite Blau", "BELOW BLUE"),
+        BelowTonguePurple("Unterseite Lila", "BELOW PURPLE"),
+        TeethMarks("Zahnabdrücke", "TEETH MARKS"),
+        Dry("feucht", "DRY"),
+        Wet("trocken", "WET"),
+        Sticky("klebrig/schlüpfrig", "STICKY")
+        ;
 
         companion object {
             fun mapApplicable(raws: List<RawTonguePropertable>) = mapApplicableFor(Special.values(), raws)
@@ -158,6 +167,7 @@ class TongueDiagnosisJdbcRepository @Inject constructor(
                 "SELECT * FROM $TABLE WHERE id_treatment = ?",
                 arrayOf(treatmentId))
                 ?: return null
+
         val rawPropertables = jdbcx.query(
                 "SELECT * FROM $TABLE_PROPERTIES WHERE id_treatment = ?",
                 arrayOf(treatmentId),
@@ -228,7 +238,6 @@ private class TonguePropertableCellView<T : TonguePropertable>(value: T) : Defau
     }
 }
 
-
 //private class TongueList<T : TonguePropertable>(
 //        viewNameSuffix: String,
 //        values: Array<T>,
@@ -255,54 +264,68 @@ class TongueDiagnosisRenderer(
     private val inpListSpecial = MyList("TongueDiagnosisRenderer.Special",
             MyListModel(Special.values().toList()), bus, TonguePropertableRenderer(), "Besonderheiten")
 
-    private val inpLists = arrayOf<MyList<*>>(inpListColor, inpListShape, inpListCoat, inpListSpecial)
-    private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2)
+    private val inpLists = arrayOf(inpListColor, inpListShape, inpListCoat, inpListSpecial)
+    private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2) // does not work, see gridpanel...
     override var originalDynTreatment: DynTreatment = tongueDiagnosis
 
     init {
         inpLists.forEach {
             with(it) {
+                setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
                 enableToggleSelectionMode()
-                setVisibleRowCount(3)
             }
         }
     }
 
     override val view: JComponent by lazy {
         GridPanel().apply {
-            c.fill = GridBagConstraints.HORIZONTAL
-            c.weightx = 1.0
-            c.weighty = 0.0
+            c.weightx = 0.5
 
-            add(JLabel(inpListColor.label))
+            c.fill = GridBagConstraints.HORIZONTAL
+            c.weighty = 0.0
+            c.insets = Insets(0, GAP, 0, GAP)
+            add(JLabel(inpListColor.label).bold())
             c.gridx++
-            add(JLabel(inpListShape.label))
+            c.insets = Insets(0, 0, 0, GAP)
+            add(JLabel(inpListShape.label).bold())
 
             c.gridy++
             c.gridx = 0
+            c.fill = GridBagConstraints.BOTH
+            c.weighty = 1.0
+            c.insets = Insets(0, GAP, GAP, GAP)
             add(inpListColor.scrolled())
             c.gridx++
+            c.insets = Insets(0, 0, GAP, GAP)
             add(inpListShape.scrolled())
 
             c.gridy++
             c.gridx = 0
-            add(JLabel(inpListCoat.label))
+            c.fill = GridBagConstraints.HORIZONTAL
+            c.weighty = 0.0
+            c.insets = Insets(0, GAP, 0, GAP)
+            add(JLabel(inpListCoat.label).bold())
             c.gridx++
-            add(JLabel(inpListSpecial.label))
+            c.insets = Insets(0, 0, 0, GAP)
+            add(JLabel(inpListSpecial.label).bold())
 
             c.gridy++
             c.gridx = 0
-            add(inpListCoat.scrolled())
-            c.gridx++
-            add(inpListSpecial.scrolled())
-
-
-            c.gridy++
-            c.gridx = 0
-            c.gridwidth = 2
             c.fill = GridBagConstraints.BOTH
             c.weighty = 1.0
-            c.insets = Pad.TOP
+            c.insets = Insets(0, GAP, 0, GAP)
+            add(inpListCoat.scrolled())
+            c.gridx++
+            c.insets = Insets(0, 0, 0, GAP)
+            add(inpListSpecial.scrolled())
+
+            c.gridy++
+            c.gridx = 0
+            c.fill = GridBagConstraints.BOTH
+            c.gridwidth = 2
+            c.weightx = 1.0
+            c.weighty = 0.1
+            c.insets = Pad.all(GAP)
             add(inpNote.scrolled())
 
             inpListColor.addSelectedValues(tongueDiagnosis.color)
@@ -322,8 +345,11 @@ class TongueDiagnosisRenderer(
     )
 
     override fun registerOnChange(changeListener: () -> Unit) {
+        inpListColor.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpListShape.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpListCoat.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpListSpecial.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
         inpNote.addChangeListener { changeListener() }
     }
 
 }
-

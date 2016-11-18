@@ -19,6 +19,7 @@ interface RepositoryFacade {
     fun findFor(dynTreatmentType: DynTreatments, treatmentId: String): DynTreatment?
     fun insert(dynTreatment: DynTreatment, treatmentId: String)
     fun delete(dynTreatment: DynTreatment, treatmentId: String)
+    fun deleteAll(treatmentId: String)
 }
 
 class RepositoryFacadeImpl @Inject constructor(
@@ -26,6 +27,7 @@ class RepositoryFacadeImpl @Inject constructor(
         private val tongueDiagnosisRepository: TongueDiagnosisRepository,
         private val bloodPressureRepository: BloodPressureRepository
 ) : RepositoryFacade {
+
     val reposByType: Map<DynTreatments, DynTreatmentRepository<out DynTreatment>>
 
     init {
@@ -63,6 +65,10 @@ class RepositoryFacadeImpl @Inject constructor(
         reposByType[dynTreatmentType]!!.delete(treatmentId)
     }
 
+    override fun deleteAll(treatmentId: String) {
+        reposByType.values.forEach { it.delete(treatmentId) }
+    }
+
 }
 
 class DynTreatmentServiceImpl @Inject constructor(
@@ -87,8 +93,9 @@ class DynTreatmentServiceImpl @Inject constructor(
     }
 
     override fun deleteAllFor(treatment: Treatment) {
-        treatment.dynTreatments.forEach {
-            repositoryFacade.delete(it, treatment.id!!)
-        }
+//        treatment.dynTreatments.forEach {
+//            repositoryFacade.delete(it, treatment.id!!)
+//        }
+        repositoryFacade.deleteAll(treatment.id!!)
     }
 }

@@ -1,5 +1,6 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.ShowDevWindowEvent
 import at.cpickl.gadsu.persistence.GADSU_DATABASE_DIRECTORY
@@ -48,7 +49,8 @@ class GadsuGuiceStarter @Inject constructor(
         private val bus: EventBus,
         private val mac: MacHandler,
         private val mainFrame: MainFrame,
-        private val prefs: Prefs
+        private val prefs: Prefs,
+        private val clientService: ClientService
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -65,8 +67,8 @@ class GadsuGuiceStarter @Inject constructor(
             if (Development.ENABLED) {
                 if (Development.SHOW_DEV_WINDOW_AT_STARTUP) {
                     bus.post(ShowDevWindowEvent())
+                    mainFrame.requestFocus()
                 }
-                mainFrame.requestFocus()
             }
         }
     }

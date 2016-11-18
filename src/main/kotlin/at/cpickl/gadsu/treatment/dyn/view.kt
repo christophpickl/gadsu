@@ -18,6 +18,10 @@ import javax.swing.JTabbedPane
 
 interface DynTreatmentRenderer {
 
+    companion object {
+        val GAP = 8
+    }
+
     /** will be reset after save */
     var originalDynTreatment: DynTreatment
     val view: JComponent
@@ -134,10 +138,6 @@ interface DynTreatmentRenderer {
 }
 
 @VisibleForTesting fun Treatment.areDynTreatmentsModified(renderers: Collection<DynTreatmentRenderer>): Boolean {
-    val xx = dynTreatments.map { it.javaClass }.sortedBy { it.name }
-    val yy = renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
-    val zz = xx != yy
-    return zz
-//    return dynTreatments.map { it.javaClass }.sortedBy { it.name } !=
-//            renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
+    return dynTreatments.map { it.javaClass }.sortedBy { it.name } !=
+            renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
 }

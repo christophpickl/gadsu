@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view.components.inputs
 
-import at.cpickl.gadsu.view.drawStringCentered
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
@@ -39,9 +38,8 @@ open class TriCheckBox<out T>(
         private val HEIGHT: Int
 
         init {
-//            val icon = UIManager.getIcon("CheckBox.icon")!!
-            WIDTH = 20//icon.iconWidth
-            HEIGHT = 20//icon.iconHeight
+            WIDTH = 25
+            HEIGHT = WIDTH
         }
     }
 
@@ -103,11 +101,23 @@ open class TriCheckBox<out T>(
             g.color = Color.BLACK
             val oldFont = g.font
             g.font = Font("Arial", Font.BOLD, 20)
-            g.drawStringCentered(if (selectionState == 1) "-" else "+", WIDTH, HEIGHT, 3)
+            g.drawStringCentered(if (selectionState == 1) "-" else "+")
             g.font = oldFont
         }
 
     }
+
+    private fun Graphics.drawStringCentered(string: String) {
+        val yAdjuster = 5
+        val xAdjuster = 1
+        val metrics = getFontMetrics(font)
+        val stringWidth = metrics.stringWidth(string)
+        val x = (WIDTH - stringWidth) / 2 + xAdjuster
+        val y = HEIGHT - yAdjuster // metrics.height does not work properly...
+
+        drawString(string, x, y)
+    }
+
 
     override fun getIconWidth() = WIDTH
     override fun getIconHeight() = HEIGHT

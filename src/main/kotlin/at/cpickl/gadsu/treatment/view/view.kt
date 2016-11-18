@@ -193,7 +193,10 @@ class SwingTreatmentView @Inject constructor(
     }
 
     private fun prepareSubTreatmentView() {
-        subTreatmentView.addTab(DYN_TAB_TITLE_ADD, JLabel("Füge einen neuen Behandlungsteil hinzu."))
+        subTreatmentView.addTab(DYN_TAB_TITLE_ADD, GridPanel().apply {
+            c.anchor = GridBagConstraints.CENTER
+            add(JLabel("Füge einen neuen Behandlungsteil hinzu."))
+        })
 
         treatment.dynTreatments.forEach { addDynTreatment(it) }
 
