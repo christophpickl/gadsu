@@ -27,7 +27,7 @@ import javax.swing.JLabel
 // MODEL
 // =====================================================================================================================
 
-private val HARA_TITLE = "Hara Diagnose"
+private val HARA_TITLE = "Hara"
 
 data class HaraDiagnosis(
         val kyos: List<MeridianAndPosition>,

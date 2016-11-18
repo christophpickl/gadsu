@@ -9,19 +9,22 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.addChangeListener
+import at.cpickl.gadsu.view.swing.Pad
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.awt.GridBagConstraints
 import java.sql.ResultSet
 import javax.inject.Inject
+import javax.swing.ImageIcon
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.JPanel
 
 
 // MODEL
 // =====================================================================================================================
 
-private val BLOOD_TITLE = "Blutdruck"
+private val BLOOD_TITLE = "Blut"
 
 data class BloodPressureMeasurement(
         val systolic: Int,
@@ -38,7 +41,10 @@ data class BloodPressure(
         val after: BloodPressureMeasurement
 ) : DynTreatment {
     companion object {
-        fun insertPrototype() = BloodPressure(BloodPressureMeasurement.insertPrototype(), BloodPressureMeasurement.insertPrototype())
+        fun insertPrototype() = BloodPressure(
+                BloodPressureMeasurement.insertPrototype(),
+                BloodPressureMeasurement.insertPrototype()
+        )
     }
 
     override val title: String get() = BLOOD_TITLE
@@ -110,24 +116,47 @@ private fun mapMeasurement(rs: ResultSet, columnPrefix: String): BloodPressureMe
 
 class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer {
 
-    private val beforeMeasure = BloodMeasurementPanel(bloodPressure.before)
-    private val afterMeasure = BloodMeasurementPanel(bloodPressure.after)
+    private val beforeMeasure = BloodMeasurementPanel("Davor", bloodPressure.before)
+    private val afterMeasure = BloodMeasurementPanel("Danach", bloodPressure.after)
 
     override var originalDynTreatment: DynTreatment = bloodPressure
 
     override val view: JComponent by lazy {
-        val panel = GridPanel()
+        GridPanel().apply {
+            val icon = ImageIcon(javaClass.getResource("/gadsu/images/hearbeat.png"))
 
-        panel.c.weightx = 1.0
-        panel.c.fill = GridBagConstraints.HORIZONTAL
-        panel.add(beforeMeasure)
-        panel.c.gridy++
-        panel.add(afterMeasure)
+            c.weightx = 1.0
+            c.weighty = 0.5
+            c.fill = GridBagConstraints.BOTH
+            add(JPanel()) // fill gap hack
 
-        panel
+            c.weighty = 0.0
+            c.fill = GridBagConstraints.NONE
+            c.insets = Pad.BOTTOM
+            c.anchor = GridBagConstraints.SOUTH
+            add(JLabel(icon))
+
+            c.gridy++
+            c.weighty = 0.0
+            c.fill = GridBagConstraints.HORIZONTAL
+            c.insets = Pad.ZERO
+            c.anchor = GridBagConstraints.NORTH
+            add(beforeMeasure)
+
+            c.gridy++
+            add(afterMeasure)
+
+            c.gridy++
+            c.weighty = 0.5
+            c.fill = GridBagConstraints.BOTH
+            add(JPanel()) // fill gap hack
+        }
     }
 
-    override fun readDynTreatment() = BloodPressure(beforeMeasure.readMeasurement(), afterMeasure.readMeasurement())
+    override fun readDynTreatment() = BloodPressure(
+            beforeMeasure.readMeasurement(),
+            afterMeasure.readMeasurement()
+    )
 
     override fun registerOnChange(changeListener: () -> Unit) {
         beforeMeasure.registerOnChange(changeListener)
@@ -135,7 +164,7 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
     }
 }
 
-private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : GridPanel() {
+private class BloodMeasurementPanel(label: String, initMeasure: BloodPressureMeasurement?) : GridPanel() {
 
     private val inpSystolic = NumberField(4, 0)
     private val inpDiastolic = NumberField(4, 0)
@@ -145,31 +174,14 @@ private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : Gr
     init {
         c.weightx = 0.0
         c.fill = GridBagConstraints.NONE
-        add(JLabel("Systolisch: "))
+
+        add(JLabel("$label (Sys/Dia/Freq): "))
 
         c.gridx++
-        c.weightx = 0.3
-        c.fill = GridBagConstraints.HORIZONTAL
         add(inpSystolic)
-
         c.gridx++
-        c.weightx = 0.0
-        c.fill = GridBagConstraints.NONE
-        add(JLabel("Diastolisch: "))
-
-        c.gridx++
-        c.weightx = 0.3
-        c.fill = GridBagConstraints.HORIZONTAL
         add(inpDiastolic)
-
         c.gridx++
-        c.weightx = 0.0
-        c.fill = GridBagConstraints.NONE
-        add(JLabel("Frequenz: "))
-
-        c.gridx++
-        c.weightx = 0.3
-        c.fill = GridBagConstraints.HORIZONTAL
         add(inpFrequency)
 
         if (initMeasure != null) {
@@ -179,13 +191,12 @@ private class BloodMeasurementPanel(initMeasure: BloodPressureMeasurement?) : Gr
         }
     }
 
-    fun readMeasurement(): BloodPressureMeasurement {
-        val systolic = inpSystolic.numberValue
-        val diastolic = inpDiastolic.numberValue
-        val frequency = inpFrequency.numberValue
-
-        return BloodPressureMeasurement(systolic, diastolic, frequency)
-    }
+    fun readMeasurement() =
+            BloodPressureMeasurement(
+                    inpSystolic.numberValue,
+                    inpDiastolic.numberValue,
+                    inpFrequency.numberValue
+            )
 
     fun registerOnChange(changeListener: () -> Unit) {
         inputs.forEach { it.addChangeListener { changeListener() } }

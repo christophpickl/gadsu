@@ -31,7 +31,7 @@ import javax.swing.ListSelectionModel
 // MODEL
 // =====================================================================================================================
 
-private val TITLE_TONGUE = "Zungendiagnose"
+private val TITLE_TONGUE = "Zunge"
 
 
 interface TonguePropertable {
