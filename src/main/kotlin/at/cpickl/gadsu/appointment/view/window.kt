@@ -51,7 +51,10 @@ class SwingAppointmentWindow @Inject constructor(
         private val mainFrame: MainFrame, // unfortunately we need the whole big mainframe to center this window
         internetController: InternetConnectionController,
         prefs: Prefs
-        // TODO make it a dialog. but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
+
+        // MINOR VIEW - make it a appointment frame a dialog
+        // but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
+
 //) : MyDialog(mainFrame.asJFrame(), "Termin"), AppointmentWindow, ModificationAware {
 ) : MyFrame("Termin"), AppointmentWindow, ModificationAware {
 

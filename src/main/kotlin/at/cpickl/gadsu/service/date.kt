@@ -36,7 +36,6 @@ fun DateTime.ensureNoSeconds() {
     }
 }
 
-// TODO dont do this! stop!
 fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
 
 fun DateTime.ensureQuarterMinute() {

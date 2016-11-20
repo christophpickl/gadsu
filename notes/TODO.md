@@ -31,7 +31,6 @@ High
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 * das rendering von spitznamen umaendern (Vorname Spitzname Nachname)
-* bei termine, den uhrzeit dropdown auf 30min intervall umaendern
 
 Med
 ---
@@ -62,6 +61,8 @@ Med
 * BUG: in TCM lists (not preselected)
 * das "erstellt am" feld dezenter machen; er hat probiert reinzuklicken, weils so im "flow der eingabe" im weg steht
 * in appointment window, mit ESC dialog close
+* cancel button for async dialog
+* WebLatestVersionFetcher return withTimeout(CONNECTION_TIMEOUT) {
 
 Low
 ---

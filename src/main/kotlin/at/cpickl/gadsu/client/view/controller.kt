@@ -251,7 +251,7 @@ open class ClientViewController @Inject constructor(
             dialogs.show(
                     title = "Speichern fehlgeschlagen",
                     message = "Die angegebene Email Adresse ist ungültig: ${client.contact.mail}",
-                    type = DialogType.ERROR
+                    type = DialogType.WARN
             )
         }
     }

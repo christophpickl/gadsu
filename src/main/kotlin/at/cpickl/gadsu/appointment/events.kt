@@ -22,7 +22,6 @@ class AppointmentDeletedEvent(val appointment: Appointment) : UserEvent() {
 }
 
 
-// TODO register for in ListController
 class AppointmentSavedEvent(val appointment: Appointment) : Event() {
     override fun toString() = MoreObjects.toStringHelper(this).add("appointment", appointment).toString()
 }

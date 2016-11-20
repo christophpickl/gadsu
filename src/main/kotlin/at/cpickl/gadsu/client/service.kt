@@ -51,7 +51,7 @@ open class ClientServiceImpl @Inject constructor(
 
     override fun findAll(filterState: ClientState?): List<Client> {
         return clientRepo.findAll(filterState).map {
-            // TODO performance improvement: dont ask DB for each client, but rather exec a bulk operation
+            // MINOR performance improvement: dont ask DB for each client, but rather exec a bulk operation
             it.copy(cprops = xpropsService.read(it))
         }
     }

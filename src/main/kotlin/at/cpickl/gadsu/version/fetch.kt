@@ -63,7 +63,6 @@ class WebLatestVersionFetcher(private val versionPropertiesFile: URL) : LatestVe
     override fun fetch(): Version {
         log.debug("fetch() ... url: {}", versionPropertiesFile)
 
-        // TODO return withTimeout(CONNECTION_TIMEOUT) {
         try {
             val fileContent = Resources.toString(versionPropertiesFile, Charsets.UTF_8).trim()
             return Version.parse(fileContent)

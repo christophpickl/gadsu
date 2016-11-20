@@ -76,8 +76,6 @@ class AsyncDialog(settings: AsyncDialogSettings, owner: JFrame?) : JDialog(owner
             weighty = 0.0
             insets = Pad.top(10)
             panel.add(progress)
-
-            // MINOR UI cancel button for async dialog
         }
 
         contentPane.layout = BorderLayout()

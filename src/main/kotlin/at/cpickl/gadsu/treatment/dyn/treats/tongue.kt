@@ -254,7 +254,7 @@ class TongueDiagnosisRenderer(
         bus: EventBus
 ) : DynTreatmentRenderer {
 
-    // TODO copy'n'paste as i dont get generics :(
+    // MINOR copy'n'paste as i dont get generics :(
     private val inpListColor = MyList("TongueDiagnosisRenderer.Color",
             MyListModel(Color.values().toList()), bus, TonguePropertableRenderer(), "Farbe")
     private val inpListShape = MyList("TongueDiagnosisRenderer.Shape",

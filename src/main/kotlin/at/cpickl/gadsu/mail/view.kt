@@ -53,8 +53,6 @@ class MailSwingView @Inject constructor(
     private val log = LOG(javaClass)
 
     private val clientsModel = MyListModel<Client>()
-
-    // TODO make it clickable just as TCM lists
     private val inpClients = MyList<Client>("MailView.clients", clientsModel, bus, object : MyListCellRenderer<Client>() {
         override fun newCell(value: Client) = MailClientCell(value)
     })
