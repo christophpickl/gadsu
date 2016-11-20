@@ -203,8 +203,13 @@ class PulseDiagnosisRenderer(
             c.weighty = 0.3
             add(inpNote.scrolled())
 
-            inpPulseProps.addSelectedValues(pulseDiagnosis.properties)
+            initValues(pulseDiagnosis)
         }
+    }
+
+    private fun initValues(pulseDiagnosis: PulseDiagnosis) {
+        inpPulseProps.addSelectedValues(pulseDiagnosis.properties)
+        inpNote.text = pulseDiagnosis.note
     }
 
     override fun readDynTreatment() = PulseDiagnosis(
