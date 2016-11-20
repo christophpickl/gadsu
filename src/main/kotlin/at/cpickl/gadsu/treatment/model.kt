@@ -84,7 +84,7 @@ data class Treatment(
                             aboutHomework: String = "",
                             aboutUpcoming: String = "",
                             note: String = "",
-                            dynTreatments: MutableList<DynTreatment> = mutableListOf(HaraDiagnosis.insertPrototype())
+                            dynTreatments: List<DynTreatment> = listOf(HaraDiagnosis.insertPrototype())
         ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
             return Treatment(

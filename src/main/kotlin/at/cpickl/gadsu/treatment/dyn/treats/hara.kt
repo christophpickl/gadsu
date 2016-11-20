@@ -39,7 +39,6 @@ data class HaraDiagnosis(
     companion object {
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
     }
-// FIXME when no dynTreat is there, and it is saved + navigate away and back => hara diagnosis is here again, but should be gone (only auto-insert for new treats)
     init {
         if (bestConnection != null) {
             if (!kyos.contains(bestConnection.first)) {

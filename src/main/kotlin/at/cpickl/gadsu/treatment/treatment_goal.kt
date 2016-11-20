@@ -3,10 +3,11 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratedEvent
-import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.colorByPercentage
 import at.cpickl.gadsu.view.swing.enforceSize
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import java.awt.Color
 import java.awt.Font
@@ -19,10 +20,9 @@ import javax.swing.JPanel
 @Logged
 open class TreatmentGoalController @Inject constructor(
     prefs: Prefs,
-    private val treatmentRepository: TreatmentRepository,
-    private val multiProtocolRepository: MultiProtocolRepository
+    private val treatmentRepository: TreatmentRepository
 ) {
-
+    private val log = LOG(javaClass)
     val enabled = prefs.preferencesData.treatmentGoal != null
     val view = TreatmentGoalView(prefs.preferencesData.treatmentGoal ?: 0, 0)
 
@@ -33,26 +33,34 @@ open class TreatmentGoalController @Inject constructor(
     }
 
     @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
-        view.increaseCurrent()
+        if (enabled) {
+            view.increaseCount()
+        }
     }
 
     @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
-        if (!event.treatmentHasBeenProtocolizedYet) {
-            view.decreaseCurrent()
+        if (enabled && !event.treatmentHasBeenProtocolizedYet) {
+            view.decreaseCount()
         }
     }
 
     @Subscribe open fun onMultiProtocolGeneratedEvent(event: MultiProtocolGeneratedEvent) {
-        updateTreatmentsNumber()
+        if (enabled) {
+            updateTreatmentsNumber()
+        }
     }
 
     private fun updateTreatmentsNumber() {
         val currentTreatments = treatmentRepository.countAllNonProtocolized()
-        view.updateCurrent(currentTreatments)
+        log.trace("updateTreatmentsNumber() ... currentTreatments = {}", currentTreatments)
+        view.updateCount(currentTreatments)
     }
 }
 
-class TreatmentGoalView(private val goal: Int, private var current: Int) : JPanel() {
+class TreatmentGoalView(
+        private val goal: Int,
+        @VisibleForTesting internal var count: Int
+) : JPanel() {
 
     companion object {
         private val RECT_HEIGHT = 2
@@ -66,22 +74,24 @@ class TreatmentGoalView(private val goal: Int, private var current: Int) : JPane
 
     init {
         enforceSize(preferredSize.width, COMPONENT_HEIGHT)
-        updateCurrent(current)
+        updateCount(count)
     }
 
-    fun increaseCurrent() {
-        updateCurrent(current + 1)
+    fun increaseCount() {
+        updateCount(count + 1)
     }
 
-    fun decreaseCurrent() {
-        updateCurrent(current - 1)
+    fun decreaseCount() {
+        updateCount(count - 1)
     }
 
-    fun updateCurrent(newCurrent: Int) {
-        if (newCurrent < 0) throw IllegalArgumentException("Treatment goal must not be negative! Was: $newCurrent")
-        current = newCurrent
-        progressText = "$current/$goal"
-        percentDone = (current.toDouble() / goal)
+    fun updateCount(newCount: Int) {
+        if (newCount < 0) {
+            throw IllegalArgumentException("Treatment goal must not be negative! Was: $newCount")
+        }
+        count = newCount
+        progressText = "$count/$goal"
+        percentDone = (count.toDouble() / goal)
         repaint()
     }
 
@@ -101,7 +111,7 @@ class TreatmentGoalView(private val goal: Int, private var current: Int) : JPane
 
         if (percentDone > 1.0) {
             // overgoal
-            val overGoalX = (rectWidth * (goal.toDouble() / current)).toInt()
+            val overGoalX = (rectWidth * (goal.toDouble() / count)).toInt()
             g.color = Color.BLUE
             g.fillRect(overGoalX, yPos, rectWidth - overGoalX + 1, RECT_HEIGHT)
         } else {

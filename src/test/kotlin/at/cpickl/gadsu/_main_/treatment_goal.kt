@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
             add(JLabel("Current: "))
             add(txt)
 
-            add(JButton("Update").apply { addActionListener { view.updateCurrent(txt.numberValue) } })
+            add(JButton("Update").apply { addActionListener { view.updateCount(txt.numberValue) } })
         }, BorderLayout.NORTH)
 
         add(view, BorderLayout.CENTER)

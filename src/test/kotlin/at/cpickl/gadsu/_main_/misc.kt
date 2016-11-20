@@ -44,7 +44,7 @@ fun treatmentGoal() = JPanel().apply {
         add(txt)
         add(JButton("Change").apply {
             addActionListener {
-                view.updateCurrent(txt.numberValue)
+                view.updateCount(txt.numberValue)
             }
         })
     }, BorderLayout.NORTH)

@@ -27,6 +27,17 @@ import at.cpickl.gadsu.treatment.CurrentTreatment
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.DynTreatments
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentsCallback
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureMeasurement
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.MeridianAndPosition
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty
 import at.cpickl.gadsu.treatment.forTreatment
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
@@ -106,8 +117,8 @@ open class DevelopmentController @Inject constructor(
 
                 ),
                 Client.INSERT_PROTOTYPE.copy(
-                        firstName = "Anna",
-                        lastName = "Nym",
+                        firstName = "Xnna",
+                        lastName = "Xym",
                         countryOfOrigin = "Austria",
                         gender = Gender.FEMALE,
                         picture = MyImage.DEFAULT_PROFILE_WOMAN,
@@ -137,8 +148,7 @@ open class DevelopmentController @Inject constructor(
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 2,
-                                date = firstDate.plusWeeks(1),
-                                note = ""
+                                date = firstDate.plusWeeks(1)
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
@@ -151,7 +161,30 @@ open class DevelopmentController @Inject constructor(
                                 number = 4,
                                 date = firstDate.plusWeeks(3),
                                 duration = minutes(30),
-                                note = "Was a quick one"
+                                note = "Was a quick one",
+                                dynTreatments = DynTreatments.values().map { it.call(object : DynTreatmentsCallback<DynTreatment> {
+                                    override fun onHaraDiagnosis() = HaraDiagnosis(
+                                            kyos = listOf(MeridianAndPosition.LargeIntestineLeft),
+                                            jitsus = listOf(MeridianAndPosition.Liver),
+                                            bestConnection = Pair(MeridianAndPosition.LargeIntestineLeft, MeridianAndPosition.Liver),
+                                            note = "* oberer bereich war hart"
+                                    )
+                                    override fun onTongueDiagnosis() = TongueDiagnosis(
+                                            color = listOf(TongueProperty.Color.DarkRed),
+                                            shape = listOf(TongueProperty.Shape.Flaccid),
+                                            coat = listOf(TongueProperty.Coat.Yellow),
+                                            special = listOf(TongueProperty.Special.MiddleCrack),
+                                            note = "* grooosser mittelrisse!"
+                                    )
+                                    override fun onPulseDiagnosis() = PulseDiagnosis(
+                                            properties = listOf(PulseProperty.Deep, PulseProperty.Full),
+                                            note = "* helle, zarte haut beim palpieren"
+                                    )
+                                    override fun onBloodPressure() = BloodPressure(
+                                            before = BloodPressureMeasurement(80, 120, 60),
+                                            after = BloodPressureMeasurement(70, 110, 50)
+                                    )
+                                }) }
                         )
                 ).forEach {
                     treatmentService.insert(it)
