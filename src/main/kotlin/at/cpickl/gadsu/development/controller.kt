@@ -143,18 +143,21 @@ open class DevelopmentController @Inject constructor(
                                 aboutDiagnosis = "Ihm gings ganz ganz schlecht.",
                                 aboutContent = "Den Herzmeridian hab ich behandelt.",
                                 aboutHomework = "Er soll mehr sport machen, eh kloa. Und weniger knoblauch essen!",
-                                note = "Aja, und der kommentar passt sonst nirgends rein ;)"
+                                note = "Aja, und der kommentar passt sonst nirgends rein ;)",
+                                dynTreatments = emptyList()
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 2,
-                                date = firstDate.plusWeeks(1)
+                                date = firstDate.plusWeeks(1),
+                                dynTreatments = emptyList()
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 3,
                                 date = firstDate.plusWeeks(2),
-                                note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. "
+                                note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. ",
+                                dynTreatments = emptyList()
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,

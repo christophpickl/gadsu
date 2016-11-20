@@ -328,12 +328,16 @@ class TongueDiagnosisRenderer(
             c.insets = Pad.all(GAP)
             add(inpNote.scrolled())
 
-            inpListColor.addSelectedValues(tongueDiagnosis.color)
-            inpListShape.addSelectedValues(tongueDiagnosis.shape)
-            inpListCoat.addSelectedValues(tongueDiagnosis.coat)
-            inpListSpecial.addSelectedValues(tongueDiagnosis.special)
-            inpNote.text = tongueDiagnosis.note
+            initValues(tongueDiagnosis)
         }
+    }
+
+    private fun initValues(tongueDiagnosis: TongueDiagnosis) {
+        inpListColor.addSelectedValues(tongueDiagnosis.color)
+        inpListShape.addSelectedValues(tongueDiagnosis.shape)
+        inpListCoat.addSelectedValues(tongueDiagnosis.coat)
+        inpListSpecial.addSelectedValues(tongueDiagnosis.special)
+        inpNote.text = tongueDiagnosis.note
     }
 
     override fun readDynTreatment() = TongueDiagnosis(

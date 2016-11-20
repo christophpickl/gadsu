@@ -26,20 +26,17 @@ T-O-D-O
 High
 ------------------------------------------------------------
 * !!! mit CMD+links/rechts (rauf runter) NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
-
 * BUG: release version got a "-SNAPSHOT" metainf!
-* BUG: all preferences are lost on new gadsu version
-* hara diagnose form
-* blutdruck input
 * neue anamnese formular ausarbeiten
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
-* dynamic treatment components (hara diagnose, yu punkte, blutdruck; zunge, puls)
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 * das rendering von spitznamen umaendern (Vorname Spitzname Nachname)
 * bei termine, den uhrzeit dropdown auf 30min intervall umaendern
 
 Med
 ---
+* wahlfrei in treatments navigieren, nicht nur links/rechts, sondern auch zb durch nummerneingabe/dropdown direkt hin
+* dyn treatment: rueckendiagnose, yu punkte, bo punkte
 * upgrade to gradle 3
 * maybe when splitting up into gradle modules, things will speed up?!
 * when client changes detected, user confirms, then select the clicked one to save one click

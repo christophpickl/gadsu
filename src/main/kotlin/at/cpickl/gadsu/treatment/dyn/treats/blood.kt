@@ -115,8 +115,8 @@ private fun mapMeasurement(rs: ResultSet, columnPrefix: String): BloodPressureMe
 
 class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer {
 
-    private val beforeMeasure = BloodMeasurementPanel("Davor", bloodPressure.before)
-    private val afterMeasure = BloodMeasurementPanel("Danach", bloodPressure.after)
+    private val beforeMeasure = BloodMeasurementPanel("Davor")
+    private val afterMeasure = BloodMeasurementPanel("Danach")
 
     override var originalDynTreatment: DynTreatment = bloodPressure
 
@@ -150,7 +150,14 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
             c.weighty = 0.5
             c.fill = GridBagConstraints.BOTH
             add(JLabel()) // fill gap hack
+
+            initValues(bloodPressure)
         }
+    }
+
+    private fun initValues(bloodPressure: BloodPressure) {
+        beforeMeasure.measurement = bloodPressure.before
+        afterMeasure.measurement = bloodPressure.after
     }
 
     override fun readDynTreatment() = BloodPressure(
@@ -164,12 +171,22 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
     }
 }
 
-private class BloodMeasurementPanel(label: String, initMeasure: BloodPressureMeasurement?) : GridPanel() {
+private class BloodMeasurementPanel(label: String, initMeasurement: BloodPressureMeasurement? = null) : GridPanel() {
 
     private val inpSystolic = NumberField(4, 0)
     private val inpDiastolic = NumberField(4, 0)
     private val inpFrequency = NumberField(4, 0)
     private val inputs = arrayOf(inpSystolic, inpDiastolic, inpFrequency)
+
+    var measurement: BloodPressureMeasurement
+        get() {
+            return readMeasurement()
+        }
+        set(value) {
+            inpSystolic.numberValue = value.systolic
+            inpDiastolic.numberValue = value.diastolic
+            inpFrequency.numberValue = value.frequency
+        }
 
     init {
         c.weightx = 0.0
@@ -184,10 +201,8 @@ private class BloodMeasurementPanel(label: String, initMeasure: BloodPressureMea
         c.gridx++
         add(inpFrequency)
 
-        if (initMeasure != null) {
-            inpSystolic.numberValue = initMeasure.systolic
-            inpDiastolic.numberValue = initMeasure.diastolic
-            inpFrequency.numberValue = initMeasure.frequency
+        if (initMeasurement != null) {
+            measurement = initMeasurement
         }
     }
 

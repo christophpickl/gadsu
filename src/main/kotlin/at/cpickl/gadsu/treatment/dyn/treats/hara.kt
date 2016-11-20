@@ -39,6 +39,7 @@ data class HaraDiagnosis(
     companion object {
         fun insertPrototype() = HaraDiagnosis(emptyList(), emptyList(), null, "")
     }
+
     init {
         if (bestConnection != null) {
             if (!kyos.contains(bestConnection.first)) {
@@ -264,27 +265,31 @@ class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer
     override var originalDynTreatment: DynTreatment = haraDiagnosis
 
     override val view: JComponent by lazy {
-        val panel = GridPanel()
+        GridPanel().apply {
+            c.fill = GridBagConstraints.HORIZONTAL
+            c.weightx = 1.0
+            c.weighty = 0.0
+            add(kyoJitsuPanel())
+            c.gridy++
+            c.fill = GridBagConstraints.BOTH
+            c.weighty = 1.0
+            c.insets = Pad.all(DynTreatmentRenderer.GAP)
+            add(inpNote.scrolled())
 
-        panel.c.fill = GridBagConstraints.HORIZONTAL
-        panel.c.weightx = 1.0
-        panel.c.weighty = 0.0
-        panel.add(kyoJitsuPanel())
-
-        panel.c.gridy++
-        panel.c.fill = GridBagConstraints.BOTH
-        panel.c.weighty = 1.0
-        panel.c.insets = Pad.all(DynTreatmentRenderer.GAP)
-        panel.add(inpNote.scrolled())
-
-        mapOfCheckboxes.values.forEach { it.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus) }
-        if (haraDiagnosis.bestConnection != null) {
-            mapOfCheckboxes[haraDiagnosis.bestConnection.first]!!.altSelectionState = true
-            mapOfCheckboxes[haraDiagnosis.bestConnection.second]!!.altSelectionState = true
+            initValues(haraDiagnosis)
         }
-        inpNote.text = haraDiagnosis.note
+    }
 
-        panel
+    private fun initValues(haraDiagnosis: HaraDiagnosis) {
+        mapOfCheckboxes.values.forEach { it.initSelectionState(haraDiagnosis.kyos, haraDiagnosis.jitsus) }
+
+        val bestConnection = haraDiagnosis.bestConnection
+        if (bestConnection != null) {
+            mapOfCheckboxes[bestConnection.first]!!.altSelectionState = true
+            mapOfCheckboxes[bestConnection.second]!!.altSelectionState = true
+        }
+
+        inpNote.text = haraDiagnosis.note
     }
 
     private fun kyoJitsuPanel(): JComponent {
