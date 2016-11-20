@@ -25,6 +25,24 @@ import com.google.inject.spi.TypeEncounter
 import com.google.inject.spi.TypeListener
 import org.slf4j.LoggerFactory
 
+fun allGadsuModules(databaseUrl: String? = null) = listOf(
+        PersistenceModule(databaseUrl),
+        ServiceModule(),
+        ViewModule(),
+        ClientModule(),
+        TreatmentModule(),
+        AppointmentModule(),
+        ImageModule(),
+        ExportModule(),
+        PreferencesModule(),
+        AcupunctureModule(),
+        ReportModule(),
+        AopModule(),
+        DevelopmentModule(),
+        VersionModule(),
+        MailModule()
+)
+
 class GadsuModule(private val args: Args) : AbstractModule() {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -51,24 +69,9 @@ class GadsuModule(private val args: Args) : AbstractModule() {
     }
 
     private fun installSubModules(args: Args) {
-        install(PersistenceModule(args.databaseUrl))
-        install(ServiceModule())
-        install(ViewModule())
-
-        install(ClientModule())
-        install(TreatmentModule())
-        install(AppointmentModule())
-
-        install(ImageModule())
-        install(ExportModule())
-        install(PreferencesModule())
-        install(AcupunctureModule())
-        install(ReportModule())
-
-        install(AopModule())
-        install(DevelopmentModule())
-        install(VersionModule())
-        install(MailModule())
+        allGadsuModules(args.databaseUrl).forEach {
+            install(it)
+        }
     }
 
     override fun install(module: Module) {

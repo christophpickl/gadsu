@@ -186,6 +186,7 @@ class SwingTreatmentView @Inject constructor(
 
             gridx++
             weightx = 0.0
+            insets = Pad.left(8)
             subTreatmentView.enforceWidth(400)
             panel.add(subTreatmentView)
         }

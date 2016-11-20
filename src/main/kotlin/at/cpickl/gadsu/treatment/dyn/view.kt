@@ -59,7 +59,7 @@ interface DynTreatmentRenderer {
             override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = HaraDiagnosisRenderer(haraDiagnosis)
             override fun onBloodPressure(bloodPressure: BloodPressure) = BloodPressureRenderer(bloodPressure)
             override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = TongueDiagnosisRenderer(tongueDiagnosis, bus)
-            override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = PulseDiagnosisRenderer(pulseDiagnosis)
+            override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = PulseDiagnosisRenderer(pulseDiagnosis, bus)
         })
 
         insertTab(dynTreatment.title, null, renderer.view, null, addIndex)

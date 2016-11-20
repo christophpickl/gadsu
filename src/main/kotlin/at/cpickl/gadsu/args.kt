@@ -38,6 +38,9 @@ interface ArgsParser {
     fun parse(cliArgs: Array<String>): Args
 }
 
+/**
+ * @param databaseUrl e.g.: "jdbc:hsqldb:mem:mymemdb" or (default): "jdbc:hsqldb:file:$DB_DIR/database"
+ */
 data class Args(val help: ((e: ArgsException?) -> Unit)?,
                 val databaseUrl: String?,
                 val debug: Boolean,

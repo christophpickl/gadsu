@@ -5,13 +5,26 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
+import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.MyListCellRenderer
+import at.cpickl.gadsu.view.components.MyListModel
+import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.addChangeListener
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.scrolled
+import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
+import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.ListSelectionModel
 
 
 // MODEL
@@ -19,10 +32,34 @@ import javax.swing.JLabel
 
 private val TITLE_PULSE = "Puls"
 
+// https://www.tcm24.de/pulsdiagnostik/
 enum class PulseProperty(val label: String, val sqlCode: String) {
+
     Superficial("oberflächlich", "SUPERFICIAL"),
-    Deep("tief", "DEEP")
-    // FIXME more enums
+    Deep("tief", "DEEP"),
+
+    // frequence
+    Fast("schnell", "FAST"),
+    Slow("langsam", "SLOW"),
+
+    // shape
+    Full("voll", "FULL"),
+    Empty("leer", "EMPTY"),
+    Sharp("spitz", "SHARP"),
+    Round("rund", "ROUND"),
+    Slipery("rutschig", "SLIPERY"),
+    Hesitate("zögernd", "HESITATE"),
+    // ansteigend
+    // fadenfoermig
+    // saitenaehnlich
+    // gespannt
+    // abrupt
+    Soft("weich", "SOFT"),
+    Raugh("rauh", "RAUGH"),
+    Wiry("drahtig", "WIRY"),
+
+    Rhythmical("rhythmisch", "RHYTHMICAL"),
+    Arhythmical("arhythmisch", "ARHYTHMICAL")
     ;
 
     companion object {
@@ -123,22 +160,61 @@ private val RawPulseProperty.Companion.ROW_MAPPER: RowMapper<RawPulseProperty>
 // VIEW
 // =====================================================================================================================
 
+private class PulsePropertyCellView(value: PulseProperty) : DefaultCellView<PulseProperty>(value) {
+
+    private val label = JLabel(value.label)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(label)
+
+    init {
+        c.weightx = 1.0
+        c.fill = GridBagConstraints.HORIZONTAL
+        add(label)
+    }
+}
+
 class PulseDiagnosisRenderer(
-        pulseDiagnosis: PulseDiagnosis
+        pulseDiagnosis: PulseDiagnosis,
+        bus: EventBus
 ) : DynTreatmentRenderer {
 
     override var originalDynTreatment: DynTreatment = pulseDiagnosis
 
+    private val inpPulseProps = MyList("PulseDiagnosisRenderer.Properties",
+            MyListModel(PulseProperty.values().toList()), bus, object : MyListCellRenderer<PulseProperty>() {
+        override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
+    }).apply {
+        selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+        enableToggleSelectionMode()
+    }
+
+    private val inpNote = MyTextArea("PulseDiagnosisRenderer.inpNote", 1)
+
     override val view: JComponent by lazy {
         GridPanel().apply {
-            add(JLabel("tongue (enum, note)"))
+            c.weightx = 1.0
+
+            c.fill = GridBagConstraints.BOTH
+            c.weighty = 0.7
+            c.insets = Insets(GAP, GAP, 0, GAP)
+            add(inpPulseProps.scrolled())
+
+            c.gridy++
+            c.insets = Pad.all(GAP)
+            c.weighty = 0.3
+            add(inpNote.scrolled())
+
+            inpPulseProps.addSelectedValues(pulseDiagnosis.properties)
         }
     }
 
-    override fun readDynTreatment() = PulseDiagnosis(emptyList(), "")
+    override fun readDynTreatment() = PulseDiagnosis(
+            inpPulseProps.selectedValuesList,
+            inpNote.text
+    )
 
     override fun registerOnChange(changeListener: () -> Unit) {
-        // FIXME
+        inpPulseProps.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpNote.addChangeListener { changeListener() }
     }
 
 }

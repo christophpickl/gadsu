@@ -18,7 +18,6 @@ import javax.inject.Inject
 import javax.swing.ImageIcon
 import javax.swing.JComponent
 import javax.swing.JLabel
-import javax.swing.JPanel
 
 
 // MODEL
@@ -128,11 +127,12 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
             c.weightx = 1.0
             c.weighty = 0.5
             c.fill = GridBagConstraints.BOTH
-            add(JPanel()) // fill gap hack
+            add(JLabel()) // fill gap hack
 
+            c.gridy++
             c.weighty = 0.0
             c.fill = GridBagConstraints.NONE
-            c.insets = Pad.BOTTOM
+            c.insets = Pad.bottom(20)
             c.anchor = GridBagConstraints.SOUTH
             add(JLabel(icon))
 
@@ -149,7 +149,7 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
             c.gridy++
             c.weighty = 0.5
             c.fill = GridBagConstraints.BOTH
-            add(JPanel()) // fill gap hack
+            add(JLabel()) // fill gap hack
         }
     }
 
