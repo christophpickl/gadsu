@@ -45,7 +45,7 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun save(treatment: Treatment, returnToClientView: Boolean = false) {
         openNewButton.click()
-        // TODO @TEST - change date as well (DatePicker aufbrechen und in die interne reingreifen mit static casts)
+        // MINOR @TEST - change date as well (DatePicker aufbrechen und in die interne reingreifen mit static casts)
         inputNote.text = treatment.note
         saveButton.click()
 

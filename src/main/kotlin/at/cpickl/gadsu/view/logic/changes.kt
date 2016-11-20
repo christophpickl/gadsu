@@ -38,7 +38,7 @@ class ChangesChecker(
         when (result) {
             "Speichern" -> {
                 callback.save()
-                // TODO it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
+                // would be nice to CONTINUE, but ... difficult
                 return ChangeBehaviour.ABORT
             }
             "\u00c4nderungen verwerfen" -> {

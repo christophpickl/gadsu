@@ -4,7 +4,6 @@ import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.QuitAskEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
-import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientChangeStateEvent
@@ -48,29 +47,13 @@ import javax.swing.JPopupMenu
 import javax.swing.KeyStroke
 
 
-enum class MenuBarEntry {
-    REPORT_PROTOCOL,
-    REPORT_MULTI_PROTOCOL,
-    RECONNECT_INTERNET_CONNECTION,
-    SEND_MAIL
-}
-
-class MenuBarEntryClickedEvent(val entry: MenuBarEntry) : UserEvent() {
-    override fun toString(): String{
-        return "MenuBarEntryClickedEvent(entry=$entry)"
-    }
-}
-
-
 @Logged
 open class GadsuMenuBarController @Inject constructor(
         private val menu: GadsuMenuBar,
-        private val bus: EventBus,
         private val currentClient: CurrentClient,
         private val masterView: ClientMasterView
 ) {
 
-    // initialize at startup
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
         menu.contentType = MainContentType.CLIENT
         menu.currentClient(currentClient.data)
@@ -82,19 +65,6 @@ open class GadsuMenuBarController @Inject constructor(
     @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
         menu.contentType = event.newContent.type
         menu.currentClient(currentClient.data) // re-initialize menu bar for client specific items
-    }
-
-    @Subscribe open fun onMenuBarEntryClickedEvent(event: MenuBarEntryClickedEvent) {
-        when (event.entry) {
-            // client must never be null, as menu item will be disabled if there is no client
-            // TODO @REFACTOR - rethink this double dispatching. aint necessary :-/
-            MenuBarEntry.REPORT_PROTOCOL -> bus.post(CreateProtocolEvent())
-            MenuBarEntry.REPORT_MULTI_PROTOCOL -> bus.post(RequestCreateMultiProtocolEvent())
-
-//            else -> throw GadsuException("Unhandled menu bar entry: ${event.entry}")
-            MenuBarEntry.RECONNECT_INTERNET_CONNECTION -> bus.post(ReconnectInternetConnectionEvent())
-            MenuBarEntry.SEND_MAIL -> bus.post(RequestPrepareMailEvent())
-        }.javaClass // enforce compiler to ensure all branches are covered
     }
 
     @Subscribe open fun onCurrentChangedEvent(event: CurrentChangedEvent) {
@@ -159,7 +129,7 @@ open class GadsuMenuBar @Inject constructor(
             val entriesToShow = when (field) {
                 MainContentType.CLIENT -> clientEntries
                 MainContentType.TREATMENT -> treatmentEntries
-            }.apply { forEach { it.isVisible = true} }
+            }.apply { forEach { it.isVisible = true } }
             allEntries.filter { it != entriesToShow }.forEach { it.forEach { it.isVisible = false } }
         }
 
@@ -173,6 +143,10 @@ open class GadsuMenuBar @Inject constructor(
         Development.fiddleAroundWithMenuBar(this, bus)
     }
 
+    @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
+        itemReconnect.isVisible = !event.isConnected
+    }
+
     private fun menuApp(): JMenu {
         val menuApp = JMenu("Datei")
 
@@ -181,15 +155,14 @@ open class GadsuMenuBar @Inject constructor(
             menuApp.addItem("Einstellungen", { ShowPreferencesEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, SHORTCUT_MODIFIER))
             menuApp.addSeparator()
         }
-
-        itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { MenuBarEntryClickedEvent(MenuBarEntry.RECONNECT_INTERNET_CONNECTION) })
+        itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { ReconnectInternetConnectionEvent() })
         itemReconnect.isVisible = false
 //        val itemExport = JMenuItem("Export")
 //        itemExport.isEnabled = false
 //        menuApp.add(itemExport)
 
         menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
-        menuApp.addItem("Mails versenden", { MenuBarEntryClickedEvent(MenuBarEntry.SEND_MAIL) })
+        menuApp.addItem("Mails versenden", { RequestPrepareMailEvent() })
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()
@@ -219,10 +192,6 @@ open class GadsuMenuBar @Inject constructor(
         add(treatmentNext)
     }
 
-    @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
-        itemReconnect.isVisible = !event.isConnected
-    }
-
     fun currentClient(client: Client?) {
         log.trace("currentClient(client={})", client)
         val isPersisted = client?.yetPersisted ?: false
@@ -242,9 +211,9 @@ open class GadsuMenuBar @Inject constructor(
 
         itemProtocol.isEnabled = false
         itemProtocol.name = ViewNames.MenuBar.ProtocolGenerate
-        itemProtocol.addActionListener { bus.post(MenuBarEntryClickedEvent(MenuBarEntry.REPORT_PROTOCOL)) }
+        itemProtocol.addActionListener { bus.post(CreateProtocolEvent()) }
         menuReports.add(itemProtocol)
-        menuReports.addItem("Sammelprotokoll erstellen", { MenuBarEntryClickedEvent(MenuBarEntry.REPORT_MULTI_PROTOCOL) })
+        menuReports.addItem("Sammelprotokoll erstellen", { RequestCreateMultiProtocolEvent() })
 
         menuReports.addSeparator()
         menuReports.add(printReportMenu(FormType.ANAMNESE))
@@ -256,8 +225,8 @@ open class GadsuMenuBar @Inject constructor(
     private fun printReportMenu(type: FormType) = JMenu(type.label).apply {
         val printItem = JMenuItem("Drucken")
         val saveItem = JMenuItem("Speichern")
-        printItem.addActionListener { bus.post(PrintFormEvent(type))}
-        saveItem.addActionListener { bus.post(FormSaveEvent(type))}
+        printItem.addActionListener { bus.post(PrintFormEvent(type)) }
+        saveItem.addActionListener { bus.post(FormSaveEvent(type)) }
         add(printItem)
         add(saveItem)
     }

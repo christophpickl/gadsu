@@ -34,6 +34,7 @@ High
 
 Med
 ---
+* ChangesChecker it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
 * wahlfrei in treatments navigieren, nicht nur links/rechts, sondern auch zb durch nummerneingabe/dropdown direkt hin
 * dyn treatment: rueckendiagnose, yu punkte, bo punkte
 * upgrade to gradle 3
@@ -63,6 +64,7 @@ Med
 * in appointment window, mit ESC dialog close
 * cancel button for async dialog
 * WebLatestVersionFetcher return withTimeout(CONNECTION_TIMEOUT) {
+* TEST with guice enabled tests: build testinfra/guice.kt
 
 Low
 ---
