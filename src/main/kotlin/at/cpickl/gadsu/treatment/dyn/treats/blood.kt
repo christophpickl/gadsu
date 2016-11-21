@@ -136,15 +136,18 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
             c.anchor = GridBagConstraints.SOUTH
             add(JLabel(icon))
 
+
             c.gridy++
             c.weighty = 0.0
             c.fill = GridBagConstraints.HORIZONTAL
             c.insets = Pad.ZERO
             c.anchor = GridBagConstraints.NORTH
-            add(beforeMeasure)
-
-            c.gridy++
-            add(afterMeasure)
+            add(GridPanel().apply {
+                beforeMeasure.addYourself(this)
+                c.gridx = 0
+                c.gridy++
+                afterMeasure.addYourself(this)
+            })
 
             c.gridy++
             c.weighty = 0.5
@@ -171,11 +174,12 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
     }
 }
 
-private class BloodMeasurementPanel(label: String, initMeasurement: BloodPressureMeasurement? = null) : GridPanel() {
+private class BloodMeasurementPanel(label: String, initMeasurement: BloodPressureMeasurement? = null) {
 
-    private val inpSystolic = NumberField(4, 0)
-    private val inpDiastolic = NumberField(4, 0)
-    private val inpFrequency = NumberField(4, 0)
+    val inpSystolic = NumberField(4, 0)
+    val inpDiastolic = NumberField(4, 0)
+    val inpFrequency = NumberField(4, 0)
+    val label = JLabel("$label (Sys/Dia/Freq): ")
     private val inputs = arrayOf(inpSystolic, inpDiastolic, inpFrequency)
 
     var measurement: BloodPressureMeasurement
@@ -189,18 +193,6 @@ private class BloodMeasurementPanel(label: String, initMeasurement: BloodPressur
         }
 
     init {
-        c.weightx = 0.0
-        c.fill = GridBagConstraints.NONE
-
-        add(JLabel("$label (Sys/Dia/Freq): "))
-
-        c.gridx++
-        add(inpSystolic)
-        c.gridx++
-        add(inpDiastolic)
-        c.gridx++
-        add(inpFrequency)
-
         if (initMeasurement != null) {
             measurement = initMeasurement
         }
@@ -215,5 +207,20 @@ private class BloodMeasurementPanel(label: String, initMeasurement: BloodPressur
 
     fun registerOnChange(changeListener: () -> Unit) {
         inputs.forEach { it.addChangeListener { changeListener() } }
+    }
+
+    fun addYourself(panel: GridPanel) {
+        panel.apply {
+            c.anchor = GridBagConstraints.EAST
+            add(label)
+
+            c.anchor = GridBagConstraints.CENTER
+            c.gridx++
+            add(inpSystolic)
+            c.gridx++
+            add(inpDiastolic)
+            c.gridx++
+            add(inpFrequency)
+        }
     }
 }
