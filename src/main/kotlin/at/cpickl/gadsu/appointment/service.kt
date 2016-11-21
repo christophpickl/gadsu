@@ -79,10 +79,12 @@ class AppointmentServiceImpl @Inject constructor(
         } else {
             val client = clientRepository.findById(appointment.clientId)
             val maybeGcalId = gcal.createEvent(GCalEvent(
+                    id = null,
                     summary = client.fullName,
                     description = appointment.note,
                     start = appointment.start,
-                    end = appointment.end
+                    end = appointment.end,
+                    url = null
             ))
             val savedAppointment = repository.insert(appointment.copy(gcalId = maybeGcalId?.id, gcalUrl = maybeGcalId?.url))
             bus.post(AppointmentSavedEvent(savedAppointment))

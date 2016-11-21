@@ -14,7 +14,7 @@ import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.closeOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.isTransparent
@@ -96,7 +96,7 @@ class SwingPreferencesFrame @Inject constructor(
         }
 
     init {
-        closeOnEscape()
+        registerCloseOnEscape()
 
         name = ViewNames.Preferences.Window
         addCloseListener { doClose(false) }

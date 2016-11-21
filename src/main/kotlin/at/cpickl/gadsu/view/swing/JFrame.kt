@@ -15,7 +15,7 @@ interface ClosableWindow {
 
 
 
-fun <W : ClosableWindow> W.closeOnEscape(): W {
+fun <W : ClosableWindow> W.registerCloseOnEscape(): W {
     val component = getContentPane() as JComponent // hacky-da-hack ;)
     component.registerMyKeyListener(MyKeyListener.onEscape("disposeMyWindow", { closeWindow() }))
 //    val inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)

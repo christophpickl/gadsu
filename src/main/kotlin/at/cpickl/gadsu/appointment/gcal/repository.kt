@@ -6,10 +6,12 @@ import com.google.api.services.calendar.model.Event
 import org.joda.time.DateTime
 
 data class GCalEvent(
+        val id: String?,
         val summary: String,
         val description: String,
         val start: org.joda.time.DateTime,
-        val end: org.joda.time.DateTime
+        val end: org.joda.time.DateTime,
+        val url: String?
 )
 
 data class GCalUpdateEvent(
@@ -114,10 +116,12 @@ class RealGCalRepository constructor(
 
     private fun Event.toGCalEvent(): GCalEvent {
         return GCalEvent(
+                id = this.iCalUID, // TODO or just id?
                 summary = this.summary ?: "",
                 description = this.description ?: "",
                 start = this.start.toDateTime(),
-                end = this.end.toDateTime()
+                end = this.end.toDateTime(),
+                url = this.htmlLink
         )
     }
 

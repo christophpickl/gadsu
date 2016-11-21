@@ -2,7 +2,6 @@ package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.GCalService
-import at.cpickl.gadsu.appointment.gcal.sync.MatchClients
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
@@ -16,7 +15,9 @@ interface SyncService {
 
 }
 
-data class SyncReport(val eventsAndClients: Map<GCalEvent, List<Client>>)
+data class SyncReport(val eventsAndClients: Map<GCalEvent, List<Client>>) {
+    companion object {} // for extensions only
+}
 
 class GCalSyncService @Inject constructor(
         private val gcal: GCalService,
