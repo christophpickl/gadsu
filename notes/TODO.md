@@ -26,11 +26,10 @@ T-O-D-O
 High
 ------------------------------------------------------------
 * !!! mit CMD+links/rechts (rauf runter) NICHT mehr navigieren, weils fuer textarea gebraucht wird!!!
-* BUG: release version got a "-SNAPSHOT" metainf!
 * neue anamnese formular ausarbeiten
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
-* das rendering von spitznamen umaendern (Vorname Spitzname Nachname)
+* visual indicate long numbers in client-list-cell (je mehr behandlungen, je mehr tage vergangen since last) => mit hintergrund balken laenge/farbe aendern
 
 Med
 ---
@@ -68,6 +67,7 @@ Med
 
 Low
 ---
+* nice mac DMG window (background image)
 * search for clients
 * use some nice drag'n'drop feature
 * ad appointment:
@@ -86,7 +86,6 @@ Low
 * switch to HSQLDB's new UUID type for ID columns
 * @TECH: use custom AOP annotation to ensure transaction safety
 * [2] REFACT: split ClientViewController for master and detail
-* check there are no snapshots during release.sh
 * @UI: https://tips4java.wordpress.com/2010/11/28/combo-box-popup/
 * @Languages check default system property for language (luxury: configurable via preferences)
 * @UI: JDatePicker seems to support JodaTime (see their website) 
