@@ -90,7 +90,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         }
     }
 
-    private val nameLbl = JLabel("${client.preferredName} ${client.lastName}".wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
+    private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
     private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.recentTreatmentCount))
