@@ -57,8 +57,8 @@ enum class TongueProperty {;
         RedSides("roter Rand", "RED SIDES"),
         RedTip("rote Spitze", "RED TIP"),
         BrightRed("scharlach rot", "BRIGHT RED"),
-        Yellow("gelb", "COLOR YELLOW"),
         DarkRed("dunkel rot", "DARK RED"),
+        Yellow("gelb", "COLOR YELLOW"),
         Violett("violett (rötlich)", "VIOLET"),
         Purple("lila (bläulich)", "PURPLE"),
         Blue("blau", "BLUE"),
@@ -137,7 +137,7 @@ enum class TongueProperty {;
         RedDots("rote Papillen", "RED DOTS"),
         RedPatch("rote Flecken", "RED PATCH"),
         ViolettDots("violette Papillen", "VIOLETT DOTS"),
-        ViolettPatch("violetteFlecken", "VIOLETT PATCH"),
+        ViolettPatch("violette Flecken", "VIOLETT PATCH"),
 
         BelowTongueBlue("Untervenen Blau", "BELOW BLUE"),
         BelowTonguePurple("Untervenen Lila", "BELOW PURPLE"),

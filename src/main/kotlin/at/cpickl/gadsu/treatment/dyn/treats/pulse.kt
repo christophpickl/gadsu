@@ -60,12 +60,12 @@ enum class PulseProperty(
     Round("rund", "ROUND", true),
     Slipery("rutschig", "SLIPERY", true),
     Hesitate("zögernd", "HESITATE", true),
+    Rhythmical("rhythmisch", "RHYTHMICAL", true),
+    Arhythmical("arhythmisch", "ARHYTHMICAL", true), // unregelmaessig
 
     Soft("weich", "SOFT", false),
     Raugh("rauh", "RAUGH", false),
     Wiry("drahtig", "WIRY", false),
-    Rhythmical("rhythmisch", "RHYTHMICAL", false),
-    Arhythmical("arhythmisch", "ARHYTHMICAL", false), // unregelmaessig
     Stringlike("saitenförmig", "STRINGLIKE", false),
 
     Ascending("ansteigend", "ASCENDING", false),

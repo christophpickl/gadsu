@@ -20,6 +20,7 @@
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
 * @backup: in preferences (anklickbaren a la reveal folder) pfad zum backup ordner + "backup now" button
 
+
 T-O-D-O
 ============================================================
 
@@ -67,6 +68,7 @@ Med
 
 Low
 ---
+* zungen/puls props mit kuerzel versehen, dieses in UI zusaetzlich rendern, auf schummelzettel drucken, auf protokoll nur kuerzel vermerken
 * nice mac DMG window (background image)
 * search for clients
 * use some nice drag'n'drop feature
