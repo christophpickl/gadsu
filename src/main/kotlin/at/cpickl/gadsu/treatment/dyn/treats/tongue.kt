@@ -46,13 +46,21 @@ private fun <T : TonguePropertable> mapApplicableFor(allPopertables: Array<T>, r
 
 enum class TongueProperty {;
 
+    companion object {
+        fun all() = listOf(Color::class.java, Shape::class.java, Coat::class.java, Special::class.java)
+    }
+
     enum class Color(override val label: String, override val sqlCode: String) : TonguePropertable {
         Pale("blass", "PALE"),
         Pink("rosa", "PINK"),
         Red("rot", "RED"),
+        RedSides("roter Rand", "RED SIDES"),
+        RedTip("rote Spitze", "RED TIP"),
+        BrightRed("scharlach rot", "BRIGHT RED"),
+        Yellow("gelb", "COLOR YELLOW"),
         DarkRed("dunkel rot", "DARK RED"),
-        VioletRed("rötlich violet", "VIOLET RED"),
-        VioletBlue("bläulich violet", "VIOLET BLUE"),
+        Violett("violett (rötlich)", "VIOLET"),
+        Purple("lila (bläulich)", "PURPLE"),
         Blue("blau", "BLUE"),
         ;
 
@@ -63,6 +71,7 @@ enum class TongueProperty {;
 
     enum class Shape(override val label: String, override val sqlCode: String) : TonguePropertable {
         Thin("dünn", "THIN SHAPE"),
+        Thick("dick", "SHAPE THICK"), // verdickter, vergroessert
         Swollen("geschwollen", "SWOLLEN"),
         Stiff("steif", "STIFF"),
         Flaccid("schlaff", "FLACCID"),
@@ -81,16 +90,26 @@ enum class TongueProperty {;
     enum class Coat(override val label: String, override val sqlCode: String) : TonguePropertable {
         // color
         White("weiß", "WHITE"),
-        Yellow("gelb", "YELLOW"),
+        Yellow("gelb", "COAT YELLOW"),
+        Brown("braun", "BROWN"),
         Grey("grau", "GREY"),
         Black("schwarz", "BLACK"),
+
         // thickness
-        Thick("dick", "THICK"),
+        Thick("dick", "COAT THICK"),
         Thin("dünn", "THIN COAT"),
-        Missing("komplett fehlend", "MISSING"),
+        Much("vermehrt", "MUCH"),
+        Less("wenig", "LESS"),
         PartlyMissing("teilweise fehlend", "PARTLY MISSING"),
+        Missing("komplett fehlend", "MISSING"), // belaglos, kein, fehlt
         Rooted("mit Wurzel", "ROOTED"),
         Unrooted("ohne Wurzel", "UNROOTED"),
+
+        // sonstiges
+        Wet("feucht", "COAT WET"),
+        Dry("trocken", "COAT DRY"),
+        Spotted("fleckig", "SPOTTED"),
+        Slobbery("schmierig", "SLOBBERY"),
         ;
 
         companion object {
@@ -99,17 +118,32 @@ enum class TongueProperty {;
     }
 
     enum class Special(override val label: String, override val sqlCode: String) : TonguePropertable {
+        // zeigen
         ShowsQuick("schnell zeigen", "SHOWS QUICK"),
         ShowsHesitate("zögerlich zeigen", "SHOWS HESITATE"),
-        RedDots("Rote Papillen", "RED DOTS"),
+        TipDown("Spitze hängt runter", "TIP DOWN"),
+
+        // feuchtigkeit
+        Moist("zu feucht", "MOST"),
+        Dry("zu trocken", "SPECIAL DRY"),
+        Wet("nass", "SPECIAL WET"),
+        Sticky("klebrig", "STICKY"), // = schlüpfrig (?)
+
+        // misc
+        TeethMarks("Zahnabdrücke", "TEETH MARKS"), // -eindruecke
         MiddleCrack("Mittelriss", "MID CRACK"),
-        HorizontalCrack("Querriss", "HORIZONTAL CRACK"),
-        BelowTongueBlue("Unterseite Blau", "BELOW BLUE"),
-        BelowTonguePurple("Unterseite Lila", "BELOW PURPLE"),
-        TeethMarks("Zahnabdrücke", "TEETH MARKS"),
-        Dry("feucht", "DRY"),
-        Wet("trocken", "WET"),
-        Sticky("klebrig/schlüpfrig", "STICKY")
+        HorizontalCrack("Querriss(e)", "HORIZONTAL CRACK"),
+
+        RedDots("rote Papillen", "RED DOTS"),
+        RedPatch("rote Flecken", "RED PATCH"),
+        ViolettDots("violette Papillen", "VIOLETT DOTS"),
+        ViolettPatch("violetteFlecken", "VIOLETT PATCH"),
+
+        BelowTongueBlue("Untervenen Blau", "BELOW BLUE"),
+        BelowTonguePurple("Untervenen Lila", "BELOW PURPLE"),
+        BelowTongueSwell("Untervenen gestaut", "BELOW SWELL"),
+        BelowTongueSwollen("Untervenen geschwollen", "BELOW SWOLLEN"),
+        Thorns("Dornen", "THORNS"),
         ;
 
         companion object {
