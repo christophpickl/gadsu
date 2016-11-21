@@ -10,21 +10,15 @@ import at.cpickl.gadsu.service.Logged
 import com.google.api.services.calendar.Calendar
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import org.joda.time.DateTime
+import org.slf4j.LoggerFactory
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 data class GCalEventMeta(val id: String, val url: String)
 
-interface GCalService {
-    /**
-     * @return the GCal event ID if was saved, null otherwise (offline or GCal not enabled)
-     */
-    fun createEvent(gCalEvent: GCalEvent): GCalEventMeta?
+interface GCalService : GCalRepository
 
-    fun updateEvent(gCalEvent: GCalUpdateEvent)
-
-    fun deleteEvent(eventId: String)
-}
 
 @Logged
 open class InternetConnectionAwareGCalService @Inject constructor(
@@ -35,6 +29,16 @@ open class InternetConnectionAwareGCalService @Inject constructor(
 
     private val log = LOG(javaClass)
     private var repo: GCalRepository? = null
+
+    override val isOnline: Boolean get() {
+        initRepo()
+        return repo is RealGCalRepository
+    }
+
+    override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
+        initRepo()
+        return repo!!.listEvents(start, end)
+    }
 
     override fun createEvent(gCalEvent: GCalEvent): GCalEventMeta? {
         initRepo()
@@ -60,7 +64,7 @@ open class InternetConnectionAwareGCalService @Inject constructor(
     }
 
     private fun connectRepo(): GCalRepository {
-        if (!isGCalEnabled()) {
+        if (prefs.isGCalDisabled()) {
             return OfflineGCalRepository
         }
         log.info("Connecting to Google Calendar API.")
@@ -76,15 +80,6 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         return RealGCalRepository(calendar, calendarId)
     }
 
-    private fun transformCalendarNameToId(calendar: Calendar, name: String): String {
-        log.debug("transformCalendarNameToId(name={})", name)
-        val calendars = calendar.calendarList().list().setMaxResults(100).execute().items
-        return calendars.firstOrNull { it.summary.equals(name) }?.id ?:
-                throw GadsuException("Could not find calendar by name '$name'! (Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
-    }
-
-    private fun isGCalEnabled() = prefs.preferencesData.gcalName != null
-
     private fun initRepo() {
         if (repo != null) {
             return
@@ -92,4 +87,16 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         repo = connectRepo()
     }
 
+}
+
+fun Prefs.isGCalEnabled() = this.preferencesData.gcalName != null
+fun Prefs.isGCalDisabled() = !isGCalEnabled()
+
+val LOG_Calendar = LoggerFactory.getLogger(Calendar::class.java)!!
+
+fun transformCalendarNameToId(calendar: Calendar, name: String): String {
+    LOG_Calendar.debug("transformCalendarNameToId(name={})", name)
+    val calendars = calendar.calendarList().list().setMaxResults(100).execute().items
+    return calendars.firstOrNull { it.summary.equals(name) }?.id ?:
+            throw GadsuException("Could not find calendar by name '$name'! (Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
 }

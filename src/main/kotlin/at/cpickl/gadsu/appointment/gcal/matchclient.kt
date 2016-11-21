@@ -8,7 +8,12 @@ import net.ricecode.similarity.StringSimilarityServiceImpl
 import javax.inject.Inject
 
 interface MatchClients {
-    fun findMatchingClients(name: String): List<Client>
+
+    fun findMatchingClients(
+            name: String,
+            yetClients: List<Client>? = null
+    ): List<Client>
+
 }
 
 class MatchClientsInDb @Inject constructor(private val clientRepo: ClientRepository) : MatchClients {
@@ -19,9 +24,9 @@ class MatchClientsInDb @Inject constructor(private val clientRepo: ClientReposit
 
     private val similarityService = StringSimilarityServiceImpl(JaroWinklerStrategy())
 
-    override fun findMatchingClients(name: String): List<Client> {
+    override fun findMatchingClients(name: String, yetClients: List<Client>?): List<Client> {
 //        println("findMatchingClients(name='$name')")
-        val clients = clientRepo.findAll(ClientState.ACTIVE)
+        val clients = yetClients ?: clientRepo.findAll(ClientState.ACTIVE)
 //        clients.forEach {
 //            println("client name: '${it.firstName}' / '${it.nickName}' / '${it.lastName}'")
 //            println("  Score first name: ${similarityService.score(name, it.firstName)}")

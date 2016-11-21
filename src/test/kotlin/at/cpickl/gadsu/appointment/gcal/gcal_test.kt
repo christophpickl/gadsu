@@ -4,15 +4,6 @@ import com.google.api.services.calendar.model.Event
 import com.thoughtworks.xstream.XStream
 import org.testng.annotations.Test
 
-fun main(args: Array<String>) {
-    val input = read("Alter")
-    println(input)
-}
-
-fun read(prompt: String): String {
-    print("$prompt >> ")
-    return readLine()!!
-}
 
 @Test
 class GCalTest {

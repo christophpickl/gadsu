@@ -1,13 +1,16 @@
 package at.cpickl.gadsu.appointment.gcal
 
-import com.google.api.client.util.DateTime
-import com.google.api.services.calendar.model.EventDateTime
+import org.joda.time.DateTime
 
-
-fun org.joda.time.DateTime.toGDateTime(): DateTime {
-    return DateTime(this.millis)
+fun org.joda.time.DateTime.toGDateTime(): com.google.api.client.util.DateTime {
+    return com.google.api.client.util.DateTime(this.millis)
 }
 
-fun org.joda.time.DateTime.toGEventDateTime(): EventDateTime {
-    return EventDateTime().setDateTime(DateTime(this.millis)) // no timezone
+fun org.joda.time.DateTime.toGEventDateTime(): com.google.api.services.calendar.model.EventDateTime {
+    return com.google.api.services.calendar.model.EventDateTime()
+            .setDateTime(com.google.api.client.util.DateTime(this.millis)) // no timezone
+}
+
+fun com.google.api.services.calendar.model.EventDateTime.toDateTime(): org.joda.time.DateTime {
+    return DateTime(this.dateTime.value)
 }

@@ -3,6 +3,7 @@ package at.cpickl.gadsu.appointment.gcal
 import at.cpickl.gadsu.service.LOG
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
+import org.joda.time.DateTime
 
 data class GCalEvent(
         val summary: String,
@@ -19,25 +20,38 @@ data class GCalUpdateEvent(
 ) {
     fun updateFields(gevent: Event) {
         gevent
-            .setSummary(summary)
-            .setStart(start.toGEventDateTime())
-            .setEnd(end.toGEventDateTime())
+                .setSummary(summary)
+                .setStart(start.toGEventDateTime())
+                .setEnd(end.toGEventDateTime())
     }
 }
 
 interface GCalRepository {
-//    fun listEvents(startDate: org.joda.time.DateTime,
-//                   endDate: org.joda.time.DateTime,
-//                   maxResults: Int = 100
-//    ): List<Event>
 
+    val isOnline: Boolean
+
+    fun listEvents(start: DateTime, end: DateTime): List<GCalEvent>
+
+    /**
+     * @return the GCal event ID if was saved, null otherwise (offline or GCal not enabled)
+     */
     fun createEvent(gCalEvent: GCalEvent): GCalEventMeta?
+
     fun updateEvent(gCalEvent: GCalUpdateEvent)
+
     fun deleteEvent(eventId: String)
+
 }
 
 object OfflineGCalRepository : GCalRepository {
     private val log = LOG(javaClass)
+
+    override val isOnline = false
+
+    override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
+        log.debug("listEvents() ... no-op as offline")
+        return emptyList()
+    }
 
     override fun createEvent(gCalEvent: GCalEvent): GCalEventMeta? {
         log.debug("createEvent() ... no-op as offline")
@@ -59,21 +73,18 @@ class RealGCalRepository constructor(
 ) : GCalRepository {
     private val log = LOG(javaClass)
 
+    override val isOnline = true
+
     // https://developers.google.com/google-apps/calendar/create-events
     override fun createEvent(gCalEvent: GCalEvent): GCalEventMeta? {
         log.info("createEvent(gCalEvent={})", gCalEvent)
-        val newEvent = Event()
-//                .setId(UUID.randomUUID().toString()) // possible to set custom ID (which will be the same as the AppointmentID)
-                .setSummary(gCalEvent.summary)
-//                .setAttendees()
-//                .setReminders()
-                .setDescription(gCalEvent.description)
-                .setStart(gCalEvent.start.toGEventDateTime())
-                .setEnd(gCalEvent.end.toGEventDateTime())
-//                .setExtendedProperties(Event.ExtendedProperties().set("MYappointmentId", "fuchur"))
-                .set("MYappointmentId", "fuchur")
+        val newEvent = gCalEvent.toEvent()
+        // MINOR is it possible to store custom metadata in here??
+        // .set("MYappointmentId", "fuchur")
+
         val savedEvent = calendar.events().insert(calendarId, newEvent).execute()
         log.info("Saved event (ID=${savedEvent.id}): ${savedEvent.htmlLink}")
+
         return GCalEventMeta(savedEvent.id, savedEvent.htmlLink)
     }
 
@@ -91,4 +102,36 @@ class RealGCalRepository constructor(
         calendar.events().delete(calendarId, eventId).execute()
     }
 
+    override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
+        val events = calendar.events().list(calendarId).apply {
+            timeMin = start.toGDateTime()
+            timeMax = end.toGDateTime()
+        }.execute()
+
+        log.trace("listEvents() returning ${events.items.size} events")
+        return events.items.map { it.toGCalEvent() }
+    }
+
+    private fun Event.toGCalEvent(): GCalEvent {
+        return GCalEvent(
+                summary = this.summary ?: "",
+                description = this.description ?: "",
+                start = this.start.toDateTime(),
+                end = this.end.toDateTime()
+        )
+    }
+
+    private fun GCalEvent.toEvent(): Event {
+        return Event()
+//                .setId(UUID.randomUUID().toString()) // possible to set custom ID (which will be the same as the AppointmentID)
+                .setSummary(this.summary)
+                .setDescription(this.description)
+                .setStart(this.start.toGEventDateTime())
+                .setEnd(this.end.toGEventDateTime())
+//                .setAttendees()
+//                .setReminders()
+//                .setExtendedProperties(Event.ExtendedProperties().set("MYappointmentId", "fuchur"))
+    }
+
 }
+

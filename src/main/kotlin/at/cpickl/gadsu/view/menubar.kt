@@ -5,6 +5,7 @@ import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.QuitAskEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
+import at.cpickl.gadsu.appointment.gcal.sync.RequestGCalSyncEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientChangeStateEvent
 import at.cpickl.gadsu.client.ClientNavigateDownEvent
@@ -94,6 +95,9 @@ open class GadsuMenuBar @Inject constructor(
 ) : JMenuBar() {
 
     private val log = LOG(javaClass)
+
+    private val gcalSync = buildItem("GCal Sync", { RequestGCalSyncEvent() })
+
     private val itemProtocol = JMenuItem("Protokoll erstellen")
 
     private val clientSeperator1 = JPopupMenu.Separator()
@@ -145,6 +149,7 @@ open class GadsuMenuBar @Inject constructor(
 
     @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
         itemReconnect.isVisible = !event.isConnected
+        gcalSync.isEnabled = event.isConnected
     }
 
     private fun menuApp(): JMenu {
@@ -163,6 +168,8 @@ open class GadsuMenuBar @Inject constructor(
 
         menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
         menuApp.addItem("Mails versenden", { RequestPrepareMailEvent() })
+
+        menuApp.add(gcalSync)
 
         if (!mac.isEnabled()) {
             menuApp.addSeparator()

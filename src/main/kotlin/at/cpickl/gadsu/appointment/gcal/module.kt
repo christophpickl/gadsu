@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.appointment.gcal
 
+import at.cpickl.gadsu.appointment.gcal.sync.GCalControllerImpl
+import at.cpickl.gadsu.appointment.gcal.sync.GCalSyncModule
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 
@@ -8,6 +10,9 @@ import com.google.inject.Scopes
 
 class GCalModule : AbstractModule() {
     override fun configure() {
+        install(GCalSyncModule())
+
         bind(GCalService::class.java).to(InternetConnectionAwareGCalService::class.java).`in`(Scopes.SINGLETON)
+        bind(MatchClients::class.java).to(MatchClientsInDb::class.java).`in`(Scopes.SINGLETON)
     }
 }
