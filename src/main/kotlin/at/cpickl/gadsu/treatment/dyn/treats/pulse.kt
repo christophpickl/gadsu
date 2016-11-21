@@ -32,34 +32,53 @@ import javax.swing.ListSelectionModel
 
 private val TITLE_PULSE = "Puls"
 
+
 // https://www.tcm24.de/pulsdiagnostik/
-enum class PulseProperty(val label: String, val sqlCode: String) {
+enum class PulseProperty(
+        val label: String,
+        val sqlCode: String,
+        // used to decide whether to render in list 1 or list 2
+        val isPrimary: Boolean
+) {
 
-    Superficial("oberflächlich", "SUPERFICIAL"),
-    Deep("tief", "DEEP"),
+    Superficial("oberflächlich", "SUPERFICIAL", true),
+    Deep("tief", "DEEP", true),
 
-    // frequence
-    Fast("schnell", "FAST"),
-    Slow("langsam", "SLOW"),
+    // FREQUENCE
+    // beschleunigt
+    Fast("schnell", "FAST", true),
+    Slow("langsam", "SLOW", true),
 
-    // shape
-    Full("voll", "FULL"),
-    Empty("leer", "EMPTY"),
-    Sharp("spitz", "SHARP"),
-    Round("rund", "ROUND"),
-    Slipery("rutschig", "SLIPERY"),
-    Hesitate("zögernd", "HESITATE"),
-    // ansteigend
-    // fadenfoermig
-    // saitenaehnlich
-    // gespannt
-    // abrupt
-    Soft("weich", "SOFT"),
-    Raugh("rauh", "RAUGH"),
-    Wiry("drahtig", "WIRY"),
+    // SHAPE
+    Full("voll", "FULL", true),
+    Empty("leer", "EMPTY", true),
+    Powerful("kräftig", "POWERFUL", true),
+    Weak("schwach", "WEAK", true),
+    Thin("dünn", "THIN", true),
+    Thready("fadenförmig", "THREADY", true), // duenn-fadenfoermig
+    Sharp("spitz", "SHARP", true),
+    Round("rund", "ROUND", true),
+    Slipery("rutschig", "SLIPERY", true),
+    Hesitate("zögernd", "HESITATE", true),
 
-    Rhythmical("rhythmisch", "RHYTHMICAL"),
-    Arhythmical("arhythmisch", "ARHYTHMICAL")
+    Soft("weich", "SOFT", false),
+    Raugh("rauh", "RAUGH", false),
+    Wiry("drahtig", "WIRY", false),
+    Rhythmical("rhythmisch", "RHYTHMICAL", false),
+    Arhythmical("arhythmisch", "ARHYTHMICAL", false), // unregelmaessig
+    Stringlike("saitenförmig", "STRINGLIKE", false),
+
+    Ascending("ansteigend", "ASCENDING", false),
+    Tight("gespannt", "TIGHT", false),
+    Abrupt("abrupt", "ABRUPT", false),
+    Big("groß", "BIG", false),
+    Adhesive("haftend", "ADHESIVE", false),
+    Hanging("hängend", "HANGING", false),
+    Hunty("jagend", "HUNTY", false),
+    Slippery("schlüpfrig", "SLIPPERY", false),
+    Floody("überflutend", "FLOODY", false),
+    Slowly("verlangsamt", "SLOWLY", false),
+    Hidden("versteckt", "HIDDEN", false),
     ;
 
     companion object {
@@ -179,8 +198,26 @@ class PulseDiagnosisRenderer(
 
     override var originalDynTreatment: DynTreatment = pulseDiagnosis
 
-    private val inpPulseProps = MyList("PulseDiagnosisRenderer.Properties",
-            MyListModel(PulseProperty.values().toList()), bus, object : MyListCellRenderer<PulseProperty>() {
+    companion object {
+        private val ALL_PRIMARY: List<PulseProperty>
+        private val ALL_SECONDARY: List<PulseProperty>
+
+        init {
+            val pair = PulseProperty.values().toList().partition { it.isPrimary }
+            ALL_PRIMARY = pair.first
+            ALL_SECONDARY = pair.second
+        }
+    }
+
+    private val inpPulseProps1 = MyList("PulseDiagnosisRenderer.Properties1",
+            MyListModel(ALL_PRIMARY), bus, object : MyListCellRenderer<PulseProperty>() {
+        override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
+    }).apply {
+        selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+        enableToggleSelectionMode()
+    }
+    private val inpPulseProps2 = MyList("PulseDiagnosisRenderer.Properties2",
+            MyListModel(ALL_SECONDARY), bus, object : MyListCellRenderer<PulseProperty>() {
         override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
     }).apply {
         selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
@@ -191,15 +228,22 @@ class PulseDiagnosisRenderer(
 
     override val view: JComponent by lazy {
         GridPanel().apply {
-            c.weightx = 1.0
+            c.weightx = 0.5
 
             c.fill = GridBagConstraints.BOTH
             c.weighty = 0.7
             c.insets = Insets(GAP, GAP, 0, GAP)
-            add(inpPulseProps.scrolled())
+            add(inpPulseProps1.scrolled())
 
+            c.gridx++
+            c.insets = Insets(GAP, 0, 0, GAP)
+            add(inpPulseProps2.scrolled())
+
+            c.gridx = 0
             c.gridy++
+            c.gridwidth = 2
             c.insets = Pad.all(GAP)
+            c.weightx = 1.0
             c.weighty = 0.3
             add(inpNote.scrolled())
 
@@ -208,17 +252,19 @@ class PulseDiagnosisRenderer(
     }
 
     private fun initValues(pulseDiagnosis: PulseDiagnosis) {
-        inpPulseProps.addSelectedValues(pulseDiagnosis.properties)
+        inpPulseProps1.addSelectedValues(pulseDiagnosis.properties.filter { ALL_PRIMARY.contains(it) })
+        inpPulseProps2.addSelectedValues(pulseDiagnosis.properties.filter { ALL_SECONDARY.contains(it) })
         inpNote.text = pulseDiagnosis.note
     }
 
     override fun readDynTreatment() = PulseDiagnosis(
-            inpPulseProps.selectedValuesList,
+            inpPulseProps1.selectedValuesList.union(inpPulseProps2.selectedValuesList).toList(),
             inpNote.text
     )
 
     override fun registerOnChange(changeListener: () -> Unit) {
-        inpPulseProps.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpPulseProps1.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpPulseProps2.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
         inpNote.addChangeListener { changeListener() }
     }
 

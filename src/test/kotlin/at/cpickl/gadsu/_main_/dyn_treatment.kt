@@ -16,9 +16,9 @@ import com.google.common.eventbus.EventBus
 
 fun main(args: Array<String>) {
     Framed.show(
-//            pulseDiagnosis()
+            pulseDiagnosis()
 //            haraDiagnosis()
-            tongueDiagnosis()
+//            tongueDiagnosis()
     )
 }
 
