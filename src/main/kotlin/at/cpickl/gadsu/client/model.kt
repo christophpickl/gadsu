@@ -173,6 +173,7 @@ data class Client(
         return MoreObjects.toStringHelper(javaClass)
                 .add("id", id)
                 .add("firstName", firstName)
+                .add("nickName", nickName)
                 .add("lastName", lastName)
                 .toString()
     }

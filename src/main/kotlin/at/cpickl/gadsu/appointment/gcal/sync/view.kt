@@ -5,7 +5,9 @@ import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
+import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.closeOnEscape
+import at.cpickl.gadsu.view.swing.scrolled
 import java.awt.GridBagConstraints
 import javax.swing.JButton
 import javax.swing.JLabel
@@ -21,12 +23,12 @@ class SyncReportSwingWindow
 //        bus: EventBus,
 //        swing: SwingFactory
 //)
-: MyFrame("Sync Bericht"), SyncReportWindow, ClosableWindow {
+    : MyFrame("Sync Bericht"), SyncReportWindow, ClosableWindow {
 
     private val txtFoobar = MyTextArea("foobar", 20)
 
     init {
-        // addCloseListener { close() }
+        addCloseListener { closeWindow() }
         closeOnEscape()
 
         contentPane.add(GridPanel().apply {
@@ -36,14 +38,13 @@ class SyncReportSwingWindow
 
             c.gridy++
             c.fill = GridBagConstraints.BOTH
-            add(txtFoobar)
+            add(txtFoobar.scrolled())
 
             c.gridy++
             c.fill = GridBagConstraints.NONE
             add(JButton("Abbrechen").apply { addActionListener { closeWindow() } })
         })
 
-        pack()
     }
 
     // proper starting, see PreferencesWindow (MINOR outsource logic!)

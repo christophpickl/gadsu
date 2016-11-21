@@ -4,7 +4,7 @@ import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.sync.GCalSyncerImpl
 import at.cpickl.gadsu.appointment.gcal.InternetConnectionAwareGCalService
-import at.cpickl.gadsu.appointment.gcal.MatchClientsInDb
+import at.cpickl.gadsu.appointment.gcal.sync.MatchClientsInDb
 import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
 import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
 import at.cpickl.gadsu.client.ClientRepository

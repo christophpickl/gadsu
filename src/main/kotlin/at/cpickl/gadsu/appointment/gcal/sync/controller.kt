@@ -3,7 +3,7 @@ package at.cpickl.gadsu.appointment.gcal.sync
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.appointment.gcal.GCalService
-import at.cpickl.gadsu.appointment.gcal.MatchClients
+import at.cpickl.gadsu.appointment.gcal.sync.MatchClients
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
@@ -41,7 +41,17 @@ open class GCalControllerImpl @Inject constructor(
             return
         }
 
+        // TODO async infra
         val report = syncService.syncAndSuggest()
+
+        if (report.eventsAndClients.isEmpty()) {
+            dialogs.show(
+                    title = "GCal Sync",
+                    message = "Es wurden keinerlei beachtenswerte Termine gefunden."
+            )
+            return
+        }
+
         window.initReport(report)
         window.start()
 
