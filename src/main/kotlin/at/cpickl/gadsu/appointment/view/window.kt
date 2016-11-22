@@ -148,6 +148,7 @@ class SwingAppointmentWindow @Inject constructor(
             setLocationRelativeTo(mainFrame.asJFrame())
             isVisible = true
         }
+        requestFocus()
     }
 
     override fun hideWindow() {
