@@ -7,7 +7,9 @@ import at.cpickl.gadsu.service.InternetConnectionLostEvent
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.services.calendar.Calendar
+import com.google.api.services.calendar.model.CalendarListEntry
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
@@ -96,7 +98,20 @@ val LOG_Calendar = LoggerFactory.getLogger(Calendar::class.java)!!
 
 fun transformCalendarNameToId(calendar: Calendar, name: String): String {
     LOG_Calendar.debug("transformCalendarNameToId(name={})", name)
-    val calendars = calendar.calendarList().list().setMaxResults(100).execute().items
-    return calendars.firstOrNull { it.summary.equals(name) }?.id ?:
+
+    val calendars: List<CalendarListEntry>
+    try {
+        calendars = calendar.calendarList().list().setMaxResults(100).execute().items
+    } catch (e: GoogleJsonResponseException) {
+        throw GCalException(e.statusCode, "GCal request failed with status code: ${e.statusCode}", e)
+    }
+    return calendars.firstOrNull { it.summary == name }?.id ?:
             throw GadsuException("Could not find calendar by name '$name'! (Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
+}
+
+class GCalException(
+        val statusCode: Int,
+        message: String,
+        cause: Throwable? = null) : GadsuException("$message (status code = $statusCode)", cause) {
+
 }

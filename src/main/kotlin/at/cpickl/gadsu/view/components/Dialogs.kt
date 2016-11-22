@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.MainFrame
 import com.google.inject.Inject
 import javax.swing.JFrame
@@ -17,6 +18,9 @@ enum class DialogType(val swingConstant: Int) {
 class Dialogs @Inject constructor(
         private val frame: MainFrame?
 ) {
+
+    private val log = LOG(javaClass)
+
     /**
      * @param buttonLabels for each button its label
      * @param defaultButton if null, the first option of buttonLabels will be used
@@ -29,6 +33,9 @@ class Dialogs @Inject constructor(
              type: DialogType = DialogType.PLAIN,
              overrideOwner: JFrame? = null
     ): String? {
+        if (type == DialogType.ERROR) {
+            log.debug("ERROR dialog showing: {} - {}", title, message)
+        }
         // could enable html (<br>) in Dialogs, but would need to rewrite dialog from scratch...
         val selected = JOptionPane.showOptionDialog(overrideOwner ?: frame?.asJFrame(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])

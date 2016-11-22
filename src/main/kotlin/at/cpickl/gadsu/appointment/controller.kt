@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.appointment.gcal.GCalException
 import at.cpickl.gadsu.appointment.view.AppointmentWindow
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.persistence.ensurePersisted
@@ -8,6 +9,7 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.formatDateTimeTalkative
+import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
@@ -30,8 +32,17 @@ open class AppointmentControllerImpl @Inject constructor(
     }
 
     @Subscribe open fun onSaveAppointment(event: SaveAppointment) {
-        service.insertOrUpdate(event.appointment)
-        window.hideWindow()
+        try {
+            service.insertOrUpdate(event.appointment)
+            window.hideWindow()
+        } catch (e: GCalException) {
+            dialogs.show(
+                    title = "GCal Verbindungsfehler",
+                    message = "Die Kommunikation mit GCal ist fehlgeschlagen. " +
+                            "Probier doch mal den datastore zu löschen. (Status Code: ${e.statusCode})",
+                    type = DialogType.ERROR
+            )
+        }
     }
 
     @Subscribe open fun onAbortAppointmentDialog(event: AbortAppointmentDialogEvent) {
