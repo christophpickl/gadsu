@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
@@ -26,6 +27,8 @@ open class MailController @Inject constructor(
         private val dialogs: Dialogs,
         private val asyncWorker: AsyncWorker
 ) {
+
+    private val log = LOG(javaClass)
 
     @Subscribe open fun onRequestOpenBulkMailEvent(event: RequestPrepareMailEvent) {
         if (prefs.preferencesData.gmailAddress == null) {
@@ -77,7 +80,9 @@ open class MailController @Inject constructor(
                         message = "Die Mail wurde an ${recipients.size} Empfänger erfolgreich versendet.",
                         overrideOwner = view.asJFrame())
                     view.closeWindow() },
-                { dialogs.show(
+                { e ->
+                    log.error("Failed to send mail!", e)
+                    dialogs.show(
                         title = "Mail versendet",
                         message = "Beim Versenden der Mail ist ein Fehler aufgetreten!",
                         type = DialogType.ERROR,
