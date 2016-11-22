@@ -68,7 +68,7 @@ class SyncReportSwingWindow
                 add(JButton("Abbrechen").apply { addActionListener { closeWindow() } }, BorderLayout.EAST)
             })
         })
-
+        pack() // TODO set location relative to...
     }
 
     override fun readSelectedEvents() = model.getData()

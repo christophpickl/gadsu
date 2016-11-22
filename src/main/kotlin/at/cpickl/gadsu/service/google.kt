@@ -15,7 +15,6 @@ import com.google.api.services.gmail.Gmail
 import com.google.api.services.gmail.GmailScopes
 import java.io.File
 import java.io.InputStreamReader
-import java.io.Reader
 
 
 interface GoogleConnector {
@@ -29,41 +28,50 @@ interface GoogleConnector {
 class GoogleConnectorImpl : GoogleConnector {
     companion object {
         private val APPLICATION_NAME: String = "gadsu"
-        private val CREDENTIALS: Reader = InputStreamReader(GoogleConnectorImpl::class.java.getResourceAsStream("/gadsu/google_client_secret.json"))
-        private val DATA_STORE: File = File(GADSU_DIRECTORY, "google_datastore.json")
+//        private val DATASTORE: File = File(GADSU_DIRECTORY, "google_datastore.json")
+        private val DATASTORE_GCAL: File = File(GADSU_DIRECTORY, "google_datastore_calendar.json")
+        private val DATASTORE_GMAIL: File = File(GADSU_DIRECTORY, "google_datastore_gmail.json")
 
-        private val SCOPES_CALENDAR = CalendarScopes.all()
+//        private val SCOPES = mutableListOf<String>().apply {
+//            addAll(CalendarScopes.all())
+//            add(GmailScopes.GMAIL_SEND)
+//        }.toList()
+        //CalendarScopes.all().union(listOf(GmailScopes.GMAIL_SEND))
+        private val SCOPES_CALENDAR = CalendarScopes.all().toList()
         private val SCOPES_GMAIL = listOf(GmailScopes.GMAIL_SEND)
+
+        private fun credentialsReader() = InputStreamReader(GoogleConnectorImpl::class.java.getResourceAsStream("/gadsu/google_client_secret.json"))
     }
 
     private val log = LOG(javaClass)
 
     private val jsonFactory = JacksonFactory.getDefaultInstance()
 
-    private val dataStoreFactory = FileDataStoreFactory(DATA_STORE)
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
     override fun connectCalendar(): Calendar {
         log.debug("Connecting to GMail Calendar.")
-        val credential = authorize(SCOPES_CALENDAR)
-        return Calendar.Builder(httpTransport, jsonFactory, credential)
+        return Calendar.Builder(httpTransport, jsonFactory, authorize(SCOPES_CALENDAR, DATASTORE_GCAL))
                 .setApplicationName(APPLICATION_NAME)
                 .build()
     }
 
-    override fun connectGmail() = Gmail.Builder(httpTransport, jsonFactory, authorize(SCOPES_GMAIL))
-            .setApplicationName(APPLICATION_NAME)
-            .build()!!
+    override fun connectGmail(): Gmail {
+        return Gmail.Builder(httpTransport, jsonFactory, authorize(SCOPES_GMAIL, DATASTORE_GMAIL))
+                .setApplicationName(APPLICATION_NAME)
+                .build()!!
+    }
 
-    private fun authorize(scopes: Collection<String>): Credential {
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, CREDENTIALS)
+    private fun authorize(scopes: List<String>, datastore: File): Credential {
+        log.info("authorize()")
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsReader())
         val authFlow = GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, jsonFactory, clientSecrets, scopes)
-                .setDataStoreFactory(dataStoreFactory)
+                .setDataStoreFactory(FileDataStoreFactory(datastore))
                 .setAccessType("offline")
                 .build()
         val credential = AuthorizationCodeInstalledApp(authFlow, LocalServerReceiver()).authorize("user")
-        log.debug("Credentials saved to: ${DATA_STORE.absolutePath}")
+        log.debug("Credentials saved to: ${datastore.absolutePath}")
         return credential
     }
 
