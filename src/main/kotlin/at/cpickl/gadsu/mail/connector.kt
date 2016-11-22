@@ -17,28 +17,33 @@ import java.io.Reader
 import java.io.StringReader
 
 
+interface GMailServerConector {
+    fun connect(credentials: GapiCredentials): Gmail
+}
+
 // https://developers.google.com/gmail/api/quickstart/java
 // https://developers.google.com/gmail/api/guides/sending
-class GMailServerConector {
+class GMailServerConectorImpl : GMailServerConector {
     companion object {
         private val APPLICATION_NAME: String = "gadsu"
         private val DATA_STORE_DIR = File(GADSU_DIRECTORY, "gmail_datastore")
         private val SCOPES = listOf(GmailScopes.GMAIL_SEND)
     }
+
     private val log = LOG(javaClass)
     private val jsonFactory = JacksonFactory.getDefaultInstance()
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
-    fun connect(clientId: String, clientSecret: String) = Gmail.Builder(
+    override fun connect(credentials: GapiCredentials) = Gmail.Builder(
             httpTransport,
             jsonFactory,
-            authorize(clientId, clientSecret)
+            authorize(credentials)
     )
             .setApplicationName(APPLICATION_NAME)
             .build()!!
 
-    private fun authorize(clientId: String, clientSecret: String): Credential {
-        val credentials: Reader = StringReader(buildClientSecretJson(clientId, clientSecret))
+    private fun authorize(credentials: GapiCredentials): Credential {
+        val credentials: Reader = StringReader(buildClientSecretJson(credentials))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentials)
 
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, SCOPES)
@@ -51,11 +56,11 @@ class GMailServerConector {
         return credential!!
     }
 
-    private fun buildClientSecretJson(clientId: String, clientSecret: String) = """
+    private fun buildClientSecretJson(credentials: GapiCredentials) = """
 {
   "installed": {
-    "client_id": "$clientId",
-    "client_secret": "$clientSecret",
+    "client_id": "${credentials.clientId}",
+    "client_secret": "${credentials.clientSecret}",
     "project_id": "lithe-bazaar-130716",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://accounts.google.com/o/oauth2/token",

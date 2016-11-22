@@ -19,7 +19,7 @@ interface MailSender {
  * myAddress used as the sender and (visible) receiver for sent mails.
  */
 class GMailSender @Inject constructor(
-
+        private val connector: GMailServerConector
         ) : MailSender {
 
     private val log = LOG(javaClass)
@@ -30,8 +30,7 @@ class GMailSender @Inject constructor(
         val message = mail.toMimeMessage(myAddress).toMessage()
 //        val gmail = googleConnector.connectGmail()
 
-
-        val gmail = GMailServerConector().connect(credentials.clientId, credentials.clientSecret)
+        val gmail = connector.connect(credentials)
         val sent = gmail.users().messages().send(myAddress, message).execute();
         log.debug("Sent message id: {}", sent.id)
     }

@@ -3,6 +3,7 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.preferences.testDummy
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -33,6 +34,6 @@ import org.testng.annotations.Test
         assertThat(controller.view.count, equalTo(0))
     }
 
-    private fun preferencesData(treatmentGoal: Int?) = PreferencesData("", false, null, null, null, treatmentGoal)
+    private fun preferencesData(treatmentGoal: Int?) = PreferencesData.testDummy().copy(treatmentGoal = treatmentGoal)
 
 }

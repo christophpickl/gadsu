@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.mail.GapiCredentials
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod
@@ -65,7 +66,10 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
 
     //<editor-fold desc="preferencesData">
 
-    private val testData = PreferencesData("testUsername", true, "proxy:42", "gcal_calendar_name", "gmail@gmail.com", 20)
+    private val testData = PreferencesData(
+            "testUsername", true, "proxy:42", "gcal_calendar_name", "gmail@gmail.com",
+            GapiCredentials("gapiId", "gapiSecret"), 20
+    )
 
     fun `preferencesData, default at startup`() {
         assertDefaultPreferencesData()

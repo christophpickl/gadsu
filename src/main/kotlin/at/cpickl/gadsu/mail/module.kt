@@ -10,7 +10,9 @@ class MailModule : AbstractModule() {
     override fun configure() {
         log.debug("configure()")
 
+        bind(GMailServerConector::class.java).to(GMailServerConectorImpl::class.java).`in`(Scopes.SINGLETON)
         bind(MailSender::class.java).to(GMailSender::class.java).`in`(Scopes.SINGLETON)
+
         bind(MailView::class.java).to(MailSwingView::class.java).`in`(Scopes.SINGLETON)
         bind(MailController::class.java).asEagerSingleton()
 
