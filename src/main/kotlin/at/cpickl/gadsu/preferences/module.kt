@@ -10,7 +10,7 @@ class PreferencesModule() : AbstractModule() {
     override fun configure() {
 
         bind(PreferencesController::class.java).asEagerSingleton()
-        bind(PreferencesWindow::class.java).to(SwingPreferencesFrame::class.java).`in`(Scopes.SINGLETON)
+        bind(PreferencesWindow::class.java).to(PreferencesSwingWindow::class.java).`in`(Scopes.SINGLETON)
 
         bind(Prefs::class.java).to(JdbcPrefs::class.java).asEagerSingleton()
 

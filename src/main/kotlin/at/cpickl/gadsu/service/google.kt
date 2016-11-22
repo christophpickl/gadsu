@@ -29,8 +29,8 @@ class GoogleConnectorImpl : GoogleConnector {
     companion object {
         private val APPLICATION_NAME: String = "gadsu"
 //        private val DATASTORE: File = File(GADSU_DIRECTORY, "google_datastore.json")
-        private val DATASTORE_GCAL: File = File(GADSU_DIRECTORY, "google_datastore_calendar.json")
-        private val DATASTORE_GMAIL: File = File(GADSU_DIRECTORY, "google_datastore_gmail.json")
+        private val DATASTORE_GCAL: File = File(GADSU_DIRECTORY, "google_datastore_calendar")
+        private val DATASTORE_GMAIL: File = File(GADSU_DIRECTORY, "google_datastore_gmail")
 
 //        private val SCOPES = mutableListOf<String>().apply {
 //            addAll(CalendarScopes.all())

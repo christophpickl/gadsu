@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.mail.GapiCredentials
 
 
 class ShowPreferencesEvent : UserEvent()
@@ -13,6 +14,7 @@ data class PreferencesData(
         val proxy: String?,
         val gcalName: String?,
         var gmailAddress: String?,
+        var gapiCredentials: GapiCredentials?,
         val treatmentGoal: Int?
 ) {
     companion object {
@@ -22,6 +24,7 @@ data class PreferencesData(
                 proxy = null,
                 gcalName = null,
                 gmailAddress = null,
+                gapiCredentials = null,
                 treatmentGoal = null
         )
     }

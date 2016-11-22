@@ -72,7 +72,7 @@ data class Client(
         override val lastName: String,
         override val nickName: String,
         override val contact: Contact,
-        override val wantReceiveDoodleMails: Boolean,
+        override val wantReceiveDoodleMails: Boolean, // TODO rename to "wantReceiveMails", do also for SQL column
         override val birthday: DateTime?,
         override val gender: Gender,
         /** Geburtsort */

@@ -10,6 +10,7 @@ import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
 
@@ -31,14 +32,10 @@ open class MailController @Inject constructor(
     private val log = LOG(javaClass)
 
     @Subscribe open fun onRequestOpenBulkMailEvent(event: RequestPrepareMailEvent) {
-        if (prefs.preferencesData.gmailAddress == null) {
-            dialogs.show(
-                    title = "Mail senden",
-                    message = "Um Mails zu versenden muss zuerst eine GMail Adresse in den Einstellungen angegeben werden.",
-                    type = DialogType.WARN
-            )
+        if (!ensurePreferencesSet()) {
             return
         }
+
         val mailEnabledClients = clientService.findAllForMail()
         view.initClients(mailEnabledClients)
 
@@ -48,45 +45,38 @@ open class MailController @Inject constructor(
         view.initSelectedClients(preselectedClients)
         view.initSubject(mailPrefs.subject)
         view.initBody(mailPrefs.body)
+
         view.start()
     }
 
     @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendMailEvent) {
-        val recipients = view.readRecipients()
-        if (recipients.isEmpty()) {
-            dialogs.show(
-                    title = "Ungültige Eingabe",
-                    message = "Es muss zumindest ein Klient ausgewählt sein!",
-                    type = DialogType.WARN,
-                    overrideOwner = view.asJFrame())
-            return
-        }
-        val subject = view.readSubject()
-        val body = view.readBody()
-        if (subject.isEmpty() || body.isEmpty()) {
-            dialogs.show(
-                    title = "Ungültige Eingabe",
-                    message = "Betreff und Mailinhalt darf nicht leer sein!",
-                    type = DialogType.WARN,
-                    overrideOwner = view.asJFrame())
-            return
-        }
+        val mail = readMailFromView() ?: return
 
+        // brute force access, as already checked in: ensurePreferencesSet()
         val myAddress = prefs.preferencesData.gmailAddress!!
+        val credentials = prefs.preferencesData.gapiCredentials!!
+
         asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut ..."),
-                { mailSender.send(Mail(recipients.map { it.contact.mail }, subject, body), myAddress) },
-                { dialogs.show(
-                        title = "Mail versendet",
-                        message = "Die Mail wurde an ${recipients.size} Empfänger erfolgreich versendet.",
-                        overrideOwner = view.asJFrame())
-                    view.closeWindow() },
+                { mailSender.send(mail, myAddress, credentials) },
+                {
+                    dialogs.show(
+                            title = "Mail versendet",
+                            message = "Die Mail wurde an ${mail.recipients.size} Empfänger erfolgreich versendet.",
+                            overrideOwner = view.asJFrame())
+                    view.closeWindow()
+                },
                 { e ->
                     log.error("Failed to send mail!", e)
+                    val detailMessage =
+                            if (e is GoogleJsonResponseException)
+                                "\n(code: ${e.statusCode}, message: ${e.statusMessage})" //details=${e.details.map { "${it.key}: ${it.value}" }.join(", ")})"
+                            else ""
                     dialogs.show(
-                        title = "Mail versendet",
-                        message = "Beim Versenden der Mail ist ein Fehler aufgetreten!",
-                        type = DialogType.ERROR,
-                        overrideOwner = view.asJFrame()) }
+                            title = "Mail versendet",
+                            message = "Beim Versenden der Mail ist ein Fehler aufgetreten!$detailMessage",
+                            type = DialogType.ERROR,
+                            overrideOwner = view.asJFrame())
+                }
         )
     }
 
@@ -103,6 +93,45 @@ open class MailController @Inject constructor(
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
         view.destroy()
+    }
+
+    private fun ensurePreferencesSet(): Boolean {
+        if (prefs.preferencesData.gmailAddress == null) {
+            showDialog("Um Mails zu versenden muss zuerst eine GMail Adresse in den Einstellungen angegeben werden.")
+            return false
+        }
+        if (prefs.preferencesData.gapiCredentials == null) {
+            showDialog("Um Mails zu versenden müssen die Google API credentials gesetzt sein.")
+            return false
+        }
+        return true
+    }
+
+    private fun readMailFromView(): Mail? {
+        val recipients = view.readRecipients()
+        if (recipients.isEmpty()) {
+            dialogs.show(
+                    title = "Ungültige Eingabe",
+                    message = "Es muss zumindest ein Klient ausgewählt sein!",
+                    type = DialogType.WARN,
+                    overrideOwner = view.asJFrame())
+            return null
+        }
+        val subject = view.readSubject()
+        val body = view.readBody()
+        if (subject.isEmpty() || body.isEmpty()) {
+            dialogs.show(
+                    title = "Ungültige Eingabe",
+                    message = "Betreff und Mailinhalt darf nicht leer sein!",
+                    type = DialogType.WARN,
+                    overrideOwner = view.asJFrame())
+            return null
+        }
+        return Mail(recipients.map { it.contact.mail }, subject, body)
+    }
+
+    private fun showDialog(message: String) {
+        dialogs.show(title = "Mail senden", message = message, type = DialogType.WARN)
     }
 
     private fun ClientService.findAllForMail(): List<Client> {

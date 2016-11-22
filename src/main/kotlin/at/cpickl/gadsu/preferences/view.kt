@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.mail.GapiCredentials
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.MainFrame
@@ -14,10 +15,10 @@ import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.isTransparent
+import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.selectAllOnFocus
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
@@ -43,10 +44,12 @@ interface PreferencesWindow : ClosableWindow {
     var txtProxy: String
     var txtGcalName: String
     var txtGmailAddress: String
+    var txtGapiClientId: String
+    var txtGapiClientSecret: String
     val btnCheckUpdate: EventButton
 }
 
-class SwingPreferencesFrame @Inject constructor(
+class PreferencesSwingWindow @Inject constructor(
         private val mainFrame: MainFrame,
         private val bus: EventBus,
         swing: SwingFactory
@@ -64,6 +67,8 @@ class SwingPreferencesFrame @Inject constructor(
     private val inpProxy = JTextField()
     private val inpGcalName = JTextField()
     private val inpGmailAddress = JTextField()
+    private val inpGapiClientId = JTextField()
+    private val inpGapiClientSecret = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
     private val inpTreatmentGoal = NumberField(4).selectAllOnFocus()
 
@@ -94,6 +99,16 @@ class SwingPreferencesFrame @Inject constructor(
         set(value) {
             inpGmailAddress.text = value
         }
+    override var txtGapiClientId: String
+        get() = inpGapiClientId.text
+        set(value) {
+            inpGapiClientId.text = value
+        }
+    override var txtGapiClientSecret: String
+        get() = inpGapiClientSecret.text
+        set(value) {
+            inpGapiClientSecret.text = value
+        }
 
     init {
         registerCloseOnEscape()
@@ -110,6 +125,11 @@ class SwingPreferencesFrame @Inject constructor(
             addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
             addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
             addDescriptiveFormInput("GMail Addresse", inpGmailAddress, "Trage hier deine GMail Adresse ein für das Versenden von E-Mails.")
+            addDescriptiveFormInput("Google API ID", inpGapiClientId, "Um die Google API nutzen zu können, brauchst du eine Zugangs-ID.<br/>" +
+                    "Credentials sind erstellbar in der Google API Console.<br/>" +
+                    "Bsp.: <tt>123456789012-aaaabbbbccccddddeeeefffffaaaabb.apps.googleusercontent.com</tt>")
+            addDescriptiveFormInput("Google API Secret", inpGapiClientSecret, "Das zugehörige Passwort.<br/>" +
+                    "Bsp.: <tt>AABBCCDDDaabbccdd12345678</tt>")
             addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
 
             addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
@@ -163,14 +183,17 @@ class SwingPreferencesFrame @Inject constructor(
         inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
     }
 
-    override fun readData() = PreferencesData(
-            inpUsername.text,
-            inpCheckUpdates.isSelected,
-            inpProxy.text.nullIfEmpty(),
-            inpGcalName.text.nullIfEmpty(),
-            inpGmailAddress.text.nullIfEmpty(),
-            if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue
-    )
+    override fun readData(): PreferencesData {
+        return PreferencesData(
+                inpUsername.text,
+                inpCheckUpdates.isSelected,
+                inpProxy.text.nullIfEmpty(),
+                inpGcalName.text.nullIfEmpty(),
+                inpGmailAddress.text.nullIfEmpty(),
+                GapiCredentials.buildNullSafe(inpGapiClientId.text.nullIfEmpty(), inpGapiClientSecret.text.nullIfEmpty()),
+                if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue
+        )
+    }
 
     override fun start() {
         if (yetCreated == false) {
@@ -189,5 +212,4 @@ class SwingPreferencesFrame @Inject constructor(
     override fun closeWindow() {
         hideAndClose()
     }
-
 }

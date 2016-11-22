@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.mail.GapiCredentials
 import at.cpickl.gadsu.mail.MailPreferencesData
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.nullIfEmpty
@@ -24,6 +25,8 @@ class JdbcPrefs @Inject constructor(
         private val KEY_PROXY = "PROXY"
         private val KEY_GCAL_NAME = "GCAL_NAME"
         private val KEY_GMAIL_ADDRESS = "GMAIL_ADDRESS"
+        private val KEY_GAPI_ID = "KEY_GAPI_ID"
+        private val KEY_GAPI_SECRET = "KEY_GAPI_SECRET"
         private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
 
         private val KEY_MAIL_SUBJECT = "MAIL_SUBJECT"
@@ -50,10 +53,12 @@ class JdbcPrefs @Inject constructor(
             val checkUpdates = queryValue(KEY_CHECK_UPDATES)!!.toBoolean()
             val proxy = queryValue(KEY_PROXY)?.nullIfEmpty()
             val gcalName = queryValue(KEY_GCAL_NAME)?.nullIfEmpty()
+            val gapiClientId = queryValue(KEY_GAPI_ID)?.nullIfEmpty()
+            val gapiClientSecret = queryValue(KEY_GAPI_SECRET)?.nullIfEmpty()
             val gmailAddress = queryValue(KEY_GMAIL_ADDRESS)?.nullIfEmpty()
             val treatmentGoal = queryValue(KEY_TREATMENT_GOAL)?.nullIfEmpty()?.toInt()
-
-            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, treatmentGoal)
+            val gapiCredentials = GapiCredentials.buildNullSafe(gapiClientId, gapiClientSecret)
+            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, gapiCredentials, treatmentGoal)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
@@ -61,7 +66,9 @@ class JdbcPrefs @Inject constructor(
             storeValue(KEY_CHECK_UPDATES, value.checkUpdates.toString())
             storeValue(KEY_PROXY, value.proxy ?: "")
             storeValue(KEY_GCAL_NAME, value.gcalName ?: "")
-            storeValue(KEY_GMAIL_ADDRESS, value.gmailAddress?: "")
+            storeValue(KEY_GMAIL_ADDRESS, value.gmailAddress ?: "")
+            storeValue(KEY_GAPI_ID, value.gapiCredentials?.clientId ?: "")
+            storeValue(KEY_GAPI_SECRET, value.gapiCredentials?.clientSecret ?: "")
             storeValue(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
         }
 
