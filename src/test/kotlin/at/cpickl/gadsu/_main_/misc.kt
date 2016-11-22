@@ -2,10 +2,12 @@ package at.cpickl.gadsu._main_
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import org.mockito.Mockito
@@ -27,9 +29,15 @@ fun main(args: Array<String>) {
 //                SuggesterControllerImpl(SuggesterImpl(mockClientRepo()))
 //        )
 //        treatmentGoal()
-        triState()
-    }, Dimension(800, 200))
+//        triState()
+        meridianSelector()
+
+    }, Dimension(600, 600))
 }
+
+fun meridianSelector() = MeridianSelector().apply {
+    selectedMeridians = listOf(Meridian.Lung, Meridian.UrinaryBladder)
+}.component
 
 fun triState() = TriCheckBox<String>("", "some text", 0)
 
