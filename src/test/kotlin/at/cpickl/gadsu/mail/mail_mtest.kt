@@ -1,7 +1,10 @@
 package at.cpickl.gadsu.mail
 
 import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.service.GoogleConnector
+import at.cpickl.gadsu.service.GoogleConnectorImpl
 import at.cpickl.gadsu.service.formatDateTime
+import at.cpickl.gadsu.testinfra.readGapiCredentialsFromSysProps
 import org.joda.time.DateTime
 import org.testng.annotations.Test
 
@@ -18,7 +21,7 @@ class MailManualTest {
     fun `send mail and receive again, must not throw 404 GoogleJsonResponseException`() {
         GadsuSystemProperty.development.enable()
         val credentials = readGapiCredentialsFromSysProps()
-        val connector = GMailServerConectorImpl()
+        val connector = GoogleConnectorImpl()
 
         val sent = sendMail(connector, credentials)
 
@@ -29,13 +32,7 @@ class MailManualTest {
 
     }
 
-    private fun assertMail(connector: GMailServerConectorImpl, credentials: GapiCredentials, mesageId: String) {
-        val gmail = connector.connect(credentials)
-        val storedMessage = gmail.users().messages().get(USER_ID, mesageId).execute()
-        println("storedMessage: $storedMessage")
-    }
-
-    private fun sendMail(connector: GMailServerConectorImpl, credentials: GapiCredentials) =
+    private fun sendMail(connector: GoogleConnector, credentials: GapiCredentials) =
             GMailSender(connector).send(Mail(
                     listOf("gadsu1@discard.email"), //, "gadsu2@discard.email"),
                     "my test subject (${DateTime.now().formatDateTime()})",
@@ -44,14 +41,13 @@ class MailManualTest {
                     USER_ID,
                     credentials)
 
-
-    private fun readGapiCredentialsFromSysProps(): GapiCredentials {
-        val gapiSecret = System.getProperty("GAPI_SECRET", "")
-        val gapiId = System.getProperty("GAPI_ID", "")
-        if (gapiId.isEmpty()) throw IllegalStateException("define VM argument: GAPI_ID")
-        if (gapiSecret.isEmpty()) throw IllegalStateException("define VM argument: GAPI_SECRET")
-        return GapiCredentials.buildNullSafe(gapiId, gapiSecret)!!
+    private fun assertMail(connector: GoogleConnector, credentials: GapiCredentials, mesageId: String) {
+        val gmail = connector.connectGmail(credentials)
+        val storedMessage = gmail.users().messages().get(USER_ID, mesageId).execute()
+        println("storedMessage: $storedMessage")
     }
+
+
 }
 
 

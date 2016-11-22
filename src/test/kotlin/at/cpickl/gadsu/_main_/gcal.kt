@@ -1,32 +1,26 @@
 package at.cpickl.gadsu._main_
 
 import at.cpickl.gadsu.GadsuSystemProperty
-import at.cpickl.gadsu.appointment.AppointmentService
-import at.cpickl.gadsu.appointment.gcal.sync.GCalSyncerImpl
-import at.cpickl.gadsu.appointment.gcal.InternetConnectionAwareGCalService
-import at.cpickl.gadsu.appointment.gcal.sync.MatchClientsInDb
 import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
 import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
-import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.client.ClientService
-import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.GoogleConnectorImpl
-import com.google.common.eventbus.EventBus
-import org.mockito.Mockito
+import at.cpickl.gadsu.testinfra.readGapiCredentialsFromSysProps
+import org.joda.time.DateTime
 
 
 fun main(args: Array<String>) {
     GadsuSystemProperty.development.enable()
 
     val connector = GoogleConnectorImpl()
-    val calendar = connector.connectCalendar()
+    val credentials = readGapiCredentialsFromSysProps()
+    val calendar = connector.connectCalendar(credentials)
     val calendarId = transformCalendarNameToId(calendar, "gadsu_test")
     val gcal = RealGCalRepository(calendar, calendarId)
 
-//    gcal.listEvents(
-//            start = "21.11.2016".parseDate(),
-//            end = "25.11.2016".parseDate()
-//    ).forEach(::println)
+    gcal.listEvents(
+            start = DateTime.now().minusDays(14),
+            end = DateTime.now().plusDays(14)
+    ).forEach(::println)
 
     println("done")
 }
