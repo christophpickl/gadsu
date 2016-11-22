@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.mail
 
+import at.cpickl.gadsu.service.GoogleConnector
 import at.cpickl.gadsu.service.LOG
 import com.google.api.client.util.Base64
 import com.google.api.services.gmail.model.Message
@@ -12,14 +13,14 @@ import javax.mail.internet.MimeMessage
 
 
 interface MailSender {
+    /**
+     * @param myAddress (user ID) used as the sender and (visible) receiver for sent mails.
+     */
     fun send(mail: Mail, myAddress: String, credentials: GapiCredentials): Message
 }
 
-/**
- * myAddress used as the sender and (visible) receiver for sent mails.
- */
 class GMailSender @Inject constructor(
-        private val connector: GMailServerConector
+        private val connector: GoogleConnector
         ) : MailSender {
 
     private val log = LOG(javaClass)
@@ -28,9 +29,8 @@ class GMailSender @Inject constructor(
         log.info("send(mail={}, myAddress='{}', credentials)", mail, myAddress)
 
         val message = mail.toMimeMessage(myAddress).toMessage()
-//        val gmail = googleConnector.connectGmail()
+        val gmail = connector.connectGmail(credentials)
 
-        val gmail = connector.connect(credentials)
         val sent = gmail.users().messages().send(myAddress, message).execute();
         log.debug("Sent message id: {}", sent.id)
         return sent!!

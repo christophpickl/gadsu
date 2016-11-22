@@ -66,13 +66,13 @@ open class InternetConnectionAwareGCalService @Inject constructor(
     }
 
     private fun connectRepo(): GCalRepository {
-        if (prefs.isGCalDisabled()) {
+        if (prefs.isGCalDisabled() || prefs.isGapiCredsDisabled()) {
             return OfflineGCalRepository
         }
         log.info("Connecting to Google Calendar API.")
         val calendar: Calendar
         try {
-            calendar = connector.connectCalendar()
+            calendar = connector.connectCalendar(prefs.preferencesData.gapiCredentials!!)
         } catch (e: UnknownHostException) {
             bus.post(InternetConnectionLostEvent())
             return OfflineGCalRepository
@@ -91,6 +91,8 @@ open class InternetConnectionAwareGCalService @Inject constructor(
 
 }
 
+fun Prefs.isGapiCredsEnabled() = this.preferencesData.gapiCredentials != null
+fun Prefs.isGapiCredsDisabled() = !isGapiCredsEnabled()
 fun Prefs.isGCalEnabled() = this.preferencesData.gcalName != null
 fun Prefs.isGCalDisabled() = !isGCalEnabled()
 
