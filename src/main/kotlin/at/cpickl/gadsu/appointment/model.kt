@@ -18,7 +18,7 @@ data class Appointment(
 
     companion object {
         fun insertPrototype(clientId: String, start: DateTime): Appointment {
-            return Appointment(null, clientId, DateTime.now(), start, start.plusHours(1), "", null, null)
+            return Appointment(null, clientId, DateTime.now(), start, start.plusMinutes(90), "", null, null)
         }
     }
 
