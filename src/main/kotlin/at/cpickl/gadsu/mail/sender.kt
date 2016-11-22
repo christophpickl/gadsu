@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage
 
 
 interface MailSender {
-    fun send(mail: Mail, myAddress: String, credentials: GapiCredentials)
+    fun send(mail: Mail, myAddress: String, credentials: GapiCredentials): Message
 }
 
 /**
@@ -24,7 +24,7 @@ class GMailSender @Inject constructor(
 
     private val log = LOG(javaClass)
 
-    override fun send(mail: Mail, myAddress: String, credentials: GapiCredentials) {
+    override fun send(mail: Mail, myAddress: String, credentials: GapiCredentials): Message {
         log.info("send(mail={}, myAddress='{}', credentials)", mail, myAddress)
 
         val message = mail.toMimeMessage(myAddress).toMessage()
@@ -33,6 +33,7 @@ class GMailSender @Inject constructor(
         val gmail = connector.connect(credentials)
         val sent = gmail.users().messages().send(myAddress, message).execute();
         log.debug("Sent message id: {}", sent.id)
+        return sent!!
     }
 
     private fun Mail.toMimeMessage(myAddress: String): MimeMessage {

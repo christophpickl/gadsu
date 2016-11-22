@@ -27,7 +27,7 @@ class GMailServerConectorImpl : GMailServerConector {
     companion object {
         private val APPLICATION_NAME: String = "gadsu"
         private val DATA_STORE_DIR = File(GADSU_DIRECTORY, "gmail_datastore")
-        private val SCOPES = listOf(GmailScopes.GMAIL_SEND)
+        private val SCOPES = GmailScopes.all()
     }
 
     private val log = LOG(javaClass)
@@ -43,8 +43,8 @@ class GMailServerConectorImpl : GMailServerConector {
             .build()!!
 
     private fun authorize(credentials: GapiCredentials): Credential {
-        val credentials: Reader = StringReader(buildClientSecretJson(credentials))
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentials)
+        val credentialsReader: Reader = StringReader(buildClientSecretJson(credentials))
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsReader)
 
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, SCOPES)
                 .setDataStoreFactory(FileDataStoreFactory(DATA_STORE_DIR))
