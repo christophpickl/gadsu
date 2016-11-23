@@ -52,7 +52,7 @@ enum class TongueProperty {;
 
     enum class Color(override val label: String, override val sqlCode: String) : TonguePropertable {
         Pale("blass", "PALE"),
-        Pink("rosa", "PINK"),
+        Pink("normal rosa", "PINK"),
         Red("rot", "RED"),
         RedSides("roter Rand", "RED SIDES"),
         RedTip("rote Spitze", "RED TIP"),
@@ -78,7 +78,7 @@ enum class TongueProperty {;
         Long("lang", "LONG"),
         Short("kurz", "SHORT"),
         Cracked("rissig", "CRACKED"),
-        Shaky("zitternd", "SHAKY"),
+        Shaky("zitternd", "SHAKY"), // means wind
         OneSideAligned("einseitig ausgerichtet", "ONESIDE ALIGNED")
         ;
 
@@ -89,8 +89,8 @@ enum class TongueProperty {;
 
     enum class Coat(override val label: String, override val sqlCode: String) : TonguePropertable {
         // color
-        White("weiß", "WHITE"),
-        Yellow("gelb", "COAT YELLOW"),
+        White("weiß", "WHITE"), // kaelte = yin
+        Yellow("gelb", "COAT YELLOW"), // hitze = yang
         Brown("braun", "BROWN"),
         Grey("grau", "GREY"),
         Black("schwarz", "BLACK"),
@@ -121,6 +121,7 @@ enum class TongueProperty {;
         // zeigen
         ShowsQuick("schnell zeigen", "SHOWS QUICK"),
         ShowsHesitate("zögerlich zeigen", "SHOWS HESITATE"),
+        ShowsShaky("zittert", "SHOWS SHAKY"), // yin
         TipDown("Spitze hängt runter", "TIP DOWN"),
 
         // feuchtigkeit

@@ -3,7 +3,6 @@ package at.cpickl.gadsu.testinfra
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.Treatment
-import at.cpickl.gadsu.treatment.dyn.DynTreatment
 
 
 @Suppress("UNUSED")
@@ -22,7 +21,8 @@ fun Treatment.Companion.unsavedValidInstance(clientId: String) =
                 aboutHomework = "",
                 aboutUpcoming = "",
                 note = "note",
-                dynTreatments = mutableListOf<DynTreatment>())
+                dynTreatments = emptyList(),
+                treatedMeridians = emptyList())
 
 
 fun Treatment.Companion.unsavedValidInstance(client: Client) =

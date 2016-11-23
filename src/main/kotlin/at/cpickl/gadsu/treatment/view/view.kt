@@ -93,14 +93,13 @@ class SwingTreatmentView @Inject constructor(
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
     private val inpAboutDiscomfort = fields.newTextArea("Zustand", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort)
 
-    private val inpAboutContent = fields.newTextArea("Inhalt", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
+    private val inpAboutContent = fields.newTextArea("Inhalt (Begründung)", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
     private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
     private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback)
     private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
-    // FIXME #57 check changes, init, etc...
     private val meridianSelector = MeridianSelector()
 
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
@@ -111,12 +110,15 @@ class SwingTreatmentView @Inject constructor(
 
     init {
         modificationChecker.enableChangeListener(subTreatmentView)
+        modificationChecker.enableChangeListener(meridianSelector)
+
         bus = swing.bus
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
         }
         btnSave.changeLabel(treatment)
         fields.updateAll(treatment)
+        meridianSelector.selectedMeridians = treatment.treatedMeridians
 
         initComponents()
         prepareSubTreatmentView()
@@ -141,7 +143,7 @@ class SwingTreatmentView @Inject constructor(
     override fun getDynTreatmentAt(tabIndex: Int) = subTreatmentView.getDynTreatmentAt(tabIndex)
     override fun getAllDynTreatmentClasses() = subTreatmentView.getAllDynTreatmentClasses()
 
-    private fun initComponents() {
+    private fun initTopPanel() = GridPanel().apply {
         c.fill = GridBagConstraints.NONE
         c.weightx = 0.0
         c.gridheight = 2
@@ -151,7 +153,6 @@ class SwingTreatmentView @Inject constructor(
 
         c.gridx++
         c.gridheight = 1
-        c.weightx = 1.0
         c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.bottom(20)
@@ -165,11 +166,25 @@ class SwingTreatmentView @Inject constructor(
         c.insets = Pad.ZERO
         add(initDetailPanel())
 
-        c.gridx = 0
+        c.gridy = 0
+        c.gridx++
+        c.anchor = GridBagConstraints.CENTER
+        c.gridheight = 2
+        c.weightx = 1.0
+        c.weighty = 1.0
+        add(JPanel(BorderLayout()).apply {
+            add(meridianSelector.component, BorderLayout.EAST)
+        })
+    }
+
+    private fun initComponents() {
+        c.weightx = 0.0
+        c.weighty = 0.0
+        c.fill = GridBagConstraints.HORIZONTAL
+        add(initTopPanel())
+
         c.gridy++
-        c.gridwidth = 2
         c.fill = GridBagConstraints.BOTH
-        c.gridwidth = 2
         c.weightx = 1.0
         c.weighty = 1.0
         add(initMainPanel())
@@ -184,14 +199,6 @@ class SwingTreatmentView @Inject constructor(
         val panel = GridPanel()
         with(panel.c) {
 
-            weightx = 0.0
-            weighty = 0.0
-            fill = GridBagConstraints.NONE
-            meridianSelector.component.enforceWidth(100)
-            panel.add(meridianSelector.component)
-
-            // FIXME #57 move treatment view to top of panel, next to the detail panel containing picture and date text (right next to it)
-            gridx++
             weightx = 1.0
             weighty = 1.0
             fill = GridBagConstraints.BOTH
@@ -328,13 +335,15 @@ class SwingTreatmentView @Inject constructor(
                 .compare(treatment.date, inpDateAndTime.selectedDate) // watch out for nulls!
                 .result() != 0
                 ||
-                subTreatmentView.isModified()
+                subTreatmentView.isModified() ||
+                meridianSelector.isAnySelectedMeridianDifferentFrom(treatment.treatedMeridians)
     }
 
     override fun wasSaved(newTreatment: Treatment) {
         log.trace("wasSaved(newTreatment)")
         treatment = newTreatment
 
+        meridianSelector.selectedMeridians = newTreatment.treatedMeridians
         fields.updateAll(newTreatment)
         subTreatmentView.wasSaved(newTreatment)
         btnSave.changeLabel(treatment)
@@ -364,7 +373,8 @@ class SwingTreatmentView @Inject constructor(
                 inpAboutHomework.text,
                 inpAboutUpcoming.text,
                 inpNote.text,
-                subTreatmentView.readDynTreatments()
+                subTreatmentView.readDynTreatments(),
+                meridianSelector.selectedMeridians
         )
     }
 

@@ -13,6 +13,7 @@ import at.cpickl.gadsu.treatment.view.SwingTreatmentView
 import at.cpickl.gadsu.treatment.view.TreatmentController
 import at.cpickl.gadsu.treatment.view.TreatmentView
 import com.google.inject.AbstractModule
+import com.google.inject.Scopes
 import com.google.inject.assistedinject.FactoryModuleBuilder
 
 
@@ -23,7 +24,9 @@ class TreatmentModule : AbstractModule() {
 
         bind(DynTreatmentService::class.java).to(DynTreatmentServiceImpl::class.java).asEagerSingleton()
 
+        bind(TreatmentMeridiansRepository::class.java).to(TreatmentMeridiansJdbcRepository::class.java).`in`(Scopes.SINGLETON)
         bind(RepositoryFacade::class.java).to(RepositoryFacadeImpl::class.java).asEagerSingleton()
+        bind(TreatmentMeridiansService::class.java).to(TreatmentMeridiansServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
 
         bind(TreatmentList::class.java).asEagerSingleton()

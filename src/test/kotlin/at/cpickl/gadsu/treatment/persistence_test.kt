@@ -9,8 +9,16 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocol
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.testinfra.*
+import at.cpickl.gadsu.tcm.model.Meridian
+import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.Expects.expect
+import at.cpickl.gadsu.testinfra.HsqldbTest
+import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
+import at.cpickl.gadsu.testinfra.TEST_DATETIME_FOR_TREATMENT_DATE
+import at.cpickl.gadsu.testinfra.expectPersistenceException
+import at.cpickl.gadsu.testinfra.savedValidInstance
+import at.cpickl.gadsu.testinfra.savedValidInstance2
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.springframework.dao.DataIntegrityViolationException

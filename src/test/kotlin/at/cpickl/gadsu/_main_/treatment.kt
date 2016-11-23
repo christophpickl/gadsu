@@ -25,5 +25,5 @@ fun main(args: Array<String>) {
     )
     Framed.showWithContext({ context ->
         SwingTreatmentView(context.swing, GadsuMenuBar(context.bus, Mockito.mock(MacHandler::class.java)), client, treatment)
-    }, size = Dimension(800, 600))
+    }, size = Dimension(1000, 600))
 }

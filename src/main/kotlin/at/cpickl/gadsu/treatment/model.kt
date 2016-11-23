@@ -9,6 +9,7 @@ import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.ensureNoSeconds
 import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.minutes
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
 import com.google.common.base.MoreObjects
@@ -59,7 +60,8 @@ data class Treatment(
         /** Anything else goes here. */
         val note: String,
         /** Optional sub parts of a treatment, like hara diagnosis or heart beat. */
-        val dynTreatments: List<DynTreatment>
+        val dynTreatments: List<DynTreatment>,
+        val treatedMeridians: List<Meridian>
 ) :
         Comparable<Treatment>, HasId, Persistable {
 
@@ -84,7 +86,8 @@ data class Treatment(
                             aboutHomework: String = "",
                             aboutUpcoming: String = "",
                             note: String = "",
-                            dynTreatments: List<DynTreatment> = listOf(HaraDiagnosis.insertPrototype())
+                            dynTreatments: List<DynTreatment> = listOf(HaraDiagnosis.insertPrototype()),
+                            treatedMeridians: List<Meridian> = emptyList()
         ): Treatment {
             // created will be overridden anyway, so its ok to use no Clock here ;)
             return Treatment(
@@ -101,7 +104,8 @@ data class Treatment(
                     aboutHomework,
                     aboutUpcoming,
                     note,
-                    dynTreatments)
+                    dynTreatments,
+                    treatedMeridians)
         }
     }
 

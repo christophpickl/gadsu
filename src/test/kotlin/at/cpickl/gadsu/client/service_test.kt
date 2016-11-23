@@ -21,6 +21,10 @@ import at.cpickl.gadsu.testinfra.copyWithoutCprops
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.TreatmentMeridiansJdbcRepository
+import at.cpickl.gadsu.treatment.TreatmentMeridiansRepository
+import at.cpickl.gadsu.treatment.TreatmentMeridiansService
+import at.cpickl.gadsu.treatment.TreatmentMeridiansServiceImpl
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.treatment.TreatmentServiceImpl
@@ -52,6 +56,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var propsRepo: XPropsSqlRepository
     private lateinit var propsService: XPropsService
     private lateinit var multiProtocolRepo: MultiProtocolRepository
+    private lateinit var meridianRepo: TreatmentMeridiansRepository
     private lateinit var treatmentRepo: TreatmentRepository
     private lateinit var treatmentService: TreatmentService
     private lateinit var appointmentRepo: AppointmentRepository
@@ -61,8 +66,9 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
     private lateinit var bloodPressureRepository: BloodPressureRepository
     private lateinit var pulseDiagnosisRepository: PulseDiagnosisRepository
     private lateinit var dynTreatmentService: DynTreatmentService
-
+    private lateinit var meridianService: TreatmentMeridiansService
     private lateinit var testee: ClientService
+
 
     @BeforeMethod
     fun setUp() {
@@ -70,17 +76,19 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         propsRepo = XPropsSqlJdbcRepository(jdbcx)
         propsService = XPropsServiceImpl(propsRepo)
         treatmentRepo = TreatmentJdbcRepository(jdbcx, idGenerator)
+        meridianRepo = TreatmentMeridiansJdbcRepository(jdbcx)
         multiProtocolRepo = MultiProtocolJdbcRepository(jdbcx, idGenerator)
         haraDiagnosisRepository = HaraDiagnosisJdbcRepository(jdbcx)
         tongueDiagnosisRepository = TongueDiagnosisJdbcRepository(jdbcx)
         bloodPressureRepository = BloodPressureJdbcRepository(jdbcx)
         pulseDiagnosisRepository = PulseDiagnosisJdbcRepository(jdbcx)
 
+        meridianService = TreatmentMeridiansServiceImpl(meridianRepo)
         val repositoryFacade = RepositoryFacadeImpl(haraDiagnosisRepository, tongueDiagnosisRepository,
                 bloodPressureRepository, pulseDiagnosisRepository)
         dynTreatmentService = DynTreatmentServiceImpl(repositoryFacade)
 
-        treatmentService = TreatmentServiceImpl(treatmentRepo, dynTreatmentService, multiProtocolRepo, jdbcx, bus, clock)
+        treatmentService = TreatmentServiceImpl(treatmentRepo, dynTreatmentService, meridianService, multiProtocolRepo, jdbcx, bus, clock)
         appointmentRepo = AppointmentJdbcRepository(jdbcx, idGenerator)
         appointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock, TestableGCalService, clientRepo)
 

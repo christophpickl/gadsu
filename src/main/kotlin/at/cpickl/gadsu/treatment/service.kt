@@ -5,6 +5,7 @@ import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
@@ -34,6 +35,7 @@ interface TreatmentService {
 class TreatmentServiceImpl @Inject constructor(
         private val treatmentRepository: TreatmentRepository,
         private val dynTreatmentService: DynTreatmentService,
+        private val meridiansService: TreatmentMeridiansService,
         private val multiProtocolRepository: MultiProtocolRepository,
         private val jdbcx: Jdbcx,
         private val bus: EventBus,
@@ -66,13 +68,15 @@ class TreatmentServiceImpl @Inject constructor(
     override fun insert(treatmentToSave: Treatment): Treatment {
         // i dont think number needs to be manipulated here, nope ...
         val savedTreatment = treatmentRepository.insert(treatmentToSave.copy(created = clock.now()))
-        dynTreatmentService.insert(savedTreatment)
+        dynTreatmentService.update(savedTreatment)
+        meridiansService.update(savedTreatment)
         return enrichTreatment(savedTreatment)!!
     }
 
     override fun update(treatment: Treatment) {
-        dynTreatmentService.deleteAllFor(treatment)
-        dynTreatmentService.insert(treatment)
+        dynTreatmentService.update(treatment)
+        meridiansService.update(treatment)
+
         treatmentRepository.update(treatment)
     }
 
@@ -81,7 +85,7 @@ class TreatmentServiceImpl @Inject constructor(
     }
 
     override fun deleteAll(client: Client) {
-        log.debug("deleteAllFor(client={})", client)
+        log.debug("delete(client={})", client)
 
         jdbcx.transactionSafe {
             findAllFor(client).forEach {
@@ -101,18 +105,46 @@ class TreatmentServiceImpl @Inject constructor(
         if (treatment == null) {
             return null
         }
-        val dynTreats = dynTreatmentService.findAllFor(treatment.id!!)
-        return treatment.copy(dynTreatments = dynTreats)
+        val treatId = treatment.id!!
+        val dynTreats = dynTreatmentService.find(treatId)
+        val treatedMeridians = meridiansService.find(treatId)
+        return treatment.copy(dynTreatments = dynTreats, treatedMeridians = treatedMeridians)
     }
 
     private fun _delete(treatment: Treatment) {
         val beenProtocolized = multiProtocolRepository.hasBeenProtocolizedYet(treatment) // has to happen before multiProtocolRepository.delete(treat)
 
         multiProtocolRepository.deleteTreatmentRefs(treatment)
-        dynTreatmentService.deleteAllFor(treatment)
+        dynTreatmentService.delete(treatment)
+        meridiansService.delete(treatment)
         treatmentRepository.delete(treatment)
 
         bus.post(TreatmentDeletedEvent(treatment, beenProtocolized))
+    }
+
+}
+
+interface TreatmentMeridiansService {
+
+    fun find(treatmentId: String): List<Meridian>
+    fun update(treatment: Treatment)
+    fun delete(treatment: Treatment)
+
+}
+
+class TreatmentMeridiansServiceImpl @Inject constructor(
+        private val meridiansRepository: TreatmentMeridiansRepository
+) : TreatmentMeridiansService {
+
+    override fun find(treatmentId: String) = meridiansRepository.find(treatmentId)
+
+    override fun update(treatment: Treatment) {
+        delete(treatment)
+        meridiansRepository.insert(treatment.id!!, treatment.treatedMeridians)
+    }
+
+    override fun delete(treatment: Treatment) {
+        meridiansRepository.delete(treatment.id!!)
     }
 
 }

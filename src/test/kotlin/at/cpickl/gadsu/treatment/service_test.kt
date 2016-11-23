@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.IntegrationServiceLookuper
 import at.cpickl.gadsu.testinfra.SequencedTestableIdGenerator
@@ -19,7 +20,7 @@ import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -120,6 +121,45 @@ class TreatmentServiceIntegrationTest : HsqldbTest() {
 //    fun `dynTreatment delete`() {
 //
 //    }
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="treatedMeridians">
+
+    fun `treatedMeridians do an insert and findAllForRaw should return inserted meridians`() {
+        val unsavedTreat = Treatment.unsavedValidInstance(savedClient.id!!).copy(treatedMeridians = listOf(Meridian.Lung, Meridian.Heart))
+
+        val testee = testee()
+        testee.insert(unsavedTreat)
+
+        val actualTreats = testee.findAllFor(savedClient)
+        assertThat(actualTreats, hasSize(1))
+        assertThat(actualTreats[0].treatedMeridians, equalTo(unsavedTreat.treatedMeridians))
+    }
+
+    fun `treatedMeridians do an update and findAllForRaw should return updated meridians`() {
+        val unsavedTreat = Treatment.unsavedValidInstance(savedClient.id!!).copy(treatedMeridians = listOf(Meridian.Lung, Meridian.Heart))
+
+        val testee = testee()
+        val savedTreat = testee.insert(unsavedTreat)
+        val treat2 = savedTreat.copy(treatedMeridians = listOf(Meridian.GallBladder))
+
+        testee.update(treat2)
+
+        val result = testee.findAllFor(savedClient)
+        assertThat(result, hasSize(1))
+        assertThat(result[0].treatedMeridians, equalTo(treat2.treatedMeridians))
+    }
+
+    fun `treatedMeridians delete should remove all entries`() {
+        val testee = testee()
+        val treat = testee.insert(Treatment.unsavedValidInstance(savedClient.id!!).copy(treatedMeridians = listOf(Meridian.Lung)))
+
+        testee.delete(treat)
+
+        assertThat(TreatmentMeridiansJdbcRepository(jdbcx).find(treat.id!!), empty())
+    }
 
     //</editor-fold>
 

@@ -12,9 +12,9 @@ import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
 import javax.inject.Inject
 
 interface DynTreatmentService {
-    fun deleteAllFor(treatment: Treatment)
-    fun insert(treatment: Treatment)
-    fun findAllFor(treatmentId: String): List<DynTreatment>
+    fun find(treatmentId: String): List<DynTreatment>
+    fun update(treatment: Treatment)
+    fun delete(treatment: Treatment)
 }
 
 interface RepositoryFacade {
@@ -82,7 +82,7 @@ class DynTreatmentServiceImpl @Inject constructor(
         private val repositoryFacade: RepositoryFacade
 ) : DynTreatmentService {
 
-    override fun findAllFor(treatmentId: String): List<DynTreatment> {
+    override fun find(treatmentId: String): List<DynTreatment> {
         val dynTreatments = mutableListOf<DynTreatment>()
 
         DynTreatments.values().forEach {
@@ -93,16 +93,14 @@ class DynTreatmentServiceImpl @Inject constructor(
         return dynTreatments
     }
 
-    override fun insert(treatment: Treatment) {
+    override fun update(treatment: Treatment) {
+        delete(treatment)
         treatment.dynTreatments.forEach {
             repositoryFacade.insert(it, treatment.id!!)
         }
     }
 
-    override fun deleteAllFor(treatment: Treatment) {
-//        treatment.dynTreatments.forEach {
-//            repositoryFacade.delete(it, treatment.id!!)
-//        }
+    override fun delete(treatment: Treatment) {
         repositoryFacade.deleteAll(treatment.id!!)
     }
 }

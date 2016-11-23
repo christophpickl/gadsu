@@ -10,6 +10,8 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
+import at.cpickl.gadsu.tcm.MeridianRowMapper
+import at.cpickl.gadsu.tcm.model.Meridian
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
@@ -44,9 +46,7 @@ class TreatmentJdbcRepository @Inject constructor(
         private val idGenerator: IdGenerator
 ) : TreatmentRepository {
     companion object {
-
         val TABLE = "treatment"
-
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -158,6 +158,39 @@ val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
                 rs.getString("aboutHomework"),
                 rs.getString("aboutUpcoming"),
                 rs.getString("note"),
-                mutableListOf() // dynTreats are loaded later on separately
+                emptyList(), // the `dynTreats` are loaded later on separately
+                emptyList() // so are the `treatedMeridians`
         )
     }
+
+
+interface TreatmentMeridiansRepository {
+    fun find(treatmentId: String): List<Meridian>
+    fun insert(treatmentId: String, treatedMeridians: List<Meridian>)
+    fun delete(treatmentId: String)
+}
+
+class TreatmentMeridiansJdbcRepository @Inject constructor(
+        private val jdbcx: Jdbcx
+) : TreatmentMeridiansRepository {
+
+    companion object {
+        val TABLE = "treatment_meridian"
+    }
+
+    override fun find(treatmentId: String): List<Meridian> {
+        return jdbcx.query("SELECT meridian FROM $TABLE WHERE id_treatment = ?", arrayOf(treatmentId), MeridianRowMapper()).sorted()
+    }
+
+    override fun insert(treatmentId: String, treatedMeridians: List<Meridian>) {
+        treatedMeridians.forEach {
+            jdbcx.update("INSERT INTO $TABLE (id_treatment, meridian) VALUES (?, ?)",
+                    treatmentId, it.sqlCode)
+        }
+    }
+
+    override fun delete(treatmentId: String) {
+        jdbcx.update("DELETE FROM $TABLE WHERE id_treatment = ?", treatmentId)
+    }
+
+}

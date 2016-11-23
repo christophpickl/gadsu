@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.ChangeAware
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
@@ -13,7 +14,9 @@ import javax.swing.Icon
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 
-class MeridianSelector {
+class MeridianSelector(
+        private val horizontalLayout: Boolean = true
+) : ChangeAware {
 
     private val checkboxes = Meridian.values().map(::MeridianCheckBox)
 
@@ -28,26 +31,44 @@ class MeridianSelector {
     val component: JComponent by lazy {
         GridPanel().apply {
             checkboxes.forEachIndexed { i, checkbox ->
-                val isLeft = i % 2 == 0
+                val isTopOrLeft = i % 2 == 0
 
-                if (isLeft) {
+                if (isTopOrLeft) {
                     if (i != 0) {
-                        c.gridx = 0
-                        c.gridy++
+                        if (horizontalLayout) {
+                            c.gridx++
+                            c.gridy = 0
+                        } else {
+                            c.gridx = 0
+                            c.gridy++
+                        }
                     }
                 } else {
-                    c.gridx++
+                    if (horizontalLayout) {
+                        c.gridy++
+                    } else {
+                        c.gridx++
+                    }
                 }
                 add(checkbox)
             }
         }
     }
 
+    override fun onChange(changeListener: () -> Unit) {
+        checkboxes.forEach {
+            it.addActionListener { changeListener() }
+        }
+    }
+
+    fun  isAnySelectedMeridianDifferentFrom(treatedMeridians: List<Meridian>) =
+            selectedMeridians != treatedMeridians
+
 }
 
 private class MeridianCheckBox(val meridian: Meridian) : JCheckBox(), Icon {
     companion object {
-        private val SIZE = 50
+        private val SIZE = 40
     }
 
     private var isOver = false
@@ -91,8 +112,8 @@ private class MeridianCheckBox(val meridian: Meridian) : JCheckBox(), Icon {
         } else {
             Color.GRAY.darker()
         }
-        g.font = g.font.deriveFont(Font.BOLD, 16.0F)
-        g.drawString(meridian.labelShort, 10, 30)
+        g.font = g.font.deriveFont(Font.BOLD, 14.0F)
+        g.drawString(meridian.labelShort, 10, 25)
     }
 
 }

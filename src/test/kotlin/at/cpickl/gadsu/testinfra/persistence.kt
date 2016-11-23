@@ -15,6 +15,7 @@ import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
+import at.cpickl.gadsu.treatment.TreatmentMeridiansJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
 import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisJdbcRepository
@@ -50,6 +51,7 @@ abstract class HsqldbTest {
 
     protected val TABLE_CLIENT = ClientJdbcRepository.TABLE
     protected val TABLE_TREATMENT = TreatmentJdbcRepository.TABLE
+    protected val TABLE_TREATMENT_MERIDIAN = TreatmentMeridiansJdbcRepository.TABLE
     protected val TABLE_APPOINTMENT = AppointmentJdbcRepository.TABLE
     protected val TABLE_XPROPS = XPropsSqlJdbcRepository.TABLE
     protected val TABLE_MULTIPROTOCOL = MultiProtocolJdbcRepository.TABLE
@@ -78,6 +80,7 @@ abstract class HsqldbTest {
             TABLE_DYNTREATMENT_BLOOD,
             TABLE_DYNTREATMENT_PULSE,
             TABLE_DYNTREATMENT_PULSE_PROPERTIES,
+            TABLE_TREATMENT_MERIDIAN,
             TABLE_TREATMENT,
             TABLE_CLIENT,
             TABLE_PREFERENCES
