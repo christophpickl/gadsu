@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment.dyn.treats
 
 import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.tcm.model.YinYang
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
@@ -38,33 +39,44 @@ enum class PulseProperty(
         val label: String,
         val sqlCode: String,
         // used to decide whether to render in list 1 or list 2
-        val isPrimary: Boolean
-) {
+        val isPrimary: Boolean,
+        val yy: YinYang? = null
+        ) {
 
-    Superficial("oberflächlich", "SUPERFICIAL", true),
-    Deep("tief", "DEEP", true),
+    Superficial("oberflächlich", "SUPERFICIAL", true, YinYang.Yang),
+    Deep("tief", "DEEP", true, YinYang.Yin),
 
     // FREQUENCE
     // beschleunigt
-    Fast("schnell", "FAST", true),
-    Slow("langsam", "SLOW", true),
+    Fast("schnell", "FAST", true, YinYang.Yang),
+    Slow("langsam", "SLOW", true, YinYang.Yin),
 
     // SHAPE
-    Full("voll", "FULL", true),
-    Empty("leer", "EMPTY", true),
-    Powerful("kräftig", "POWERFUL", true),
-    Weak("schwach", "WEAK", true),
-    Thin("dünn", "THIN", true),
-    Thready("fadenförmig", "THREADY", true), // duenn-fadenfoermig
+    Full("voll", "FULL", true, YinYang.Yang),
+    Empty("leer", "EMPTY", true, YinYang.Yin),
+
+    Powerful("kräftig", "POWERFUL", true, YinYang.Yang),
+    Weak("schwach", "WEAK", true, YinYang.Yin),
+
+    Slippery("schlüpfrig", "SLIPPERY", false, YinYang.Yang),
+    Raugh("rauh", "RAUGH", false, YinYang.Yin),
+
+    Moving("bewegend", "MOVING", false, YinYang.Yang),
+    Fine("fein", "FINE", false, YinYang.Yin),
+
     Sharp("spitz", "SHARP", true),
     Round("rund", "ROUND", true),
-    Slipery("rutschig", "SLIPERY", true),
-    Hesitate("zögernd", "HESITATE", true),
+
     Rhythmical("rhythmisch", "RHYTHMICAL", true),
     Arhythmical("arhythmisch", "ARHYTHMICAL", true), // unregelmaessig
 
     Soft("weich", "SOFT", false),
-    Raugh("rauh", "RAUGH", false),
+    Thin("dünn", "THIN", true),
+    Thready("fadenförmig", "THREADY", true), // duenn-fadenfoermig
+    Slipery("rutschig", "SLIPERY", true),
+    Hesitate("zögernd", "HESITATE", true),
+
+
     Wiry("drahtig", "WIRY", false),
     Stringlike("saitenförmig", "STRINGLIKE", false),
 
@@ -75,7 +87,6 @@ enum class PulseProperty(
     Adhesive("haftend", "ADHESIVE", false),
     Hanging("hängend", "HANGING", false),
     Hunty("jagend", "HUNTY", false),
-    Slippery("schlüpfrig", "SLIPPERY", false),
     Floody("überflutend", "FLOODY", false),
     Slowly("verlangsamt", "SLOWLY", false),
     Hidden("versteckt", "HIDDEN", false),
