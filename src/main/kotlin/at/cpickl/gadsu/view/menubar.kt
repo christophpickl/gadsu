@@ -124,6 +124,7 @@ open class GadsuMenuBar @Inject constructor(
     private val allEntries = listOf(clientEntries, treatmentEntries)
 
     lateinit var itemReconnect: JMenuItem
+    private lateinit var itemSendMail: JMenuItem
 
     var contentType = MainContentType.CLIENT
         get() = field
@@ -150,6 +151,7 @@ open class GadsuMenuBar @Inject constructor(
     @Subscribe open fun onInternetConnectionStateChangedEvent(event: InternetConnectionStateChangedEvent) {
         itemReconnect.isVisible = !event.isConnected
         gcalSync.isEnabled = event.isConnected
+        itemSendMail.isEnabled = event.isConnected
     }
 
     private fun menuApp(): JMenu {
@@ -162,12 +164,9 @@ open class GadsuMenuBar @Inject constructor(
         }
         itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { ReconnectInternetConnectionEvent() })
         itemReconnect.isVisible = false
-//        val itemExport = JMenuItem("Export")
-//        itemExport.isEnabled = false
-//        menuApp.add(itemExport)
 
         menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
-        menuApp.addItem("Mails versenden", { RequestPrepareMailEvent() })
+        itemSendMail = menuApp.addItem("Mails versenden", { RequestPrepareMailEvent() })
 
         menuApp.add(gcalSync)
 
