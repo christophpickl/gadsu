@@ -19,6 +19,7 @@ import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.gadsuWidth
+import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -98,6 +99,9 @@ class SwingTreatmentView @Inject constructor(
     private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
+
+    // FIXME #57 check changes, init, etc...
+    private val meridianSelector = MeridianSelector()
 
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
@@ -179,9 +183,18 @@ class SwingTreatmentView @Inject constructor(
     private fun initMainPanel(): Component {
         val panel = GridPanel()
         with(panel.c) {
-            fill = GridBagConstraints.BOTH
+
+            weightx = 0.0
+            weighty = 0.0
+            fill = GridBagConstraints.NONE
+            meridianSelector.component.enforceWidth(100)
+            panel.add(meridianSelector.component)
+
+            // FIXME #57 move treatment view to top of panel, next to the detail panel containing picture and date text (right next to it)
+            gridx++
             weightx = 1.0
             weighty = 1.0
+            fill = GridBagConstraints.BOTH
             panel.add(initTextAreas())
 
             gridx++
