@@ -7,6 +7,7 @@ import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.components.TableColumn
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
@@ -19,7 +20,6 @@ import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
 
 
@@ -28,6 +28,8 @@ interface SyncReportWindow : ClosableWindow {
     fun destroy()
     fun initReport(report: SyncReport, clients: List<Client>)
     fun readImportAppointments(): List<ImportAppointment>
+    fun readDeleteAppointments(): List<Appointment>
+
 }
 
 data class ImportAppointment(
@@ -57,6 +59,9 @@ class SyncReportSwingWindow
         bus: EventBus
 )
     : MyFrame("Sync Bericht"), SyncReportWindow {
+
+    private var deleteAppointments = emptyList<Appointment>()
+
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", 30, { it.enabled }),
             TableColumn("Titel", 60, { it.event.summary }),
@@ -64,6 +69,7 @@ class SyncReportSwingWindow
     ))
     private val table = SyncTable(model)
     private val btnImport = JButton("Import").apply { addActionListener { bus.post(RequestImportSyncEvent()) } }
+    private val topText = HtmlEditorPane()
 
     init {
         addCloseListener { closeWindow() }
@@ -75,7 +81,7 @@ class SyncReportSwingWindow
             c.weightx = 1.0
             c.weighty = 0.0
             c.fill = GridBagConstraints.HORIZONTAL
-            add(JLabel("Ergebnis:"))
+            add(topText)
 
             c.gridy++
             c.weighty = 1.0
@@ -98,6 +104,8 @@ class SyncReportSwingWindow
 
     override fun readImportAppointments() = model.getData()
 
+    override fun readDeleteAppointments() = deleteAppointments
+
     // proper starting, see PreferencesWindow (MINOR outsource logic!)
     override fun start() {
         isVisible = true
@@ -105,9 +113,11 @@ class SyncReportSwingWindow
 
     override fun initReport(report: SyncReport, clients: List<Client>) {
         val defaultSelected = clients.first()
-        model.resetData(report.eventsAndClients.map {
+        model.resetData(report.importEvents.map {
             ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
         })
+        deleteAppointments = report.deleteEvents
+        topText.text = "Folgende ${model.size} Termine können importiert werden (${deleteAppointments.size} zum Löschen):"
     }
 
     private fun clientsOrdered(topClients: List<Client>, allClients: List<Client>) =

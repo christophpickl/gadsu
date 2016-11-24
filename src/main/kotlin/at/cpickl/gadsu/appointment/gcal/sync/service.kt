@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
+import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.GCalService
@@ -21,8 +22,14 @@ interface SyncService {
 
 }
 
-data class SyncReport(val eventsAndClients: Map<GCalEvent, List<Client>>) {
+data class SyncReport(
+        val importEvents: Map<GCalEvent, List<Client>>,
+        val deleteEvents: List<Appointment>
+) {
     companion object {} // for extensions only
+
+    fun isEmpty() =
+            importEvents.isEmpty() && deleteEvents.isEmpty()
 }
 
 class GCalSyncService @Inject constructor(
@@ -33,15 +40,38 @@ class GCalSyncService @Inject constructor(
         private val clock: Clock
         ) : SyncService {
 
+    companion object {
+        private val DAYS_BEFORE_AND_AFTER_TO_SCAN = 14
+    }
+
     private val log = LOG(javaClass)
 
     override fun syncAndSuggest(): SyncReport {
         log.debug("syncAndSuggest()")
-        val gCalEvents = syncer.loadGCalEventsForImport()
+
+        val range = dateRangeForSyncer()
+
+        val gCalEvents = syncer.loadGCalEventsForImport(range)
+        val gadsuIdsByGCal = gCalEvents.filter { it.gadsuId != null }.map { it.gadsuId!! }
+
+        val deleteEvents = appointmentService
+                .findAllBetween(range)
+                .filter { it.gcalId != null && !gadsuIdsByGCal.contains(it.id!!) }
 
         val eventsAndMaybeClients = suggestClients(gCalEvents)
+        return SyncReport(
+                eventsAndMaybeClients, // import events
+                deleteEvents
+                // ... maybe even: update events (2 different directions)
+        )
+    }
 
-        return SyncReport(eventsAndMaybeClients)
+    private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
+        val now = clock.now().clearTime()
+        return Pair(
+                now.minusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN),
+                now.plusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN)
+        )
     }
 
     override fun import(appointmentsToImport: List<ImportAppointment>) {
@@ -68,7 +98,7 @@ class GCalSyncService @Inject constructor(
 }
 
 interface GCalSyncer {
-    fun loadGCalEventsForImport(): List<GCalEvent>
+    fun loadGCalEventsForImport(range: Pair<DateTime, DateTime>): List<GCalEvent>
 }
 
 class GCalSyncerImpl @Inject constructor(
@@ -79,27 +109,18 @@ class GCalSyncerImpl @Inject constructor(
 
     companion object {
         private val log = LOG(javaClass)
-        private val DAYS_BEFORE_AND_AFTER_TO_SCAN = 14
     }
 
-    override fun loadGCalEventsForImport(): List<GCalEvent> {
+    override fun loadGCalEventsForImport(range: Pair<DateTime, DateTime>): List<GCalEvent> {
         if (!gcal.isOnline) {
             throw IllegalStateException("can not sync: gcal is not online!")
         }
 
-        val (start, end) = dateRangeForSyncer()
-        val gcalEvents = gcal.listEvents(start, end)
+        val gcalEvents = gcal.listEvents(range.first, range.second)
 
         log.trace("gcal listed ${gcalEvents.size} events in total.")
         return gcalEvents.filter { it.gadsuId == null }
     }
 
-    private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
-        val now = clock.now().clearTime()
-        return Pair(
-                now.minusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN),
-                now.plusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN)
-        )
-    }
 
 }

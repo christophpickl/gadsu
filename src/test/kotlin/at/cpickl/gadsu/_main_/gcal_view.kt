@@ -24,11 +24,13 @@ fun main(args: Array<String>) {
     val mainFrame = SwingMainFrame(bus, GadsuMenuBar(bus, DisabledMacHandler()))
     val window = SyncReportSwingWindow(mainFrame, bus)
     window.initReport(
-            SyncReport(mapOf(
-                    entry(gcal("g1"), client3, client1),
-                    entry(gcal("g2"), client2),
-                    entry(gcal("unknown"))
-            )),
+            SyncReport(
+                    mapOf(
+                            entry(gcal("g1"), client3, client1),
+                            entry(gcal("g2"), client2),
+                            entry(gcal("unknown"))),
+                    emptyList() // no delete appointments
+            ),
             listOf(client1, client2, client3, client4)
     )
     window.start()

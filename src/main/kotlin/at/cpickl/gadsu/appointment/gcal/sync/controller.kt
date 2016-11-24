@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
@@ -28,6 +29,7 @@ open class GCalControllerImpl @Inject constructor(
         private val clientService: ClientService,
         private val mainFrame: MainFrame,
         private val async: AsyncWorker,
+        private val appointmentService: AppointmentService,
         bus: EventBus
 ) : GCalController {
 
@@ -53,7 +55,7 @@ open class GCalControllerImpl @Inject constructor(
                 doneTask = { report ->
                     if (report == null) {
                         // prematurely aborted, do nothing
-                    } else if (report.eventsAndClients.isEmpty()) {
+                    } else if (report.isEmpty()) {
                         dialogs.show(
                                 title = "GCal Sync",
                                 message = "Es wurden keinerlei beachtenswerte Termine gefunden."
@@ -65,13 +67,20 @@ open class GCalControllerImpl @Inject constructor(
 
                 },
                 exceptionTask = { e ->
+                    log.error("GCal synchronisation failed!", e)
                     dialogs.show("GCal Sync Fehler", "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
                 }
         )
     }
 
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
+
         val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
+
+        val appointmentsToDelete = window.readDeleteAppointments()
+        appointmentsToDelete.forEach {
+            appointmentService.delete(it)
+        }
 
         // FIXME get back result and show UI
         syncService.import(appointmentsToImport)

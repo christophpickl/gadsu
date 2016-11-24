@@ -7,7 +7,10 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.assertEmptyTable
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
+import org.joda.time.DateTime
 import org.springframework.dao.DataIntegrityViolationException
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -61,6 +64,14 @@ import org.testng.annotations.Test
         val savedApp = testee.insert(app1)
         testee.delete(savedApp)
         jdbcx.assertEmptyTable(TABLE)
+    }
+
+    fun `findAllBetween`() {
+        val now = DateTime.now()
+        val inserted = testee.insert(app1.copy(start = now, end = now.plusMinutes(30)))
+
+        assertThat(testee.findAllBetween(now.minusDays(1) to now.plusDays(1)), contains(inserted))
+        assertThat(testee.findAllBetween(now.minusDays(2) to now.minusDays(1)), Matchers.empty())
     }
 
 }

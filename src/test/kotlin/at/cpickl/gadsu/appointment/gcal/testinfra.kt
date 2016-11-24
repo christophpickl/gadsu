@@ -14,7 +14,8 @@ fun SyncReport.Companion.dummyInstance() = SyncReport(
                 start = TEST_DATETIME1,
                 end = TEST_DATETIME1.plusHours(1),
                 url = null
-                ) to listOf())
+                ) to listOf()),
+        emptyList()
 )
 
 object TestableGCalService : GCalService {

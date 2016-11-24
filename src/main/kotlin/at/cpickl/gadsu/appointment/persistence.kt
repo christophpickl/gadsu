@@ -22,6 +22,7 @@ interface AppointmentRepository {
     fun update(appointment: Appointment)
     fun delete(appointment: Appointment)
     fun deleteAll(client: Client)
+    fun findAllBetween(range: Pair<DateTime, DateTime>): List<Appointment>
 
 }
 
@@ -39,9 +40,16 @@ class AppointmentJdbcRepository @Inject constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun findAllFor(client: Client) = findAllFor(client.id!!)
+
     override fun findAllFor(clientId: String) = findFor(clientId, "")
     override fun findAllStartAfter(startPivot: DateTime, client: Client) = findAllStartAfter(startPivot, client.id!!)
     override fun findAllStartAfter(startPivot: DateTime, clientId: String) = findFor(clientId, "AND startDate > ?", startPivot.toSqlTimestamp())
+
+    override fun findAllBetween(range: Pair<DateTime, DateTime>): List<Appointment> {
+        return jdbcx.query("SELECT * FROM $TABLE WHERE startDate > ? AND endDate < ?",
+                arrayOf(range.first.toSqlTimestamp(), range.second.toSqlTimestamp()), Appointment.ROW_MAPPER)
+                .sorted()
+    }
 
     private fun findFor(clientId: String, whereClause: String, vararg args: Any): List<Appointment> {
         log.debug("findFor(clientId={}, whereClause={}, args)", clientId, whereClause)
@@ -59,15 +67,15 @@ class AppointmentJdbcRepository @Inject constructor(
 
         val newId = idGenerator.generate()
         jdbcx.update(
-            """INSERT INTO $TABLE (
+                """INSERT INTO $TABLE (
                 id, id_client, created, startDate, endDate,
                 note, gcal_id, gcal_url
             ) VALUES (
                 ?, ?, ?, ?, ?,
                 ?, ?, ?
             )""",
-            newId, appointment.clientId, appointment.created.toSqlTimestamp(), appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp(),
-            appointment.note, appointment.gcalId, appointment.gcalUrl)
+                newId, appointment.clientId, appointment.created.toSqlTimestamp(), appointment.start.toSqlTimestamp(), appointment.end.toSqlTimestamp(),
+                appointment.note, appointment.gcalId, appointment.gcalUrl)
 
         return appointment.copy(id = newId)
 

@@ -61,8 +61,8 @@ class SyncManualTest {
         val syncer = injector.getInstance(SyncService::class.java)
         val report = syncer.syncAndSuggest()
 
-        assertThat(report.eventsAndClients.size, equalTo(1))
-        val (gcalEvent, clients) = report.eventsAndClients.entries.first()
+        assertThat(report.importEvents.size, equalTo(1))
+        val (gcalEvent, clients) = report.importEvents.entries.first()
         assertThat(gcalEvent.id, equalTo(event.id))
         assertThat(gcalEvent.gadsuId, nullValue())
 

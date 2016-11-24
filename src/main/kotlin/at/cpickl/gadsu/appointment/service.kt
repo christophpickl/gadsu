@@ -8,6 +8,7 @@ import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import com.google.common.eventbus.EventBus
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 //fun main(args: Array<String>) {
@@ -45,6 +46,7 @@ interface AppointmentService {
 
     fun upcomingAppointmentFor(client: Client): Appointment?
     fun upcomingAppointmentFor(clientId: String): Appointment?
+    fun findAllBetween(range: Pair<DateTime, DateTime>): List<Appointment>
 }
 
 class AppointmentServiceImpl @Inject constructor(
@@ -60,6 +62,11 @@ class AppointmentServiceImpl @Inject constructor(
     override fun findAllFutureFor(client: Client): List<Appointment> {
         log.debug("findAllFutureFor(client={})", client)
         return repository.findAllStartAfter(clock.now(), client)
+    }
+
+    override fun findAllBetween(range: Pair<DateTime, DateTime>): List<Appointment> {
+        log.debug("findAllBetween(range={})", range)
+        return repository.findAllBetween(range)
     }
 
     override fun insertOrUpdate(appointment: Appointment): Appointment {
