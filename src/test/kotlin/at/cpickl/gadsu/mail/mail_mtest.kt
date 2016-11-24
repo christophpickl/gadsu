@@ -1,11 +1,7 @@
 package at.cpickl.gadsu.mail
 
-import at.cpickl.gadsu.GadsuSystemProperty
-import at.cpickl.gadsu.service.GapiCredentials
-import at.cpickl.gadsu.service.GoogleConnector
-import at.cpickl.gadsu.service.GoogleConnectorImpl
 import at.cpickl.gadsu.service.formatDateTime
-import at.cpickl.gadsu.testinfra.readGapiCredentialsFromSysProps
+import at.cpickl.gadsu.testinfra.GoogleManualTest
 import org.joda.time.DateTime
 import org.testng.annotations.Test
 
@@ -13,27 +9,18 @@ import org.testng.annotations.Test
 @Test(groups = arrayOf("mTest")
         , enabled = false
 )
-class MailManualTest {
-
-    companion object {
-        private val USER_ID = "christoph.pickl@gmail.com"
-    }
+class MailManualTest : GoogleManualTest() {
 
     fun `send mail and receive again, must not throw 404 GoogleJsonResponseException`() {
-        GadsuSystemProperty.development.enable()
-        val credentials = readGapiCredentialsFromSysProps()
-        val connector = GoogleConnectorImpl()
-
-        val sent = sendMail(connector, credentials)
+        val sent = sendMail()
 
         println("Waiting 2 secs ...")
         Thread.sleep(2000)
 
-        assertMail(connector, credentials, sent.id)
-
+        assertMail(sent.id)
     }
 
-    private fun sendMail(connector: GoogleConnector, credentials: GapiCredentials) =
+    private fun sendMail() =
             GMailSender(connector).send(Mail(
                     listOf("gadsu1@discard.email"), //, "gadsu2@discard.email"),
                     "my test subject (${DateTime.now().formatDateTime()})",
@@ -42,12 +29,11 @@ class MailManualTest {
                     USER_ID,
                     credentials)
 
-    private fun assertMail(connector: GoogleConnector, credentials: GapiCredentials, mesageId: String) {
+    private fun assertMail(mesageId: String) {
         val gmail = connector.connectGmail(credentials)
         val storedMessage = gmail.users().messages().get(USER_ID, mesageId).execute()
         println("storedMessage: $storedMessage")
     }
-
 
 }
 

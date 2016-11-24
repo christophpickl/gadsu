@@ -64,12 +64,14 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         if (event.isConnected) {
             repo = connectRepo()
         } else {
+            log.debug("disabling gcal access as internet state changed to disconnected.")
             repo = OfflineGCalRepository
         }
     }
 
     private fun connectRepo(): GCalRepository {
         if (prefs.isGCalDisabled() || prefs.isGapiCredsDisabled()) {
+            log.info("disabling gcal repository as not enabled via prefs.")
             return OfflineGCalRepository
         }
         log.info("Connecting to Google Calendar API.")
@@ -77,6 +79,7 @@ open class InternetConnectionAwareGCalService @Inject constructor(
         try {
             calendar = connector.connectCalendar(prefs.preferencesData.gapiCredentials!!)
         } catch (e: UnknownHostException) {
+            log.warn("disabling gcal repository access as it seems internet connection was lost.")
             bus.post(InternetConnectionLostEvent())
             return OfflineGCalRepository
         }

@@ -54,6 +54,6 @@ private fun entry(gcal: GCalEvent, vararg clients: Client): Pair<GCalEvent, List
 
 private var gidCounter = 1
 private fun gcal(summary: String): GCalEvent {
-    return GCalEvent("gid${gidCounter++}", "gadsuId", summary, "",
+    return GCalEvent("gid${gidCounter++}", "gadsuId", "clientId", summary, "",
             DateTime.now(), DateTime.now().plusMinutes(30), "http//gcal.at/id")
 }

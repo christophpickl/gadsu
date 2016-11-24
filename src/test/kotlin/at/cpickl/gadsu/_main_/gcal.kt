@@ -21,6 +21,7 @@ fun main(args: Array<String>) {
     gcal.createEvent(GCalEvent(
             null,
             "gadsuIddd",
+            "clientIddd",
             "my sum",
             "",
             DateTime.now(),

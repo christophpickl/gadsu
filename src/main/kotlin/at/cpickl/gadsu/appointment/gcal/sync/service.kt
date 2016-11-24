@@ -16,6 +16,7 @@ interface SyncService {
 
     fun syncAndSuggest(): SyncReport
 
+    // TODO use a different data model, as ImportAppointment got weird clients stuff in there for UI rendering only!
     fun import(appointmentsToImport: List<ImportAppointment>)
 
 }
@@ -35,6 +36,7 @@ class GCalSyncService @Inject constructor(
     private val log = LOG(javaClass)
 
     override fun syncAndSuggest(): SyncReport {
+        log.debug("syncAndSuggest()")
         val gCalEvents = syncer.loadGCalEventsForImport()
 
         val eventsAndMaybeClients = suggestClients(gCalEvents)
@@ -43,6 +45,8 @@ class GCalSyncService @Inject constructor(
     }
 
     override fun import(appointmentsToImport: List<ImportAppointment>) {
+        log.debug("import(appointmentsToImport.size={})", appointmentsToImport.size)
+
         val now = clock.now()
         appointmentsToImport.forEach {
             // no check for duplicates, you have to delete them manually ;)
@@ -84,8 +88,8 @@ class GCalSyncerImpl @Inject constructor(
         }
 
         val (start, end) = dateRangeForSyncer()
-
         val gcalEvents = gcal.listEvents(start, end)
+
         log.trace("gcal listed ${gcalEvents.size} events in total.")
         return gcalEvents.filter { it.gadsuId == null }
     }

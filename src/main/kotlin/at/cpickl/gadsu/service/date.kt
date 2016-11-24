@@ -85,6 +85,7 @@ fun DateTime.withAllButHourAndMinute(copyReference: DateTime): DateTime =
 fun DateTime.clearSeconds(): DateTime = this.withSecondOfMinute(0).withMillisOfSecond(0)
 fun DateTime.clearMinutes(): DateTime = this.withMinuteOfHour(0).clearSeconds()
 fun DateTime.clearTime(): DateTime = this.withHourOfDay(0).clearMinutes()
+// TODO .toNextQuarter() ... when importing from gcal!
 
 fun Date.toDateTime() = DateTime(this)
 

@@ -8,6 +8,7 @@ fun SyncReport.Companion.dummyInstance() = SyncReport(
         mapOf(GCalEvent(
                 id = null,
                 gadsuId = null,
+                clientId = null,
                 summary = "caro",
                 description = "",
                 start = TEST_DATETIME1,

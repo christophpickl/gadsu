@@ -31,9 +31,12 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 
+fun buildDatabaseUrl(javaClazz: Class<Any>) =
+        "jdbc:hsqldb:mem:testDb${javaClazz.simpleName}"
+
 fun setupTestDatabase(javaClazz: Class<Any>): Pair<JDBCDataSource, SpringJdbcx> {
     val ds = JDBCDataSource()
-    ds.url = "jdbc:hsqldb:mem:testDb${javaClazz.simpleName}"
+    ds.url = buildDatabaseUrl(javaClazz)
     ds.user = "SA"
     val jdbcx = SpringJdbcx(ds)
 
