@@ -30,9 +30,7 @@ import org.hamcrest.Matchers.*
 import org.joda.time.DateTime
 import org.testng.annotations.Test
 
-@Test(groups = arrayOf("mTest")
-        , enabled = false
-)
+@Test(groups = arrayOf("mTest"))
 class SyncManualTest {
 
     fun `WHEN insert client, create gcal DO sync and import ASSERT appointment in DB and gcal updated with gadsu metadata`() {

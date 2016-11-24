@@ -2,18 +2,8 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.Args
 import at.cpickl.gadsu.GadsuModule
-import at.cpickl.gadsu.appointment.AppointmentJdbcRepository
 import at.cpickl.gadsu.appointment.AppointmentRepository
-import at.cpickl.gadsu.appointment.AppointmentService
-import at.cpickl.gadsu.appointment.AppointmentServiceImpl
-import at.cpickl.gadsu.appointment.gcal.GCalService
-import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.client.ClientRepository
-import at.cpickl.gadsu.client.ClientServiceImpl
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.xprops.XPropsService
-import at.cpickl.gadsu.client.xprops.XPropsServiceImpl
-import at.cpickl.gadsu.client.xprops.XPropsSqlJdbcRepository
 import at.cpickl.gadsu.client.xprops.XPropsSqlRepository
 import at.cpickl.gadsu.persistence.SpringJdbcx
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
@@ -46,7 +36,6 @@ import com.google.inject.testing.fieldbinder.Bind
 import com.google.inject.testing.fieldbinder.BoundFieldModule
 import com.google.inject.util.Modules
 import org.joda.time.DateTime
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -117,25 +106,4 @@ object IntegrationServiceLookuper {
     ): TreatmentService {
         return TreatmentServiceImpl(treatmentRepository, dynTreatmentService, meridiansService, multiProtocolRepository, jdbcx, bus, clock)
     }
-
-    fun lookupClientService(
-            jdbcx: SpringJdbcx,
-            bus: EventBus = EventBus(),
-            now: DateTime = TEST_DATETIME1,
-            clock: Clock = SimpleTestableClock(now),
-            currentClient: CurrentClient = CurrentClient(bus),
-            defaultGeneratedId: String = TEST_UUID1,
-            idGenerator: IdGenerator = SimpleTestableIdGenerator(defaultGeneratedId),
-            clientRepo: ClientRepository = ClientJdbcRepository(jdbcx, idGenerator),
-            xpropsRepo: XPropsSqlRepository = XPropsSqlJdbcRepository(jdbcx),
-            appointmentRepo: AppointmentRepository = AppointmentJdbcRepository(jdbcx, idGenerator),
-            treatmentRepository: TreatmentRepository = TreatmentJdbcRepository(jdbcx, idGenerator),
-
-
-            xpropsService: XPropsService = XPropsServiceImpl(xpropsRepo),
-            treatmentService: TreatmentService = lookupTreatmentService(jdbcx),
-            appointmentService: AppointmentService = AppointmentServiceImpl(appointmentRepo, bus, clock,
-                    Mockito.mock(GCalService::class.java), clientRepo)
-    ) = ClientServiceImpl(clientRepo, xpropsService, treatmentService, appointmentService, jdbcx, bus, clock, currentClient)
-
 }

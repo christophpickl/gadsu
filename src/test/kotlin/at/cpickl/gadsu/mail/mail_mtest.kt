@@ -6,9 +6,7 @@ import org.joda.time.DateTime
 import org.testng.annotations.Test
 
 
-@Test(groups = arrayOf("mTest")
-        , enabled = false
-)
+@Test(groups = arrayOf("mTest"))
 class MailManualTest : GoogleManualTest() {
 
     fun `send mail and receive again, must not throw 404 GoogleJsonResponseException`() {

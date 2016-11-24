@@ -27,7 +27,6 @@ class VersionCheckerImpl @Inject constructor(
         if (currentVersion == latestVersion) {
             return VersionCheckResult.UpToDate
         }
-//        Thread.sleep(5 * 1000)
         return VersionCheckResult.OutDated(currentVersion, latestVersion)
     }
 }

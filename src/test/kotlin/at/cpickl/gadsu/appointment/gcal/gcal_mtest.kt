@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.appointment.gcal
 
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.testinfra.GoogleManualTest
 import com.google.api.services.calendar.Calendar
 import org.hamcrest.MatcherAssert.assertThat
@@ -13,12 +12,8 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 
-@Test(groups = arrayOf("mTest")
-        , enabled = false
-)
+@Test(groups = arrayOf("mTest"))
 class GcalManualTest : GoogleManualTest() {
-
-    private val log = LOG(javaClass)
 
     private val gEvent = GCalEvent.withoutIdAndUrl()
 

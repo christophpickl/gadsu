@@ -75,7 +75,7 @@ open class FlywayDatabaseManager @Inject constructor(
 //            log.info("dumping env variables")
 //            System.getProperties().forEach { key, value -> log.info("property: {} = {}", key, value) }
 
-            log.info("Database shutdown hook is running and dancing around.")
+            log.debug("Database shutdown hook is running and dancing around.")
             closeConnection()
         }, "DatabaseShutdownHookThread"))
     }
@@ -130,7 +130,7 @@ open class FlywayDatabaseManager @Inject constructor(
             log.warn("Not going to close database connection as it was never successfully opened")
             return
         }
-        log.info("Closing database connection.")
+        log.debug("Closing database connection.")
         try {
             dataSource.connection.close()
         } catch (e: Exception) {

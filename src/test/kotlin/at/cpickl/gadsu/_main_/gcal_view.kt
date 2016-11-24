@@ -37,6 +37,7 @@ fun main(args: Array<String>) {
 }
 
 private class RequestImportSyncEventListener(private val window: SyncReportSwingWindow) {
+    @Suppress("UNUSED_PARAMETER")
     @Subscribe fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val foo = window.readImportAppointments().filter { it.enabled }.map {
             "- " + it.event.summary + " => " + it.selectedClient.fullName

@@ -261,7 +261,7 @@ test {
     reports.junitXml.destination = file("${buildDir}/test-results/unit")
     useTestNG() {
         // https://docs.gradle.org/current/groovydoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html
-        excludeGroups 'uiTest'
+        excludeGroups 'uiTest', 'mTest'
 
         //parallel = 'classes'
         //threadCount = 1 // !!!! only increase thread count for real unit tests (will break HSQLDB enabled tests!!!)
@@ -307,6 +307,7 @@ task testUi(type: Test) {
     // nice to not override: systemProperties.BROWSER = System.getProperty('BROWSER', 'internetExplorer')
     useTestNG() {
         includeGroups 'uiTest'
+        excludeGroups 'mTest'
         // suites 'src/main/resources/testng.xml'
     }
     jacoco {

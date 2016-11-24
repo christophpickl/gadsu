@@ -25,7 +25,7 @@ fun readGapiCredentialsFromSysProps(): GapiCredentials {
 
     }
     protected val connector = GoogleConnectorImpl()
-    protected val credentials = readGapiCredentialsFromSysProps()
+    protected val credentials: GapiCredentials by lazy { readGapiCredentialsFromSysProps() }
     protected val now = DateTime.now().clearMinutes()
     private var originalDevState = false
 
