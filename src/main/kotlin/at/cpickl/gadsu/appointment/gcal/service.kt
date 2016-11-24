@@ -18,8 +18,8 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 data class GCalEventMeta(val id: String, val url: String) {
-    fun copyForUpdate(appointmentId: String, event: GCalEvent) =
-            GCalUpdateEvent(id, appointmentId, event.summary, event.start, event.end)
+    fun copyForUpdate(appointmentId: String, event: GCalEvent, clientId: String) =
+            GCalUpdateEvent(id, appointmentId, clientId, event.summary, event.start, event.end)
 }
 
 interface GCalService : GCalRepository

@@ -64,59 +64,73 @@ class AppointmentServiceImpl @Inject constructor(
 
     override fun insertOrUpdate(appointment: Appointment): Appointment {
         log.debug("insertOrUpdate(appointment={})", appointment)
+
+        val client = clientRepository.findById(appointment.clientId)
+
         return if (appointment.yetPersisted) {
-            repository.update(appointment)
-            if (appointment.gcalId != null) {
-                // TODO maybe the event was in the meanwhile already deleted?
-                gcal.updateEvent(GCalUpdateEvent(
-                        id = appointment.gcalId,
-                        gadsuId = appointment.id!!,
-                        summary = appointment.note,
-                        start = appointment.start,
-                        end = appointment.end
-                ))
-            }
-            bus.post(AppointmentChangedEvent(appointment))
+            updateOnly(appointment, client)
             appointment
-
         } else {
-            val client = clientRepository.findById(appointment.clientId)
+            insertOnly(appointment, client)
+        }
+    }
 
-            val isGCalExisting = appointment.gcalId != null
+    private fun insertOnly(appointment: Appointment, client: Client): Appointment {
+        log.trace("insertOnly(..)")
+        val savedAppointment = if (appointment.gcalId != null) {
+            // yet persisted in gcal
+            val savedAppointment = repository.insert(appointment)
+            gcal.updateEvent(GCalUpdateEvent(
+                    id = appointment.gcalId,
+                    gadsuId = savedAppointment.id!!,
+                    clientId = appointment.clientId,
+                    summary = client.fullName,
+                    start = appointment.start,
+                    end = appointment.end
+            ))
 
-            val savedAppointment = if (isGCalExisting) {
-                val savedAppointment = repository.insert(appointment)
-                gcal.updateEvent(GCalUpdateEvent(
-                        id = appointment.gcalId!!,
-                        gadsuId = savedAppointment.id!!,
-                        summary = client.fullName,
-                        start = appointment.start,
-                        end = appointment.end
-                ))
+            savedAppointment
+        } else {
+            // insert new gcal event
+            val baseEvent = GCalEvent(
+                    id = null,
+                    gadsuId = null, // will be updated later on
+                    clientId = appointment.clientId,
+                    summary = client.fullName,
+                    description = appointment.note,
+                    start = appointment.start,
+                    end = appointment.end,
+                    url = null
+            )
+            val maybeCreatedEvent = gcal.createEvent(baseEvent)
 
-                savedAppointment
-            } else {
-                val baseEvent = GCalEvent(
-                        id = null,
-                        gadsuId = null, // will be updated later on
-                        summary = client.fullName,
-                        description = appointment.note,
-                        start = appointment.start,
-                        end = appointment.end,
-                        url = null
-                )
-                val maybeGcalId = gcal.createEvent(baseEvent)
-
-                val savedAppointment = repository.insert(appointment.copy(gcalId = maybeGcalId?.id, gcalUrl = maybeGcalId?.url))
-                if (maybeGcalId != null) {
-                    gcal.updateEvent(maybeGcalId.copyForUpdate(savedAppointment.id!!, baseEvent))
-                }
-                savedAppointment
+            val savedAppointment = repository.insert(appointment.copy(gcalId = maybeCreatedEvent?.id, gcalUrl = maybeCreatedEvent?.url))
+            if (maybeCreatedEvent != null) {
+                gcal.updateEvent(maybeCreatedEvent.copyForUpdate(savedAppointment.id!!, baseEvent, appointment.clientId))
             }
-
-            bus.post(AppointmentSavedEvent(savedAppointment))
             savedAppointment
         }
+
+        bus.post(AppointmentSavedEvent(savedAppointment))
+        return savedAppointment
+    }
+
+    private fun updateOnly(appointment: Appointment, client: Client) {
+        repository.update(appointment)
+
+        if (appointment.gcalId != null) {
+            // TODO maybe the event was in the meanwhile already deleted?
+            gcal.updateEvent(GCalUpdateEvent(
+                    id = appointment.gcalId,
+                    gadsuId = appointment.id!!,
+                    clientId = appointment.clientId,
+                    summary = client.fullName,
+                    // TODO description = appointment.note,
+                    start = appointment.start,
+                    end = appointment.end
+            ))
+        }
+        bus.post(AppointmentChangedEvent(appointment))
     }
 
     override fun delete(appointment: Appointment) {
@@ -134,6 +148,7 @@ class AppointmentServiceImpl @Inject constructor(
     }
 
     override fun upcomingAppointmentFor(client: Client) = upcomingAppointmentFor(client.id!!)
+
     override fun upcomingAppointmentFor(clientId: String): Appointment? {
         log.debug("upcomingAppointmentFor(clientId={})", clientId)
         return repository.findAllStartAfter(clock.now(), clientId).sorted().firstOrNull()

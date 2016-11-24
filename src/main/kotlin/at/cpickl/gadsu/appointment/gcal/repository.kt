@@ -8,13 +8,15 @@ import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 
 private val XPROP_GADSU_ID = "GADSU_ID"
+private val XPROP_CLIENT_ID = "CLIENT_ID"
+
 
 data class GCalEvent(
         val id: String?,
         /** private extended property*/
         val gadsuId: String?,
         /** private extended property*/
-// TODO       val clientId: String?,
+        val clientId: String?,
 
         val summary: String,
         val description: String,
@@ -25,7 +27,10 @@ data class GCalEvent(
 
 data class GCalUpdateEvent(
         val id: String,
+        /** private extended property*/
         val gadsuId: String,
+        /** private extended property*/
+        val clientId: String,
         val summary: String,
         val start: org.joda.time.DateTime,
         val end: org.joda.time.DateTime
@@ -35,7 +40,7 @@ data class GCalUpdateEvent(
                 .setSummary(summary)
                 .setStart(start.toGEventDateTime())
                 .setEnd(end.toGEventDateTime())
-                .setExtendedProperties(Event.ExtendedProperties().apply { put(XPROP_GADSU_ID, gadsuId) })
+                .setPrivateExtendedProperties(mapOf(XPROP_GADSU_ID to gadsuId, XPROP_CLIENT_ID to clientId))
     }
 }
 
@@ -120,7 +125,8 @@ class RealGCalRepository constructor(
         val eventId = gCalEvent.id
         val updateEvent = calendar.events().get(calendarId, eventId).execute()
         gCalEvent.updateFields(updateEvent)
-        calendar.events().update(calendarId, eventId, updateEvent).execute()
+        val x = calendar.events().update(calendarId, eventId, updateEvent).execute()
+        println(x)
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/delete#examples
@@ -137,19 +143,17 @@ class RealGCalRepository constructor(
         }
     }
 
-    private fun Event.toGCalEvent(): GCalEvent {
-        val maybeGadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID)
-
-        return GCalEvent(
-                id = this.id,//iCalUID, // TODO @gcal: or just id?
-                gadsuId = maybeGadsuId,
-                summary = this.summary ?: "",
-                description = this.description ?: "",
-                start = this.start.toDateTime(),
-                end = this.end.toDateTime(),
-                url = this.htmlLink
-        )
-    }
+    private fun Event.toGCalEvent() =
+            GCalEvent(
+                    id = this.id, //iCalUID, // TODO @gcal: or just id?
+                    gadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID),
+                    clientId = getPrivateExtendedProperty(XPROP_CLIENT_ID),
+                    summary = this.summary ?: "",
+                    description = this.description ?: "",
+                    start = this.start.toDateTime(),
+                    end = this.end.toDateTime(),
+                    url = this.htmlLink
+            )
 
     private fun GCalEvent.toEvent(): Event {
         return Event()
@@ -166,15 +170,13 @@ class RealGCalRepository constructor(
                     if (gadsuId != null) {
                         extendedProps.put(XPROP_GADSU_ID, gadsuId)
                     }
+                    if (clientId != null) {
+                        extendedProps.put(XPROP_CLIENT_ID, clientId)
+                    }
                     setPrivateExtendedProperties(extendedProps)
                 }
     }
 
-    private fun Event.setPrivateExtendedProperties(properties: Map<String, String>) {
-        extendedProperties = Event.ExtendedProperties().apply {
-            private = properties
-        }
-    }
 
     private fun Event.getPrivateExtendedProperty(key: String): String? {
         return if (extendedProperties == null || extendedProperties.private == null) {
@@ -192,3 +194,8 @@ class RealGCalRepository constructor(
 
 }
 
+private fun Event.setPrivateExtendedProperties(properties: Map<String, String>) {
+    extendedProperties = Event.ExtendedProperties().apply {
+        private = properties
+    }
+}

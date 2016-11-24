@@ -9,7 +9,6 @@ import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.view.components.Dialogs
 import org.joda.time.DateTime
 import javax.inject.Inject
 
@@ -26,9 +25,7 @@ data class SyncReport(val eventsAndClients: Map<GCalEvent, List<Client>>) {
 }
 
 class GCalSyncService @Inject constructor(
-        private val gcal: GCalService,
         private val syncer: GCalSyncer,
-        private val dialogs: Dialogs,
         private val clientService: ClientService,
         private val matcher: MatchClients,
         private val appointmentService: AppointmentService,
@@ -38,7 +35,7 @@ class GCalSyncService @Inject constructor(
     private val log = LOG(javaClass)
 
     override fun syncAndSuggest(): SyncReport {
-        val gCalEvents = syncer.loadGCalEvents()
+        val gCalEvents = syncer.loadGCalEventsForImport()
 
         val eventsAndMaybeClients = suggestClients(gCalEvents)
 
@@ -66,13 +63,9 @@ class GCalSyncService @Inject constructor(
     }
 }
 
-
 interface GCalSyncer {
-
-    fun loadGCalEvents(): List<GCalEvent>
-
+    fun loadGCalEventsForImport(): List<GCalEvent>
 }
-
 
 class GCalSyncerImpl @Inject constructor(
         private val gcal: GCalService,
@@ -85,7 +78,7 @@ class GCalSyncerImpl @Inject constructor(
         private val DAYS_BEFORE_AND_AFTER_TO_SCAN = 14
     }
 
-    override fun loadGCalEvents(): List<GCalEvent> {
+    override fun loadGCalEventsForImport(): List<GCalEvent> {
         if (!gcal.isOnline) {
             throw IllegalStateException("can not sync: gcal is not online!")
         }
@@ -93,10 +86,8 @@ class GCalSyncerImpl @Inject constructor(
         val (start, end) = dateRangeForSyncer()
 
         val gcalEvents = gcal.listEvents(start, end)
-        log.trace("gcal listed ${gcalEvents.size} events")
-
-        return gcalEvents
-
+        log.trace("gcal listed ${gcalEvents.size} events in total.")
+        return gcalEvents.filter { it.gadsuId == null }
     }
 
     private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
