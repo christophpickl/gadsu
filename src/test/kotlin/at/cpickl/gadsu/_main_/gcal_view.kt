@@ -15,19 +15,21 @@ import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
 
 fun main(args: Array<String>) {
-    val client1 = Client.savedValidInstance()
-    val client2 = Client.savedValidInstance2()
+    val client1 = Client.savedValidInstance().copy(firstName = "client1")
+    val client2 = Client.savedValidInstance2().copy(firstName = "client2")
+    val client3 = Client.savedValidInstance2().copy(firstName = "client3")
+    val client4 = Client.savedValidInstance2().copy(firstName = "client4")
 
     val bus = EventBus()
     val mainFrame = SwingMainFrame(bus, GadsuMenuBar(bus, DisabledMacHandler()))
     val window = SyncReportSwingWindow(mainFrame, bus)
     window.initReport(
             SyncReport(mapOf(
-                    entry(gcal("g1"), client1),
+                    entry(gcal("g1"), client3, client1),
                     entry(gcal("g2"), client2),
                     entry(gcal("unknown"))
             )),
-            listOf(client1, client2)
+            listOf(client1, client2, client3, client4)
     )
     window.start()
 
@@ -36,8 +38,10 @@ fun main(args: Array<String>) {
 
 private class RequestImportSyncEventListener(private val window: SyncReportSwingWindow) {
     @Subscribe fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
-        val foo = window.readSelectedEvents().map { "- " + it.event.summary }.joinToString("\n")
-        println("import: $foo")
+        val foo = window.readImportAppointments().filter { it.enabled }.map {
+            "- " + it.event.summary + " => " + it.selectedClient.fullName
+        }.joinToString("\n")
+        println("import:\n$foo")
     }
 }
 

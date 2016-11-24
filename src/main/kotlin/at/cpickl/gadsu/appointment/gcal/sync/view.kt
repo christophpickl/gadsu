@@ -25,13 +25,14 @@ interface SyncReportWindow : ClosableWindow {
     fun start()
     fun destroy()
     fun initReport(report: SyncReport, clients: List<Client>)
-    fun readSelectedEvents(): List<ImportAppointment>
+    fun readImportAppointments(): List<ImportAppointment>
 }
 
 data class ImportAppointment(
         val event: GCalEvent,
         var enabled: Boolean,
-        var selectedClient: Client
+        var selectedClient: Client,
+        val allClients: List<Client> // order is specific to this appointment
 )
 
 class SyncReportSwingWindow
@@ -79,10 +80,7 @@ class SyncReportSwingWindow
         rootPane.defaultButton = btnImport
     }
 
-    override fun readSelectedEvents(): List<ImportAppointment> {
-        // FIXME filter only selected ones
-        return model.getData()
-    }
+    override fun readImportAppointments() = model.getData()
 
     // proper starting, see PreferencesWindow (MINOR outsource logic!)
     override fun start() {
@@ -91,11 +89,13 @@ class SyncReportSwingWindow
 
     override fun initReport(report: SyncReport, clients: List<Client>) {
         val defaultSelected = clients.first()
-        // FIXME create JDropDown by given list here!
         model.resetData(report.eventsAndClients.map {
-            ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected)
+            ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
         })
     }
+
+    private fun clientsOrdered(topClients: List<Client>, allClients: List<Client>) =
+            topClients.union(allClients.minus(topClients)).toList()
 
     override fun closeWindow() {
         isVisible = false

@@ -63,9 +63,10 @@ open class GCalControllerImpl @Inject constructor(
     }
 
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
-        val appointmentsToImport = window.readSelectedEvents()
+        val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
 
         appointmentsToImport.forEach {
+            // FIXME check for duplicates (group by each client)
             appointmentService.insertOrUpdate(it.toAppointment())
         }
 
