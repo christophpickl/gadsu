@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package at.cpickl.gadsu.tcm.model
 
 
@@ -17,7 +19,7 @@ enum class YinYangSize(val labelChinese: String) {
     Big("Shao")
 }
 
-enum class YinYangDetail(val labelChinese: String, val yy: YinYang, size: YinYangSize) {
+enum class YinYangDetail(val labelChinese: String, val yy: YinYang, val size: YinYangSize) {
     YinBig("Tai Yin", YinYang.Yin, YinYangSize.Big),
     YinSmall("Shao Yin", YinYang.Yin, YinYangSize.Small),
     YangBig("Tai Yang", YinYang.Yang, YinYangSize.Big),

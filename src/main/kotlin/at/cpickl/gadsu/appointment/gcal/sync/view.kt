@@ -2,8 +2,8 @@ package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.components.MyFrame
-import at.cpickl.gadsu.view.components.MyTable
 import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.components.TableColumn
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -15,9 +15,11 @@ import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import javax.inject.Inject
+import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+
 
 interface SyncReportWindow : ClosableWindow {
     fun start()
@@ -34,6 +36,7 @@ data class ImportAppointment(
 
 class SyncReportSwingWindow
 @Inject constructor(
+        private val mainFrame: MainFrame,
         bus: EventBus
 )
     : MyFrame("Sync Bericht"), SyncReportWindow {
@@ -42,13 +45,15 @@ class SyncReportSwingWindow
             TableColumn("Titel", 60, { it.event.summary }),
             TableColumn("Client", 60, { it.selectedClient.fullName })
     ))
-    private val table = MyTable<ImportAppointment>(model, "SyncReportSwingWindow.table")
+    private val table = SyncTable(model)
+    private val btnImport = JButton("Import").apply { addActionListener { bus.post(RequestImportSyncEvent()) } }
 
     init {
         addCloseListener { closeWindow() }
         registerCloseOnEscape()
 
         contentPane.add(GridPanel().apply {
+            border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
 
             c.weightx = 1.0
             c.weighty = 0.0
@@ -64,14 +69,20 @@ class SyncReportSwingWindow
             c.weighty = 0.0
             c.fill = GridBagConstraints.NONE
             add(JPanel(BorderLayout()).apply {
-                add(JButton("Import").apply { addActionListener { bus.post(RequestImportSyncEvent()) } }, BorderLayout.WEST)
+                add(btnImport, BorderLayout.WEST)
                 add(JButton("Abbrechen").apply { addActionListener { closeWindow() } }, BorderLayout.EAST)
             })
         })
-        pack() // TODO set location relative to...
+        pack()
+        setLocationRelativeTo(mainFrame.asJFrame())
+
+        rootPane.defaultButton = btnImport
     }
 
-    override fun readSelectedEvents() = model.getData()
+    override fun readSelectedEvents(): List<ImportAppointment> {
+        // FIXME filter only selected ones
+        return model.getData()
+    }
 
     // proper starting, see PreferencesWindow (MINOR outsource logic!)
     override fun start() {

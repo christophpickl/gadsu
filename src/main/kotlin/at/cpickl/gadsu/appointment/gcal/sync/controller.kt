@@ -8,6 +8,7 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.EventBus
@@ -27,11 +28,12 @@ open class GCalControllerImpl @Inject constructor(
         private val syncService: SyncService,
         private val clientService: ClientService,
         private val appointmentService: AppointmentService,
+        private val mainFrame: MainFrame,
         bus: EventBus
 ) : GCalController {
 
     private val log = LOG(javaClass)
-    private val window: SyncReportWindow by lazy { SyncReportSwingWindow(bus) }
+    private val window: SyncReportWindow by lazy { SyncReportSwingWindow(mainFrame, bus) }
 
     @Subscribe open fun onRequestGCalSyncEvent(event: RequestGCalSyncEvent) {
         if (!gcal.isOnline) {

@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel
 
 class TableColumn<in E>(val name: String, val width: Int, val transform: (value: E) -> Any)
 
-class MyTable<out E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
+open class MyTable<out E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
 
     val log = LOG(javaClass)
 

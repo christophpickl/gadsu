@@ -34,6 +34,7 @@ High
 
 Med
 ---
+* add tabs to preferences window (general/google)
 * ChangesChecker it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
 * wahlfrei in treatments navigieren, nicht nur links/rechts, sondern auch zb durch nummerneingabe/dropdown direkt hin
 * dyn treatment: rueckendiagnose, yu punkte, bo punkte
