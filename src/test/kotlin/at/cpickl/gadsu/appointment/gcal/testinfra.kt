@@ -7,6 +7,7 @@ import org.joda.time.DateTime
 fun SyncReport.Companion.dummyInstance() = SyncReport(
         mapOf(GCalEvent(
                 id = null,
+                gadsuId = null,
                 summary = "caro",
                 description = "",
                 start = TEST_DATETIME1,

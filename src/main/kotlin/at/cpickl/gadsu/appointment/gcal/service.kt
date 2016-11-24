@@ -17,7 +17,10 @@ import org.slf4j.LoggerFactory
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-data class GCalEventMeta(val id: String, val url: String)
+data class GCalEventMeta(val id: String, val url: String) {
+    fun copyForUpdate(appointmentId: String, event: GCalEvent) =
+            GCalUpdateEvent(id, appointmentId, event.summary, event.start, event.end)
+}
 
 interface GCalService : GCalRepository
 

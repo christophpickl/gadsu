@@ -5,8 +5,11 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import org.joda.time.DateTime
 
+private val XPROP_GADSU_ID = "GADSU_ID"
+
 data class GCalEvent(
         val id: String?,
+        val gadsuId: String?,
         val summary: String,
         val description: String,
         val start: org.joda.time.DateTime,
@@ -16,6 +19,7 @@ data class GCalEvent(
 
 data class GCalUpdateEvent(
         val id: String,
+        val gadsuId: String,
         val summary: String,
         val start: org.joda.time.DateTime,
         val end: org.joda.time.DateTime
@@ -25,6 +29,7 @@ data class GCalUpdateEvent(
                 .setSummary(summary)
                 .setStart(start.toGEventDateTime())
                 .setEnd(end.toGEventDateTime())
+                .setExtendedProperties(Event.ExtendedProperties().apply { put(XPROP_GADSU_ID, gadsuId) })
     }
 }
 
@@ -73,6 +78,7 @@ class RealGCalRepository constructor(
         private val calendar: Calendar,
         private val calendarId: String
 ) : GCalRepository {
+
     private val log = LOG(javaClass)
 
     override val isOnline = true
@@ -90,6 +96,18 @@ class RealGCalRepository constructor(
         return GCalEventMeta(savedEvent.id, savedEvent.htmlLink)
     }
 
+    // https://developers.google.com/google-apps/calendar/v3/reference/events/list
+    override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
+        val events = calendar.events().list(calendarId).apply {
+//            fields = "items(iCalUID,start,end,description,htmlLink,extendedProperties),summary"
+            timeMin = start.toGDateTime()
+            timeMax = end.toGDateTime()
+        }.execute()
+
+        log.debug("listEvents() returning ${events.items.size} events")
+        return events.items.map { it.toGCalEvent() }
+    }
+
     // https://developers.google.com/google-apps/calendar/v3/reference/events/update#examples
     override fun updateEvent(gCalEvent: GCalUpdateEvent) {
         log.info("updateEvent(gCalEvent={})", gCalEvent)
@@ -101,22 +119,16 @@ class RealGCalRepository constructor(
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/delete#examples
     override fun deleteEvent(eventId: String) {
+        log.info("deleteEvent(eventId={})", eventId)
         calendar.events().delete(calendarId, eventId).execute()
     }
 
-    override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
-        val events = calendar.events().list(calendarId).apply {
-            timeMin = start.toGDateTime()
-            timeMax = end.toGDateTime()
-        }.execute()
-
-        log.trace("listEvents() returning ${events.items.size} events")
-        return events.items.map { it.toGCalEvent() }
-    }
-
     private fun Event.toGCalEvent(): GCalEvent {
+        val maybeGadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID)
+
         return GCalEvent(
                 id = this.iCalUID, // TODO or just id?
+                gadsuId = maybeGadsuId,
                 summary = this.summary ?: "",
                 description = this.description ?: "",
                 start = this.start.toDateTime(),
@@ -134,8 +146,35 @@ class RealGCalRepository constructor(
                 .setEnd(this.end.toGEventDateTime())
 //                .setAttendees()
 //                .setReminders()
-//                .setExtendedProperties(Event.ExtendedProperties().set("MYappointmentId", "fuchur"))
+                .apply {
+
+                    val extendedProps = mutableMapOf<String, String>()
+                    if (gadsuId != null) {
+                        extendedProps.put(XPROP_GADSU_ID, gadsuId)
+                    }
+                    setPrivateExtendedProperties(extendedProps)
+                }
     }
+
+    private fun Event.setPrivateExtendedProperties(properties: Map<String, String>) {
+        extendedProperties = Event.ExtendedProperties().apply {
+            private = properties
+        }
+    }
+
+    private fun Event.getPrivateExtendedProperty(key: String): String? {
+        return if (extendedProperties == null || extendedProperties.private == null) {
+            null
+        } else {
+            val storedValue = extendedProperties.private[key]
+            if (storedValue == null) {
+                null
+            } else {
+                storedValue
+            }
+        }
+    }
+
 
 }
 

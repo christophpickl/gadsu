@@ -1,6 +1,7 @@
 package at.cpickl.gadsu._main_
 
 import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
 import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
 import at.cpickl.gadsu.service.GoogleConnectorImpl
@@ -16,6 +17,16 @@ fun main(args: Array<String>) {
     val calendar = connector.connectCalendar(credentials)
     val calendarId = transformCalendarNameToId(calendar, "gadsu_test")
     val gcal = RealGCalRepository(calendar, calendarId)
+
+    gcal.createEvent(GCalEvent(
+            null,
+            "gadsuIddd",
+            "my sum",
+            "",
+            DateTime.now(),
+            DateTime.now().plusMinutes(30),
+            null
+    ))
 
     gcal.listEvents(
             start = DateTime.now().minusDays(14),
