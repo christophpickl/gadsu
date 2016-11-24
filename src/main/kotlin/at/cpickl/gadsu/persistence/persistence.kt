@@ -10,11 +10,14 @@ import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.FlywayException
 import org.flywaydb.core.internal.util.jdbc.JdbcUtils
+import org.hsqldb.HsqlException
+import org.hsqldb.error.ErrorCode
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.awt.image.BufferedImage
 import java.sql.Blob
+import java.sql.SQLException
 import java.sql.Timestamp
 import javax.inject.Inject
 import javax.sql.DataSource
@@ -92,7 +95,8 @@ open class FlywayDatabaseManager @Inject constructor(
                 log.info("DB repair done, going to migrate now again.")
                 flyway.migrate()
             } else {
-                throw e
+                val dbLockException = DatabaseLockedException.buildByCause(e)
+                throw dbLockException ?: e
             }
         }
         databaseConnected = true
@@ -133,6 +137,25 @@ open class FlywayDatabaseManager @Inject constructor(
             // when there is a lock, the shutdown hook will fail, avoid this!
             log.error("Could not close database connection.", e)
         }
+    }
+
+}
+
+class DatabaseLockedException(message: String, cause: FlywayException) : GadsuException(message, cause) {
+    companion object {
+        fun buildByCause(e: FlywayException): DatabaseLockedException? {
+            val hsqlCause = parseCause(e) ?: return null
+            return if (hsqlCause.isCausedByLockFailure()) DatabaseLockedException("Database locked: ${hsqlCause.message}", e) else null
+        }
+
+        private fun parseCause(e: FlywayException): HsqlException? {
+            val sqlCause = (e.cause ?: return null) as? SQLException ?: return null
+            return (sqlCause.cause ?: return null) as? HsqlException ?: return null
+        }
+
+        private fun HsqlException.isCausedByLockFailure() =
+                // strangely returns "-451" ?
+                Math.abs(errorCode) == ErrorCode.LOCK_FILE_ACQUISITION_FAILURE
     }
 
 }
