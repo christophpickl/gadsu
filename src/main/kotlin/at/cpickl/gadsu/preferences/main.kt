@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.mail.GapiCredentials
+import at.cpickl.gadsu.service.GapiCredentials
 
 
 class ShowPreferencesEvent : UserEvent()

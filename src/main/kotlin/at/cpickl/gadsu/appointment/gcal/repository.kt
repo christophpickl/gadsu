@@ -1,15 +1,21 @@
 package at.cpickl.gadsu.appointment.gcal
 
 import at.cpickl.gadsu.service.LOG
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 
 private val XPROP_GADSU_ID = "GADSU_ID"
 
 data class GCalEvent(
         val id: String?,
+        /** private extended property*/
         val gadsuId: String?,
+        /** private extended property*/
+// TODO       val clientId: String?,
+
         val summary: String,
         val description: String,
         val start: org.joda.time.DateTime,
@@ -120,14 +126,22 @@ class RealGCalRepository constructor(
     // https://developers.google.com/google-apps/calendar/v3/reference/events/delete#examples
     override fun deleteEvent(eventId: String) {
         log.info("deleteEvent(eventId={})", eventId)
-        calendar.events().delete(calendarId, eventId).execute()
+        try {
+            calendar.events().delete(calendarId, eventId).execute()
+        } catch(e: GoogleJsonResponseException) {
+            if (e.statusCode == HttpStatus.SC_GONE) { // 410
+                log.warn("The event with ID ($eventId) was already deleted remotely.")
+            } else {
+                throw e
+            }
+        }
     }
 
     private fun Event.toGCalEvent(): GCalEvent {
         val maybeGadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID)
 
         return GCalEvent(
-                id = this.iCalUID, // TODO or just id?
+                id = this.id,//iCalUID, // TODO @gcal: or just id?
                 gadsuId = maybeGadsuId,
                 summary = this.summary ?: "",
                 description = this.description ?: "",

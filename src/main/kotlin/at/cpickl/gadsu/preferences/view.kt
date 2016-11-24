@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.preferences
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
-import at.cpickl.gadsu.mail.GapiCredentials
+import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.MainFrame
@@ -180,6 +180,8 @@ class PreferencesSwingWindow @Inject constructor(
         inpProxy.text = preferencesData.proxy ?: ""
         inpGcalName.text = preferencesData.gcalName ?: ""
         inpGmailAddress.text = preferencesData.gmailAddress ?: ""
+        inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
+        inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
         inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
     }
 

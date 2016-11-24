@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.mail
 
 import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.GoogleConnector
 import at.cpickl.gadsu.service.GoogleConnectorImpl
 import at.cpickl.gadsu.service.formatDateTime

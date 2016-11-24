@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.mail.GapiCredentials
+import at.cpickl.gadsu.service.GapiCredentials
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.testng.annotations.BeforeMethod

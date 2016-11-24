@@ -1,8 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.appointment.Appointment
-import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
@@ -13,7 +11,6 @@ import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 
@@ -27,7 +24,6 @@ open class GCalControllerImpl @Inject constructor(
         private val dialogs: Dialogs,
         private val syncService: SyncService,
         private val clientService: ClientService,
-        private val appointmentService: AppointmentService,
         private val mainFrame: MainFrame,
         bus: EventBus
 ) : GCalController {
@@ -65,29 +61,14 @@ open class GCalControllerImpl @Inject constructor(
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
 
-        appointmentsToImport.forEach {
-            // FIXME check for duplicates (group by each client)
-            appointmentService.insertOrUpdate(it.toAppointment())
-        }
+        // FIXME get back result and show UI
+        syncService.import(appointmentsToImport)
 
         window.closeWindow()
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
         window.destroy()
-    }
-
-    private fun ImportAppointment.toAppointment(): Appointment {
-        return Appointment(
-                id = null,
-                clientId = this.selectedClient.id!!,
-                created = DateTime.now(),
-                start = this.event.start,
-                end = this.event.end,
-                note = this.event.description,
-                gcalId = this.event.id,
-                gcalUrl = this.event.url
-                )
     }
 
 }

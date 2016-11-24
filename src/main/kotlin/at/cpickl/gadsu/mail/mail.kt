@@ -15,16 +15,6 @@ data class Mail(
     }
 }
 
-data class GapiCredentials(
-        val clientId: String,
-        val clientSecret: String
-) {
-    companion object {
-        fun buildNullSafe(id: String? , secret: String?) =
-                if (id == null || secret == null) null else GapiCredentials(id, secret)
-    }
-}
-
 private val mailPattern = Pattern.compile("""^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$""")
 fun String.isNotValidMail() = !this.isValidMail()
 fun String.isValidMail(): Boolean {

@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
+import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.MainFrame
@@ -12,6 +13,7 @@ import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
+import org.joda.time.DateTime
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import javax.inject.Inject
@@ -33,7 +35,21 @@ data class ImportAppointment(
         var enabled: Boolean,
         var selectedClient: Client,
         val allClients: List<Client> // order is specific to this appointment
-)
+) {
+
+    fun toAppointment(created: DateTime): Appointment {
+        return Appointment(
+                id = null, // gadsu appointment.ID is not known yet
+                clientId = this.selectedClient.id!!,
+                created = created,
+                start = this.event.start,
+                end = this.event.end,
+                note = this.event.description,
+                gcalId = this.event.id,
+                gcalUrl = this.event.url
+        )
+    }
+}
 
 class SyncReportSwingWindow
 @Inject constructor(

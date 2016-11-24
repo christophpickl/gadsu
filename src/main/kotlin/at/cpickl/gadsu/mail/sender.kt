@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.mail
 
+import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.GoogleConnector
 import at.cpickl.gadsu.service.LOG
 import com.google.api.client.util.Base64

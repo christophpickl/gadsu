@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.GADSU_DIRECTORY
-import at.cpickl.gadsu.mail.GapiCredentials
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -24,6 +23,15 @@ interface GoogleConnector {
     fun connectGmail(credentials: GapiCredentials): Gmail
 }
 
+data class GapiCredentials(
+        val clientId: String,
+        val clientSecret: String
+) {
+    companion object {
+        fun buildNullSafe(id: String? , secret: String?) =
+                if (id == null || secret == null) null else GapiCredentials(id, secret)
+    }
+}
 
 // https://developers.google.com/gmail/api/quickstart/java
 // https://developers.google.com/gmail/api/guides/sending

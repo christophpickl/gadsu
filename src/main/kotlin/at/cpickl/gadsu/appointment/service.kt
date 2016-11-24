@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
-import at.cpickl.gadsu.appointment.gcal.GCalEventMeta
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.appointment.gcal.GCalUpdateEvent
 import at.cpickl.gadsu.client.Client
@@ -68,6 +67,7 @@ class AppointmentServiceImpl @Inject constructor(
         return if (appointment.yetPersisted) {
             repository.update(appointment)
             if (appointment.gcalId != null) {
+                // TODO maybe the event was in the meanwhile already deleted?
                 gcal.updateEvent(GCalUpdateEvent(
                         id = appointment.gcalId,
                         gadsuId = appointment.id!!,
@@ -78,22 +78,42 @@ class AppointmentServiceImpl @Inject constructor(
             }
             bus.post(AppointmentChangedEvent(appointment))
             appointment
+
         } else {
             val client = clientRepository.findById(appointment.clientId)
-            val baseEvent = GCalEvent(
-                    id = null,
-                    gadsuId = null, // will be updated later on
-                    summary = client.fullName,
-                    description = appointment.note,
-                    start = appointment.start,
-                    end = appointment.end,
-                    url = null
-            )
-            val maybeGcalId = gcal.createEvent(baseEvent)
-            val savedAppointment = repository.insert(appointment.copy(gcalId = maybeGcalId?.id, gcalUrl = maybeGcalId?.url))
-            if (maybeGcalId != null) {
-                gcal.updateEvent(maybeGcalId.copyForUpdate(savedAppointment.id!!, baseEvent))
+
+            val isGCalExisting = appointment.gcalId != null
+
+            val savedAppointment = if (isGCalExisting) {
+                val savedAppointment = repository.insert(appointment)
+                gcal.updateEvent(GCalUpdateEvent(
+                        id = appointment.gcalId!!,
+                        gadsuId = savedAppointment.id!!,
+                        summary = client.fullName,
+                        start = appointment.start,
+                        end = appointment.end
+                ))
+
+                savedAppointment
+            } else {
+                val baseEvent = GCalEvent(
+                        id = null,
+                        gadsuId = null, // will be updated later on
+                        summary = client.fullName,
+                        description = appointment.note,
+                        start = appointment.start,
+                        end = appointment.end,
+                        url = null
+                )
+                val maybeGcalId = gcal.createEvent(baseEvent)
+
+                val savedAppointment = repository.insert(appointment.copy(gcalId = maybeGcalId?.id, gcalUrl = maybeGcalId?.url))
+                if (maybeGcalId != null) {
+                    gcal.updateEvent(maybeGcalId.copyForUpdate(savedAppointment.id!!, baseEvent))
+                }
+                savedAppointment
             }
+
             bus.post(AppointmentSavedEvent(savedAppointment))
             savedAppointment
         }

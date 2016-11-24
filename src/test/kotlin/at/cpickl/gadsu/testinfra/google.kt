@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.mail.GapiCredentials
+import at.cpickl.gadsu.service.GapiCredentials
 
 fun readGapiCredentialsFromSysProps(): GapiCredentials {
     val gapiSecret = System.getProperty("GAPI_SECRET", "")
