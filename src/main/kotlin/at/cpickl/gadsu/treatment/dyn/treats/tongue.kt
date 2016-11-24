@@ -77,6 +77,7 @@ enum class TongueProperty {;
         Flaccid("schlaff", "FLACCID"),
         Long("lang", "LONG"),
         Short("kurz", "SHORT"),
+        Sharp("spitz", "SHARP"),
         Cracked("rissig", "CRACKED"),
         Shaky("zitternd", "SHAKY"), // means wind
         OneSideAligned("einseitig ausgerichtet", "ONESIDE ALIGNED")
