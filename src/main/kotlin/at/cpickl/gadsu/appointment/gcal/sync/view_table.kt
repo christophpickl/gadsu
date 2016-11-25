@@ -6,6 +6,7 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewConstants
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellEditor
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellRenderer
+import at.cpickl.gadsu.view.components.MyDateTimeTableCellRenderer
 import at.cpickl.gadsu.view.components.MyTable
 import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.registerOnStopped
@@ -24,6 +25,7 @@ class SyncTable(
     companion object {
         private val COL_CHECKBOX = 0
         private val COL_CLIENT = 2
+        private val COL_DATE = 3
     }
 
     private val logg = LOG(javaClass)
@@ -37,10 +39,13 @@ class SyncTable(
             }
         }
 
+        // textTable.setDefaultRenderer(String.class, new RowHeightCellRenderer());
         columnModel.getColumn(COL_CHECKBOX).cellEditor = enabledEditor
         columnModel.getColumn(COL_CHECKBOX).cellRenderer = MyCheckboxTableCellRenderer()
+        columnModel.getColumn(COL_DATE).cellRenderer = MyDateTimeTableCellRenderer()
 
-        // TODO change renderer to display combobox as well
+        rowHeight = 40
+
         val clientEditor = ImportAppointmentClientEditor(this).apply {
             registerOnStopped {
                 val importApp = model.entityAt(selectedRow)
@@ -74,15 +79,13 @@ private class ImportAppointmentClientEditor(
 
     private val combo = JComboBox<Client>().apply {
         renderer = ClientRenderer()
+        putClientProperty("JComboBox.isTableCellEditor", true)
     }
 
     val currentClient: Client get() = cellEditorValue as Client
 
     override fun getTableCellEditorComponent(table: JTable?, value: Any?, isSelected: Boolean, row: Int, column: Int): Component {
-//        println("client combo value: $value")
-
         ViewConstants.Table.changeBackground(combo, isSelected)
-
         val selectedClient = clientsProvider.clientByRow(row)
         combo.model = DefaultComboBoxModel<Client>(clientsProvider.suggestClients(row).toTypedArray())
         combo.selectedItem = selectedClient

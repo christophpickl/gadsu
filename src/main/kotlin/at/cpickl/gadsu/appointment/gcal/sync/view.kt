@@ -64,14 +64,16 @@ class SyncReportSwingWindow
 
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", 30, { it.enabled }),
-            TableColumn("Titel", 60, { it.event.summary }),
-            TableColumn("Client", 60, { it.selectedClient.fullName })
+            TableColumn("Titel", 200, { it.event.summary }),
+            TableColumn("Client", 250, { it.selectedClient.fullName }),
+            TableColumn("Zeit", 200, { Pair(it.event.start, it.event.end) })
     ))
     private val table = SyncTable(model)
     private val btnImport = JButton("Import").apply { addActionListener {
         table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
         bus.post(RequestImportSyncEvent())
     } }
+
     private val topText = HtmlEditorPane()
 
     init {
@@ -119,6 +121,7 @@ class SyncReportSwingWindow
         model.resetData(report.importEvents.map {
             ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
         })
+
         deleteAppointments = report.deleteEvents
         val isSingular = model.size == 1
         topText.text = "Folgende${if (isSingular) "r" else ""} ${model.size} Termin${if (isSingular) " kann" else "e können"} importiert werden (${deleteAppointments.size} zum Löschen):"

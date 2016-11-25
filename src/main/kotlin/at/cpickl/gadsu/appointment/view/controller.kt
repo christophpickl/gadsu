@@ -4,6 +4,7 @@ import at.cpickl.gadsu.appointment.AppointmentChangedEvent
 import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
+import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentChangedEvent
@@ -16,7 +17,8 @@ import javax.inject.Inject
 open class AppoinmentsInClientViewController @Inject constructor(
         private val view: AppoinmentsInClientView,
         private val service: AppointmentService,
-        private val clock: Clock
+        private val clock: Clock,
+        private val currentClient: CurrentClient
 ) {
 
     private val log = LOG(javaClass)
@@ -37,14 +39,23 @@ open class AppoinmentsInClientViewController @Inject constructor(
             log.trace("Not going to insert created appointment into list, as start date is in past.")
             return
         }
+        if (currentClient.data.id != event.appointment.clientId) {
+            return
+        }
         view.insert(event.appointment)
     }
 
     @Subscribe open fun onAppointmentDeletedEvent(event: AppointmentDeletedEvent) {
+        if (currentClient.data.id != event.appointment.clientId) {
+            return
+        }
         view.delete(event.appointment)
     }
 
     @Subscribe open fun onAppointmentChangedEvent(event: AppointmentChangedEvent) {
+        if (currentClient.data.id != event.appointment.clientId) {
+            return
+        }
         view.change(event.appointment)
     }
 }

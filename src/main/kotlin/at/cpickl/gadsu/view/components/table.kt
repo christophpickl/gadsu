@@ -1,7 +1,10 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.view.ViewConstants
+import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.swing.opaque
+import org.joda.time.DateTime
 import java.awt.Component
 import javax.swing.AbstractCellEditor
 import javax.swing.JCheckBox
@@ -10,10 +13,27 @@ import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 
 
+class MyDateTimeTableCellRenderer : TableCellRenderer {
+
+    private val text = HtmlEditorPane().apply {
+        opaque()
+    }
+
+    override fun getTableCellRendererComponent(table: JTable?, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
+        val (start, end) = @Suppress("UNCHECKED_CAST") (value as Pair<DateTime, DateTime>)
+        text.text = "Von: ${start.formatDateTime()}<br/>Bis: ${end.formatDateTime()}"
+        ViewConstants.Table.changeBackground(text, isSelected)
+        ViewConstants.Table.changeForeground(text, isSelected)
+        return text
+    }
+
+}
+
 class MyCheckboxTableCellRenderer : TableCellRenderer {
+
     private val box = JCheckBox()
+
     override fun getTableCellRendererComponent(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
-//        println("renderer: row=$row, value=$value")
         return box.apply {
             ViewConstants.Table.changeBackground(this, isSelected)
             this.isSelected = value as Boolean
@@ -35,7 +55,6 @@ class MyCheckboxTableCellEditor : AbstractCellEditor(), TableCellEditor {
     }
 
     override fun getTableCellEditorComponent(table: JTable?, value: Any?, isSelected: Boolean, row: Int, column: Int): Component {
-//        println("editor: row=$row, value=$value, isSelected=$isSelected")
         val isValueTrue = value as Boolean
         currentState = isValueTrue
         checkbox.isSelected = isValueTrue

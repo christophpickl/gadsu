@@ -69,10 +69,6 @@ open class GCalControllerImpl @Inject constructor(
 
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
-        println(appointmentsToImport)
-        if (true) {
-            return
-        }
         val appointmentsToDelete = window.readDeleteAppointments()
 
         if (appointmentsToImport.isEmpty() && appointmentsToDelete.isEmpty()) {
