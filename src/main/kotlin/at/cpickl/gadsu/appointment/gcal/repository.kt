@@ -90,7 +90,7 @@ object OfflineGCalRepository : GCalRepository {
 
 fun Event.toGCalEvent() =
         GCalEvent(
-                id = this.id, //iCalUID, // TODO @gcal: or just id?
+                id = this.id,
                 gadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID),
                 clientId = getPrivateExtendedProperty(XPROP_CLIENT_ID),
                 summary = this.summary ?: "",
@@ -98,6 +98,7 @@ fun Event.toGCalEvent() =
                 start = this.start.toDateTime(),
                 end = this.end.toDateTime(),
                 url = this.htmlLink
+                // this.updated
         )
 private fun Event.getPrivateExtendedProperty(key: String): String? {
     return if (extendedProperties == null || extendedProperties.private == null) {

@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
@@ -33,13 +34,67 @@ open class GCalControllerImpl @Inject constructor(
         bus: EventBus
 ) : GCalController {
 
+    companion object {
+        private val DIALOG_TITLE = "GCal Sync"
+    }
+
     private val log = LOG(javaClass)
     private val window: SyncReportWindow by lazy { SyncReportSwingWindow(mainFrame, bus) }
 
-    private fun backgroundSync(): SyncReport? {
+    @Subscribe open fun onRequestGCalSyncEvent(event: RequestGCalSyncEvent) {
+        async.doInBackground<SyncReport?>(
+                settings = AsyncDialogSettings("GCal Sync", "Baue Verbindung zu Google Server auf ..."),
+                backgroundTask = { doTheSync() },
+                doneTask = { report ->
+                    if (report == null) {
+                        // prematurely aborted, do nothing
+                    } else if (report.isEmpty()) {
+                        dialogs.show(
+                                title = DIALOG_TITLE,
+                                message = "Es wurden keinerlei beachtenswerte Termine gefunden."
+                        )
+                    } else {
+                        window.initReport(report, clientService.findAll(ClientState.ACTIVE))
+                        window.start()
+                    }
+                },
+                exceptionTask = { e ->
+                    log.error("GCal synchronisation failed!", e)
+                    dialogs.show(DIALOG_TITLE, "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
+                }
+        )
+    }
+
+    @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
+        val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
+        val appointmentsToDelete = window.readDeleteAppointments()
+
+        async.doInBackground<Unit>(
+                settings = AsyncDialogSettings(DIALOG_TITLE, "Importiere Termine ..."),
+                backgroundTask = {
+                    doTheImport(appointmentsToImport, appointmentsToDelete)
+                },
+                doneTask = {
+                    window.closeWindow()
+                    // could show details on what exactly had happened
+                    dialogs.show(DIALOG_TITLE, "Der Kalenderabgleich war erfolgreich.")
+                },
+                exceptionTask = { e ->
+                    log.error("GCal import failed!", e)
+                    dialogs.show(DIALOG_TITLE, "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
+                    window.closeWindow()
+                }
+        )
+    }
+
+    @Subscribe open fun onQuitEvent(event: QuitEvent) {
+        window.destroy()
+    }
+
+    private fun doTheSync(): SyncReport? {
         if (!gcal.isOnline) { // this isOnline request got some heavy I/O
             dialogs.show(
-                    title = "GCal Sync fehlgeschlagen",
+                    title = DIALOG_TITLE,
                     message = "Du bist nicht mit Google Calender verbunden. Siehe Einstellungen. Neustarten!",
                     type = DialogType.WARN
             )
@@ -48,48 +103,12 @@ open class GCalControllerImpl @Inject constructor(
         return syncService.syncAndSuggest()
     }
 
-    @Subscribe open fun onRequestGCalSyncEvent(event: RequestGCalSyncEvent) {
-        async.doInBackground(
-                settings = AsyncDialogSettings("GCal Sync", "Baue Verbindung zu Google Server auf ..."),
-                backgroundTask = { backgroundSync() },
-                doneTask = { report ->
-                    if (report == null) {
-                        // prematurely aborted, do nothing
-                    } else if (report.isEmpty()) {
-                        dialogs.show(
-                                title = "GCal Sync",
-                                message = "Es wurden keinerlei beachtenswerte Termine gefunden."
-                        )
-                    } else {
-                        window.initReport(report, clientService.findAll(ClientState.ACTIVE))
-                        window.start()
-                    }
-
-                },
-                exceptionTask = { e ->
-                    log.error("GCal synchronisation failed!", e)
-                    dialogs.show("GCal Sync Fehler", "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
-                }
-        )
-    }
-
-    @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
-
-        val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
-
-        val appointmentsToDelete = window.readDeleteAppointments()
+    private fun doTheImport(appointmentsToImport: List<ImportAppointment>, appointmentsToDelete: List<Appointment>) {
         appointmentsToDelete.forEach {
             appointmentService.delete(it)
         }
 
-        // FIXME get back result and show UI
         syncService.import(appointmentsToImport)
-
-        window.closeWindow()
-    }
-
-    @Subscribe open fun onQuitEvent(event: QuitEvent) {
-        window.destroy()
     }
 
 }

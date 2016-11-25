@@ -51,26 +51,22 @@ class GCalSyncService @Inject constructor(
 
         val range = dateRangeForSyncer()
 
-        val gCalEvents = syncer.loadGCalEventsForImport(range)
-        val gadsuIdsByGCal = gCalEvents.filter { it.gadsuId != null }.map { it.gadsuId!! }
+        val gCalEvents = syncer.loadEvents(range)
 
+        val gadsuIdsByGCal = gCalEvents.filter { it.gadsuId != null }.map { it.gadsuId!! }
         val deleteEvents = appointmentService
                 .findAllBetween(range)
                 .filter { it.gcalId != null && !gadsuIdsByGCal.contains(it.id!!) }
 
-        val eventsAndMaybeClients = suggestClients(gCalEvents)
+        // otherwise check for update.
+
+        val notGadsuPersistedGCalEvents = gCalEvents.filter { it.gadsuId == null }
+        val eventsAndMaybeClients = withSuggestedClients(notGadsuPersistedGCalEvents)
+
         return SyncReport(
                 eventsAndMaybeClients, // import events
                 deleteEvents
-                // ... maybe even: update events (2 different directions)
-        )
-    }
-
-    private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
-        val now = clock.now().clearTime()
-        return Pair(
-                now.minusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN),
-                now.plusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN)
+                // ... update events (2 different directions)
         )
     }
 
@@ -84,9 +80,20 @@ class GCalSyncService @Inject constructor(
         }
     }
 
-    private fun suggestClients(gCalEvents: List<GCalEvent>): Map<GCalEvent, List<Client>> {
-        val allClients = clientService.findAll(ClientState.ACTIVE)
+    private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
+        val now = clock.now().clearTime()
+        return Pair(
+                now.minusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN),
+                now.plusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN)
+        )
+    }
 
+    private fun withSuggestedClients(gCalEvents: List<GCalEvent>): Map<GCalEvent, List<Client>> {
+        if (gCalEvents.isEmpty()) {
+            return emptyMap()
+        }
+
+        val allClients = clientService.findAll(ClientState.ACTIVE)
         return gCalEvents.associate {
             val mightBeName = it.summary
             val foundClients = matcher.findMatchingClients(mightBeName, allClients)
@@ -98,7 +105,7 @@ class GCalSyncService @Inject constructor(
 }
 
 interface GCalSyncer {
-    fun loadGCalEventsForImport(range: Pair<DateTime, DateTime>): List<GCalEvent>
+    fun loadEvents(range: Pair<DateTime, DateTime>): List<GCalEvent>
 }
 
 class GCalSyncerImpl @Inject constructor(
@@ -111,7 +118,7 @@ class GCalSyncerImpl @Inject constructor(
         private val log = LOG(javaClass)
     }
 
-    override fun loadGCalEventsForImport(range: Pair<DateTime, DateTime>): List<GCalEvent> {
+    override fun loadEvents(range: Pair<DateTime, DateTime>): List<GCalEvent> {
         if (!gcal.isOnline) {
             throw IllegalStateException("can not sync: gcal is not online!")
         }
@@ -119,7 +126,7 @@ class GCalSyncerImpl @Inject constructor(
         val gcalEvents = gcal.listEvents(range.first, range.second)
 
         log.trace("gcal listed ${gcalEvents.size} events in total.")
-        return gcalEvents.filter { it.gadsuId == null }
+        return gcalEvents
     }
 
 
