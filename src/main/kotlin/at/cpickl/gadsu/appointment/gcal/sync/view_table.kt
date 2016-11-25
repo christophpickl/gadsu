@@ -2,6 +2,7 @@ package at.cpickl.gadsu.appointment.gcal.sync
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.ClientRenderer
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewConstants
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellEditor
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellRenderer
@@ -25,10 +26,13 @@ class SyncTable(
         private val COL_CLIENT = 2
     }
 
+    private val logg = LOG(javaClass)
+
     init {
         val enabledEditor = MyCheckboxTableCellEditor().apply {
             registerOnStopped {
                 val importApp = model.entityAt(selectedRow)
+                logg.debug("on stopped for {}, to state: {}", importApp, currentState)
                 importApp.enabled = currentState
             }
         }

@@ -68,7 +68,10 @@ class SyncReportSwingWindow
             TableColumn("Client", 60, { it.selectedClient.fullName })
     ))
     private val table = SyncTable(model)
-    private val btnImport = JButton("Import").apply { addActionListener { bus.post(RequestImportSyncEvent()) } }
+    private val btnImport = JButton("Import").apply { addActionListener {
+        table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
+        bus.post(RequestImportSyncEvent())
+    } }
     private val topText = HtmlEditorPane()
 
     init {
@@ -117,7 +120,8 @@ class SyncReportSwingWindow
             ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
         })
         deleteAppointments = report.deleteEvents
-        topText.text = "Folgende ${model.size} Termine können importiert werden (${deleteAppointments.size} zum Löschen):"
+        val isSingular = model.size == 1
+        topText.text = "Folgende${if (isSingular) "r" else ""} ${model.size} Termin${if (isSingular) " kann" else "e können"} importiert werden (${deleteAppointments.size} zum Löschen):"
     }
 
     private fun clientsOrdered(topClients: List<Client>, allClients: List<Client>) =

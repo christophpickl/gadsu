@@ -33,6 +33,8 @@ import org.testng.annotations.Test
 @Test(groups = arrayOf("mTest"))
 class SyncManualTest {
 
+    private val now = DateTime.now()
+
     fun `WHEN insert client, create gcal DO sync and import ASSERT appointment in DB and gcal updated with gadsu metadata`() {
         GadsuSystemProperty.development.enable()
         val injector = Guice.createInjector(GadsuModule(Args.EMPTY.copy(databaseUrl = buildDatabaseUrl(javaClass))))
@@ -66,7 +68,7 @@ class SyncManualTest {
         assertThat(gcalEvent.id, equalTo(event.id))
         assertThat(gcalEvent.gadsuId, nullValue())
 
-        syncer.import(listOf(ImportAppointment(gcalEvent, true, client, clients)))
+        syncer.import(listOf(ImportAppointment(gcalEvent, true, client, clients).toAppointment(now)))
 
         return gcalEvent
     }

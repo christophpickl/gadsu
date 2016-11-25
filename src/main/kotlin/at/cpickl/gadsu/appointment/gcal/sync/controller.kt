@@ -6,6 +6,7 @@ import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.AsyncDialogSettings
@@ -31,6 +32,7 @@ open class GCalControllerImpl @Inject constructor(
         private val mainFrame: MainFrame,
         private val async: AsyncWorker,
         private val appointmentService: AppointmentService,
+        private val clock: Clock,
         bus: EventBus
 ) : GCalController {
 
@@ -67,7 +69,16 @@ open class GCalControllerImpl @Inject constructor(
 
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
+        println(appointmentsToImport)
+        if (true) {
+            return
+        }
         val appointmentsToDelete = window.readDeleteAppointments()
+
+        if (appointmentsToImport.isEmpty() && appointmentsToDelete.isEmpty()) {
+            dialogs.show(DIALOG_TITLE, "Scherzkeks ;) Es gibt nix zum Importieren.")
+            return
+        }
 
         async.doInBackground<Unit>(
                 settings = AsyncDialogSettings(DIALOG_TITLE, "Importiere Termine ..."),
@@ -76,7 +87,7 @@ open class GCalControllerImpl @Inject constructor(
                 },
                 doneTask = {
                     window.closeWindow()
-                    // could show details on what exactly had happened
+                    // MINOR could show details on what exactly had happened (just a regular JTextArea and fill with some plain text, nothing fancy)
                     dialogs.show(DIALOG_TITLE, "Der Kalenderabgleich war erfolgreich.")
                 },
                 exceptionTask = { e ->
@@ -108,7 +119,8 @@ open class GCalControllerImpl @Inject constructor(
             appointmentService.delete(it)
         }
 
-        syncService.import(appointmentsToImport)
+        val now = clock.now()
+        syncService.import(appointmentsToImport.map { it.toAppointment(now) })
     }
 
 }

@@ -16,9 +16,7 @@ import javax.inject.Inject
 interface SyncService {
 
     fun syncAndSuggest(): SyncReport
-
-    // TODO use a different data model, as ImportAppointment got weird clients stuff in there for UI rendering only!
-    fun import(appointmentsToImport: List<ImportAppointment>)
+    fun import(appointmentsToImport: List<Appointment>)
 
 }
 
@@ -70,13 +68,12 @@ class GCalSyncService @Inject constructor(
         )
     }
 
-    override fun import(appointmentsToImport: List<ImportAppointment>) {
+    override fun import(appointmentsToImport: List<Appointment>) {
         log.debug("import(appointmentsToImport.size={})", appointmentsToImport.size)
 
-        val now = clock.now()
         appointmentsToImport.forEach {
             // no check for duplicates, you have to delete them manually ;)
-            appointmentService.insertOrUpdate(it.toAppointment(now))
+            appointmentService.insertOrUpdate(it)
         }
     }
 

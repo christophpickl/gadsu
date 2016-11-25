@@ -69,7 +69,7 @@ class AppointmentServiceImpl @Inject constructor(
         return repository.findAllBetween(range)
     }
 
-    override fun insertOrUpdate(appointment: Appointment): Appointment {
+    override fun insertOrUpdate(appointment: Appointment/*, suppressGcal: Boolean*/): Appointment {
         log.debug("insertOrUpdate(appointment={})", appointment)
 
         val client = clientRepository.findById(appointment.clientId)
