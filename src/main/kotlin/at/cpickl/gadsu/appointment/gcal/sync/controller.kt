@@ -9,6 +9,7 @@ import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.toClosestQuarter
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.MainFrame
@@ -116,8 +117,11 @@ open class GCalControllerImpl @Inject constructor(
         }
 
         val now = clock.now()
-        syncService.import(appointmentsToImport.map { it.toAppointment(now) })
+        syncService.import(appointmentsToImport.map { it.toAppointment(now).withCleanedTimes() })
     }
+
+    private fun Appointment.withCleanedTimes() =
+            copy(start = this.start.toClosestQuarter(), end = this.end.toClosestQuarter())
 
 }
 

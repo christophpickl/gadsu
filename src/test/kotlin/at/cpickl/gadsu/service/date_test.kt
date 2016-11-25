@@ -6,7 +6,7 @@ import org.hamcrest.Matchers.*
 import org.joda.time.DateTime
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
-import java.util.*
+import java.util.Locale
 
 @Test
 class DateFormatsTest {
@@ -175,5 +175,26 @@ class DateTimeExtensionTest {
         assertThat(minutes(minutes).formatHourMinutesLong(), equalTo(expectedFormat))
     }
 
-    //
+    @DataProvider
+    fun provideQuarterly(): Array<Array<out Any>> = arrayOf(
+            arrayOf("12:00", "12:00", 0),
+            arrayOf("12:01", "12:00", 0),
+            arrayOf("12:07", "12:00", 0),
+            arrayOf("12:08", "12:15", 0),
+            arrayOf("12:22", "12:15", 0),
+            arrayOf("12:23", "12:30", 0),
+            arrayOf("12:37", "12:30", 0),
+            arrayOf("12:38", "12:45", 0),
+            arrayOf("12:52", "12:45", 0),
+            arrayOf("12:53", "13:00", 0),
+            arrayOf("12:59", "13:00", 0),
+            arrayOf("23:59", "00:00", 1)
+    )
+
+    @Test(dataProvider = "provideQuarterly")
+    fun `toClosestQuarter`(timeRaw: String, timeExpected: String, dayMondifier: Int) {
+        assertThat(timeRaw.parseTimeWithoutSeconds().toClosestQuarter(),
+                equalTo(timeExpected.parseTimeWithoutSeconds().plusDays(dayMondifier)))
+    }
+
 }

@@ -8,7 +8,8 @@ import org.joda.time.Days
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
@@ -85,7 +86,22 @@ fun DateTime.withAllButHourAndMinute(copyReference: DateTime): DateTime =
 fun DateTime.clearSeconds(): DateTime = this.withSecondOfMinute(0).withMillisOfSecond(0)
 fun DateTime.clearMinutes(): DateTime = this.withMinuteOfHour(0).clearSeconds()
 fun DateTime.clearTime(): DateTime = this.withHourOfDay(0).clearMinutes()
-// TODO .toNextQuarter() ... when importing from gcal!
+/**
+ * When importing events from GCal clean them.
+ */
+fun DateTime.toClosestQuarter(): DateTime {
+    val min = if (minuteOfHour < 8) 0
+    else if (minuteOfHour < 23) 15
+    else if (minuteOfHour < 38) 30
+    else if (minuteOfHour < 53) 45
+    else 60
+
+    if (min == 60) {
+        return this.withMinuteOfHour(0).plusHours(1)
+    }
+    return this.withMinuteOfHour(min)
+
+}
 
 fun Date.toDateTime() = DateTime(this)
 
