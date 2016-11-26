@@ -52,7 +52,7 @@ class SwingAppointmentWindow @Inject constructor(
         internetController: InternetConnectionController,
         prefs: Prefs
 
-        // MINOR VIEW - make it a appointment frame a dialog
+        // MINOR @VIEW - make it a appointment frame a dialog
         // but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
 
 //) : MyDialog(mainFrame.asJFrame(), "Termin"), AppointmentWindow, ModificationAware {

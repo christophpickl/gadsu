@@ -82,7 +82,7 @@ class ClientTabTcm(
 
     override fun updateFields(client: Client) {
         renderer.updateFields(client)
-        fields.updateAll(client) // MINOR or just update inpNote?! as all other inputs are handled by renderer...
+        fields.updateAll(client)
     }
 
     fun readProps(): CProps {

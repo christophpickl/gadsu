@@ -63,7 +63,7 @@ open class ClientImageController @Inject constructor(
         prefs.clientPictureDefaultFolder = event.imageFile.parentFile ?: event.imageFile
 
         val file = event.imageFile
-        val icon = file.readImageIcon() // MINOR catch exception if loading failed and show error dialog
+        val icon = file.readImageIcon() // MINOR catch exception if loading image icon failed and show error dialog
         val size = icon.size()
         if (size.width != size.height) {
             dialogs.show(

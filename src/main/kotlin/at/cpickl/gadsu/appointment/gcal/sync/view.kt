@@ -115,7 +115,7 @@ class SyncReportSwingWindow
 
     override fun readUpdateAppointments() = updateAppointments
 
-    // proper starting, see PreferencesWindow (MINOR outsource logic!)
+    // MINOR @VIEW - outsource logic from proper starting, see PreferencesWindow
     override fun start() {
         isVisible = true
     }

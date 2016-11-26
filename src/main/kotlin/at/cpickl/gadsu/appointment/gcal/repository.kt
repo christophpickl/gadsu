@@ -135,8 +135,6 @@ class RealGCalRepository constructor(
     override fun createEvent(gCalEvent: GCalEvent): GCalEventMeta? {
         log.info("createEvent(gCalEvent={})", gCalEvent)
         val newEvent = gCalEvent.toEvent()
-        // MINOR is it possible to store custom metadata in here??
-        // .set("MYappointmentId", "fuchur")
 
         val savedEvent = calendar.events().insert(calendarId, newEvent).execute()
         log.info("Saved event (ID=${savedEvent.id}): ${savedEvent.htmlLink}")

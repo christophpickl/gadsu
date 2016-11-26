@@ -166,7 +166,7 @@ open class TreatmentController @Inject constructor(
         try {
             treatmentToSave = treatmentView!!.readTreatment()
         } catch (e: InvalidTreatmentInputException) {
-            // TODO test if this doesnt break the check-changes thingy, when input is invalid
+            // thrown when e.g. hara meridian connection is invalid
             dialogs.show(
                     title = "Ungültige Eingabe",
                     message = e.messageI18N,

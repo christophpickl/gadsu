@@ -38,7 +38,7 @@ enum class Meridian(
     SmallIntestine("Dünndarm", "Dü", "Xio Chang", "DU", Fire, ZangFu.Fu, Hand, 13),
     UrinaryBladder("Blase", "Bl", "Pang Guang", "BL", Water, ZangFu.Fu, Foot, 15),
     Kidney("Niere", "Ni", "Shen", "NI", Water, ZangFu.Zang, Foot, 17),
-    // MINOR Pk and 3E are actually no ZangFu, but do have a YinYang association
+    // MINOR @TCM model - Pk and 3E are actually no ZangFu, but do have a YinYang association
     Pericardium("Perikard", "Pk", "Xin Bao", "PK", Fire, ZangFu.Zang, Hand, 19),
     TripleBurner("3xErwärmer", "3E", "San Jiao", "3E", Fire, ZangFu.Fu, Hand, 21),
     GallBladder("Gallenblase", "Gb", "Dan", "GB", Wood, ZangFu.Fu, Foot, 23),

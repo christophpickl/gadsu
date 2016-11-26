@@ -85,7 +85,7 @@ open class GCalControllerImpl @Inject constructor(
                 },
                 doneTask = {
                     window.closeWindow()
-                    // MINOR could show details on what exactly had happened (just a regular JTextArea and fill with some plain text, nothing fancy)
+                    // MINOR gcal sync feedback: could show details on what exactly had happened (just a regular JTextArea and fill with some plain text, nothing fancy)
                     dialogs.show(DIALOG_TITLE, "Der Kalenderabgleich war erfolgreich.")
                 },
                 exceptionTask = { e ->

@@ -51,7 +51,7 @@ class CPropsRenderer(
 
                 val icon = ImageIcon(javaClass.getResource("/gadsu/images/tcm_props/${xprop.key}.png"))
                 val view = CPropEnumView(icon, xprop, bus)
-                // MINOR @TEST UI - view name
+                // got no view name yet, as no tests yet ;)
                 fields.register(view)
                 return view
             }

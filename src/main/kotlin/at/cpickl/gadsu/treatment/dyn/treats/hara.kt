@@ -161,7 +161,7 @@ class HaraDiagnosisJdbcRepository @Inject constructor(
 
     companion object {
         val TABLE = "hara_diagnosis"
-        // MINOR could merge two tables into one
+        // those two database tables could be merged into one; actually put abstraction over "meridian list entity"
         val TABLE_KYO = "hara_diagnosis_kyo"
         val TABLE_JITSU = "hara_diagnosis_jitsu"
     }

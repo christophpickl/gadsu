@@ -112,7 +112,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
         val oldClient = insertClientViaRepo(unsavedClient.copyWithoutCprops())
         val pleaseUpdateMe = oldClient.copy(job = "Leader")
 
-        // MINOR TEST do same for client with picture, and different xprops
+        // MINOR @TEST do same for client with picture, and different xprops
         testee.insertOrUpdate(pleaseUpdateMe)
 
         assertRows(TABLE_CLIENT, Client.ROW_MAPPER, pleaseUpdateMe)

@@ -36,7 +36,7 @@ import javax.swing.ScrollPaneConstants
 
 // http://stackoverflow.com/a/11443501
 
-// MINOR drag'n'drop - indicate valid drop target (e.g.: change the cursor)
+// MINOR @DnD - indicate valid drop target (e.g.: change the cursor)
 
 fun main(args: Array<String>) {
     Framed.show(GridPanel().apply {
@@ -224,7 +224,7 @@ class DropHandler : DropTargetListener, Serializable {
                         component.add(ActiveDot())
                         success = true
                         event.acceptDrop(DnDConstants.ACTION_MOVE)
-                        // MINOR D'n'D does not affect the scrollbar!
+                        // MINOR @DnD - does not affect the scrollbar!
                         component.invalidate()
                         component.revalidate()
                         component.repaint()
