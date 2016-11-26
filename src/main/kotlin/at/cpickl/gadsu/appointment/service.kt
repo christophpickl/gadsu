@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.appointment
 
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
+import at.cpickl.gadsu.appointment.gcal.GCalEventMeta
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.appointment.gcal.GCalUpdateEvent
 import at.cpickl.gadsu.client.Client
@@ -69,7 +70,7 @@ class AppointmentServiceImpl @Inject constructor(
         return repository.findAllBetween(range)
     }
 
-    override fun insertOrUpdate(appointment: Appointment/*, suppressGcal: Boolean*/): Appointment {
+    override fun insertOrUpdate(appointment: Appointment): Appointment {
         log.debug("insertOrUpdate(appointment={})", appointment)
 
         val client = clientRepository.findById(appointment.clientId)
@@ -82,20 +83,13 @@ class AppointmentServiceImpl @Inject constructor(
         }
     }
 
+
     private fun insertOnly(appointment: Appointment, client: Client): Appointment {
         log.trace("insertOnly(..)")
         val savedAppointment = if (appointment.gcalId != null) {
             // yet persisted in gcal
             val savedAppointment = repository.insert(appointment)
-            gcal.updateEvent(GCalUpdateEvent(
-                    id = appointment.gcalId,
-                    gadsuId = savedAppointment.id!!,
-                    clientId = appointment.clientId,
-                    summary = client.fullName,
-                    start = appointment.start,
-                    end = appointment.end
-            ))
-
+            gcal.updateEvent(GCalUpdateEvent.createNew(savedAppointment.id!!, appointment, client))
             savedAppointment
         } else {
             // insert new gcal event
@@ -109,8 +103,7 @@ class AppointmentServiceImpl @Inject constructor(
                     end = appointment.end,
                     url = null
             )
-            val maybeCreatedEvent = gcal.createEvent(baseEvent)
-
+            val maybeCreatedEvent: GCalEventMeta? = gcal.createEvent(baseEvent)
             val savedAppointment = repository.insert(appointment.copy(gcalId = maybeCreatedEvent?.id, gcalUrl = maybeCreatedEvent?.url))
             if (maybeCreatedEvent != null) {
                 gcal.updateEvent(maybeCreatedEvent.copyForUpdate(savedAppointment.id!!, baseEvent, appointment.clientId))
@@ -126,16 +119,7 @@ class AppointmentServiceImpl @Inject constructor(
         repository.update(appointment)
 
         if (appointment.gcalId != null) {
-            // TODO maybe the event was in the meanwhile already deleted?
-            gcal.updateEvent(GCalUpdateEvent(
-                    id = appointment.gcalId,
-                    gadsuId = appointment.id!!,
-                    clientId = appointment.clientId,
-                    summary = client.fullName,
-                    // TODO description = appointment.note,
-                    start = appointment.start,
-                    end = appointment.end
-            ))
+            gcal.updateEvent(GCalUpdateEvent.createNew(appointment.id!!, appointment, client))
         }
         bus.post(AppointmentChangedEvent(appointment))
     }
@@ -162,3 +146,14 @@ class AppointmentServiceImpl @Inject constructor(
     }
 
 }
+
+fun GCalUpdateEvent.Companion.createNew(gadsuId: String, appointment: Appointment, client: Client) =
+        GCalUpdateEvent(
+                id = appointment.gcalId!!,
+                gadsuId = gadsuId,
+                clientId = appointment.clientId,
+                summary = client.fullName, // this factory method is actually just to get sure of consistent summary field
+                description = appointment.note,
+                start = appointment.start,
+                end = appointment.end
+        )

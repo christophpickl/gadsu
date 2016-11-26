@@ -8,6 +8,7 @@ import org.joda.time.DateTime
 data class Appointment(
         override val id: String?,
         val clientId: String,
+        // title, as shown as summary in gcal
         val created: DateTime,
         val start: DateTime,
         val end: DateTime,

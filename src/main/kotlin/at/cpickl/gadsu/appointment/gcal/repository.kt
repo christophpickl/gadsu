@@ -18,7 +18,9 @@ data class GCalEvent(
         /** private extended property*/
         val clientId: String?,
 
+        /** Title of event. */
         val summary: String,
+        /** Note field. */
         val description: String,
         val start: org.joda.time.DateTime,
         val end: org.joda.time.DateTime,
@@ -34,12 +36,16 @@ data class GCalUpdateEvent(
         /** private extended property*/
         val clientId: String,
         val summary: String,
+        val description: String,
         val start: org.joda.time.DateTime,
         val end: org.joda.time.DateTime
 ) {
+    companion object {} // for extensions
+
     fun updateFields(gevent: Event) {
         gevent
                 .setSummary(summary)
+                .setDescription(description)
                 .setStart(start.toGEventDateTime())
                 .setEnd(end.toGEventDateTime())
                 .setPrivateExtendedProperties(mapOf(XPROP_GADSU_ID to gadsuId, XPROP_CLIENT_ID to clientId))
@@ -57,6 +63,9 @@ interface GCalRepository {
      */
     fun createEvent(gCalEvent: GCalEvent): GCalEventMeta?
 
+    /**
+     * Even if the event was in the meanwhile deleted at google, this goes still ok.
+     */
     fun updateEvent(gCalEvent: GCalUpdateEvent)
 
     fun deleteEvent(eventId: String)
@@ -144,7 +153,7 @@ class RealGCalRepository constructor(
         }.execute()
 
         log.debug("listEvents() returning ${events.items.size} events")
-        return events.items.map { it.toGCalEvent() }
+        return events.items.map(Event::toGCalEvent)
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/update#examples
@@ -152,8 +161,11 @@ class RealGCalRepository constructor(
         log.info("updateEvent(gCalEvent={})", gCalEvent)
         val eventId = gCalEvent.id
         val updateEvent = calendar.events().get(calendarId, eventId).execute()
-        gCalEvent.updateFields(updateEvent)
-        calendar.events().update(calendarId, eventId, updateEvent).execute()
+
+        if (updateEvent.status == "confirmed") {
+            gCalEvent.updateFields(updateEvent)
+            calendar.events().update(calendarId, eventId, updateEvent).execute()
+        } // else: cancelled (meaning it was deleted in gcal)
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/delete#examples

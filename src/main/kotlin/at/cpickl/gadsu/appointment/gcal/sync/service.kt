@@ -21,13 +21,14 @@ interface SyncService {
 }
 
 data class SyncReport(
-        val importEvents: Map<GCalEvent, List<Client>>,
-        val deleteEvents: List<Appointment>
+        val importEvents: Map<GCalEvent, List<Client>>, // with suggested clients
+        val deleteAppointments: List<Appointment>,
+        val updateAppointments: Map<GCalEvent, Appointment>
 ) {
     companion object {} // for extensions only
 
     fun isEmpty() =
-            importEvents.isEmpty() && deleteEvents.isEmpty()
+            importEvents.isEmpty() && deleteAppointments.isEmpty() && updateAppointments.isEmpty()
 }
 
 class GCalSyncService @Inject constructor(
@@ -36,13 +37,21 @@ class GCalSyncService @Inject constructor(
         private val matcher: MatchClients,
         private val appointmentService: AppointmentService,
         private val clock: Clock
-        ) : SyncService {
+) : SyncService {
 
     companion object {
         private val DAYS_BEFORE_AND_AFTER_TO_SCAN = 14
     }
 
     private val log = LOG(javaClass)
+
+    private fun Appointment.equalTo(event: GCalEvent) = event.equalTo(this)
+    private fun GCalEvent.equalTo(appointment: Appointment): Boolean {
+        return this.start == appointment.start &&
+                this.end == appointment.end &&
+                // do not sync summary (yet), as it is inferred by client id / full name
+                this.description == appointment.note
+    }
 
     override fun syncAndSuggest(): SyncReport {
         log.debug("syncAndSuggest()")
@@ -52,19 +61,24 @@ class GCalSyncService @Inject constructor(
         val gCalEvents = syncer.loadEvents(range)
 
         val gadsuIdsByGCal = gCalEvents.filter { it.gadsuId != null }.map { it.gadsuId!! }
-        val deleteEvents = appointmentService
-                .findAllBetween(range)
-                .filter { it.gcalId != null && !gadsuIdsByGCal.contains(it.id!!) }
+        val appointmentsInRange = appointmentService.findAllBetween(range)
 
-        // otherwise check for update.
+        val deleteEvents = appointmentsInRange.filter { it.gcalId != null && !gadsuIdsByGCal.contains(it.id!!) }
 
-        val notGadsuPersistedGCalEvents = gCalEvents.filter { it.gadsuId == null }
-        val eventsAndMaybeClients = withSuggestedClients(notGadsuPersistedGCalEvents)
+        val existingEventsByGadsuId = gCalEvents.filter { it.gadsuId != null }.associateBy { it.gadsuId }
+        val appointmentsExistingAtGcal = appointmentsInRange.filter { it.gcalId != null && gadsuIdsByGCal.contains(it.id!!) }
+        val appointmentsToUpdate = appointmentsExistingAtGcal.filter {
+            !existingEventsByGadsuId[it.id]!!.equalTo(it)
+        }.associateBy { existingEventsByGadsuId[it.id]!! }
+
+        // could store update field in local appointment ID and check with gcal update timestamp... but... nah ;)
+
+        val toBeImportedEvents = withSuggestedClients(gCalEvents.filter { it.gadsuId == null })
 
         return SyncReport(
-                eventsAndMaybeClients, // import events
-                deleteEvents
-                // ... update events (2 different directions)
+                toBeImportedEvents,
+                deleteEvents,
+                appointmentsToUpdate
         )
     }
 
@@ -73,7 +87,7 @@ class GCalSyncService @Inject constructor(
 
         appointmentsToImport.forEach {
             // no check for duplicates, you have to delete them manually ;)
-            appointmentService.insertOrUpdate(it)
+            appointmentService.insertOrUpdate(appointment = it)
         }
     }
 

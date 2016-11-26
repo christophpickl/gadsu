@@ -45,7 +45,8 @@ class GcalManualTest : GoogleManualTest() {
 
     fun `update an event`() {
         val created = createEvent(gEvent)
-        val updateGEvent = GCalUpdateEvent(created.id, "updatedGadsuId", "updatedClientId", "updatedSummary", now.plusDays(1), now.plusDays(1).plusHours(1))
+        val updateGEvent = GCalUpdateEvent(created.id, "updatedGadsuId", "updatedClientId", "updatedSummary", "updateDescription",
+                now.plusDays(1), now.plusDays(1).plusHours(1))
 
         repo.updateEvent(updateGEvent)
 

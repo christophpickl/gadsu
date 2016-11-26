@@ -71,8 +71,9 @@ open class GCalControllerImpl @Inject constructor(
     @Subscribe open fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val appointmentsToImport = window.readImportAppointments().filter { it.enabled }
         val appointmentsToDelete = window.readDeleteAppointments()
+        val appointmentsToUpdate = window.readUpdateAppointments()
 
-        if (appointmentsToImport.isEmpty() && appointmentsToDelete.isEmpty()) {
+        if (appointmentsToImport.isEmpty() && appointmentsToDelete.isEmpty() && appointmentsToUpdate.isEmpty()) {
             dialogs.show(DIALOG_TITLE, "Scherzkeks ;) Es gibt nix zum Importieren.")
             return
         }
@@ -80,7 +81,7 @@ open class GCalControllerImpl @Inject constructor(
         async.doInBackground<Unit>(
                 settings = AsyncDialogSettings(DIALOG_TITLE, "Importiere Termine ..."),
                 backgroundTask = {
-                    doTheImport(appointmentsToImport, appointmentsToDelete)
+                    doTheImport(appointmentsToImport, appointmentsToDelete, appointmentsToUpdate)
                 },
                 doneTask = {
                     window.closeWindow()
@@ -111,13 +112,23 @@ open class GCalControllerImpl @Inject constructor(
         return syncService.syncAndSuggest()
     }
 
-    private fun doTheImport(appointmentsToImport: List<ImportAppointment>, appointmentsToDelete: List<Appointment>) {
+    private fun doTheImport(appointmentsToImport: List<ImportAppointment>,
+                            appointmentsToDelete: List<Appointment>,
+                            appointmentsToUpdate: List<Appointment>) {
+        log.debug("IMPORT ================================ START")
+
+        appointmentsToUpdate.forEach {
+            appointmentService.insertOrUpdate(it)
+        }
+
         appointmentsToDelete.forEach {
             appointmentService.delete(it)
         }
 
         val now = clock.now()
         syncService.import(appointmentsToImport.map { it.toAppointment(now).withCleanedTimes() })
+
+        log.debug("IMPORT ================================ END")
     }
 
     private fun Appointment.withCleanedTimes() =

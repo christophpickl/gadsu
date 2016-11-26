@@ -29,6 +29,7 @@ interface SyncReportWindow : ClosableWindow {
     fun initReport(report: SyncReport, clients: List<Client>)
     fun readImportAppointments(): List<ImportAppointment>
     fun readDeleteAppointments(): List<Appointment>
+    fun readUpdateAppointments(): List<Appointment>
 
 }
 
@@ -61,6 +62,7 @@ class SyncReportSwingWindow
     : MyFrame("Sync Bericht"), SyncReportWindow {
 
     private var deleteAppointments = emptyList<Appointment>()
+    private var updateAppointments = emptyList<Appointment>()
 
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", 30, { it.enabled }),
@@ -111,6 +113,8 @@ class SyncReportSwingWindow
 
     override fun readDeleteAppointments() = deleteAppointments
 
+    override fun readUpdateAppointments() = updateAppointments
+
     // proper starting, see PreferencesWindow (MINOR outsource logic!)
     override fun start() {
         isVisible = true
@@ -122,9 +126,18 @@ class SyncReportSwingWindow
             ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
         })
 
-        deleteAppointments = report.deleteEvents
+        deleteAppointments = report.deleteAppointments
+
+        // copy values from GCalEvent to local Appointment
+        updateAppointments = report.updateAppointments.map { it.value.copy(
+                start = it.key.start,
+                end = it.key.end,
+                note = it.key.description
+        ) }
+
         val isSingular = model.size == 1
-        topText.text = "Folgende${if (isSingular) "r" else ""} ${model.size} Termin${if (isSingular) " kann" else "e können"} importiert werden (${deleteAppointments.size} zum Löschen):"
+        topText.text = "Folgende${if (isSingular) "r" else ""} ${model.size} Termin${if (isSingular) " kann" else "e können"} importiert werden " +
+                "(${deleteAppointments.size} zum Löschen, ${updateAppointments.size} zum Updaten):"
     }
 
     private fun clientsOrdered(topClients: List<Client>, allClients: List<Client>) =
