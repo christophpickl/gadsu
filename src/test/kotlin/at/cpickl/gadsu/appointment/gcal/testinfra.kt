@@ -5,7 +5,7 @@ import at.cpickl.gadsu.testinfra.TEST_DATETIME1
 import org.joda.time.DateTime
 
 fun SyncReport.Companion.dummyInstance() = SyncReport(
-        mapOf(GCalEvent(
+        importEvents = mapOf(GCalEvent(
                 id = null,
                 gadsuId = null,
                 clientId = null,
@@ -15,7 +15,8 @@ fun SyncReport.Companion.dummyInstance() = SyncReport(
                 end = TEST_DATETIME1.plusHours(1),
                 url = null
                 ) to listOf()),
-        emptyList()
+        deleteAppointments = emptyList(),
+        updateAppointments = emptyMap()
 )
 
 object TestableGCalService : GCalService {
