@@ -22,7 +22,6 @@ import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JPanel
 
-
 interface SyncReportWindow : ClosableWindow {
     fun start()
     fun destroy()
