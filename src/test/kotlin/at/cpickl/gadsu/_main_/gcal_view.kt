@@ -29,10 +29,11 @@ fun main(args: Array<String>) {
                             entry(gcal("g1"), client3, client1),
                             entry(gcal("g2"), client2),
                             entry(gcal("unknown"))),
-                    emptyList() // no delete appointments
+                    emptyList(), // no delete appointments
+                    emptyMap()
             ),
             listOf(client1, client2, client3, client4)
-    )
+            )
     window.start()
 
     bus.register(RequestImportSyncEventListener(window))
