@@ -110,19 +110,17 @@ data class Client(
     override val yetPersisted: Boolean get() = id != null
 
     override val fullName: String
-        get() {
-            if (firstName.isNotEmpty() && lastName.isNotEmpty()) {
-                return firstName + " " + lastName
-            }
-            return firstName + lastName
+        get() = if (firstName.isNotEmpty() && lastName.isNotEmpty()) {
+            firstName + " " + lastName
+        } else {
+            firstName + lastName
         }
+
     override val preferredName: String
-        get() {
-            return if (nickName.isNotEmpty()) {
-                nickName
-            } else {
-                firstName
-            }
+        get() = if (nickName.isNotEmpty()) {
+            nickName
+        } else {
+            firstName
         }
 
     val idComparator: (Client) -> Boolean
@@ -141,7 +139,7 @@ data class Client(
         if (other !is Client) return false
         val that = other
 
-        return  Objects.equal(this.id, that.id) &&
+        return Objects.equal(this.id, that.id) &&
                 Objects.equal(this.created, that.created) &&
                 Objects.equal(this.state, that.state) &&
                 Objects.equal(this.firstName, that.firstName) &&
@@ -200,7 +198,7 @@ enum class ClientState(override val sqlCode: String, override val label: String)
     INACTIVE("INACTIVE", "Inaktiv");
 
     companion object {
-//        val orderedValues:List<ClientState> = orderedValuesOf(ClientState.values())
+        //        val orderedValues:List<ClientState> = orderedValuesOf(ClientState.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(ClientState.values(), search)
     }
 }
@@ -212,24 +210,24 @@ enum class Gender(override val order: Int, override val sqlCode: String, overrid
     UNKNOWN(99, "?", "Unbekannt");
 
     companion object {
-        val orderedValues:List<Gender> = orderedValuesOf(Gender.values())
+        val orderedValues: List<Gender> = orderedValuesOf(Gender.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(Gender.values(), search)
     }
 }
 
 enum class Relationship(override val order: Int, override val sqlCode: String, override val label: String) :
         Ordered, SqlEnum, Labeled {
-    SINGLE(      1, "SINGLE",      "ledig"),
-    RELATION(    2, "RELATION",    "partnerschaft"),
-    MARRIED(     3, "MARRIED",     "verheiratet"),
-    DIVORCED(    4, "DIVORCED",    "geschieden"),
-    WIDOW(       5, "WIDOW",       "verwitwet"),
-    COMPLICATED( 6, "COMPLICATED", "es ist kompliziert"),
-    UNKNOWN(    99, "UNKNOWN",     "Unbekannt");
+    SINGLE(1, "SINGLE", "ledig"),
+    RELATION(2, "RELATION", "partnerschaft"),
+    MARRIED(3, "MARRIED", "verheiratet"),
+    DIVORCED(4, "DIVORCED", "geschieden"),
+    WIDOW(5, "WIDOW", "verwitwet"),
+    COMPLICATED(6, "COMPLICATED", "es ist kompliziert"),
+    UNKNOWN(99, "UNKNOWN", "Unbekannt");
 
 
     companion object {
-        val orderedValues:List<Relationship> = orderedValuesOf(Relationship.values())
+        val orderedValues: List<Relationship> = orderedValuesOf(Relationship.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
     }
 }
