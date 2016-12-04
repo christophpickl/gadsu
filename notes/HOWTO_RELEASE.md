@@ -6,7 +6,8 @@
 
 * Check everything has been pushed to GIT!!!
 * Check all GitHub issues are closed
-* Check [TravisCI build](https://travis-ci.org/christophpickl/gadsu) is green
+* Check [TravisCI Build](https://travis-ci.org/christophpickl/gadsu) is green
+* Check [Dependecy Report](https://www.versioneye.com/user/projects/572880644a0faa000b782062) to be up2date
 * Execute manual smoke tests (app starts, create client, treatment, protocol)
 
 # Release Script
