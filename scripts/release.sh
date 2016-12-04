@@ -92,17 +92,17 @@ cd ${CHECKOUT_DIR}
 
 
 echo
-myEcho "Running test build."
-myEcho "------------------------------------"
-./gradlew test testUi check
-checkLastCommand
-
-
-echo
 myEcho "Change release version"
 myEcho "------------------------------------"
 changeVersion ${VERSION_RELEASE}
 changeLatestVersion ${VERSION_RELEASE}
+
+
+echo
+myEcho "Running test build."
+myEcho "------------------------------------"
+./gradlew test testUi check
+checkLastCommand
 
 
 echo
