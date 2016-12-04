@@ -93,16 +93,7 @@ class AppointmentServiceImpl @Inject constructor(
             savedAppointment
         } else {
             // insert new gcal event
-            val baseEvent = GCalEvent(
-                    id = null,
-                    gadsuId = null, // will be updated later on
-                    clientId = appointment.clientId,
-                    summary = client.fullName,
-                    description = appointment.note,
-                    start = appointment.start,
-                    end = appointment.end,
-                    url = null
-            )
+            val baseEvent = GCalEvent.createNew(appointment, client)
             val maybeCreatedEvent: GCalEventMeta? = gcal.createEvent(baseEvent)
             val savedAppointment = repository.insert(appointment.copy(gcalId = maybeCreatedEvent?.id, gcalUrl = maybeCreatedEvent?.url))
             if (maybeCreatedEvent != null) {
@@ -147,12 +138,23 @@ class AppointmentServiceImpl @Inject constructor(
 
 }
 
+fun GCalEvent.Companion.createNew(appointment: Appointment, client: Client) = GCalEvent(
+        id = null,
+        gadsuId = null, // will be updated later on
+        clientId = appointment.clientId,
+        summary = client.preferredName,
+        description = appointment.note,
+        start = appointment.start,
+        end = appointment.end,
+        url = null
+)
+
 fun GCalUpdateEvent.Companion.createNew(gadsuId: String, appointment: Appointment, client: Client) =
         GCalUpdateEvent(
                 id = appointment.gcalId!!,
                 gadsuId = gadsuId,
                 clientId = appointment.clientId,
-                summary = client.fullName, // this factory method is actually just to get sure of consistent summary field
+                summary = client.preferredName,
                 description = appointment.note,
                 start = appointment.start,
                 end = appointment.end
