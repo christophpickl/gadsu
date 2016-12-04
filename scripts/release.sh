@@ -143,7 +143,12 @@ checkLastCommand
 echo
 myEcho "GIT push"
 myEcho "------------------------------------"
+# i dont get it, it just doesnt want to work...
+git push
+checkLastCommand
 git push origin --tags
+checkLastCommand
+git push
 checkLastCommand
 
 END=`date +%s`
