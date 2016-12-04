@@ -79,7 +79,7 @@ class ClientTabTcm(
     }
 
     override fun isModified(client: Client) =
-            fields.isAnyModified(client).apply { log.debug("Was anything modified: {}", this) }
+            fields.isAnyModified(client)
 
     override fun updateFields(client: Client) {
         renderer.updateFields(client)

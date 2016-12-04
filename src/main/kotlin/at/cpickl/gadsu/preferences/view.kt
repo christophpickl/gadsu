@@ -70,7 +70,7 @@ class PreferencesSwingWindow @Inject constructor(
     private val inpGapiClientId = JTextField()
     private val inpGapiClientSecret = JTextField()
     private val inpCheckUpdates = JCheckBox("Beim Start prüfen")
-    private val inpTreatmentGoal = NumberField(4).selectAllOnFocus()
+    private val inpTreatmentGoal = NumberField(4).selectAllOnFocus().leftAligned()
 
     override val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 

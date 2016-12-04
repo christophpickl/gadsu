@@ -65,8 +65,8 @@ class SyncReportSwingWindow
 
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", 30, { it.enabled }),
-            TableColumn("Titel", 200, { it.event.summary }),
-            TableColumn("Client", 250, { it.selectedClient.fullName }),
+            TableColumn("Titel", 250, { it.event.summary }),
+            TableColumn("Client", 300, { it.selectedClient.preferredName }),
             TableColumn("Zeit", 200, { Pair(it.event.start, it.event.end) })
     ))
     private val table = SyncTable(model)

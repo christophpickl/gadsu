@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view.swing
 import org.slf4j.LoggerFactory
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
+import javax.swing.JTextField
 import javax.swing.text.JTextComponent
 
 val LOG_JTextComponent = LoggerFactory.getLogger(JTextComponent::class.java)!!
@@ -20,6 +21,16 @@ fun <T : JTextComponent> T.selectAllOnFocus(): T {
             selectAll()
         }
     })
+    return this
+}
+
+fun <T : JTextField> T.leftAligned(): T {
+    horizontalAlignment = JTextField.LEFT
+    return this
+}
+
+fun <T : JTextField> T.rightAligned(): T {
+    horizontalAlignment = JTextField.RIGHT
     return this
 }
 
