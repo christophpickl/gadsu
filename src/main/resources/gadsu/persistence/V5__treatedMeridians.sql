@@ -15,4 +15,5 @@ CREATE TABLE treatment_meridian (
 
 -- #62 remove obsolete TCM fields
 -- ========================================================================= --
+
 DELETE FROM XPROPS WHERE key = 'Pulse' OR key = 'Tongue'
