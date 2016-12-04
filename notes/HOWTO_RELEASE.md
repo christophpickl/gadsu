@@ -74,12 +74,14 @@ $
     * If there was an error, fix it, and create new x.x.1 bugfix version
 * Pull changes from remote git repo to local
 * Copy the released artifacts to the local __Gadsu/Releases directory
+
+## GitHub Release
+
 * Draft a new release on github: https://github.com/christophpickl/gadsu/releases
-    * Select existing tag (BUG!), e.g. `v1.4.0`
-    * Set release title to: `Release 1.4.0`
+    * Select existing tag, e.g. `v1.99.0`
+    * Set release title to: `Release 1.99.0`
     * Attach all three binary artifacts (exe, dmg, jar); this can take a moment as of 3x50 MB to upload
-    * List all resolved issues for this milestone
-    * Enter following description and publish:
+    * List all resolved issues for this milestone and enter the following description and publish afterwards:
 ---
 Windows users please use the EXE, Apple users the DMG and for all other nixes the platform independent JAR file.
 
@@ -90,10 +92,9 @@ New stuff:
 * #33 And finally this
 ---
 
-* Create a new milestone, so we always have 3 ahead of us
-    * Think about what could be included in next version(s)
-
 # Optional
 
+* Create a new milestone, so we always have 3 ahead of us
+    * Think about what could be included in next version(s)
 * Update screenshot on website (use the development action to prepare database accordingly)
 
