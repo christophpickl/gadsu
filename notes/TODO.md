@@ -31,6 +31,7 @@ High
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 * visual indicate long numbers in client-list-cell (je mehr behandlungen, je mehr tage vergangen since last) => mit hintergrund balken laenge/farbe aendern
+* MINOR: custom date picker, auch nur "1.1.87" einggebar (wenn jahr 2 stellig, dann "runden")
 
 Med
 ---
