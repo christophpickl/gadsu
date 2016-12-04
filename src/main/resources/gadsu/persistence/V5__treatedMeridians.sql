@@ -11,3 +11,8 @@ CREATE TABLE treatment_meridian (
   PRIMARY KEY(id_treatment, meridian),
   FOREIGN KEY (id_treatment) REFERENCES treatment(id)
 );
+
+
+-- #62 remove obsolete TCM fields
+-- ========================================================================= --
+DELETE FROM XPROPS WHERE key = 'Pulse' OR key = 'Tongue'

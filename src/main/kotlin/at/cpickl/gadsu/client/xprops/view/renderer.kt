@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client.xprops.view
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProp
 import at.cpickl.gadsu.client.xprops.model.CProps
@@ -49,7 +50,9 @@ class CPropsRenderer(
         return xprop.onType(object: XPropTypeCallback<CPropView> {
             override fun onEnum(xprop: XPropEnum): CPropView {
 
-                val icon = ImageIcon(javaClass.getResource("/gadsu/images/tcm_props/${xprop.key}.png"))
+                val iconResource = javaClass.getResource(xprop.resourcePath())
+                        ?: throw GadsuException("Please create an icon for property '${xprop.label}' located at: ${xprop.resourcePath()}")
+                val icon = ImageIcon(iconResource)
                 val view = CPropEnumView(icon, xprop, bus)
                 // got no view name yet, as no tests yet ;)
                 fields.register(view)
@@ -57,6 +60,8 @@ class CPropsRenderer(
             }
         })
     }
+
+    private fun XPropEnum.resourcePath() = "/gadsu/images/tcm_props/${this.key}.png"
 }
 
 interface CPropView {

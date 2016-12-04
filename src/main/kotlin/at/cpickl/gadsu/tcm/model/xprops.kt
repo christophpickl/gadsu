@@ -25,13 +25,13 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Sleep = SleepOpts.TiredInMorning
 
     enum class SleepOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        NeedMuch (opt("Sleep_NeedMuch", "viel Schlaf")),
-        NeedLess (opt("Sleep_NeedLess", "wenig Schlaf")),
-        ProblemsFallAsleep (opt("Sleep_ProblemsFallAsleep", "Einschlafprobleme")),
-        ProblemsSleepThrough (opt("Sleep_ProblemsSleepThrough", "Durchschlafprobleme")),
-        TiredInMorning (opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
-        TiredDuringDay (opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
-        Dreams (opt("Sleep_Dreams", "Träume"))
+        NeedMuch(opt("Sleep_NeedMuch", "viel Schlaf")),
+        NeedLess(opt("Sleep_NeedLess", "wenig Schlaf")),
+        ProblemsFallAsleep(opt("Sleep_ProblemsFallAsleep", "Einschlafprobleme")),
+        ProblemsSleepThrough(opt("Sleep_ProblemsSleepThrough", "Durchschlafprobleme")),
+        TiredInMorning(opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
+        TiredDuringDay(opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
+        Dreams(opt("Sleep_Dreams", "Träume"))
     }
 
     val Sleep = enum("Sleep", "Schlaf")
@@ -40,13 +40,17 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Hungry = HungryOpts.BigHunger
 
     enum class HungryOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        BigHunger    (opt("Hungry_BigHunger", "Hunger gro\u00df")),
-        LittleHunger (opt("Hungry_LittleHunger", "Hunger klein")),
-        DigestionSlow (opt("Hungry_DigestionSlow", "Verdauung träge")),
-        DigestionFast (opt("Hungry_DigestionFast", "Verdauung schnell")),
-        StoolHard (opt("Hungry_StoolHard", "Stuhl geformt, hart")),
-        StoolSoft (opt("Hungry_StoolSoft", "Stuhl ungeformt, weich")),
-        Farts (opt("Hungry_Farts", "Blähungen"))
+        BigHunger(opt("Hungry_BigHunger", "Hunger gro\u00df")),
+        LittleHunger(opt("Hungry_LittleHunger", "Hunger klein")),
+        DigestionSlow(opt("Hungry_DigestionSlow", "Verdauung träge")),
+        DigestionFast(opt("Hungry_DigestionFast", "Verdauung schnell")),
+        Blockage(opt("Hungry_Blockage", "Verstopfungen")),
+        Diarrhea(opt("Hungry_Diarrhea", "Durchfall")),
+        UndigestedParts(opt("Hungry_UndigestedParts", "Unverdaute Teile")),
+        StoolHard(opt("Hungry_StoolHard", "Stuhl geformt, hart")),
+        StoolSoft(opt("Hungry_StoolSoft", "Stuhl ungeformt, weich")),
+        WindBelly(opt("Hungry_WindBelly", "Blähbauch")),
+        Farts(opt("Hungry_Farts", "Blähungen")) // wind
     }
 
     val Hungry = enum("Hungry", "Essen") // Verdauung
@@ -54,11 +58,11 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Taste = TasteOpts.Sweet
 
     enum class TasteOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        Sweet (opt("Taste_Sweet", "süß")),
-        Salty (opt("Taste_Salty", "salzig")),
-        Sour (opt("Taste_Sour", "sauer")),
-        Hot (opt("Taste_Hot", "scharf")),
-        Bitter (opt("Taste_Bitter", "bitter"))
+        Sweet(opt("Taste_Sweet", "süß")),
+        Salty(opt("Taste_Salty", "salzig")),
+        Sour(opt("Taste_Sour", "sauer")),
+        Hot(opt("Taste_Hot", "scharf")),
+        Bitter(opt("Taste_Bitter", "bitter"))
     }
 
     val Taste = enum("Taste", "Geschmack")
@@ -66,12 +70,12 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_Temperature = TemperatureOpts.FeelWarm
 
     enum class TemperatureOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        FeelWarm (opt("Temperature_FeelWarm", "Meist warm")),
-        FeelCold (opt("Temperature_FeelCold", "Meist kalt")), // got additional textfield describing where if cold: "TemperatureColdLocation"
-        SweatEasily (opt("Temperature_SweatEasily", "Schwitze leicht")),
-        SweatRarely (opt("Temperature_SweatRarely", "Schwitze selten")),
-        SweatDuringNight (opt("Temperature_SweatDuringNight", "Nachtschweiß")),
-        SweatWhenStressed (opt("Temperature_SweatWhenStressed", "Stressschweiß"))
+        FeelWarm(opt("Temperature_FeelWarm", "Meist warm")),
+        FeelCold(opt("Temperature_FeelCold", "Meist kalt")), // got additional textfield describing where if cold: "TemperatureColdLocation"
+        SweatEasily(opt("Temperature_SweatEasily", "Schwitze leicht")),
+        SweatRarely(opt("Temperature_SweatRarely", "Schwitze selten")),
+        SweatDuringNight(opt("Temperature_SweatDuringNight", "Nachtschweiß")),
+        SweatWhenStressed(opt("Temperature_SweatWhenStressed", "Stressschweiß"))
     }
 
     val Temperature = enum("Temperature", "Temperatur") // verhalten
@@ -80,80 +84,67 @@ object XProps : XPropsFinder by XPropsFactory {
 
     enum class MenstruationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
         // see text field: MenstruationTimes
-        Little (opt("Menstruation_Little", "schwach")),
-        Strong (opt("Menstruation_Strong", "kräftig")),
-        BloodDark (opt("Menstruation_BloodDark", "Blut dunkel")),
-        BloodBright (opt("Menstruation_BloodBright", "Blut hell, dünn")),
-        PMS (opt("Menstruation_PMS", "PMS")),
-        Dysmenorrhoea (opt("Menstruation_Dysmenorrhoea", "Regelbeschwerden")),
-        Pill (opt("Menstruation_Pill", "Pille, hormonell")),
-        Menopause (opt("Menstruation_Menopause", "Wechseljahre")),
-        Operations (opt("Menstruation_Operations", "Operationen"))
+        Little(opt("Menstruation_Little", "schwach")),
+        Strong(opt("Menstruation_Strong", "kräftig")),
+        BloodDark(opt("Menstruation_BloodDark", "Blut dunkel")),
+        BloodBright(opt("Menstruation_BloodBright", "Blut hell, dünn")),
+        PMS(opt("Menstruation_PMS", "PMS")),
+        Dysmenorrhoea(opt("Menstruation_Dysmenorrhoea", "Regelbeschwerden")),
+        Pill(opt("Menstruation_Pill", "Pille, hormonell")),
+        Menopause(opt("Menstruation_Menopause", "Wechseljahre")),
+        Operations(opt("Menstruation_Operations", "Operationen"))
     }
 
     val Menstruation = enum("Menstruation", "Zyklus")
 
+    private val eager_Impression = ImpressionOpts.SkinBright
 
-    private val eager_Tongue = TongueOpts.Thick
-
-    enum class TongueOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        Thick (opt("Tongue_Thick", "dick")),
-        Thin (opt("Tongue_Thin", "dünn")),
-        Long (opt("Tongue_Long", "lang")),
-        Short (opt("Tongue_Short", "kurz")),
-        Sharp (opt("Tongue_Sharp", "spitz")),
-        Swollen (opt("Tongue_Swollen", "geschwollen")),
-        Red (opt("Tongue_Red", "rot")),
-        Bright (opt("Tongue_Bright", "hell, blass")),
-        YellowFilm (opt("Tongue_YellowFilm", "gelber Belag")),
-        WhiteFilm (opt("Tongue_WhiteFilm", "weisser Belag")),
-        Dry (opt("Tongue_Dry", "trocken")),
-        Wet (opt("Tongue_Wet", "feucht")),
-        ShowWillingly (opt("Tongue_ShowWillingly", "zeigt gerne")),
-        ShowUnwillingly (opt("Tongue_ShowUnwillingly", "zeigt z\u00f6gerlich")),
-        TeethImprints (opt("Tongue_", "Zahnabdrücke")),
-        Midcrack (opt("Tongue_Midcrack", "Mittelriss")),
-        RedDots (opt("Tongue_RedDots", "rote Punkte")),
+    enum class ImpressionOpts(override val opt: XPropEnumOpt) : IsEnumOption {
+        SkinBright(opt("Impression_SkinBright", "Haut hell")),
+        SkinDark(opt("Impression_SkinDark", "Haut dunkel")),
+        SkinHealty(opt("Impression_SkinHealty", "Haut gesund")),
+        VoiceQuiet(opt("Impression_VoiceQuiet", "Sprache leise")),
+        VoiceLoud(opt("Impression_VoiceLoud", "Sprache laut")),
+        VoiceSlow(opt("Impression_VoiceSlow", "Sprache langsam")),
+        VoiceQuick(opt("Impression_VoiceQuick", "Sprache schnell")),
+        MovementSlow(opt("Impression_MovementSlow", "Bewegung langsam")),
+        MovementFast(opt("Impression_MovementFast", "Bewegung schnell")),
+        RedSpots(opt("Impression_RedSpots", "Rote Flecken")),
+        BehaveCalm(opt("Impression_BehaveCalm", "Verhalten ruhig")),
+        BehaveNervous(opt("Impression_BehaveNervous", "Verhalten nervös")),
+        EyesClear(opt("Impression_EyesClear", "Klare Augen"))
     }
 
-    val Tongue = enum("Tongue", "Zunge")
+    val Impression = enum("Impression", "Ersteindruck")
 
-    private val eager_Pulse = PulseOpts.Superficial
+    private val eager_Liquid = LiquidOpts.DrinkMuch
 
-    enum class PulseOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        // tiefe ================
-        Superficial (opt("Pulse_Superficial", "oberflächlich")),
-        Deep (opt("Pulse_Deep", "tief")),
-        // frequenz ================
-        Fast (opt("Pulse_Fast", "schnell")),
-        Slow (opt("Pulse_Slow", "langsam")),
-        // form der pulswelle ================
-        // ausgedehnt, drahtig, lang, kurz
-        Full (opt("Pulse_Full", "voll")),
-        Empty (opt("Pulse_Empty", "leer")),
-        Sharp (opt("Pulse_Sharp", "spitz")),
-        Round (opt("Pulse_Round", "rund")),
-        Wiry (opt("Pulse_Wiry", "drahtig")),
-        Raugh (opt("Pulse_Raugh", "rauh")),
-
-//        Slippery (opt("Pulse_Slippery", "schl\u00fcpfrig"))
-        // rhythmus ================
-        Rhythmical(opt("Pulse_Rhythmical", "rhythmisch")),
-        Arhythmical (opt("Pulse_Arhythmical", "arhythmisch"))
-
+    enum class LiquidOpts(override val opt: XPropEnumOpt) : IsEnumOption {
+        ThirstLess(opt("Liquid_ThirstLess", "Durst klein")),
+        ThirstMuch(opt("Liquid_ThirstMuch", "Durst gross")),
+        DrinkLess(opt("Liquid_DrinkLess", "Menge wenig")),
+        DrinkMuch(opt("Liquid_DrinkMuch", "Menge viel")),
+        DrinkCold(opt("Liquid_DrinkCold", "Trinkt kaltes")),
+        DrinkWarm(opt("Liquid_DrinkWarm", "Trinkt warmes")),
+        DrinkSoftdrink(opt("Liquid_DrinkSoftdrink", "Trinkt Softdrinks")),
+        UrinColorBright(opt("Liquid_UrinColorBright", "Urin hell")),
+        UrinColorDark(opt("Liquid_UrinColorDark", "Urin dunkel")),
+        UrinatePain(opt("Liquid_UrinatePain", "Urinieren schmerzt"))
     }
 
-    val Pulse = enum("Pulse", "Puls")
+    val Liquid = enum("Liquid", "Flüssiges")
 
     private val eager_ChiLocation = ChiLocationOpts.Top
 
     enum class ChiLocationOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        Top (opt("ChiLocation_Top", "oben")),
-        Bottom (opt("ChiLocation_Bottom", "unten")),
-        Weak (opt("ChiLocation_Weak", "leicht")),
-        Strong (opt("ChiLocation_Strong", "schwer")),
-        Outside (opt("ChiLocation_Outside", "aussen")),
-        Inside (opt("ChiLocation_Inside", "innen"))
+        Less(opt("ChiLocation_less", "wenig")),
+        Much(opt("ChiLocation_much", "viel")),
+        Top(opt("ChiLocation_Top", "oben")),
+        Bottom(opt("ChiLocation_Bottom", "unten")),
+        Weak(opt("ChiLocation_Weak", "leicht")),
+        Strong(opt("ChiLocation_Strong", "schwer")),
+        Outside(opt("ChiLocation_Outside", "aussen")),
+        Inside(opt("ChiLocation_Inside", "innen"))
     }
 
     val ChiLocation = enum("ChiLocation", "Qi Status") // Energiekonzentration
@@ -161,14 +152,14 @@ object XProps : XPropsFinder by XPropsFactory {
     private val eager_BodyConception = BodyConceptionOpts.TissueTight
 
     enum class BodyConceptionOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        TissueTight (opt("BodyConception_TissueTight", "Gewebe fest")),
-        TissueSoft (opt("BodyConception_TissueSoft", "Gewebe weich")),
-        Muscular (opt("BodyConception_Muscular", "muskulös")),
-        Gentle (opt("BodyConception_Gentle", "zart")),
-        Fat (opt("BodyConception_Fat", "massig")),
-        Slim (opt("BodyConception_Slim", "schlank")),
-        JointsStiff (opt("BodyConception_JointsStiff", "Gelenke steif")),
-        JointsFlexible (opt("BodyConception_JointsFlexible", "Gelenke flexibel"))
+        TissueTight(opt("BodyConception_TissueTight", "Gewebe fest")),
+        TissueSoft(opt("BodyConception_TissueSoft", "Gewebe weich")),
+        Muscular(opt("BodyConception_Muscular", "muskulös")),
+        Gentle(opt("BodyConception_Gentle", "zart")),
+        Fat(opt("BodyConception_Fat", "massig")),
+        Slim(opt("BodyConception_Slim", "schlank")),
+        JointsStiff(opt("BodyConception_JointsStiff", "Gelenke steif")),
+        JointsFlexible(opt("BodyConception_JointsFlexible", "Gelenke flexibel"))
     }
 
     val BodyConception = enum("BodyConception", "Körperbild")

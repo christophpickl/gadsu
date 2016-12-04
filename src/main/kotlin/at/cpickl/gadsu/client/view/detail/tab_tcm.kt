@@ -57,7 +57,7 @@ class ClientTabTcm(
         add(form(XProps.Taste, XProps.Temperature, XProps.Menstruation))
         c.gridx++
         c.insets = Pad.ZERO
-        add(form(XProps.Tongue, XProps.Pulse, XProps.ChiLocation))
+        add(form(XProps.Impression, XProps.Liquid, XProps.ChiLocation))
 
         c.gridx = 0
         c.gridy++
