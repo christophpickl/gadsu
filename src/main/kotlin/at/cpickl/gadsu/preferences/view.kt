@@ -18,6 +18,7 @@ import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.isTransparent
+import at.cpickl.gadsu.view.swing.leftAligned
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.selectAllOnFocus
 import com.google.common.eventbus.EventBus
