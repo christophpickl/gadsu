@@ -2,7 +2,8 @@ package at.cpickl.gadsu.client.xprops.model
 
 import at.cpickl.gadsu.service.verifyNoIntersection
 import at.cpickl.gadsu.tcm.model.IsEnumOption
-import java.util.*
+import java.util.HashMap
+import java.util.LinkedList
 
 class CPropsBuilder {
     private val cprops = LinkedList<CProp>()
@@ -61,8 +62,9 @@ data class CProps(private val props: Map<XProp, CProp>) {
 
 interface CProp : XProp {
     val xprop: XProp
-    val clientValue: Any
-    val isClientValueSet: Boolean
+    val clientValue: Any // TODO why not: List<XPropEnumOpt> ?
+    val isClientValueEmpty: Boolean
+    val isClientValueNotEmpty: Boolean
 
     fun <R> onType(callback: CPropTypeCallback<R>): R
 
@@ -73,7 +75,8 @@ data class CPropEnum(
         override val clientValue: List<XPropEnumOpt>
 ) : CProp, XProp by xprop {
 
-    override val isClientValueSet = clientValue.isNotEmpty()
+    override val isClientValueEmpty = clientValue.isEmpty()
+    override val isClientValueNotEmpty = clientValue.isNotEmpty()
 
     override fun <R> onType(callback: CPropTypeCallback<R>) = callback.onEnum(this)
 

@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ElField
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MyList
@@ -29,6 +30,7 @@ class CPropEnumView(
         bus: EventBus
 ): CPropView, ElFieldForProps<Client> {
 
+    private val log = LOG(javaClass)
     private val list: MyList<XPropEnumOpt>
 
     override val formLabel = xprop.label
@@ -59,7 +61,7 @@ class CPropEnumView(
         val selected = list.selectedValuesList
         val cprop = value.cprops.findOrNull(xprop) ?: return selected.isNotEmpty()
 
-        if (selected.isEmpty()) {
+        if (selected.isEmpty() && cprop.isClientValueEmpty) {
             return false
         }
 

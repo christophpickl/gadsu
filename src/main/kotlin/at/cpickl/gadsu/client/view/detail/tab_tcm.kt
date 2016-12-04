@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
@@ -28,6 +29,7 @@ class ClientTabTcm(
         scrolled = false
 ) {
 
+    private val log = LOG(javaClass)
     private val fields = Fields<Client>(modificationChecker)
     private val renderer = CPropsRenderer(fields, bus)
 
@@ -76,16 +78,13 @@ class ClientTabTcm(
         renderer.addXProp(xprop, this)
     }
 
-    override fun isModified(client: Client): Boolean {
-        return fields.isAnyModified(client)
-    }
+    override fun isModified(client: Client) =
+            fields.isAnyModified(client).apply { log.debug("Was anything modified: {}", this) }
 
     override fun updateFields(client: Client) {
         renderer.updateFields(client)
         fields.updateAll(client)
     }
 
-    fun readProps(): CProps {
-        return renderer.readCProps()
-    }
+    fun readProps(): CProps = renderer.readCProps()
 }
