@@ -8,7 +8,8 @@ fun org.joda.time.DateTime.toGDateTime(): com.google.api.client.util.DateTime {
 
 fun org.joda.time.DateTime.toGEventDateTime(): com.google.api.services.calendar.model.EventDateTime {
     return com.google.api.services.calendar.model.EventDateTime()
-            .setDateTime(com.google.api.client.util.DateTime(this.millis)) // no timezone
+            .setDateTime(com.google.api.client.util.DateTime(this.millis))
+            .setTimeZone("Europe/Vienna")
 }
 
 fun com.google.api.services.calendar.model.EventDateTime.toDateTime(): org.joda.time.DateTime {
