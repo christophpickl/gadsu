@@ -53,7 +53,6 @@ class ClientTabMain(
     val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", { it.children }, ViewNames.Client.InputChildren)
     val inpHobbies = fields.newTextField("Hobbies", { it.hobbies }, ViewNames.Client.InputHobbies)
-    val outCreated = DisabledTextField()
 
     // contact
     val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail)
@@ -85,7 +84,6 @@ class ClientTabMain(
             addFormInput(inpJob)
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
-            addFormInput("Erstellt am", outCreated)
         }
 
         val contactForm = FormPanel()
@@ -151,7 +149,6 @@ class ClientTabMain(
         log.trace("updateFields(client={})", client)
         fields.updateAll(client)
         outStarsign.text = if (client.birthday == null) "" else StarSignCalculator.signFor(client.birthday).label
-        outCreated.text = client.created.formatDate()
     }
 
 }
