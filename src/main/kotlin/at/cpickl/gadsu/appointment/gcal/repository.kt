@@ -6,6 +6,7 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import org.apache.http.HttpStatus
 import org.joda.time.DateTime
+import org.slf4j.LoggerFactory
 
 private val XPROP_GADSU_ID = "GADSU_ID"
 private val XPROP_CLIENT_ID = "CLIENT_ID"
@@ -96,19 +97,23 @@ object OfflineGCalRepository : GCalRepository {
     }
 }
 
+private val LOG_Event = LoggerFactory.getLogger(Event::class.java)!!
 
-fun Event.toGCalEvent() =
-        GCalEvent(
-                id = this.id,
-                gadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID),
-                clientId = getPrivateExtendedProperty(XPROP_CLIENT_ID),
-                summary = this.summary ?: "",
-                description = this.description ?: "",
-                start = this.start.toDateTime(),
-                end = this.end.toDateTime(),
-                url = this.htmlLink
-                // this.updated
-        )
+fun Event.toGCalEvent(): GCalEvent {
+    LOG_Event.trace("toGCalEvent() for: {}", this)
+    return GCalEvent(
+            id = this.id,
+            gadsuId = getPrivateExtendedProperty(XPROP_GADSU_ID),
+            clientId = getPrivateExtendedProperty(XPROP_CLIENT_ID),
+            summary = this.summary ?: "",
+            description = this.description ?: "",
+            start = this.start.toDateTime(),
+            end = this.end.toDateTime(),
+            url = this.htmlLink
+            // this.updated
+    )
+}
+
 private fun Event.getPrivateExtendedProperty(key: String): String? {
     return if (extendedProperties == null || extendedProperties.private == null) {
         null
@@ -148,10 +153,12 @@ class RealGCalRepository constructor(
 //            fields = "items(iCalUID,start,end,description,htmlLink,extendedProperties),summary"
             timeMin = start.toGDateTime()
             timeMax = end.toGDateTime()
+            showDeleted = false // this strangely does NOT filter out events with status=cancelled
         }.execute()
 
-        log.debug("listEvents() returning ${events.items.size} events")
-        return events.items.map(Event::toGCalEvent)
+        val nonCancelledEvents = events.items.filter { it.status == "confirmed" }
+        log.debug("listEvents() returning ${nonCancelledEvents.size} events")
+        return nonCancelledEvents.map(Event::toGCalEvent)
     }
 
     // https://developers.google.com/google-apps/calendar/v3/reference/events/update#examples
@@ -202,8 +209,6 @@ class RealGCalRepository constructor(
                     setPrivateExtendedProperties(extendedProps)
                 }
     }
-
-
 
 
 }
