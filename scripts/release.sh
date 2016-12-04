@@ -143,7 +143,7 @@ checkLastCommand
 echo
 myEcho "GIT push"
 myEcho "------------------------------------"
-git push
+git push origin --tags
 checkLastCommand
 
 END=`date +%s`
