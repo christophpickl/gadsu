@@ -27,13 +27,16 @@ T-O-D-O
 High
 ------------------------------------------------------------
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
-* improved GCal sync view
+* improved GCal sync view: bigger window, proper col width; render client pic; von-bis schoenerer text (selten ueberd nacht gehen der termin); recurring flag
 * neue anamnese formular ausarbeiten
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * MINOR: custom date picker, auch nur "1.1.87" einggebar (wenn jahr 2 stellig, dann "runden")
 
 Med
 ---
+* master client cell list: sort based on displayed label (preferred name) instead of regular name // add sorting+filtering/searching feature anyway
+* on mouse over fuer hara diagnose fields
+* klient deaktivieren auch per rechte mausklick (nicht nur menu)
 * @RELEASE: copy artifacts from release_build to local wu path (if existing)
 * LOG should append in rolling files (currently one big, exploding file with 10MB after several months only)
 * add tabs to preferences window (general/google)

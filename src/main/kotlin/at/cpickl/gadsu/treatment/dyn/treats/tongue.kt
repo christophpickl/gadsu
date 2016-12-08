@@ -97,12 +97,12 @@ enum class TongueProperty {;
         Black("schwarz", "BLACK"),
 
         // thickness
-        Thick("dick", "COAT THICK"),
-        Thin("dünn", "THIN COAT"),
-        Much("vermehrt", "MUCH"),
+        Missing("kein Belag", "MISSING"), // belaglos, kein, fehlt
         Less("wenig", "LESS"),
+        Much("vermehrt", "MUCH"),
+        Thin("dünn", "THIN COAT"),
+        Thick("dick", "COAT THICK"),
         PartlyMissing("teilweise fehlend", "PARTLY MISSING"),
-        Missing("komplett fehlend", "MISSING"), // belaglos, kein, fehlt
         Rooted("mit Wurzel", "ROOTED"),
         Unrooted("ohne Wurzel", "UNROOTED"),
 

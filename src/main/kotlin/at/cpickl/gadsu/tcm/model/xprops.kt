@@ -88,6 +88,7 @@ object XProps : XPropsFinder by XPropsFactory {
         Strong(opt("Menstruation_Strong", "kräftig")),
         BloodDark(opt("Menstruation_BloodDark", "Blut dunkel")),
         BloodBright(opt("Menstruation_BloodBright", "Blut hell, dünn")),
+        Chunks(opt("Menstruation_Chunks", "Klumpen")),
         PMS(opt("Menstruation_PMS", "PMS")),
         Dysmenorrhoea(opt("Menstruation_Dysmenorrhoea", "Regelbeschwerden")),
         Pill(opt("Menstruation_Pill", "Pille, hormonell")),

@@ -16,9 +16,10 @@ import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
-import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.withFont
 import org.joda.time.DateTime
+import java.awt.Font
 import java.awt.GridBagConstraints
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -90,7 +91,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         }
     }
 
-    private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).bold()
+    private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
     private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
     private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.recentTreatmentCount))

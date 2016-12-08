@@ -18,6 +18,7 @@ val IS_OS_WIN = System.getProperty("os.name").toLowerCase().contains("win")
 
 // actually same as: Toolkit.getDefaultToolkit().menuShortcutKeyMask
 val SHORTCUT_MODIFIER = if (IS_OS_MAC) KeyEvent.META_DOWN_MASK else KeyEvent.CTRL_DOWN_MASK
+val KeyEvent.isShortcutDown: Boolean get() = if (IS_OS_MAC) this.isMetaDown else this.isControlDown
 
 val APP_SUFFIX =
     if (IS_OS_MAC) "dmg"
