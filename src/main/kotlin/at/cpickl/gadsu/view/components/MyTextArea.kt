@@ -19,7 +19,6 @@ import javax.swing.JTextArea
 import javax.swing.JTextPane
 import javax.swing.text.AbstractDocument
 import javax.swing.text.AttributeSet
-import javax.swing.text.Element
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 import javax.swing.text.StyleContext
@@ -55,20 +54,72 @@ fun <J : JComponent> J.focusTraversalWithTabs() = apply {
     setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null)
 }
 
-private enum class RichAction(
-        val label: String
+private enum class RichFormat(
+        val label: String,
+        val htmlTag: String,
+        val shortcutKey: Char
 ) {
-    Highlight("highlight") {
-        override fun foo() {
+    Highlight("highlight", "hl", 'b') {
 
+        override fun addingAttribute(): AttributeSet {
+            val sc = StyleContext.getDefaultStyleContext()
+            var aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background, Color.RED)
+            aset = sc.addAttribute(aset, StyleConstants.Bold, true)
+            return aset
         }
-    };
 
-    abstract fun foo()
+        override fun removalAttribute(): AttributeSet {
+            val sc = StyleContext.getDefaultStyleContext()
+            var aset = sc.removeAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background)
+            aset = sc.addAttribute(aset, StyleConstants.Bold, false)
+            return aset
+        }
+
+        override fun isStyle(attributes: AttributeSet): Boolean {
+            val map = attributes.toMap()
+            return map[StyleConstants.Bold]?.equals(true) ?: false
+        }
+    },
+
+    Italic("italic", "i", 'i') {
+
+        override fun addingAttribute(): AttributeSet {
+            return StyleContext.getDefaultStyleContext()
+                    .addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Italic, true)
+        }
+
+        override fun removalAttribute(): AttributeSet {
+            return StyleContext.getDefaultStyleContext()
+                    .addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Italic, false)
+        }
+
+        override fun isStyle(attributes: AttributeSet): Boolean {
+            val map = attributes.toMap()
+            return map[StyleConstants.Italic]?.equals(true) ?: false
+        }
+    }
+    ;
+
+
+    abstract fun isStyle(attributes: AttributeSet): Boolean
+    abstract fun removalAttribute(): AttributeSet
+    abstract fun addingAttribute(): AttributeSet
 
 }
 
+fun AttributeSet.toMap(): Map<Any, Any> {
+    val map = HashMap<Any, Any>()
+    attributeNames.iterator().forEach {
+        map.put(it, getAttribute(it))
+    }
+    return map
+}
+
 open class RichTextArea(viewName: String) : JTextPane() {
+
+    companion object {
+        private val FORMATS = RichFormat.values().associateBy { it.shortcutKey }
+    }
 
     private val log = LOG(javaClass)
 
@@ -77,8 +128,9 @@ open class RichTextArea(viewName: String) : JTextPane() {
 
         addKeyListener(object : KeyAdapter() {
             override fun keyReleased(e: KeyEvent) {
-                if (e.keyChar == 'b' && e.isShortcutDown) {
-                    onToggleBold()
+
+                if (e.isShortcutDown && FORMATS.containsKey(e.keyChar)) {
+                    onToggleFormat(FORMATS[e.keyChar]!!)
                 }
             }
         })
@@ -86,97 +138,93 @@ open class RichTextArea(viewName: String) : JTextPane() {
 
     fun readEnrichedText(enrichedText: String) {
         log.trace("readEnrichedText(enrichedText=[{}])", enrichedText)
-        text = enrichedText.replace("<hl>", "").replace("</hl>", "")
 
-        var txt = enrichedText
-        while (txt.contains("<hl>")) {
-//            println("txt: [$txt]")
-            val start = txt.indexOf("<hl>")
-            val end = txt.indexOf("</hl>") - "<hl>".length
-//            println("going to select: $start/$end")
-            select(start, end)
-            onToggleBold()
-            txt = txt.replaceFirst("<hl>", "").replaceFirst("</hl>", "")
+        var cleanText = enrichedText
+        RichFormat.values().forEach {
+            cleanText = cleanText.replace("<${it.htmlTag}>", "").replace("</${it.htmlTag}>", "")
         }
+        text = cleanText
+
+
+        RichFormat.values().forEach {
+            var txt = enrichedText
+            val tag = it.htmlTag
+            while (txt.contains("<$tag>")) {
+//            println("txt: [$txt]")
+                val start = txt.indexOf("<$tag>")
+                val end = txt.indexOf("</$tag>") - "<$tag>".length
+//            println("going to select: $start/$end")
+                select(start, end)
+                onToggleFormat(it)
+                txt = txt.replaceFirst("<$tag>", "").replaceFirst("</$tag>", "")
+            }
+        }
+
         select(text.length, text.length)
         moveCaretPosition(text.length)
     }
 
     fun toEnrichedText(): String {
         val result = StringBuilder()
-        val n = text.length-1
-        for (i in 0..n) {
-            val char = text[i]
+        val n = text.length - 1
+        RichFormat.values().forEach {
+            for (i in 0..n) {
+                val char = text[i]
 
-            val previousWasBold = if (i == 0) false else {
-                styledDocument.getCharacterElement(i - 1).isBold()
-            }
-            val nextIsBold = if (i == (n)) false else {
-                styledDocument.getCharacterElement(i + 1).isBold()
-            }
-            val element = styledDocument.getCharacterElement(i)
-            val isNowBold = element.isBold()
+                val previousWasStyled = if (i == 0) false else {
+                    it.isStyle(styledDocument.getCharacterElement(i - 1).attributes)
+                }
+                val nextIsStyled = if (i == (n)) false else {
+                    it.isStyle(styledDocument.getCharacterElement(i + 1).attributes)
+                }
+                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
 
-            if (!previousWasBold && isNowBold) {
-                result.append("<hl>")
-            }
-            result.append(char)
-            if (isNowBold && !nextIsBold) {
-                result.append("</hl>")
+                if (!previousWasStyled && isNowStyled) {
+                    result.append("<${it.htmlTag}>")
+                }
+                result.append(char)
+                if (isNowStyled && !nextIsStyled) {
+                    result.append("</${it.htmlTag}>")
+                }
             }
         }
         return result.toString()
     }
 
-    private fun AttributeSet.toMap(): Map<Any, Any> {
-        val map = HashMap<Any, Any>()
-        attributeNames.iterator().forEach {
-            map.put(it, getAttribute(it))
-        }
-        return map
-    }
 
-    private fun Element.isBold() = attributes.isBold()
-
-    private fun AttributeSet.isBold(): Boolean {
-        val map = toMap()
-        return map[StyleConstants.Bold]?.equals(true) ?: false
-    }
-
-    private fun areAllCharsBold(start: Int, end: Int): Boolean {
+    private fun areAllCharsSameFormat(start: Int, end: Int, format: RichFormat): Boolean {
         for (i in start..end - 1) {
             val element = styledDocument.getCharacterElement(i)
 //            element.attributes.dump()
-            val isNotBold = !element.attributes.isBold()
-            if (isNotBold) {
+            val isNotFormat = !format.isStyle(element.attributes)
+            if (isNotFormat) {
                 return false
             }
         }
         return true
     }
 
-    private fun onToggleBold() {
+    private fun onToggleFormat(format: RichFormat) {
         if (selectedText == null || selectedText.isEmpty()) {
-            log.trace("onToggleBold() aborted because is empty")
+            log.trace("onToggleFormat() aborted because is empty")
             return
         }
-        val allBold = areAllCharsBold(selectionStart, selectionEnd)
-        log.trace("onToggleBold() selectionStart=$selectionStart, selectionEnd=$selectionEnd; allBold=$allBold; selectedText=[$selectedText]")
+        val allSameFormat = areAllCharsSameFormat(selectionStart, selectionEnd, format)
+        log.trace("onToggleFormat() selectionStart=$selectionStart, selectionEnd=$selectionEnd; allSameFormat=$allSameFormat; selectedText=[$selectedText]")
 
-        val sc = StyleContext.getDefaultStyleContext()
-        var aset: AttributeSet
-        if (allBold) {
-            log.trace("remove bold")
-            aset = sc.removeAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background)
-            aset = sc.addAttribute(aset, StyleConstants.Bold, false)
+        val aset: AttributeSet
+        if (allSameFormat) {
+            log.trace("remove format")
+            aset = format.removalAttribute()
         } else {
-            log.trace("add bold")
-            aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background, Color.RED)
-            aset = sc.addAttribute(aset, StyleConstants.Bold, true)
+            log.trace("add format")
+            aset = format.addingAttribute()
         }
 
         val adoc = styledDocument as AbstractDocument
+        val previousSelection = Pair(selectionStart, selectionEnd)
         adoc.replace(selectionStart, selectedText.length, selectedText, aset)
+        select(previousSelection.first, previousSelection.second)
     }
 
     private fun AttributeSet.dump() {
