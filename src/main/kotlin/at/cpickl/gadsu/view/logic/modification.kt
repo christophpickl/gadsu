@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view.logic
 
 import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyCheckBox
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
@@ -102,14 +103,21 @@ class ModificationChecker(
 }
 
 fun JTextComponent.addChangeListener(listener: (DocumentEvent) -> Unit) {
+    val thiz = this
     document.addDocumentListener(object : DocumentListener {
         override fun changedUpdate(e: DocumentEvent) {
             listener(e)
         }
         override fun insertUpdate(e: DocumentEvent) {
+            if (thiz is RichTextArea && thiz.isReformatting) {
+                return
+            }
             listener(e)
         }
         override fun removeUpdate(e: DocumentEvent) {
+            if (thiz is RichTextArea && thiz.isReformatting) {
+                return
+            }
             listener(e)
         }
 

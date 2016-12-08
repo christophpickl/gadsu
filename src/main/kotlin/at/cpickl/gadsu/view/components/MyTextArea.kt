@@ -115,7 +115,9 @@ fun AttributeSet.toMap(): Map<Any, Any> {
     return map
 }
 
-open class RichTextArea(viewName: String) : JTextPane() {
+open class RichTextArea(
+        viewName: String
+) : JTextPane() {
 
     companion object {
         private val FORMATS = RichFormat.values().associateBy { it.shortcutKey }
@@ -125,6 +127,15 @@ open class RichTextArea(viewName: String) : JTextPane() {
 
     init {
         name = viewName
+        focusTraversalWithTabs()
+
+        // MINOR enforce max chars input for RichTextArea
+        // needs a styled document
+//        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
+
+        if (IS_OS_WIN) {
+            font = JLabel().font
+        }
 
         addKeyListener(object : KeyAdapter() {
             override fun keyReleased(e: KeyEvent) {
@@ -167,27 +178,32 @@ open class RichTextArea(viewName: String) : JTextPane() {
     fun toEnrichedText(): String {
         val result = StringBuilder()
         val n = text.length - 1
-        RichFormat.values().forEach {
-            for (i in 0..n) {
-                val char = text[i]
+        for (i in 0..n) {
+            val char = text[i]
 
+            RichFormat.values().forEach {
+                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
                 val previousWasStyled = if (i == 0) false else {
                     it.isStyle(styledDocument.getCharacterElement(i - 1).attributes)
                 }
-                val nextIsStyled = if (i == (n)) false else {
-                    it.isStyle(styledDocument.getCharacterElement(i + 1).attributes)
-                }
-                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
-
                 if (!previousWasStyled && isNowStyled) {
                     result.append("<${it.htmlTag}>")
                 }
-                result.append(char)
+            }
+
+            result.append(char)
+
+            RichFormat.values().forEach {
+                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
+                val nextIsStyled = if (i == (n)) false else {
+                    it.isStyle(styledDocument.getCharacterElement(i + 1).attributes)
+                }
                 if (isNowStyled && !nextIsStyled) {
                     result.append("</${it.htmlTag}>")
                 }
             }
         }
+
         return result.toString()
     }
 
@@ -209,11 +225,11 @@ open class RichTextArea(viewName: String) : JTextPane() {
             log.trace("onToggleFormat() aborted because is empty")
             return
         }
-        val allSameFormat = areAllCharsSameFormat(selectionStart, selectionEnd, format)
-        log.trace("onToggleFormat() selectionStart=$selectionStart, selectionEnd=$selectionEnd; allSameFormat=$allSameFormat; selectedText=[$selectedText]")
+        val allAreStyledByFormat = areAllCharsSameFormat(selectionStart, selectionEnd, format)
+        log.trace("onToggleFormat() selectionStart=$selectionStart, selectionEnd=$selectionEnd; allAreStyledByFormat=$allAreStyledByFormat; selectedText=[$selectedText]")
 
         val aset: AttributeSet
-        if (allSameFormat) {
+        if (allAreStyledByFormat) {
             log.trace("remove format")
             aset = format.removalAttribute()
         } else {
@@ -223,9 +239,20 @@ open class RichTextArea(viewName: String) : JTextPane() {
 
         val adoc = styledDocument as AbstractDocument
         val previousSelection = Pair(selectionStart, selectionEnd)
+
+        // FIXME BUG: when select all, make it bold, then save => format is gone, but saved internally still
+        _isReformatting = true
         adoc.replace(selectionStart, selectedText.length, selectedText, aset)
+        _isReformatting = false
+
+        // FIXME dispatch change event
+//        val e = AbstractDocument.DefaultDocumentEvent(offs, str.length, DocumentEvent.EventType.CHANGE)
+
         select(previousSelection.first, previousSelection.second)
     }
+
+    private var _isReformatting = false
+    val isReformatting: Boolean get() = _isReformatting
 
     private fun AttributeSet.dump() {
         println("attributes: $this")

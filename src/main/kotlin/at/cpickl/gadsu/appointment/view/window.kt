@@ -70,8 +70,8 @@ class SwingAppointmentWindow @Inject constructor(
 
     private val outClient = DisabledTextField()
     private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, ViewNames.Appointment.InputStartDate)
-    private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt()}, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote, 4)
+    private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt() }, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
+    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote)
     private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
 
     private val btnNewTreatment = JButton().apply {
@@ -118,7 +118,7 @@ class SwingAppointmentWindow @Inject constructor(
     }
 
     private fun initSouthPanel() = GridPanel().apply {
-        with (c) {
+        with(c) {
             insets = Pad.TOP
             add(btnSave)
             gridx++
@@ -165,7 +165,15 @@ class SwingAppointmentWindow @Inject constructor(
         val startDate = inpStartDate.selectedDate
         val endTime = startDate.plusMinutes(inpDuration.numberValue)
         val endDate = startDate.withHourOfDay(endTime.hourOfDay).withMinuteOfHour(endTime.minuteOfHour)
-        return Appointment(current.id, current.clientId, current.created, startDate, endDate, inpNote.text, current.gcalId, current.gcalUrl)
+        return Appointment(
+                current.id,
+                current.clientId,
+                current.created,
+                startDate, endDate,
+                inpNote.toEnrichedText(),
+                current.gcalId,
+                current.gcalUrl
+        )
     }
 
     private fun onOpenGCal() {

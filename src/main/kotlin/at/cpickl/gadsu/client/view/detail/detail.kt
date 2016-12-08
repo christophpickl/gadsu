@@ -171,15 +171,15 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpJob.text,
                 tabMain.inpChildren.text,
                 tabMain.inpHobbies.text,
-                tabMain.inpNote.text,
+                tabMain.inpNote.toEnrichedText(),
 
-                tabTexts.inpImpression.text,
-                tabTexts.inpMedical.text,
-                tabTexts.inpComplaints.text,
-                tabTexts.inpPersonal.text,
-                tabTexts.inpObjective.text,
+                tabTexts.inpImpression.toEnrichedText(),
+                tabTexts.inpMedical.toEnrichedText(),
+                tabTexts.inpComplaints.toEnrichedText(),
+                tabTexts.inpPersonal.toEnrichedText(),
+                tabTexts.inpObjective.toEnrichedText(),
 
-                tabTcm.inpTcmNote.text,
+                tabTcm.inpTcmNote.toEnrichedText(),
                 currentClient.data.picture,
                 tabTcm.readProps()
         )

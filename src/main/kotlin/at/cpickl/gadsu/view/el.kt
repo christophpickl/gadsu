@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
 import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.MyTextArea
+import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.DateAndTimePicker
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyCheckBox
@@ -80,6 +81,19 @@ class ElTextArea<in V>(
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
     override fun updateValue(value: V) { text = extractValue(value) }
+    override fun toComponent() = this.scrolled()
+}
+
+class ElRichTextArea<in V> (
+        override val formLabel: String,
+        private val extractValue: (V) -> String,
+        viewName: String
+) : RichTextArea(viewName), ElField<V> {
+
+    override fun isModified(value: V) = _isModified(toEnrichedText(), extractValue, value)
+    override fun updateValue(value: V) {
+        readEnrichedText(extractValue(value))
+    }
     override fun toComponent() = this.scrolled()
 }
 
@@ -196,8 +210,8 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String, visibleRows: Int? = null): ElTextArea<V> {
-        val field = ElTextArea(label, extractValue, viewName, visibleRows)
+    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String): ElRichTextArea<V> {
+        val field = ElRichTextArea(label, extractValue, viewName)
         modifications.enableChangeListener(field)
         fields.add(field)
         return field

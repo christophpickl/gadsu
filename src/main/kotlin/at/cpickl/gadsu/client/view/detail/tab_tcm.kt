@@ -67,7 +67,7 @@ class ClientTabTcm(
         c.weighty = 0.0
         c.gridwidth = 3
         c.fill = GridBagConstraints.HORIZONTAL
-        inpTcmNote.rows = 6
+//        inpTcmNote.rows = 6
         add(VFillFormPanel().apply {
             addFormInput(inpTcmNote)
         })
