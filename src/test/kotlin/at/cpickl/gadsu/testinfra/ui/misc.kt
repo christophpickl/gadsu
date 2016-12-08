@@ -1,19 +1,67 @@
 package at.cpickl.gadsu.testinfra.ui
 
+import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.datepicker.view.JDatePanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.testng.Assert
-import org.uispec4j.*
+import org.uispec4j.Button
+import org.uispec4j.Key
+import org.uispec4j.ListBox
+import org.uispec4j.MenuItem
+import org.uispec4j.TextBox
+import org.uispec4j.Trigger
+import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
 import javax.swing.JWindow
 
+
+class RichTextAreaAsserter(
+        private val textArea: RichTextArea,
+        private val test: SimpleUiTest,
+        private val window: Window,
+        private val viewName: String
+) {
+    private val textBox: TextBox get() = window.getTextBox(viewName)
+
+    fun enterText(someText: String) {
+        textBox.setText(someText, false)
+    }
+
+    fun selectAll() {
+        textArea.selectAll()
+    }
+
+    fun select(start: Int, length: Int) {
+        textArea.select(start, start + length)
+//        println("selected: [${textArea.selectedText}]")
+    }
+
+    fun hitShortcut(shortcutKey: Char) {
+        textBox.typeKey(osSpecificShortcut(shortcutKey))
+    }
+
+    fun assertPlainTextEquals(expectedText: String) {
+        assertThat(textArea.text, equalTo(expectedText))
+    }
+
+    fun assertEnrichedTextEquals(expectedEnrichedText: String) {
+        assertThat(textArea.toEnrichedText(), equalTo(expectedEnrichedText))
+    }
+
+    private fun osSpecificShortcut(char: Char) = addMetaOrControl(Key.get(char))
+    private fun addMetaOrControl(charKey: Key) = if (IS_OS_MAC) Key.meta(charKey) else Key.control(charKey)
+
+}
 
 class DateTimeSpecPicker(test: UiTest,
                          window: Window,

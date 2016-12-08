@@ -18,13 +18,9 @@ class DatePickerUiTest : SimpleUiTest() {
     companion object {
         private val VIEWNAME_PREFIX = "myTest"
     }
-    private val container = JPanel()
+    private val container = JPanel(BorderLayout())
     private var _testee: DateSpecPicker? = null
     private val testee: DateSpecPicker get() = _testee!!
-
-    init {
-        container.layout = BorderLayout()
-    }
 
     override fun newMainClassAdapter(): MainClassAdapter {
         TestViewStarter.componentToShow = container
