@@ -30,7 +30,6 @@ High
 * improved GCal sync view: bigger window, proper col width; render client pic; von-bis schoenerer text (selten ueberd nacht gehen der termin); recurring flag
 * neue anamnese formular ausarbeiten
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
-* MINOR: custom date picker, auch nur "1.1.87" einggebar (wenn jahr 2 stellig, dann "runden")
 
 Med
 ---

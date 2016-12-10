@@ -54,11 +54,43 @@ class DateFormatsTest {
     // ---------------------------------------------------------------------------
 
     //<editor-fold desc="parse">
-    //
+
     fun `parseTimeWithoutSeconds`() {
         val actual = "19:21".parseTimeWithoutSeconds()
         assertThat(actual.hourOfDay, equalTo(19))
         assertThat(actual.minuteOfHour, equalTo(21))
+    }
+
+    @DataProvider
+    fun provideParseDate(): Array<Array<out Any>> = arrayOf(
+            arrayOf("1.1.1999", "01.01.1999"),
+            arrayOf("31.12.2000", "31.12.2000"),
+
+            arrayOf("28.8.0", "28.08.2000"),
+            arrayOf("28.8.00", "28.08.2000"),
+            arrayOf("28.8.49", "28.08.2049"),
+            arrayOf("28.8.50", "28.08.1950"),
+            arrayOf("28.8.99", "28.08.1999"),
+            arrayOf("28.8.5", "28.08.2005"),
+            arrayOf("28.8.05", "28.08.2005")
+    )
+
+    @Test(dataProvider = "provideParseDate")
+    fun `parseDate`(given: String, expected: String) {
+        assertThat(given.parseDate().formatDate(), equalTo(expected))
+    }
+
+    @DataProvider
+    fun provideInvalidParseDate(): Array<Array<out Any>> = arrayOf(
+            arrayOf(""),
+            arrayOf("1"),
+            arrayOf("1.1"),
+            arrayOf("a.b.c")
+    )
+
+    @Test(dataProvider = "provideInvalidParseDate", expectedExceptions = arrayOf(IllegalArgumentException::class))
+    fun `parseDateInvalid`(given: String) {
+        given.parseDate()
     }
 
     //</editor-fold>

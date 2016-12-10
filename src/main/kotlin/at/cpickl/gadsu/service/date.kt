@@ -74,7 +74,18 @@ fun DateTime.formatDateTimeLong(locale: Locale = Languages.locale): String = Dat
 fun DateTime.formatDateTimeFile(): String = DateFormats.DATE_TIME_FILE.print(this)
 
 fun String.parseTimeWithoutSeconds(): DateTime = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
-fun String.parseDate(): DateTime = DateFormats.DATE.parseDateTime(this)
+fun String.parseDate(): DateTime {
+    val parts = this.split(".")
+    if (parts.size != 3) {
+        throw IllegalArgumentException("Expected to have 3 parts separated by dots, but was ${parts.size} for date string '$this'!")
+    }
+    val year = parts[2].toInt()
+    if (year < 100) { // two or one digit enterd as year
+        val newYear = year + if (year < 50) 2000 else 1900
+        return DateFormats.DATE.parseDateTime("${parts[0]}.${parts[1]}.${newYear}")
+    }
+    return DateFormats.DATE.parseDateTime(this)
+}
 fun String.parseDateTime(): DateTime = DateFormats.DATE_TIME.parseDateTime(this)
 fun String.parseDateTimeFile(): DateTime = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 
