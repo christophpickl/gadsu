@@ -70,7 +70,7 @@ class SyncReportSwingWindow
             TableColumn("Zeit", 200, { Pair(it.event.start, it.event.end) })
     ))
     private val table = SyncTable(model)
-    private val btnImport = JButton("Import").apply { addActionListener {
+    private val btnImport = JButton("Synchronisieren").apply { addActionListener {
         table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
         bus.post(RequestImportSyncEvent())
     } }

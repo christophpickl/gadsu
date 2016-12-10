@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.testinfra.TestViewStarter
-import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.view.logic.addChangeListener
@@ -41,7 +40,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun testGetEnrichedText() {
-        skip("a")
         textAsserter.enterText("one two three")
         textAsserter.assertEnrichedTextEquals("one two three")
         textAsserter.select("one ".length, "two".length)
@@ -54,7 +52,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun testSetEnrichedText() {
-        skip("a")
         textArea.readEnrichedText("<hl>one</hl> one-B <hl>two</hl> three <hl>four</hl>")
 
         textAsserter.assertPlainTextEquals("one one-B two three four")
@@ -62,7 +59,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun testOnChange() {
-        skip("f")
         textAsserter.enterText("123")
         textAsserter.select(1, 1)
         val events = LinkedList<DocumentEvent>()
