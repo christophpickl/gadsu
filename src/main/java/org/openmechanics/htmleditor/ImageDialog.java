@@ -388,7 +388,7 @@ public class ImageDialog extends JDialog implements WindowListener {
             chooser.setCurrentDirectory(lastSel);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
-                fileField.setText(chooser.getSelectedFile().toURL().toString());
+                fileField.setText(chooser.getSelectedFile().toURI().toURL().toString());
                 header.setIcon(getPreviewIcon(chooser.getSelectedFile()));
                 Context
                         .put("LAST_SELECTED_IMG_FILE", chooser

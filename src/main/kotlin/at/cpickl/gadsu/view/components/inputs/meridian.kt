@@ -14,8 +14,13 @@ import javax.swing.Icon
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 
+enum class MeridianSelectorLayout {
+    Horizontal,
+    Vertical
+}
+
 class MeridianSelector(
-        private val horizontalLayout: Boolean = true
+        private val renderLayout: MeridianSelectorLayout = MeridianSelectorLayout.Vertical
 ) : ChangeAware {
 
     private val checkboxes = Meridian.values().map(::MeridianCheckBox)
@@ -35,7 +40,7 @@ class MeridianSelector(
 
                 if (isTopOrLeft) {
                     if (i != 0) {
-                        if (horizontalLayout) {
+                        if (renderLayout == MeridianSelectorLayout.Horizontal) {
                             c.gridx++
                             c.gridy = 0
                         } else {
@@ -44,7 +49,7 @@ class MeridianSelector(
                         }
                     }
                 } else {
-                    if (horizontalLayout) {
+                    if (renderLayout == MeridianSelectorLayout.Horizontal) {
                         c.gridy++
                     } else {
                         c.gridx++

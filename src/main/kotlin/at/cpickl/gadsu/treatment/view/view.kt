@@ -20,6 +20,7 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
+import at.cpickl.gadsu.view.components.inputs.MeridianSelectorLayout
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -45,6 +46,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import javax.inject.Inject
+import javax.swing.BorderFactory
 import javax.swing.JLabel
 import javax.swing.JMenuItem
 import javax.swing.JPanel
@@ -77,6 +79,9 @@ class SwingTreatmentView @Inject constructor(
 
     companion object {
         val DYN_TAB_TITLE_ADD = "+"
+
+        // because of meridian selector
+        private val GAP_LEFT = 100
     }
 
     override val type = MainContentType.TREATMENT
@@ -100,7 +105,7 @@ class SwingTreatmentView @Inject constructor(
     private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
     private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
 
-    private val meridianSelector = MeridianSelector()
+    private val meridianSelector = MeridianSelector(MeridianSelectorLayout.Vertical)
 
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
@@ -143,44 +148,11 @@ class SwingTreatmentView @Inject constructor(
     override fun getDynTreatmentAt(tabIndex: Int) = subTreatmentView.getDynTreatmentAt(tabIndex)
     override fun getAllDynTreatmentClasses() = subTreatmentView.getAllDynTreatmentClasses()
 
-    private fun initTopPanel() = GridPanel().apply {
-        c.fill = GridBagConstraints.NONE
-        c.weightx = 0.0
-        c.gridheight = 2
-        c.anchor = GridBagConstraints.NORTH
-        c.insets = Insets(Pad.DEFAULT_SIZE, 0, 0, Pad.DEFAULT_SIZE) // top right
-        add(initClientProfile())
-
-        c.gridx++
-        c.gridheight = 1
-        c.fill = GridBagConstraints.HORIZONTAL
-        c.anchor = GridBagConstraints.NORTHWEST
-        c.insets = Pad.bottom(20)
-        add(JLabel("Behandlung #${treatment.number} für ${client.preferredName}").withFont(Font.BOLD, 20))
-
-        c.gridy++
-        c.fill = GridBagConstraints.HORIZONTAL
-        c.anchor = GridBagConstraints.NORTHWEST
-        c.weightx = 0.0
-        c.weighty = 0.0
-        c.insets = Pad.ZERO
-        add(initDetailPanel())
-
-        c.gridy = 0
-        c.gridx++
-        c.anchor = GridBagConstraints.CENTER
-        c.gridheight = 2
-        c.weightx = 1.0
-        c.weighty = 1.0
-        add(JPanel(BorderLayout()).apply {
-            add(meridianSelector.component, BorderLayout.EAST)
-        })
-    }
-
     private fun initComponents() {
         c.weightx = 0.0
         c.weighty = 0.0
         c.fill = GridBagConstraints.HORIZONTAL
+        c.anchor = GridBagConstraints.NORTHWEST
         add(initTopPanel())
 
         c.gridy++
@@ -195,10 +167,61 @@ class SwingTreatmentView @Inject constructor(
         add(initButtonPanel())
     }
 
+    private fun initTopPanel() = GridPanel().apply {
+        debugColor = Color.RED
+        c.anchor = GridBagConstraints.WEST
+        c.fill = GridBagConstraints.NONE
+        c.weightx = 0.0
+        c.gridheight = 2
+        c.insets = Insets(Pad.DEFAULT_SIZE, GAP_LEFT, 0, 15)
+        add(JLabel(client.picture.toViewMedRepresentation()))
+
+        c.gridx++
+        c.gridheight = 1
+        c.insets = Pad.top(20)
+        add(JLabel("Behandlung #${treatment.number} mit ${client.preferredName}").withFont(Font.BOLD, 20))
+
+        c.gridy++
+        c.insets = Pad.NONE
+        c.fill = GridBagConstraints.HORIZONTAL
+        c.weightx = 1.0
+        c.weighty = 0.0
+        add(initDetailPanel())
+    }
+
+    private fun initDetailPanel(): Component {
+        val panel = GridPanel()
+        panel.debugColor = Color.CYAN
+        with(panel.c) {
+            fill = GridBagConstraints.NONE
+            panel.add(JLabel("Am "))
+            gridx++
+            panel.add(inpDateAndTime.toComponent())
+            gridx++
+            panel.add(JLabel(" und dauerte "))
+            gridx++
+            panel.add(inpDuration)
+            gridx++
+            panel.add(JLabel(" Minuten."))
+            gridx++
+            fill = GridBagConstraints.HORIZONTAL
+            weightx = 1.0 // layout hack ;)
+            panel.add(JPanel())
+        }
+        return panel
+    }
+
     private fun initMainPanel(): Component {
         val panel = GridPanel()
         with(panel.c) {
 
+            fill = GridBagConstraints.NONE
+            weightx = 0.0
+            weighty = 0.0
+            anchor = GridBagConstraints.NORTH
+            panel.add(meridianSelector.component)
+
+            gridx++
             weightx = 1.0
             weighty = 1.0
             fill = GridBagConstraints.BOTH
@@ -267,37 +290,9 @@ class SwingTreatmentView @Inject constructor(
         }
     }
 
-    private fun initDetailPanel(): Component {
-        val panel = GridPanel()
-        with(panel.c) {
-            fill = GridBagConstraints.HORIZONTAL
-            panel.add(JLabel("Am "))
-            gridx++
-            panel.add(inpDateAndTime.toComponent())
-            gridx++
-            panel.add(JLabel(" und dauerte "))
-            gridx++
-            panel.add(inpDuration)
-            gridx++
-            panel.add(JLabel(" Minuten."))
-            gridx++
-            weightx = 1.0 // layout hack ;)
-            panel.add(JPanel())
-        }
-        return panel
-    }
-
-    private fun initClientProfile(): Component {
-        val panel = GridPanel()
-        with(panel.c) {
-            fill = GridBagConstraints.BOTH
-            panel.add(JLabel(client.picture.toViewMedRepresentation()))
-        }
-        return panel
-    }
-
     private fun initButtonPanel(): Component {
         val panel = JPanel(BorderLayout())
+        panel.border = BorderFactory.createEmptyBorder(0, GAP_LEFT - 12, 0, 0)
         panel.transparent()
         panel.debugColor = Color.ORANGE
 
