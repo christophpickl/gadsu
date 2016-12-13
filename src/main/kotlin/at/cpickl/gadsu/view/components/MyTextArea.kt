@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent
 import java.io.IOException
 import java.io.StringReader
 import java.util.HashMap
+import java.util.LinkedList
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JTextArea
@@ -54,11 +55,12 @@ fun <J : JComponent> J.focusTraversalWithTabs() = apply {
     setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null)
 }
 
-private enum class RichFormat(
+enum class RichFormat(
         val label: String,
         val htmlTag: String,
         val shortcutKey: Char
 ) {
+
     Highlight("highlight", "hl", 'b') {
 
         override fun addingAttribute(): AttributeSet {
@@ -99,6 +101,18 @@ private enum class RichFormat(
         }
     }
     ;
+
+    companion object {
+        val CLEAN_FORMAT: AttributeSet
+
+        init {
+            val sc = StyleContext.getDefaultStyleContext()
+            var aset = sc.removeAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background)
+            aset = sc.addAttribute(aset, StyleConstants.Bold, false)
+            aset = sc.addAttribute(aset, StyleConstants.Italic, false)
+            CLEAN_FORMAT = aset
+        }
+    }
 
 
     abstract fun isStyle(attributes: AttributeSet): Boolean
@@ -147,32 +161,50 @@ open class RichTextArea(
         })
     }
 
+    fun RichFormat.clearTag(input: String) = input.replace("<$htmlTag>", "").replace("</$htmlTag>", "")
     fun readEnrichedText(enrichedText: String) {
-        log.trace("readEnrichedText(enrichedText=[{}])", enrichedText)
+        log.trace("readEnrichedText(enrichedText=[{}]) viewName={}", enrichedText, name)
+
+        replaceTextStyle { adoc ->
+            adoc.replace(0, text.length, text, RichFormat.CLEAN_FORMAT)
+//            adoc.remove()
+        }
 
         var cleanText = enrichedText
         RichFormat.values().forEach {
-            cleanText = cleanText.replace("<${it.htmlTag}>", "").replace("</${it.htmlTag}>", "")
+            cleanText = it.clearTag(cleanText)//cleanText.replace("<${it.htmlTag}>", "").replace("</${it.htmlTag}>", "")
         }
         text = cleanText
 
-
+        var txt = enrichedText
         RichFormat.values().forEach {
-            var txt = enrichedText
             val tag = it.htmlTag
-            while (txt.contains("<$tag>")) {
+            val openTag = "<$tag>"
+            val endTag = "</$tag>"
+            println("Checking format tag: $openTag")
+            while (txt.contains(openTag)) {
 //            println("txt: [$txt]")
-                val start = txt.indexOf("<$tag>")
-                val end = txt.indexOf("</$tag>") - "<$tag>".length
-//            println("going to select: $start/$end")
+                var pivotableTxt = txt
+                RichFormat.values().forEach { j ->
+                    pivotableTxt = if (j == it) pivotableTxt else j.clearTag(pivotableTxt)
+                }
+
+                val start = pivotableTxt.indexOf(openTag)
+                val end = pivotableTxt.indexOf(endTag) - openTag.length
+                println("going to select: $start/$end")
                 select(start, end)
-                onToggleFormat(it)
-                txt = txt.replaceFirst("<$tag>", "").replaceFirst("</$tag>", "")
+
+//                onToggleFormat(it)
+                replaceTextStyle { adoc ->
+                    adoc.replace(start, end - start, selectedText, it.addingAttribute())
+                }
+
+
+                txt = txt.replaceFirst(openTag, "").replaceFirst(endTag, "")
             }
         }
 
-        select(text.length, text.length)
-        moveCaretPosition(text.length)
+        caretPosition = text.length
     }
 
     fun toEnrichedText(): String {
@@ -207,7 +239,8 @@ open class RichTextArea(
             }
         }
 
-        return result.toString().apply { log.trace("toEnrichedText() returning: '{}'", this) }
+        // MINOR logging here results in many many log outputs, but... should this be invoked that often actually?!
+        return result.toString()
     }
 
 
@@ -221,6 +254,12 @@ open class RichTextArea(
             }
         }
         return true
+    }
+
+
+    private val listeners = LinkedList<ShortcutListener>()
+    fun registerListener(listener: ShortcutListener) {
+        listeners.add(listener)
     }
 
     private fun onToggleFormat(format: RichFormat) {
@@ -240,18 +279,26 @@ open class RichTextArea(
             aset = format.addingAttribute()
         }
 
-        val adoc = styledDocument as AbstractDocument
+
         val previousSelection = Pair(selectionStart, selectionEnd)
 
         // FIXME BUG: when select all, make it bold, then save => format is gone, but saved internally still
-        _isReformatting = true
-        adoc.replace(selectionStart, selectedText.length, selectedText, aset)
-        _isReformatting = false
-
-        // FIXME dispatch change event
-//        val e = AbstractDocument.DefaultDocumentEvent(offs, str.length, DocumentEvent.EventType.CHANGE)
+        replaceTextStyle { adoc ->
+            adoc.replace(selectionStart, selectedText.length, selectedText, aset)
+        }
 
         select(previousSelection.first, previousSelection.second)
+
+        listeners.forEach { it.onShortcut(ShortcutEvent(format, selectedText)) }
+//        val e = AbstractDocument.DefaultDocumentEvent(offs, str.length, DocumentEvent.EventType.CHANGE)
+
+    }
+
+    private fun replaceTextStyle(fn: (AbstractDocument) -> Unit) {
+        val adoc = styledDocument as AbstractDocument
+        _isReformatting = true
+        fn(adoc)
+        _isReformatting = false
     }
 
     private var _isReformatting = false
@@ -265,7 +312,11 @@ open class RichTextArea(
             println("    name = [$name]; value = [$value]")
         }
     }
+}
 
+data class ShortcutEvent(val format: RichFormat, val selectedText: String)
+interface ShortcutListener {
+    fun onShortcut(event: ShortcutEvent)
 }
 
 open class HeavyRichTextArea {

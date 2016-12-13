@@ -1,7 +1,10 @@
 package at.cpickl.gadsu.view.logic
 
+import at.cpickl.gadsu.view.ElRichTextArea
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.RichTextArea
+import at.cpickl.gadsu.view.components.ShortcutEvent
+import at.cpickl.gadsu.view.components.ShortcutListener
 import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyCheckBox
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
@@ -30,9 +33,17 @@ class ModificationChecker(
     var enableModificationsCheck: Boolean = true
 
     fun <T : JTextComponent> enableChangeListener(delegate: T): T {
+        // MINOR check if adding without removing listener does not lead to memory leak
         delegate.addChangeListener { event ->
 //            log.trace("JTextComponent fired change event. (Event: {}, Source: {})", event, delegate)
             checkModificationsAndUpdateIsEnabledField()
+        }
+        if (delegate is ElRichTextArea<*>) {
+            delegate.registerListener(object : ShortcutListener {
+                override fun onShortcut(event: ShortcutEvent) {
+                    checkModificationsAndUpdateIsEnabledField()
+                }
+            })
         }
         return delegate
     }
@@ -87,6 +98,7 @@ class ModificationChecker(
         enableDisableComponents.forEach { it.isEnabled = false }
     }
 
+    // TODO this gets called way too often; rethink whole architecture!
     private fun checkModificationsAndUpdateIsEnabledField() {
         if (!enableModificationsCheck) {
             log.trace("checkModificationsAndUpdateIsEnabledField() ... disabled, most likely currently in update method")

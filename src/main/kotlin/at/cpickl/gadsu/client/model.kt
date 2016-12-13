@@ -173,6 +173,7 @@ data class Client(
                 .add("firstName", firstName)
                 .add("nickName", nickName)
                 .add("lastName", lastName)
+                .add("note", note)
                 .toString()
     }
 

@@ -51,6 +51,9 @@ abstract class SimpleUiTest : UISpecTestCase() {
     @BeforeClass
     fun initUi() {
         log.debug("initUi()")
+        if (System.getProperty("java.awt.headless") == "true") {
+            throw AssertionError("java.awt.headless must NOT be set to true for UI tests!")
+        }
         super.setUp()
 
         setAdapter(newMainClassAdapter())

@@ -41,13 +41,15 @@ class RichTextAreaAsserter(
         textArea.selectAll()
     }
 
-    fun select(start: Int, length: Int) {
+    fun select(start: Int, length: Int): RichTextAreaAsserter {
         textArea.select(start, start + length)
 //        println("selected: [${textArea.selectedText}]")
+        return this
     }
 
-    fun hitShortcut(shortcutKey: Char) {
+    fun hitShortcut(shortcutKey: Char): RichTextAreaAsserter {
         textBox.typeKey(osSpecificShortcut(shortcutKey))
+        return this
     }
 
     fun assertPlainTextEquals(expectedText: String) {
