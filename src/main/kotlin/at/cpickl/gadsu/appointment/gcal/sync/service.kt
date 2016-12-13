@@ -40,7 +40,8 @@ class GCalSyncService @Inject constructor(
 ) : SyncService {
 
     companion object {
-        private val DAYS_BEFORE_AND_AFTER_TO_SCAN = 14
+        private val DAYS_BEFORE_TO_SCAN = 14
+        private val DAYS_AFTER_TO_SCAN = 40
     }
 
     private val log = LOG(javaClass)
@@ -94,8 +95,8 @@ class GCalSyncService @Inject constructor(
     private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
         val now = clock.now().clearTime()
         return Pair(
-                now.minusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN),
-                now.plusDays(DAYS_BEFORE_AND_AFTER_TO_SCAN)
+                now.minusDays(DAYS_BEFORE_TO_SCAN),
+                now.plusDays(DAYS_AFTER_TO_SCAN)
         )
     }
 

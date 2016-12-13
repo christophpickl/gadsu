@@ -46,7 +46,7 @@ open class GCalControllerImpl @Inject constructor(
 
     @Subscribe open fun onRequestGCalSyncEvent(event: RequestGCalSyncEvent) {
         async.doInBackground<SyncReport?>(
-                settings = AsyncDialogSettings("GCal Sync", "Baue Verbindung zu Google Server auf ..."),
+                settings = AsyncDialogSettings("GCal Sync", "Verbindung zu Google Server wird aufgebaut ..."),
                 backgroundTask = { doTheSync() },
                 doneTask = { report ->
                     if (report == null) {

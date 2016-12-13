@@ -55,7 +55,7 @@ data class ImportAppointment(
 
 class SyncReportSwingWindow
 @Inject constructor(
-        private val mainFrame: MainFrame,
+        mainFrame: MainFrame,
         bus: EventBus
 )
     : MyFrame("Sync Bericht"), SyncReportWindow {
