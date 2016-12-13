@@ -1,9 +1,17 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
+import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.logic.ModificationAware
+import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.logic.addChangeListener
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.Window
@@ -52,10 +60,11 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun testSetEnrichedText() {
-        textArea.readEnrichedText("<hl>one</hl> one-B <hl>two</hl> three <hl>four</hl>")
+        val enrichedText = "<hl>one</hl> mid1 <hl>two</hl> mid2 <hl>three</hl>"
+        textArea.readEnrichedText(enrichedText)
 
-        textAsserter.assertPlainTextEquals("one one-B two three four")
-        textAsserter.assertEnrichedTextEquals("<hl>one</hl> one-B <hl>two</hl> three <hl>four</hl>")
+        textAsserter.assertEnrichedTextEquals(enrichedText)
+        textAsserter.assertPlainTextEquals("one mid1 two mid2 three")
     }
 
     fun testOnChange() {
@@ -87,11 +96,37 @@ class RichTextAreaUiTest : SimpleUiTest() {
 //        MatcherAssert.assertThat(events, empty())
     }
 
+
     private fun testee(): RichTextArea {
         container.removeAll()
         val testee = RichTextArea(viewName = VIEWNAME)
         container.add(testee, BorderLayout.CENTER)
         return testee
+    }
+
+}
+
+@Test class MyTextAreaModificationTest {
+
+    fun modificationCheck() {
+
+        val originalNote = "abcd"
+        val client = Client.unsavedValidInstance().copy(note = originalNote)
+        val context = ModificationTestContext(client)
+        context.inpNote.readEnrichedText(originalNote)
+
+        assertThat(context.isModified(), equalTo(false))
+
+    }
+
+    private class ModificationTestContext(val client: Client) : ModificationAware {
+
+        val modificationChecker = ModificationChecker(this)
+        val fields = Fields<Client>(modificationChecker)
+        val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote)
+
+        override fun isModified() = inpNote.isModified(client)
+
     }
 
 }

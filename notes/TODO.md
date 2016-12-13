@@ -33,6 +33,7 @@ High
 
 Med
 ---
+* when enter text, parse if its a accupuncture point, eg "Gb25" => make it a clickable link and open accupuncture database window
 * master client cell list: sort based on displayed label (preferred name) instead of regular name // add sorting+filtering/searching feature anyway
 * on mouse over fuer hara diagnose fields
 * klient deaktivieren auch per rechte mausklick (nicht nur menu)

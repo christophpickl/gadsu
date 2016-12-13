@@ -3,10 +3,10 @@ package at.cpickl.gadsu.view.components
 import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import org.openmechanics.htmleditor.HTMLEditor
-import java.awt.Color
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -63,7 +63,7 @@ private enum class RichFormat(
 
         override fun addingAttribute(): AttributeSet {
             val sc = StyleContext.getDefaultStyleContext()
-            var aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background, Color.RED)
+            var aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Background, Colors.TEXTEDITOR_BOLD)
             aset = sc.addAttribute(aset, StyleConstants.Bold, true)
             return aset
         }
@@ -180,11 +180,13 @@ open class RichTextArea(
         val n = text.length - 1
         for (i in 0..n) {
             val char = text[i]
+            val charAttributes = styledDocument.getCharacterElement(i).attributes
 
             RichFormat.values().forEach {
-                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
+                val isNowStyled = it.isStyle(charAttributes)
                 val previousWasStyled = if (i == 0) false else {
-                    it.isStyle(styledDocument.getCharacterElement(i - 1).attributes)
+                    val prevCharAttributes = styledDocument.getCharacterElement(i - 1).attributes
+                    it.isStyle(prevCharAttributes)
                 }
                 if (!previousWasStyled && isNowStyled) {
                     result.append("<${it.htmlTag}>")
@@ -194,9 +196,10 @@ open class RichTextArea(
             result.append(char)
 
             RichFormat.values().forEach {
-                val isNowStyled = it.isStyle(styledDocument.getCharacterElement(i).attributes)
+                val isNowStyled = it.isStyle(charAttributes)
                 val nextIsStyled = if (i == (n)) false else {
-                    it.isStyle(styledDocument.getCharacterElement(i + 1).attributes)
+                    val nextCharAttributes = styledDocument.getCharacterElement(i + 1).attributes
+                    it.isStyle(nextCharAttributes)
                 }
                 if (isNowStyled && !nextIsStyled) {
                     result.append("</${it.htmlTag}>")
@@ -204,7 +207,7 @@ open class RichTextArea(
             }
         }
 
-        return result.toString()
+        return result.toString().apply { log.trace("toEnrichedText() returning: '{}'", this) }
     }
 
 

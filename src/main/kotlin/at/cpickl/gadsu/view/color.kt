@@ -26,6 +26,8 @@ object Colors {
     val BG_ALTERNATE = Colors.LIGHT_GRAY
     val BG_COLOR_HOVER = byHex("#bed9fe")
 
+    val TEXTEDITOR_BOLD = byHex("#E3E30A")
+
     fun byHex(hex: String) = Color.decode(hex)!!
 }
 /*
