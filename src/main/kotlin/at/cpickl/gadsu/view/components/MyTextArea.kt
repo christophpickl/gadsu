@@ -102,6 +102,9 @@ enum class RichFormat(
     }
     ;
 
+    val tag1 = "<$htmlTag>"
+    val tag2 = "</$htmlTag>"
+
     companion object {
         val CLEAN_FORMAT: AttributeSet
 
@@ -161,18 +164,14 @@ open class RichTextArea(
         })
     }
 
-    fun RichFormat.clearTag(input: String) = input.replace("<$htmlTag>", "").replace("</$htmlTag>", "")
+    fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
+
     fun readEnrichedText(enrichedText: String) {
         log.trace("readEnrichedText(enrichedText=[{}]) viewName={}", enrichedText, name)
 
-        replaceTextStyle { adoc ->
-            adoc.replace(0, text.length, text, RichFormat.CLEAN_FORMAT)
-//            adoc.remove()
-        }
-
         var cleanText = enrichedText
         RichFormat.values().forEach {
-            cleanText = it.clearTag(cleanText)//cleanText.replace("<${it.htmlTag}>", "").replace("</${it.htmlTag}>", "")
+            cleanText = it.clearTag(cleanText)
         }
         text = cleanText
 
@@ -183,7 +182,6 @@ open class RichTextArea(
             val endTag = "</$tag>"
             println("Checking format tag: $openTag")
             while (txt.contains(openTag)) {
-//            println("txt: [$txt]")
                 var pivotableTxt = txt
                 RichFormat.values().forEach { j ->
                     pivotableTxt = if (j == it) pivotableTxt else j.clearTag(pivotableTxt)
@@ -191,10 +189,9 @@ open class RichTextArea(
 
                 val start = pivotableTxt.indexOf(openTag)
                 val end = pivotableTxt.indexOf(endTag) - openTag.length
-                println("going to select: $start/$end")
+//                println("going to select: $start/$end")
                 select(start, end)
 
-//                onToggleFormat(it)
                 replaceTextStyle { adoc ->
                     adoc.replace(start, end - start, selectedText, it.addingAttribute())
                 }

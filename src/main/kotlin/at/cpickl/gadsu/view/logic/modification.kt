@@ -101,7 +101,6 @@ class ModificationChecker(
     // TODO this gets called way too often; rethink whole architecture!
     private fun checkModificationsAndUpdateIsEnabledField() {
         if (!enableModificationsCheck) {
-            log.trace("checkModificationsAndUpdateIsEnabledField() ... disabled, most likely currently in update method")
             return
         }
 
