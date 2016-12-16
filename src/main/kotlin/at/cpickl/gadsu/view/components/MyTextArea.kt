@@ -146,7 +146,7 @@ open class RichTextArea(
         name = viewName
         focusTraversalWithTabs()
 
-        // MINOR enforce max chars input for RichTextArea
+        // TODO #77 enforce max chars input for RichTextArea
         // needs a styled document
 //        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
 
@@ -180,7 +180,6 @@ open class RichTextArea(
             val tag = it.htmlTag
             val openTag = "<$tag>"
             val endTag = "</$tag>"
-            println("Checking format tag: $openTag")
             while (txt.contains(openTag)) {
                 var pivotableTxt = txt
                 RichFormat.values().forEach { j ->
@@ -195,7 +194,6 @@ open class RichTextArea(
                 replaceTextStyle { adoc ->
                     adoc.replace(start, end - start, selectedText, it.addingAttribute())
                 }
-
 
                 txt = txt.replaceFirst(openTag, "").replaceFirst(endTag, "")
             }
@@ -236,7 +234,6 @@ open class RichTextArea(
             }
         }
 
-        // MINOR logging here results in many many log outputs, but... should this be invoked that often actually?!
         return result.toString()
     }
 
@@ -276,10 +273,8 @@ open class RichTextArea(
             aset = format.addingAttribute()
         }
 
-
         val previousSelection = Pair(selectionStart, selectionEnd)
 
-        // FIXME BUG: when select all, make it bold, then save => format is gone, but saved internally still
         replaceTextStyle { adoc ->
             adoc.replace(selectionStart, selectedText.length, selectedText, aset)
         }
@@ -288,7 +283,6 @@ open class RichTextArea(
 
         listeners.forEach { it.onShortcut(ShortcutEvent(format, selectedText)) }
 //        val e = AbstractDocument.DefaultDocumentEvent(offs, str.length, DocumentEvent.EventType.CHANGE)
-
     }
 
     private fun replaceTextStyle(fn: (AbstractDocument) -> Unit) {
@@ -366,25 +360,4 @@ open class HeavyRichTextArea {
             }
         }
     }
-    /*
-      JPanel(BorderLayout()).apply {
-                val editor = HTMLEditor().apply {
-                    // text = editor.editor.getDocument().getText(0, editor.editor.getDocument().getLength() - 1);
-//                    setStyleSheet(InputStreamReader(javaClass.getResourceAsStream("/htmleditor/css/default.css")), null)
-                }
-
-                add(editor, BorderLayout.CENTER)
-
-                add(JButton("html text").apply {
-                    addActionListener {
-                        val writer = StringWriter()
-                        editor.editorKit.write(writer, editor.document, 0, editor.document.length)
-                        val x = writer.toString()
-//                        val x = editor.editor.document.getText(0, editor.editor.document.length)
-                        println("xx: [$x]")
-                    }
-                }, BorderLayout.SOUTH)
-            },
-
-     */
 }
