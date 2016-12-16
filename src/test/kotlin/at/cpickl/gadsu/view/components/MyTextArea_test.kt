@@ -8,7 +8,6 @@ import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import at.cpickl.gadsu.view.logic.addChangeListener
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.testng.annotations.BeforeMethod
@@ -18,13 +17,14 @@ import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
 import java.util.LinkedList
 import javax.swing.JPanel
-import javax.swing.event.DocumentEvent
 
 @Test class RichTextAreaTest {
 
     fun readComplexEnrichedText() {
         val testee = RichTextArea("viewName")
-        testee.readEnrichedText("<hl>one</hl> two t<i>hre</i>e <hl>four</hl>")
+        val text = "<hl>one</hl> two t<i>hre</i>e <hl>four</hl>"
+        testee.readEnrichedText(text)
+        MatcherAssert.assertThat(testee.toEnrichedText(), Matchers.equalTo(text))
     }
 
 }
@@ -34,6 +34,8 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     companion object {
         private val VIEWNAME = "testRichTextAreaViewName"
+//        private val SC_BOLD = 'b'
+//        private val SC_ITALIC = 'i'
     }
 
     private lateinit var textArea: RichTextArea
@@ -55,7 +57,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter = RichTextAreaAsserter(textArea, this, window!!, VIEWNAME)
     }
 
-    fun testGetEnrichedText() {
+    fun getEnrichedText() {
         textAsserter.enterText("one two three")
         textAsserter.assertEnrichedTextEquals("one two three")
         textAsserter.select("one ".length, "two".length)
@@ -85,20 +87,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertEnrichedTextEquals("<hl>ab</hl>")
     }
 
-    fun testOnChange() {
-        textAsserter.enterText("123")
-        textAsserter.select(1, 1)
-        val events = LinkedList<DocumentEvent>()
-        textArea.addChangeListener {
-            events.add(it)
-            println(it)
-            // maybe we allow a change event
-        }
-        textAsserter.hitShortcut('i')
-
-//        MatcherAssert.assertThat(events, empty())
-    }
-
     fun twoDifferentProperIndexCalculation() {
         textAsserter.enterText("one two three four")
         textAsserter.select(0, 3).hitShortcut('b')
@@ -108,30 +96,21 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertEnrichedTextEquals("<hl>one</hl> two t<i>hre</i>e <hl>four</hl>")
     }
 
-    fun testOnChange2() {
+    fun selectAllAndHighlightShouldDispatchShortcutEvent() {
+        val events = LinkedList<ShortcutEvent>()
+        textArea.registerListener(object : ShortcutListener {
+            override fun onShortcut(event: ShortcutEvent) {
+                events.add(event)
+            }
+        })
+
         textAsserter.enterText("123")
         textAsserter.selectAll()
-        val events = LinkedList<DocumentEvent>()
-        textArea.addChangeListener {
-            events.add(it)
-            println(it)
-            // maybe we allow a change event
-        }
-        textAsserter.hitShortcut('i')
+        textAsserter.hitShortcut('b')
 
-        println("enriched: [${textArea.toEnrichedText()}]")
-//        MatcherAssert.assertThat(events, empty())
+        MatcherAssert.assertThat(events, Matchers.hasSize(1))
+        MatcherAssert.assertThat(events[0], Matchers.equalTo(ShortcutEvent(RichFormat.Highlight, "123")))
     }
-
-
-    private fun testee(): RichTextArea {
-        container.removeAll()
-        val testee = RichTextArea(viewName = VIEWNAME)
-        container.add(testee, BorderLayout.CENTER)
-        return testee
-    }
-
-
 
     fun modificationCheck() {
         val originalNote = "abcd"
@@ -150,6 +129,13 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
         MatcherAssert.assertThat(context.isModified(), Matchers.equalTo(true))
         textAsserter.assertEnrichedTextEquals("<hl>a</hl>bcd")
+    }
+
+    private fun testee(): RichTextArea {
+        container.removeAll()
+        val testee = RichTextArea(viewName = VIEWNAME)
+        container.add(testee, BorderLayout.CENTER)
+        return testee
     }
 
     private class ModificationTestContext(val client: Client) : ModificationAware {
