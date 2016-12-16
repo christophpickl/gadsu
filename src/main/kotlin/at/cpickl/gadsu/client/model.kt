@@ -57,6 +57,10 @@ interface IClient : HasId, Persistable {
     val textComplaints: String
     val textPersonal: String
     val textObjective: String
+    val textMainObjective: String
+    val textSymptoms: String
+    val textFiveElements: String
+    val textSyndrom: String
 
     val tcmNote: String
     val picture: MyImage
@@ -90,6 +94,10 @@ data class Client(
         override val textComplaints: String,
         override val textPersonal: String,
         override val textObjective: String,
+        override val textMainObjective: String,
+        override val textSymptoms: String,
+        override val textFiveElements: String,
+        override val textSyndrom: String,
 
         override val tcmNote: String,
         override val picture: MyImage,
@@ -103,7 +111,7 @@ data class Client(
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
                 "", "", "",
                 Contact.INSERT_PROTOTYPE, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
-                "", "", "", "", "",
+                "", "", "", "", "", "", "", "", "",
                 "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 
@@ -160,6 +168,10 @@ data class Client(
                 Objects.equal(this.textComplaints, that.textComplaints) &&
                 Objects.equal(this.textPersonal, that.textPersonal) &&
                 Objects.equal(this.textObjective, that.textObjective) &&
+                Objects.equal(this.textMainObjective, that.textMainObjective) &&
+                Objects.equal(this.textSymptoms, that.textSymptoms) &&
+                Objects.equal(this.textFiveElements, that.textFiveElements) &&
+                Objects.equal(this.textSyndrom, that.textSyndrom) &&
                 Objects.equal(this.tcmNote, that.tcmNote) &&
                 Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
                 Objects.equal(this.cprops, that.cprops)
@@ -167,14 +179,14 @@ data class Client(
 
     override fun hashCode() = Objects.hashCode(id, created, firstName, lastName)
 
-    override fun toString(): String {
-        return MoreObjects.toStringHelper(javaClass)
-                .add("id", id)
-                .add("firstName", firstName)
-                .add("nickName", nickName)
-                .add("lastName", lastName)
-                .toString()
-    }
+//    override fun toString(): String {
+//        return MoreObjects.toStringHelper(javaClass)
+//                .add("id", id)
+//                .add("firstName", firstName)
+//                .add("nickName", nickName)
+//                .add("lastName", lastName)
+//                .toString()
+//    }
 
 }
 

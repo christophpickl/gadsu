@@ -108,6 +108,11 @@ open class DevelopmentController @Inject constructor(
                         "perfektionist; schlangen phobie; single",
                         "mag mehr selbstbewusstein",
 
+                        "Regelbeschwerden",
+                        "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
+                        "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
+                        "Le-Qi-Stau",
+
                         "zyklus 24T-6T; drahtiger puls",
                         MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
                         CProps.builder()

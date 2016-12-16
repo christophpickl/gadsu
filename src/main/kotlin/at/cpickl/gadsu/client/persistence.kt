@@ -84,20 +84,28 @@ class ClientJdbcRepository @Inject constructor(
         }
         val sqlInsert = """
         INSERT INTO $TABLE (
-            id, firstName, lastName, nickName, created, birthday,
-            gender_enum, countryOfOrigin, mail, phone, street,
-            zipCode, city, relationship_enum, job, children,
-            note
+            id, created, firstName, lastName, nickName,
+            mail, phone, street, zipCode, city,
+            wantReceiveDoodleMails, birthday, gender_enum, countryOfOrigin, origin,
+            relationship_enum, job, children, hobbies, note,
+            textImpression, textMedical, textComplaints, textPersonal, textObjective,
+            mainObjective, symptoms, elements, syndrom, tcmNote
         ) VALUES (
-        ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
-        ?)"""
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?
+        )"""
         jdbcx.update(sqlInsert,
-                newId, client.firstName, client.lastName, client.nickName, client.created.toSqlTimestamp(), client.birthday?.toSqlTimestamp(),
-                client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
-                client.contact.zipCode, client.contact.city, client.relationship.sqlCode, client.job, client.children,
-                client.note)
+                newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
+                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
+                client.wantReceiveDoodleMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote
+        )
         return client.copy(
                 id = newId,
                 picture = client.gender.defaultImage
@@ -107,21 +115,22 @@ class ClientJdbcRepository @Inject constructor(
     override fun updateWithoutPicture(client: Client) {
         log.debug("update(client={})", client)
         client.ensurePersisted()
-
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    state = ?, firstName = ?, lastName = ?, nickName = ?, birthday = ?,
-                    gender_enum = ?, countryOfOrigin = ?, mail = ?, phone = ?, street = ?,
-                    zipCode = ?, city = ?, wantReceiveDoodleMails = ?, relationship_enum = ?, job = ?, children = ?,
-                    note = ?, textImpression = ?, textMedical = ?, textComplaints = ?,
-                    textPersonal = ?, textObjective = ?, tcmNote = ?
+                    state = ?, firstName = ?, lastName = ?, nickName = ?,
+                    mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
+                    wantReceiveDoodleMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
+                    relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
+                    textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
+                    mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?
                 WHERE id = ?""",
-                client.state.sqlCode, client.firstName, client.lastName, client.nickName, client.birthday?.toSqlTimestamp(),
-                client.gender.sqlCode, client.countryOfOrigin, client.contact.mail, client.contact.phone, client.contact.street,
-                client.contact.zipCode, client.contact.city, client.wantReceiveDoodleMails, client.relationship.sqlCode, client.job, client.children,
-                client.note, client.textImpression, client.textMedical, client.textComplaints,
-                client.textPersonal, client.textObjective, client.tcmNote,
-                // no picture, xprops
+                client.state.sqlCode, client.firstName, client.lastName, client.nickName,
+                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
+                client.wantReceiveDoodleMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                // no picture or cprops
                 client.id!!)
     }
 
@@ -175,6 +184,11 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("textComplaints"),
                 rs.getString("textPersonal"),
                 rs.getString("textObjective"),
+
+                rs.getString("mainObjective"),
+                rs.getString("symptoms"),
+                rs.getString("elements"),
+                rs.getString("syndrom"),
 
                 rs.getString("tcmNote"),
                 readFromBlob(rs.getBlob("picture"), gender),

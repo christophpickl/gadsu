@@ -56,7 +56,13 @@ class ScreenshotDataInserter @Inject constructor(
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
 
-                        "", "", "", "", "", "",
+                        "", "", "", "", "",
+                        "Regelbeschwerden",
+                        "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
+                        "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
+                        "Le-Qi-Stau",
+
+                        "",
                         pic("profile_pic-valid_man1.jpg"),
                         CProps.builder()
                                 .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)

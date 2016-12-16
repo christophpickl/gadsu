@@ -8,6 +8,7 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
 import at.cpickl.gadsu.testinfra.TEST_UUID1
+import at.cpickl.gadsu.testinfra.fullInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
@@ -33,20 +34,13 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- insert
 
     fun `insertWithoutPicture should really just insert no picture`() {
-        val toBeSaved = unsavedClient.copy(
-                gender = Gender.FEMALE,
-                picture = MyImage.TEST_CLIENT_PIC1 // load a real image (but it wont be persisted)
-        )
-        val expected = toBeSaved.copy(
-                id = TEST_UUID1, // returned by mock
-                picture = MyImage.DEFAULT_PROFILE_WOMAN // internally reset to default woman pic, because of set gender
-        )
+        val toBeSaved = Client.fullInstance().copy(id = null)
+        val expected = toBeSaved.copy(id = TEST_UUID1)// returned by mock
 
-        val actualSaved = testee.insertWithoutPicture(toBeSaved)
-        assertThat(actualSaved, equalTo(expected))
+        assertThat(testee.insertWithoutPicture(toBeSaved), equalTo(expected))
 
         val result = jdbcx.query("SELECT * FROM client", Client.ROW_MAPPER)
-        assertThat(result, contains(actualSaved))
+        assertThat(result, contains(expected))
     }
 
     fun insert_idSet_fails() {

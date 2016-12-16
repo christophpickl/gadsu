@@ -61,11 +61,18 @@ class ExtendedClient(
     override val children: String get() = client.children
     override val hobbies: String get() = client.hobbies
     override val note: String get() = client.note
+
     override val textImpression: String get() = client.textImpression
     override val textMedical: String get() = client.textMedical
     override val textComplaints: String get() = client.textComplaints
     override val textPersonal: String get() = client.textPersonal
     override val textObjective: String get() = client.textObjective
+
+    override val textMainObjective: String get() = client.textMainObjective
+    override val textSymptoms: String get() = client.textSymptoms
+    override val textFiveElements: String get() = client.textFiveElements
+    override val textSyndrom: String get() = client.textSyndrom
+
     override val tcmNote: String get() = client.tcmNote
     override val picture: MyImage get() = client.picture
     override val cprops: CProps get() = client.cprops

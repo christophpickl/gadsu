@@ -179,6 +179,11 @@ open class SwingClientDetailView @Inject constructor(
                 tabTexts.inpPersonal.toEnrichedText(),
                 tabTexts.inpObjective.toEnrichedText(),
 
+                tabMain.inpMainObjective.text,
+                tabMain.inpSymptoms.text,
+                tabMain.inpFiveElements.text,
+                tabMain.inpSyndrom.text,
+
                 tabTcm.inpTcmNote.toEnrichedText(),
                 currentClient.data.picture,
                 tabTcm.readProps()

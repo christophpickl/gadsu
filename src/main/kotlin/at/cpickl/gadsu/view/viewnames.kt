@@ -63,6 +63,10 @@ object ClientViewNames {
     val InputTextComplaints = "Client.InputTextComplaints"
     val InputTextPersonal = "Client.InputTextPersonal"
     val InputTextObjective = "Client.InputTextObjective"
+    val InputTextMainObjective = "Client.InputTextMainObjective"
+    val InputTextSymptoms = "Client.InputTextSymptoms"
+    val InputTextFiveElements = "Client.InputTextFiveElements"
+    val InputTextSyndrom = "Client.InputTextSyndrom"
 }
 
 object AppointmentViewNames {

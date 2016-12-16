@@ -7,7 +7,6 @@ import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.service.SuggesterController
-import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
@@ -63,6 +62,12 @@ class ClientTabMain(
     val inpWantReceiveDoodleMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveDoodleMails }, ViewNames.Client.InputReceiveDoodleMails, true)
     val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote)
 
+    // texts
+    val inpMainObjective = fields.newTextField("Hauptanliegen", { it.textMainObjective }, ViewNames.Client.InputTextMainObjective)
+    val inpSymptoms = fields.newTextField("Symptome", { it.textSymptoms }, ViewNames.Client.InputTextSymptoms)
+    val inpFiveElements = fields.newTextField("5 Elemente", { it.textFiveElements }, ViewNames.Client.InputTextFiveElements)
+    val inpSyndrom = fields.newTextField("Syndrom", { it.textSyndrom }, ViewNames.Client.InputTextSyndrom)
+
     init {
         debugColor = Color.ORANGE
 
@@ -84,6 +89,13 @@ class ClientTabMain(
             addFormInput(inpJob)
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
+
+            // ---------------------------
+
+            addFormInput(inpMainObjective)
+            addFormInput(inpSymptoms)
+            addFormInput(inpFiveElements)
+            addFormInput(inpSyndrom)
         }
 
         val contactForm = FormPanel()
@@ -132,11 +144,12 @@ class ClientTabMain(
     private fun initListsPanel(appointmentsSubView: AppoinmentsInClientView, treatmentsSubview: TreatmentsInClientView) = GridPanel().apply {
         with(c) {
             weightx = 1.0
-            weighty = 0.5
+            weighty = 0.2
             fill = GridBagConstraints.BOTH
             add(appointmentsSubView)
 
             gridy++
+            weighty = 0.8
             add(treatmentsSubview)
         }
     }
