@@ -2,10 +2,12 @@ package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.view.UiTestEnabler
 import at.cpickl.gadsu.view.components.RichFormat
 import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.datepicker.view.JDatePanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
+import at.cpickl.gadsu.view.logic.consumeBeep
 import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -13,6 +15,8 @@ import org.hamcrest.Matchers.equalTo
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.testng.Assert
+import org.testng.annotations.BeforeSuite
+import org.testng.annotations.Test
 import org.uispec4j.Button
 import org.uispec4j.Key
 import org.uispec4j.ListBox
@@ -26,6 +30,13 @@ import org.uispec4j.interception.WindowInterceptor
 import javax.swing.JWindow
 
 
+@Test class TestUiSysPropertySetter {
+    @BeforeSuite
+    fun setSysProperty() {
+        UiTestEnabler.enable()
+    }
+}
+
 class RichTextAreaAsserter(
         private val textArea: RichTextArea,
         private val test: SimpleUiTest,
@@ -34,8 +45,14 @@ class RichTextAreaAsserter(
 ) {
     private val textBox: TextBox get() = window.getTextBox(viewName)
 
-    fun enterText(someText: String) {
+    fun enterText(someText: String): RichTextAreaAsserter {
         textBox.setText(someText, false)
+        return this
+    }
+
+    fun appendAtEnd(text: String): RichTextAreaAsserter {
+        textBox.appendText(text)
+        return this
     }
 
     fun selectAll() {
@@ -57,6 +74,10 @@ class RichTextAreaAsserter(
 
     fun assertPlainTextEquals(expectedText: String) {
         assertThat(textArea.text, equalTo(expectedText))
+    }
+
+    fun assertHasBeeped() {
+        assertThat(consumeBeep(), equalTo(true))
     }
 
     fun assertEnrichedTextEquals(expectedEnrichedText: String) {

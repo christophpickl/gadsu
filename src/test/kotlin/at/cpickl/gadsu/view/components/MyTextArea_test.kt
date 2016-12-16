@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.service.times
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
@@ -38,6 +39,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
     companion object {
         private val VIEWNAME = "testRichTextAreaViewName"
         private val ANY_FORMAT = Bold
+        private val MAX_CHARS = 100
     }
 
     private lateinit var textArea: RichTextArea
@@ -137,9 +139,33 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertEnrichedTextEquals(ANY_FORMAT.wrap("a") + "bcd")
     }
 
+    fun `enforce length, given entered text of length MAX_CHARS, when enter yet another char, then it should beep`() {
+        val atMaxText = "x".times(MAX_CHARS)
+        textAsserter.appendAtEnd(atMaxText)
+        textAsserter.assertPlainTextEquals(atMaxText)
+
+        textAsserter.appendAtEnd("o")
+
+        textAsserter.assertPlainTextEquals(atMaxText)
+        textAsserter.assertHasBeeped()
+    }
+
+    fun `enforce length, restrict respecting format tags`() {
+        val oTag = Bold.wrap("o")
+        val xes = "x".times(MAX_CHARS - oTag.length)
+        val atMaxTextWithTag = xes + oTag
+        textArea.readEnrichedText(atMaxTextWithTag)
+
+        textAsserter.appendAtEnd("o")
+
+        textAsserter.assertPlainTextEquals(xes + "o")
+        textAsserter.assertEnrichedTextEquals(atMaxTextWithTag)
+        textAsserter.assertHasBeeped()
+    }
+
     private fun testee(): RichTextArea {
         container.removeAll()
-        val testee = RichTextArea(viewName = VIEWNAME)
+        val testee = RichTextArea(maxChars = MAX_CHARS, viewName = VIEWNAME)
         container.add(testee, BorderLayout.CENTER)
         return testee
     }
@@ -156,5 +182,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
 }
+
 
 private fun RichFormat.wrap(innerHtml: String) = tag1 + innerHtml + tag2

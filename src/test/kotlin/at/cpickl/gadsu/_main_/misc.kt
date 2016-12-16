@@ -7,6 +7,7 @@ import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
@@ -30,10 +31,14 @@ fun main(args: Array<String>) {
 //        )
 //        treatmentGoal()
 //        triState()
-        meridianSelector()
+//        meridianSelector()
+
+        richTextArea()
 
     }, Dimension(600, 600))
 }
+
+fun richTextArea() = RichTextArea("")
 
 fun meridianSelector() = MeridianSelector().apply {
     selectedMeridians = listOf(Meridian.Lung, Meridian.UrinaryBladder)

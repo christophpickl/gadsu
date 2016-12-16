@@ -18,6 +18,13 @@ fun String.saveToFile(target: File) {
     Files.write(this, target, Charsets.UTF_8)
 }
 
+fun String.times(count: Int): String {
+    val symbol = this
+    return StringBuilder().apply {
+        0.until(count).forEach { append(symbol) }
+    }.toString()
+}
+
 fun <T> T?.nullOrWith(wither: (T) -> T): T? {
     if (this == null) {
         return null

@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.view
 
 import org.slf4j.LoggerFactory
-import java.awt.Graphics
 import javax.swing.CellEditor
 import javax.swing.FocusManager
 import javax.swing.JFrame
@@ -9,6 +8,13 @@ import javax.swing.event.CellEditorListener
 import javax.swing.event.ChangeEvent
 
 private val log = LoggerFactory.getLogger(JFrame::class.java)
+
+object UiTestEnabler {
+    private val PROPERTY = "gadsu.uitest"
+
+    fun isEnabled() = System.getProperty(PROPERTY) == "true"
+    fun enable() { System.setProperty(PROPERTY, "true") }
+}
 
 fun currentActiveJFrame(): JFrame? {
     val win = FocusManager.getCurrentManager().activeWindow ?: return null
@@ -26,6 +32,7 @@ fun CellEditor.registerOnStopped(action: () -> Unit) {
         override fun editingStopped(e: ChangeEvent) {
             action()
         }
+
         override fun editingCanceled(e: ChangeEvent?) {
         }
     })

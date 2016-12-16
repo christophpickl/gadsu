@@ -6,6 +6,7 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
+import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
 import org.openmechanics.htmleditor.HTMLEditor
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyAdapter
@@ -133,7 +134,8 @@ fun AttributeSet.toMap(): Map<Any, Any> {
 }
 
 open class RichTextArea(
-        viewName: String
+        viewName: String,
+        private val maxChars: Int = MAX_FIELDLENGTH_LONG
 ) : JTextPane() {
 
     companion object {
@@ -146,9 +148,7 @@ open class RichTextArea(
         name = viewName
         focusTraversalWithTabs()
 
-        // TODO #77 enforce max chars input for RichTextArea
-        // needs a styled document
-//        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
+        enforceMaxCharacters(maxChars)
 
         if (IS_OS_WIN) {
             font = JLabel().font
@@ -169,6 +169,11 @@ open class RichTextArea(
     fun readEnrichedText(enrichedText: String) {
         log.trace("readEnrichedText(enrichedText=[{}]) viewName={}", enrichedText, name)
 
+        // dont forget to reset style before reading new!
+        replaceTextStyle { adoc ->
+            adoc.replace(0, text.length, text, RichFormat.CLEAN_FORMAT)
+        }
+
         var cleanText = enrichedText
         RichFormat.values().forEach {
             cleanText = it.clearTag(cleanText)
@@ -177,17 +182,16 @@ open class RichTextArea(
 
         var txt = enrichedText
         RichFormat.values().forEach {
-            val tag = it.htmlTag
-            val openTag = "<$tag>"
-            val endTag = "</$tag>"
-            while (txt.contains(openTag)) {
+            val tag1 = it.tag1
+            val tag2 = it.tag2
+            while (txt.contains(tag1)) {
                 var pivotableTxt = txt
                 RichFormat.values().forEach { j ->
                     pivotableTxt = if (j == it) pivotableTxt else j.clearTag(pivotableTxt)
                 }
 
-                val start = pivotableTxt.indexOf(openTag)
-                val end = pivotableTxt.indexOf(endTag) - openTag.length
+                val start = pivotableTxt.indexOf(tag1)
+                val end = pivotableTxt.indexOf(tag2) - tag1.length
 //                println("going to select: $start/$end")
                 select(start, end)
 
@@ -195,7 +199,7 @@ open class RichTextArea(
                     adoc.replace(start, end - start, selectedText, it.addingAttribute())
                 }
 
-                txt = txt.replaceFirst(openTag, "").replaceFirst(endTag, "")
+                txt = txt.replaceFirst(tag1, "").replaceFirst(tag2, "")
             }
         }
 
@@ -256,7 +260,7 @@ open class RichTextArea(
         listeners.add(listener)
     }
 
-    private fun onToggleFormat(format: RichFormat) {
+    private fun onToggleFormat(format: RichFormat, enableSimulation: Boolean = true) {
         if (selectedText == null || selectedText.isEmpty()) {
             log.trace("onToggleFormat() aborted because is empty")
             return
@@ -275,6 +279,10 @@ open class RichTextArea(
 
         val previousSelection = Pair(selectionStart, selectionEnd)
 
+        if (enableSimulation && simulationSaysLengthIsTooLong(format)) {
+            onTriedToInsertTooManyChars()
+            return
+        }
         replaceTextStyle { adoc ->
             adoc.replace(selectionStart, selectedText.length, selectedText, aset)
         }
@@ -283,6 +291,15 @@ open class RichTextArea(
 
         listeners.forEach { it.onShortcut(ShortcutEvent(format, selectedText)) }
 //        val e = AbstractDocument.DefaultDocumentEvent(offs, str.length, DocumentEvent.EventType.CHANGE)
+    }
+
+    private fun simulationSaysLengthIsTooLong(format: RichFormat): Boolean {
+        val simulation = RichTextArea("simulation", maxChars)
+        simulation.readEnrichedText(this.toEnrichedText())
+        simulation.select(this.selectionStart, this.selectionEnd)
+        simulation.onToggleFormat(format, enableSimulation = false)
+
+        return simulation.toEnrichedText().length > maxChars
     }
 
     private fun replaceTextStyle(fn: (AbstractDocument) -> Unit) {

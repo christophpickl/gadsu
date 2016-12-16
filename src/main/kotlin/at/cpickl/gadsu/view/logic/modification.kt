@@ -104,7 +104,7 @@ class ModificationChecker(
             return
         }
 
-        log.trace("checkModificationsAndUpdateIsEnabledField()")
+//        log.trace("checkModificationsAndUpdateIsEnabledField()")
         val modified = modificationAware.isModified()
         enableDisableComponents.forEach {
             it.isEnabled = modified
