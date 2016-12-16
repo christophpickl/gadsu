@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.IS_OS_MAC
 import at.cpickl.gadsu.service.formatDate
+import at.cpickl.gadsu.view.components.RichFormat
 import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.datepicker.view.JDatePanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
@@ -51,6 +52,8 @@ class RichTextAreaAsserter(
         textBox.typeKey(osSpecificShortcut(shortcutKey))
         return this
     }
+
+    fun hitShortcut(format: RichFormat) = hitShortcut(format.shortcutKey)
 
     fun assertPlainTextEquals(expectedText: String) {
         assertThat(textArea.text, equalTo(expectedText))

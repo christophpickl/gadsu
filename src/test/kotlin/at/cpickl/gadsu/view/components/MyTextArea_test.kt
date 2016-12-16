@@ -6,11 +6,14 @@ import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.components.RichFormat.Bold
+import at.cpickl.gadsu.view.components.RichFormat.Italic
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.testng.annotations.BeforeMethod
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
@@ -22,7 +25,7 @@ import javax.swing.JPanel
 
     fun readComplexEnrichedText() {
         val testee = RichTextArea("viewName")
-        val text = "<hl>one</hl> two t<i>hre</i>e <hl>four</hl>"
+        val text = "${Bold.wrap("one")} two t${Italic.wrap("hre")}e ${Bold.wrap("four")}"
         testee.readEnrichedText(text)
         MatcherAssert.assertThat(testee.toEnrichedText(), Matchers.equalTo(text))
     }
@@ -34,8 +37,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     companion object {
         private val VIEWNAME = "testRichTextAreaViewName"
-//        private val SC_BOLD = 'b'
-//        private val SC_ITALIC = 'i'
+        private val ANY_FORMAT = Bold
     }
 
     private lateinit var textArea: RichTextArea
@@ -57,20 +59,24 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter = RichTextAreaAsserter(textArea, this, window!!, VIEWNAME)
     }
 
-    fun getEnrichedText() {
+    @DataProvider
+    fun provideFormats() = RichFormat.values().map { arrayOf(it) }.toTypedArray()
+
+    @Test(dataProvider = "provideFormats")
+    fun formatWordWithinBoldAndThenWholeTextBold(format: RichFormat) {
         textAsserter.enterText("one two three")
         textAsserter.assertEnrichedTextEquals("one two three")
         textAsserter.select("one ".length, "two".length)
-        textAsserter.hitShortcut('b')
-        textAsserter.assertEnrichedTextEquals("one <hl>two</hl> three")
+        textAsserter.hitShortcut(format)
+        textAsserter.assertEnrichedTextEquals("one ${format.wrap("two")} three")
 
         textAsserter.selectAll()
-        textAsserter.hitShortcut('b')
-        textAsserter.assertEnrichedTextEquals("<hl>one two three</hl>")
+        textAsserter.hitShortcut(format)
+        textAsserter.assertEnrichedTextEquals(format.wrap("one two three"))
     }
 
     fun testSetEnrichedText() {
-        val enrichedText = "<hl>one</hl> mid1 <hl>two</hl> mid2 <hl>three</hl>"
+        val enrichedText = "${Bold.wrap("one")} mid1 ${Bold.wrap("two")} mid2 ${Bold.wrap("three")}"
         textArea.readEnrichedText(enrichedText)
 
         textAsserter.assertEnrichedTextEquals(enrichedText)
@@ -79,21 +85,21 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     fun testSetEnrichedTextShouldMergeTwoAdjacent() {
         textArea.readEnrichedText("ab")
-        textAsserter.select(0, 1).hitShortcut('b')
+        textAsserter.select(0, 1).hitShortcut(Bold)
 
-        textAsserter.assertEnrichedTextEquals("<hl>a</hl>b")
+        textAsserter.assertEnrichedTextEquals("${Bold.wrap("a")}b")
 
-        textAsserter.select(1, 1).hitShortcut('b')
-        textAsserter.assertEnrichedTextEquals("<hl>ab</hl>")
+        textAsserter.select(1, 1).hitShortcut(Bold)
+        textAsserter.assertEnrichedTextEquals(Bold.wrap("ab"))
     }
 
     fun twoDifferentProperIndexCalculation() {
         textAsserter.enterText("one two three four")
-        textAsserter.select(0, 3).hitShortcut('b')
-        textAsserter.select(14, 4).hitShortcut('b')
-        textAsserter.select(9, 3).hitShortcut('i')
+        textAsserter.select(0, 3).hitShortcut(Bold)
+        textAsserter.select(14, 4).hitShortcut(Bold)
+        textAsserter.select(9, 3).hitShortcut(Italic)
 
-        textAsserter.assertEnrichedTextEquals("<hl>one</hl> two t<i>hre</i>e <hl>four</hl>")
+        textAsserter.assertEnrichedTextEquals(Bold.wrap("one") + " two t" + Italic.wrap("hre") + "e " + Bold.wrap("four"))
     }
 
     fun selectAllAndHighlightShouldDispatchShortcutEvent() {
@@ -106,10 +112,10 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
         textAsserter.enterText("123")
         textAsserter.selectAll()
-        textAsserter.hitShortcut('b')
+        textAsserter.hitShortcut(ANY_FORMAT)
 
         MatcherAssert.assertThat(events, Matchers.hasSize(1))
-        MatcherAssert.assertThat(events[0], Matchers.equalTo(ShortcutEvent(RichFormat.Highlight, "123")))
+        MatcherAssert.assertThat(events[0], Matchers.equalTo(ShortcutEvent(Bold, "123")))
     }
 
     fun modificationCheck() {
@@ -125,10 +131,10 @@ class RichTextAreaUiTest : SimpleUiTest() {
         MatcherAssert.assertThat(context.isModified(), Matchers.equalTo(false))
         textAsserter.assertEnrichedTextEquals(originalNote)
 
-        textAsserter.select(0, 1).hitShortcut('b')
+        textAsserter.select(0, 1).hitShortcut(ANY_FORMAT.shortcutKey)
 
         MatcherAssert.assertThat(context.isModified(), Matchers.equalTo(true))
-        textAsserter.assertEnrichedTextEquals("<hl>a</hl>bcd")
+        textAsserter.assertEnrichedTextEquals(ANY_FORMAT.wrap("a") + "bcd")
     }
 
     private fun testee(): RichTextArea {
@@ -137,6 +143,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         container.add(testee, BorderLayout.CENTER)
         return testee
     }
+
 
     private class ModificationTestContext(val client: Client) : ModificationAware {
 
@@ -147,4 +154,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         override fun isModified() = inpNote.isModified(client)
 
     }
+
 }
+
+private fun RichFormat.wrap(innerHtml: String) = tag1 + innerHtml + tag2

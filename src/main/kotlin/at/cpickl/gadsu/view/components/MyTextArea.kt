@@ -61,7 +61,7 @@ enum class RichFormat(
         val shortcutKey: Char
 ) {
 
-    Highlight("highlight", "hl", 'b') {
+    Bold("bold", "b", 'b') {
 
         override fun addingAttribute(): AttributeSet {
             val sc = StyleContext.getDefaultStyleContext()
