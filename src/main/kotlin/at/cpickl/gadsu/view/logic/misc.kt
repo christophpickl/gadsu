@@ -2,6 +2,7 @@ package at.cpickl.gadsu.view.logic
 
 import at.cpickl.gadsu.view.UiTestEnabler
 import org.slf4j.LoggerFactory
+import java.awt.Toolkit
 
 private val LOG_misc = LoggerFactory.getLogger("at.cpickl.gadsu.view.logic.misc.kt")
 
@@ -22,7 +23,7 @@ fun beep() {
         LOG_misc.trace("beep() disabled during UI tests")
     } else {
         LOG_misc.trace("beep()")
-        beep()
+        Toolkit.getDefaultToolkit().beep()
     }
     hasBeeped = true
 }
