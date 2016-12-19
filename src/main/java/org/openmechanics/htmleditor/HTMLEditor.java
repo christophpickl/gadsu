@@ -1205,7 +1205,7 @@ public class HTMLEditor extends JPanel {
     void editor_caretUpdate(CaretEvent e) {
         currentCaret = e.getDot();
         /*
-		 * currentParaElement =
+         * currentParaElement =
 		 * document.getParagraphElement(editor.getCaretPosition());
 		 * currentTagName = currentParaElement.getName().toUpperCase();
 		 */
@@ -1257,8 +1257,8 @@ public class HTMLEditor extends JPanel {
             under = false;
         }
         underActionB.setBorderPainted(under);
-		/*
-		 * String iName = document
+        /*
+         * String iName = document
 		 * .getCharacterElement(editor.getCaretPosition()) .getAttributes()
 		 * .getAttribute(StyleConstants.NameAttribute) .toString()
 		 */
