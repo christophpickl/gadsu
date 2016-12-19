@@ -1399,11 +1399,6 @@ public class HTMLEditor extends JPanel {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-					/*
-					 * HTMLEditorKit.InsertHTMLTextAction liAction = new
-					 * HTMLEditorKit.InsertHTMLTextAction("insertLI", " <li>
-					 * </li> ", parentTag, HTML.Tag.LI);
-					 */
                 } else {
                     try {
                         document.remove(editor.getCaretPosition(), 1);
