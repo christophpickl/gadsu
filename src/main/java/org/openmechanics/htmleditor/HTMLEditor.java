@@ -1455,7 +1455,7 @@ public class HTMLEditor extends JPanel {
                 System.out.println("PRE");
                 pAction.actionPerformed(e);
             } else if (elName.equals("P-IMPLIED")) {
-				/*
+                /*
 				 * HTML.Tag sParentTag =
 				 * HTML.getTag(elem.getParentElement().getParentElement().getName());
 				 * if (editor.getCaretPosition() > 0)
