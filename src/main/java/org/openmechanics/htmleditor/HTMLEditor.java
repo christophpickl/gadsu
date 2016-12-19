@@ -251,7 +251,7 @@ public class HTMLEditor extends JPanel {
                                 0,
                                 HTML.Tag.HR);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        LOG.warn("action failed", ex);
                     }
 
                 }
@@ -366,7 +366,7 @@ public class HTMLEditor extends JPanel {
                     new java.awt.datatransfer.StringSelection(copy.trim()),
                     null);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -389,7 +389,7 @@ public class HTMLEditor extends JPanel {
                     editorKit.getInputAttributes());
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -493,7 +493,7 @@ public class HTMLEditor extends JPanel {
         try {
             jbInit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -988,8 +988,7 @@ public class HTMLEditor extends JPanel {
             try {
                 undo.undo();
             } catch (CannotUndoException ex) {
-                System.out.println("Unable to undo: " + ex);
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
             update();
             redoAction.update();
@@ -1027,8 +1026,7 @@ public class HTMLEditor extends JPanel {
             try {
                 undo.redo();
             } catch (CannotRedoException ex) {
-                System.out.println("Unable to redo: " + ex);
-                ex.printStackTrace();
+                LOG.warn("Redo failed", ex);
             }
             update();
             undoAction.update();
@@ -1107,10 +1105,6 @@ public class HTMLEditor extends JPanel {
         }
         italic = !italic;
         italicActionB.setBorderPainted(italic);
-        /*
-         * SimpleAttributeSet attrs = new SimpleAttributeSet();
-		 * attrs.addAttribute(StyleConstants.Italic, new Boolean(italic));
-		 */
         new StyledEditorKit.ItalicAction().actionPerformed(e);
     }
 
@@ -1122,26 +1116,14 @@ public class HTMLEditor extends JPanel {
         }
         under = !under;
         underActionB.setBorderPainted(under);
-        /*
-         * SimpleAttributeSet attrs = new SimpleAttributeSet();
-		 * attrs.addAttribute(StyleConstants.Underline, new Boolean(under));
-		 */
 
         new StyledEditorKit.UnderlineAction().actionPerformed(e);
     }
 
     void editor_caretUpdate(CaretEvent e) {
         currentCaret = e.getDot();
-        /*
-         * currentParaElement =
-		 * document.getParagraphElement(editor.getCaretPosition());
-		 * currentTagName = currentParaElement.getName().toUpperCase();
-		 */
 
         AttributeSet charattrs = null;
-        //System.out.print(editor.getCaretPosition()+" :
-        // "+document.getCharacterElement(editor.getCaretPosition()).getName()+"
-        // -> ");
         if (editor.getCaretPosition() > 0) {
             try {
                 charattrs =
@@ -1149,7 +1131,7 @@ public class HTMLEditor extends JPanel {
                                 .getCharacterElement(editor.getCaretPosition() - 1)
                                 .getAttributes();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         } else {
             charattrs =
@@ -1293,7 +1275,7 @@ public class HTMLEditor extends JPanel {
             try {
                 document.remove(elem.getStartOffset(), elem.getEndOffset());
             } catch (Exception ex) {
-                //ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
     }
@@ -1325,13 +1307,13 @@ public class HTMLEditor extends JPanel {
                         editor.setCaretPosition(
                                 elem.getParentElement().getEndOffset());
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        LOG.warn("action failed", ex);
                     }
                 } else {
                     try {
                         document.remove(editor.getCaretPosition(), 1);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        LOG.warn("action failed", ex);
                     }
                     Element listParentElement =
                             elem
@@ -1353,7 +1335,7 @@ public class HTMLEditor extends JPanel {
                                     0,
                                     HTML.Tag.LI);
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            LOG.warn("action failed", ex);
                         }
                     } else {
                         HTMLEditorKit.InsertHTMLTextAction pAction =
@@ -1380,16 +1362,14 @@ public class HTMLEditor extends JPanel {
                                 "<p></p>",
                                 parentTag,
                                 HTML.Tag.P);
-                System.out.println("PRE");
                 pAction.actionPerformed(e);
             } else if (elName.equals("P-IMPLIED")) {
                 try {
-                    System.out.println("IMPLIED");
                     document.insertAfterEnd(elem.getParentElement(), "<p></p>");
                     editor.setCaretPosition(
                             elem.getParentElement().getEndOffset());
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
 
             } else {
@@ -1460,7 +1440,7 @@ public class HTMLEditor extends JPanel {
                 //editorKit.insertHTML(document, editor.getCaretPosition(),
                 // trTag, 3, 0, HTML.Tag.TR);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
 
@@ -1498,7 +1478,7 @@ public class HTMLEditor extends JPanel {
             try {
                 document.insertAfterEnd(td, tdTag);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
 
@@ -1556,7 +1536,7 @@ public class HTMLEditor extends JPanel {
             StringReader reader = new StringReader(html);
             kit.read(reader, doc, location);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -1603,35 +1583,35 @@ public class HTMLEditor extends JPanel {
                     Integer.parseInt(w, 10);
                     imgTag += " width=\"" + w + "\" ";
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
                 String h = dlg.heightField.getText();
                 try {
                     Integer.parseInt(h, 10);
                     imgTag += " height=\"" + h + "\" ";
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
                 String hs = dlg.hspaceField.getText();
                 try {
                     Integer.parseInt(hs, 10);
                     imgTag += " hspace=\"" + hs + "\" ";
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
                 String vs = dlg.vspaceField.getText();
                 try {
                     Integer.parseInt(vs, 10);
                     imgTag += " vspace=\"" + vs + "\" ";
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
                 String b = dlg.borderField.getText();
                 try {
                     Integer.parseInt(b, 10);
                     imgTag += " border=\"" + b + "\" ";
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.warn("action failed", ex);
                 }
                 if (dlg.alignCB.getSelectedIndex() > 0) {
                     imgTag += " align=\""
@@ -1667,10 +1647,8 @@ public class HTMLEditor extends JPanel {
                             HTML.Tag.IMG);
                 }
 
-                //System.out.println(imgTag);
-
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
     }
@@ -1704,21 +1682,21 @@ public class HTMLEditor extends JPanel {
             Integer.parseInt(cp, 10);
             tableTag += " cellpadding=\"" + cp + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String cs = dlg.cellspacing.getValue().toString();
         try {
             Integer.parseInt(cs, 10);
             tableTag += " cellspacing=\"" + cs + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String b = dlg.border.getValue().toString();
         try {
             Integer.parseInt(b, 10);
             tableTag += " border=\"" + b + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         if (dlg.alignCB.getSelectedIndex() > 0) {
             tableTag += " align=\"" + dlg.alignCB.getSelectedItem() + "\" ";
@@ -1735,12 +1713,12 @@ public class HTMLEditor extends JPanel {
         try {
             cols = (Integer) dlg.columns.getValue();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         try {
             rows = (Integer) dlg.rows.getValue();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         for (int r = 0; r < rows; r++) {
             tableTag += "<tr>";
@@ -1756,7 +1734,6 @@ public class HTMLEditor extends JPanel {
                         .getParentElement()
                         .getName();
         HTML.Tag parentTag = HTML.getTag(parentname);
-        System.out.println(parentTag + ":\n" + tableTag);
 
         //insertHTML(tableTag, editor.getCaretPosition());
 
@@ -1770,7 +1747,7 @@ public class HTMLEditor extends JPanel {
                     HTML.Tag.TABLE);
             //removeIfEmpty(document.getParagraphElement(editor.getCaretPosition()-1));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -1818,7 +1795,7 @@ public class HTMLEditor extends JPanel {
                     0,
                     HTML.Tag.A);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -1841,7 +1818,7 @@ public class HTMLEditor extends JPanel {
                             el.getStartOffset(),
                             el.getEndOffset() - el.getStartOffset()));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         dlg.chkNewWin.setSelected(target.toUpperCase().equals("_BLANK"));
         dlg.header.setText(Local.getString("Hyperlink properties"));
@@ -1867,7 +1844,7 @@ public class HTMLEditor extends JPanel {
         try {
             document.setOuterHTML(el, aTag);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -1909,35 +1886,35 @@ public class HTMLEditor extends JPanel {
             Integer.parseInt(w, 10);
             imgTag += " width=\"" + w + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String h = dlg.heightField.getText();
         try {
             Integer.parseInt(h, 10);
             imgTag += " height=\"" + h + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String hs = dlg.hspaceField.getText();
         try {
             Integer.parseInt(hs, 10);
             imgTag += " hspace=\"" + hs + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String vs = dlg.vspaceField.getText();
         try {
             Integer.parseInt(vs, 10);
             imgTag += " vspace=\"" + vs + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         String b = dlg.borderField.getText();
         try {
             Integer.parseInt(b, 10);
             imgTag += " border=\"" + b + "\" ";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         if (dlg.alignCB.getSelectedIndex() > 0) {
             imgTag += " align=\"" + dlg.alignCB.getSelectedItem() + "\" ";
@@ -1953,7 +1930,7 @@ public class HTMLEditor extends JPanel {
         try {
             document.setOuterHTML(el, imgTag);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -2022,7 +1999,7 @@ public class HTMLEditor extends JPanel {
                                 tda.getAttribute(HTML.Attribute.COLSPAN).toString());
                 dlg.tdColspan.setValue(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
         if (tda.isDefined(HTML.Attribute.ROWSPAN)) {
@@ -2032,7 +2009,7 @@ public class HTMLEditor extends JPanel {
                                 tda.getAttribute(HTML.Attribute.ROWSPAN).toString());
                 dlg.tdRowspan.setValue(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
         if (tda.isDefined(HTML.Attribute.ALIGN)) {
@@ -2106,7 +2083,7 @@ public class HTMLEditor extends JPanel {
                                 ta.getAttribute(HTML.Attribute.CELLPADDING).toString());
                 dlg.cellpadding.setValue(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
         if (ta.isDefined(HTML.Attribute.CELLSPACING)) {
@@ -2116,7 +2093,7 @@ public class HTMLEditor extends JPanel {
                                 ta.getAttribute(HTML.Attribute.CELLSPACING).toString());
                 dlg.cellspacing.setValue(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
         if (ta.isDefined(HTML.Attribute.BORDER)) {
@@ -2126,7 +2103,7 @@ public class HTMLEditor extends JPanel {
                                 ta.getAttribute(HTML.Attribute.BORDER).toString());
                 dlg.border.setValue(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
 
@@ -2251,10 +2228,7 @@ public class HTMLEditor extends JPanel {
             copy = sw.toString();
             copy = copy.split("<td(.*?)>")[1];
             copy = copy.split("</td>")[0];
-            //System.out.println(tdTag+copy+"</td>");
             document.setOuterHTML(td, tdTag + copy + "</td>");
-
-            //System.out.println("*******");
 
             sw = new StringWriter();
             editorKit.write(
@@ -2265,10 +2239,8 @@ public class HTMLEditor extends JPanel {
             copy = sw.toString();
             copy = copy.split("<tr(.*?)>")[1];
             copy = copy.split("</tr>")[0];
-            //System.out.println(trTag+copy+"</tr>");
             document.setOuterHTML(tr, trTag + copy + "</tr>");
 
-            //System.out.println("*******");
 
             sw = new StringWriter();
             editorKit.write(
@@ -2279,11 +2251,10 @@ public class HTMLEditor extends JPanel {
             copy = sw.toString();
             copy = copy.split("<table(.*?)>")[1];
             copy = copy.split("</table>")[0];
-            //System.out.println(tTag+copy+"</table>");
             document.setOuterHTML(table, tTag + copy + "</table>");
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("table props set failed!", ex);
         }
     }
 
@@ -2319,9 +2290,6 @@ public class HTMLEditor extends JPanel {
             case T_PRE:
                 tag = HTML.Tag.PRE;
                 break;
-				/*
-				 * case T_ADDRESS : tag = HTML.Tag.ADDRESS;
-				 */
             case T_BLOCKQ:
                 tag = HTML.Tag.BLOCKQUOTE;
                 break;
@@ -2348,7 +2316,7 @@ public class HTMLEditor extends JPanel {
                         "<" + newName + ">" + copy + "</" + newName + ">");
                 return;
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("action failed", ex);
             }
         }
         SimpleAttributeSet attrs = new SimpleAttributeSet(el.getAttributes());
@@ -2371,22 +2339,10 @@ public class HTMLEditor extends JPanel {
     }
 
     public void propsActionB_actionPerformed(ActionEvent e) {
-
-		/*
-		 * Element p = document.getParagraphElement(editor.getCaretPosition());
-		 * do { System.out.print(p.getName()+" / "); p = p.getParentElement();}
-		 */
-
         AbstractDocument.BranchElement pEl =
                 (AbstractDocument.BranchElement) document.getParagraphElement(
                         editor.getCaretPosition());
-        System.out.println("--------------");
-        System.out.println(
-                pEl.getName() + "<-" + pEl.getParentElement().getName());
         Element el = pEl.positionToElement(editor.getCaretPosition());
-        System.out.println(
-                ":"
-                        + el.getAttributes().getAttribute(StyleConstants.NameAttribute));
         AttributeSet attrs = el.getAttributes();
         String elName =
                 attrs
@@ -2461,7 +2417,6 @@ public class HTMLEditor extends JPanel {
                 setLinkProperties(el, href, target, title, name);
                 return;
             }
-            System.out.println(k + " = '" + attrs.getAttribute(k) + "'");
         }
 
         if (pEl.getParentElement().getName().toUpperCase().equals("TD")) {
@@ -2616,7 +2571,7 @@ public class HTMLEditor extends JPanel {
                 editor.setCaretPosition(editor.getCaretPosition() - 1);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
     }
 
@@ -2642,7 +2597,7 @@ public class HTMLEditor extends JPanel {
         try {
             css.loadRules(r, url);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("action failed", ex);
         }
         editorKit.setStyleSheet(css);
     }
