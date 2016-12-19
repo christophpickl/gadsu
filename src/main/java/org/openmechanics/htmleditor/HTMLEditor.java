@@ -1324,18 +1324,6 @@ public class HTMLEditor extends JPanel {
         blockCBEventsLock = false;
         this.insertTableCellAction.update();
         this.insertTableRowAction.update();
-        /*
-		 * String ppName =
-		 * document.getParagraphElement(editor.getCaretPosition()).getParentElement().getName().toUpperCase();
-		 * System.out.print(ppName+"->"+pName+":");
-		 * 
-		 * AbstractDocument.BranchElement pEl =
-		 * (AbstractDocument.BranchElement)document.getParagraphElement(editor.getCaretPosition());
-		 * Element el = pEl.positionToElement(editor.getCaretPosition());
-		 * System.out.println(el.getAttributes().getAttribute(StyleConstants.NameAttribute)+",
-		 * "+pEl.getElementCount()+"/"+el.getElementCount());
-		 */
-
     }
 
     public void ulActionB_actionPerformed(ActionEvent e) {
@@ -1352,22 +1340,7 @@ public class HTMLEditor extends JPanel {
                         parentTag,
                         HTML.Tag.UL);
         ulAction.actionPerformed(e);
-        //removeIfEmpty(document.getParagraphElement(editor.getCaretPosition()-1));
         list = true;
-		/*
-		 * Element pEl =
-		 * document.getParagraphElement(editor.getCaretPosition());
-		 * StringWriter sw = new StringWriter(); try { editorKit.write(sw,
-		 * document, pEl.getStartOffset(),
-		 * pEl.getEndOffset()-pEl.getStartOffset()); String copy =
-		 * sw.toString(); String elName = pEl.getName(); copy =
-		 * copy.substring(copy.indexOf(" <"+elName)); copy =
-		 * copy.substring(0,copy.indexOf(" </"+elName)+elName.length()+3);
-		 * document.setOuterHTML(pEl, " <ul><li> "+copy+" </li></ul> ");
-		 * System.out.println(copy); } catch (Exception ex){
-		 * ex.printStackTrace();
-		 */
-
     }
 
     public void olActionB_actionPerformed(ActionEvent e) {
@@ -1384,7 +1357,6 @@ public class HTMLEditor extends JPanel {
                         parentTag,
                         HTML.Tag.OL);
         olAction.actionPerformed(e);
-        //removeIfEmpty(document.getParagraphElement(editor.getCaretPosition()-1));
         list = true;
     }
 
