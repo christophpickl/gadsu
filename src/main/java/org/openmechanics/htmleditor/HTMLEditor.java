@@ -1324,7 +1324,7 @@ public class HTMLEditor extends JPanel {
         blockCBEventsLock = false;
         this.insertTableCellAction.update();
         this.insertTableRowAction.update();
-		/*
+        /*
 		 * String ppName =
 		 * document.getParagraphElement(editor.getCaretPosition()).getParentElement().getName().toUpperCase();
 		 * System.out.print(ppName+"->"+pName+":");
