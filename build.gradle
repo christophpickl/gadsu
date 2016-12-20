@@ -124,7 +124,7 @@ dependencies {
     testCompile 'org.exparity:hamcrest-date:2.0.4'
 //    testCompile 'com.natpryce:hamkrest:1.2.3.0'
     testCompile('org.testng:testng:6.9.13.6')
-    testCompile 'org.mockito:mockito-core:1.10.19' // TODO 2.2.26
+    testCompile 'org.mockito:mockito-core:2.2.26'
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
     testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'

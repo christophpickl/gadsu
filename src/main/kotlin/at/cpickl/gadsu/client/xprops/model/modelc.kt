@@ -2,8 +2,7 @@ package at.cpickl.gadsu.client.xprops.model
 
 import at.cpickl.gadsu.service.verifyNoIntersection
 import at.cpickl.gadsu.tcm.model.IsEnumOption
-import java.util.HashMap
-import java.util.LinkedList
+import java.util.*
 
 class CPropsBuilder {
     private val cprops = LinkedList<CProp>()

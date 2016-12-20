@@ -98,7 +98,6 @@ class ModificationChecker(
         enableDisableComponents.forEach { it.isEnabled = false }
     }
 
-    // TODO this gets called way too often; rethink whole architecture!
     private fun checkModificationsAndUpdateIsEnabledField() {
         if (!enableModificationsCheck) {
             return
@@ -119,12 +118,14 @@ fun JTextComponent.addChangeListener(listener: (DocumentEvent) -> Unit) {
         override fun changedUpdate(e: DocumentEvent) {
             listener(e)
         }
+
         override fun insertUpdate(e: DocumentEvent) {
             if (thiz is RichTextArea && thiz.isReformatting) {
                 return
             }
             listener(e)
         }
+
         override fun removeUpdate(e: DocumentEvent) {
             if (thiz is RichTextArea && thiz.isReformatting) {
                 return

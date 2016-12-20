@@ -71,6 +71,7 @@ Med
 * cancel button for async dialog
 * WebLatestVersionFetcher return withTimeout(CONNECTION_TIMEOUT) {
 * TEST with guice enabled tests: build testinfra/guice.kt
+* ModificationChecker.checkModificationsAndUpdateIsEnabledField this gets called way too often; rethink whole architecture!
 
 Low
 ---
