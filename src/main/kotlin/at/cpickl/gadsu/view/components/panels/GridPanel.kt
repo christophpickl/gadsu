@@ -33,9 +33,9 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
         c.gridy = 0
     }
 
-    override fun add(comp: Component): Component? {
+    override fun add(comp: Component): Component {
         super.add(comp, c)
-        return null
+        return comp
     }
 
 

@@ -46,6 +46,7 @@ data class CProps(private val props: Map<XProp, CProp>) {
     fun forEach(func: (CProp) -> Unit) {
         props.values.forEach(func)
     }
+
     fun <R> map(func: (CProp) -> R): List<R> {
         return props.values.map(func)
     }
@@ -62,7 +63,7 @@ data class CProps(private val props: Map<XProp, CProp>) {
 
 interface CProp : XProp {
     val xprop: XProp
-    val clientValue: Any // TODO why not: List<XPropEnumOpt> ?
+    val clientValue: List<XPropEnumOpt>
     val isClientValueEmpty: Boolean
     val isClientValueNotEmpty: Boolean
 

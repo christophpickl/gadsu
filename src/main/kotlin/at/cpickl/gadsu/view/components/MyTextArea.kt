@@ -31,7 +31,8 @@ import javax.swing.text.html.parser.ParserDelegator
 
 open class MyTextArea constructor(
         viewName: String,
-        visibleRows: Int? = null
+        visibleRows: Int? = null,
+        maxChars: Int? = MAX_FIELDLENGTH_LONG
 ) : JTextArea() {
     init {
         focusTraversalWithTabs()
@@ -42,7 +43,9 @@ open class MyTextArea constructor(
 
         lineWrap = true
         wrapStyleWord = true
-        enforceMaxCharacters(MAX_FIELDLENGTH_LONG)
+        if (maxChars != null) {
+            enforceMaxCharacters(maxChars)
+        }
 
         if (IS_OS_WIN) {
             font = JLabel().font

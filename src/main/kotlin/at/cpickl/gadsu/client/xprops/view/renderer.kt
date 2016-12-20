@@ -65,6 +65,7 @@ class CPropsRenderer(
 }
 
 interface CPropView {
+    // keep it this way
     fun updateValue(value: Client)
     fun toComponent(): Component
     fun toCProp(): CProp
