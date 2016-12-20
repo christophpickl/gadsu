@@ -24,17 +24,30 @@ interface ElFieldForProps<in V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
 }
 
+private class CPropEnumRendererView {
+
+}
+
+
+private class CPropEnumEditorView {
+
+}
+
 class CPropEnumView(
         override val icon: ImageIcon?,
         private val xprop: XPropEnum,
         bus: EventBus
 ): CPropView, ElFieldForProps<Client> {
 
+    override val formLabel = xprop.label
+    override val fillType = GridBagFill.Both
+
     private val log = LOG(javaClass)
     private val list: MyList<XPropEnumOpt>
 
-    override val formLabel = xprop.label
-    override val fillType = GridBagFill.Both
+//    private val containerPanel = JPanel(BorderLayout())
+//    private val rendererView = CPropEnumRendererView()
+//    private val editorView = CPropEnumEditorView()
 
     init {
         val model = MyListModel<XPropEnumOpt>()

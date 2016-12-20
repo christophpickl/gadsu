@@ -264,11 +264,9 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-
     fun register(field: ElFieldForProps<V>) {
         field.enableFor(modifications)
         fields.add(field)
-
     }
 
     fun isAnyModified(value : V): Boolean {

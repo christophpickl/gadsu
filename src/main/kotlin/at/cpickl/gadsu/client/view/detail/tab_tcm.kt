@@ -37,7 +37,7 @@ class ClientTabTcm(
 
     private fun form(vararg xprops: XPropEnum): FormPanel {
         return FormPanel(labelAnchor = GridBagConstraints.NORTH).apply {
-            xprops.forEach { enum(it) }
+            xprops.forEach { addXPropEnum(it) }
 //            addLastColumnsFilled()
         }
     }
@@ -74,7 +74,7 @@ class ClientTabTcm(
 
     }
 
-    fun FormPanel.enum(xprop: XPropEnum): Unit {
+    fun FormPanel.addXPropEnum(xprop: XPropEnum): Unit {
         renderer.addXProp(xprop, this)
     }
 
