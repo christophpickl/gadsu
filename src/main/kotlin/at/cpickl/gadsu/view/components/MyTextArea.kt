@@ -59,6 +59,15 @@ fun <J : JComponent> J.focusTraversalWithTabs() = apply {
     setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null)
 }
 
+fun String.removeAllTags(): String {
+    // this logic can be optimized a bit ;)
+    var x = this
+    RichFormat.values().forEach {
+        x = x.replace(it.tag1, "").replace(it.tag2, "")
+    }
+    return x
+}
+
 enum class RichFormat(
         val label: String,
         val htmlTag: String,

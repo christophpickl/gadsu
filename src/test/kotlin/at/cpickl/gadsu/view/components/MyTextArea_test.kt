@@ -22,6 +22,23 @@ import java.awt.BorderLayout
 import java.util.LinkedList
 import javax.swing.JPanel
 
+@Test class RichFormatExtensionTest {
+
+    @DataProvider
+    fun removeAllTagsProvider(): Array<Array<Any>> = arrayOf(
+            arrayOf<Any>("", ""),
+            arrayOf<Any>("a", "a"),
+            arrayOf<Any>(" a ", " a "),
+            arrayOf<Any>("a" + RichFormat.Bold.wrap("x"), "ax")
+    )
+
+    @Test(dataProvider = "removeAllTagsProvider")
+    fun `removeAllTags works`(given: String, expected: String) {
+        MatcherAssert.assertThat(given.removeAllTags(), Matchers.equalTo(expected))
+    }
+
+}
+
 @Test class RichTextAreaTest {
 
     fun readComplexEnrichedText() {

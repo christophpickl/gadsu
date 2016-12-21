@@ -27,6 +27,7 @@ import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
+import at.cpickl.gadsu.view.components.removeAllTags
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider
@@ -166,32 +167,43 @@ open class ReportController @Inject constructor(
     }
 }
 
-private fun Treatment.toReportData() = TreatmentReportData(id!!, number, date, duration.toMinutes(),
-        aboutDiscomfort.nullIfEmpty(), aboutDiagnosis.nullIfEmpty(), aboutContent.nullIfEmpty(), aboutFeedback.nullIfEmpty(), aboutHomework.nullIfEmpty(), aboutUpcoming.nullIfEmpty(), note.nullIfEmpty())
+private fun Treatment.toReportData() = TreatmentReportData(
+        id!!,
+        number,
+        date,
+        duration.toMinutes(),
+        aboutDiscomfort.removeAllTags().nullIfEmpty(),
+        aboutDiagnosis.removeAllTags().nullIfEmpty(),
+        aboutContent.removeAllTags().nullIfEmpty(),
+        aboutFeedback.removeAllTags().nullIfEmpty(),
+        aboutHomework.removeAllTags().nullIfEmpty(),
+        aboutUpcoming.removeAllTags().nullIfEmpty(),
+        note.removeAllTags().nullIfEmpty()
+)
 
 private fun Client.toReportData(firstTreatment: DateTime?) = ClientReportData(
-        anonymizedName = anonymizedName,
+        anonymizedName = anonymizedName.removeAllTags(),
         picture = picture.toReportRepresentation(),
         gender = gender,
 
         since = firstTreatment,
         birthday = birthday,
-        birthPlace = birthPlace,
-        livePlace = contact.city,
+        birthPlace = birthPlace.removeAllTags(),
+        livePlace = contact.city.removeAllTags(),
         relationship = relationship.label,
-        children = children.nullIfEmpty(),
-        job = job.nullIfEmpty(),
-        hobbies = hobbies,
+        children = children.removeAllTags().nullIfEmpty(),
+        job = job.removeAllTags().nullIfEmpty(),
+        hobbies = hobbies.removeAllTags(),
 
-        textsNotes = note,
-        textsImpression = textImpression,
-        textsMedical = textMedical,
-        textsComplaints = textComplaints,
-        textsPersonal = textPersonal,
-        textsObjective = textObjective,
+        textsNotes = note.removeAllTags(),
+        textsImpression = textImpression.removeAllTags(),
+        textsMedical = textMedical.removeAllTags(),
+        textsComplaints = textComplaints.removeAllTags(),
+        textsPersonal = textPersonal.removeAllTags(),
+        textsObjective = textObjective.removeAllTags(),
 
         tcmProps = CPropsComposer.compose(this),
-        tcmNotes = tcmNote.nullIfEmpty()
+        tcmNotes = tcmNote.removeAllTags().nullIfEmpty()
 )
 
 private val Client.birthPlace: String get() {
