@@ -15,3 +15,9 @@ ALTER TABLE client ADD COLUMN elements VARCHAR(5120) DEFAULT '' NOT NULL;
 
 -- TCM patho syndrom == syndrom
 ALTER TABLE client ADD COLUMN syndrom VARCHAR(5120) DEFAULT '' NOT NULL;
+
+
+-- #71 TCM xprops revised
+-- ========================================================================= --
+
+--ALTER TABLE xprops ADD COLUMN note VARCHAR(5120) DEFAULT '' NOT NULL;

@@ -25,8 +25,8 @@ CREATE TABLE client (
 
 CREATE TABLE xprops (
   id_client VARCHAR(36) NOT NULL,
-  key VARCHAR(128) NOT NULL,
-  val VARCHAR(1024) NOT NULL,
+  key VARCHAR(128) NOT NULL, -- e.g. "Hungry"
+  val VARCHAR(1024) NOT NULL, -- e.g. "Hungry_BigHunger,Hungry_DigestionFast"
 
   PRIMARY KEY(id_client, key),
   FOREIGN KEY (id_client) REFERENCES client(id)

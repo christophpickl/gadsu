@@ -290,6 +290,7 @@ class TongueDiagnosisRenderer(
         bus: EventBus
 ) : DynTreatmentRenderer {
 
+    // FIXME #71 make the TCM prop a generic component and reuse here
     // MINOR copy'n'paste as i dont get generics :(
     private val inpListColor = MyList("TongueDiagnosisRenderer.Color",
             MyListModel(Color.values().toList()), bus, TonguePropertableRenderer(), "Farbe")

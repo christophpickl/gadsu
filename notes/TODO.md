@@ -1,7 +1,6 @@
 * BUG: internet connection check at startup false negatives!
 * sort client list (auto-sort by some defined criteria; or sort manually by drag'n'drop)
 * bigger client pic in main tab
-* @appointment: close window on hit ESC key
 * icon idee
     - zb: jede behandlung hat drei "kuebeln"
     - rechts gibts eine sidebar mit drei kasterln wo "steinchen" drinnen sind,
@@ -11,14 +10,10 @@
 * @auto updater: if on windows, suggest to download EXE not JAR (check for mac as well)
 * @appointments: als tooltip when hovered, dann die notiz anzeigen (falls vorhanden)
 * minor BUG: wenn "inaktivieren von klienten", dann list rendering funkt nicht ganz
-* LUXURY: wenn treatment goal setzen, dann kein neustart erforderlich (gleich rendern)
-* @protocol: wenn kein username in preferences eingestellt, dann warning ausgeben (evtl gleich mit moeglichkeit den namen zu setzen direkt!)
 * BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
-- zungendiagnose und puls sind keine TCM stammdaten => sondern als dynamic treatment abbilden
 - breitere textfelder: mail, strasse
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
-* @backup: in preferences (anklickbaren a la reveal folder) pfad zum backup ordner + "backup now" button
 
 
 T-O-D-O
@@ -27,28 +22,19 @@ T-O-D-O
 High
 ------------------------------------------------------------
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
-* improved GCal sync view: bigger window, proper col width; render client pic; von-bis schoenerer text (selten ueberd nacht gehen der termin); recurring flag
-* neue anamnese formular ausarbeiten
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 
 Med
 ---
+* new field: where from (social media, mundpropaganda, ... flyer/werbung/website)
 * rich text editor: incorporate html editor from http://memoranda.sourceforge.net
-* when enter text, parse if its a accupuncture point, eg "Gb25" => make it a clickable link and open accupuncture database window
-* master client cell list: sort based on displayed label (preferred name) instead of regular name // add sorting+filtering/searching feature anyway
 * on mouse over fuer hara diagnose fields
-* klient deaktivieren auch per rechte mausklick (nicht nur menu)
-* @RELEASE: copy artifacts from release_build to local wu path (if existing)
 * LOG should append in rolling files (currently one big, exploding file with 10MB after several months only)
 * add tabs to preferences window (general/google)
 * ChangesChecker it would be nicer to continue after saving, but this is somehow complicated because of the EventBus which works asynchronously
 * wahlfrei in treatments navigieren, nicht nur links/rechts, sondern auch zb durch nummerneingabe/dropdown direkt hin
-* dyn treatment: rueckendiagnose, yu punkte, bo punkte
-* upgrade to gradle 3
-* maybe when splitting up into gradle modules, things will speed up?!
 * when client changes detected, user confirms, then select the clicked one to save one click
 * automatically scroll to far left in textfields (on update)
-* mehr aktionen ueber menu bar: Klient / Bild Aendern, ...
 * enhance window descriptor: make reusable for others; remember by display
 * verletzungs medizinisches maxerl (an welchen stellen besonders aufpassen wegen verletzung grafik)
 * @UI: tcm note (and others) use split view (with grab handle to resize) instead!
@@ -57,20 +43,16 @@ Med
 * AOP logging for all service + repository classes
 * client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
    - auch so beim namen?
-* ad backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
-* sorting based on displayed value (not first/last name, as displayed name sometimes include nickname) => sorted by not displayed value!
+* @backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
 * when sammelprotokoll print => busy indicator/progress dialog
-* das datumsfeld fuer den datepicker (zb treatment view) bissi breiter machen; der inhalt steht haarscharf an
 * treatment 30min statt 15min schritte
 * wenn exception geworfen, dann im error dialog nicht nur URL anklickbar zu github issue, sondern auch log file direkt aufmachen (zb unter macos "open xxx")
 * BUG: wenn aenderung verwerfen, treatment list ist leer!
 * BUG: treatment list selection onNew
 * BUG: in TCM lists (not preselected)
-* das "erstellt am" feld dezenter machen; er hat probiert reinzuklicken, weils so im "flow der eingabe" im weg steht
-* in appointment window, mit ESC dialog close
 * cancel button for async dialog
 * WebLatestVersionFetcher return withTimeout(CONNECTION_TIMEOUT) {
-* TEST with guice enabled tests: build testinfra/guice.kt
+* @TEST with guice enabled tests: build testinfra/guice.kt
 * ModificationChecker.checkModificationsAndUpdateIsEnabledField this gets called way too often; rethink whole architecture!
 
 Low
@@ -86,7 +68,6 @@ Low
     * cleanup window form: start end time in separate row; check if end > start; bigger
     * center window on show
     * be able to save at very first show
-* split the app into gradle modules
 * to scale images use scalrb
 * [2] check for database lock file
 * konkurrenz analyse
@@ -113,6 +94,7 @@ Low
 * use DateRange
 * fuer "when", "in", ... eigene extension methods machen mit synonym um backticks zu umgehen
 * @check modifications: wenn klient bearbeiten, dann anderen klient gehen, dann dialog "speichern" klick, dann sollte der andere klient ausgewaehlt sein, nicht der alte (sonst ist ein zweiter unnoetiger klick notwendig)
+* @backup: in preferences (anklickbaren a la reveal folder) pfad zum backup ordner + "backup now" button
 
 Test
 ------------------------------------------------------------
@@ -126,6 +108,7 @@ Test
 
 Luxury Ideas
 ------------------------------------------------------------
+* wenn treatment goal setzen, dann kein neustart erforderlich (gleich rendern)
 * WYSIWYG text editor!
 * doodle integration (a la steffi)
 - user profile pic croppen wenn nicht gleiche seitenverhaeltnisse dialog (daweil nur automatisch wo was wegschneiden)
@@ -147,7 +130,15 @@ Luxury Ideas
 * xml export (base64 encode image; dont need to think about import from XML, or do we?)
 * encrypt DB with password
 
-MULTI PROTOCOL
+
+BUILD
+------------------------------------------------------------
+* @RELEASE: copy artifacts from release_build to local wu path (if existing)
+* upgrade to gradle 3
+* maybe when splitting up into gradle modules, things will speed up?!
+
+PROTOCOL
 ------------------------------------------------------------
 * page number
 ! BUG: bold formatting gets lost after pdf page merging
+* @protocol: wenn kein username in preferences eingestellt, dann warning ausgeben (evtl gleich mit moeglichkeit den namen zu setzen direkt!)
