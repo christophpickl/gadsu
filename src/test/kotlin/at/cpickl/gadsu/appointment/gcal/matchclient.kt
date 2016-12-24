@@ -14,7 +14,7 @@ import org.testng.annotations.Test
 @Test(groups = arrayOf("hsqldb")) class MatchClientsInDbTest : HsqldbTest() {
 
     private lateinit var testee: MatchClients
-    private lateinit var caro: Client
+    private lateinit var caroline: Client
     private lateinit var carolina: Client
     private lateinit var laura: Client
     private lateinit var ingrid: Client
@@ -22,7 +22,7 @@ import org.testng.annotations.Test
     @BeforeMethod fun insertClients() {
         testee = MatchClientsInDb(ClientJdbcRepository(jdbcx, idGenerator))
 
-        caro = newClient("Caroline", "Caro", "Firefox")
+        caroline = newClient("Caroline", "Caro", "Firefox")
         carolina = newClient("Carolina", "Caro", "Safari")
         laura = newClient("Laura", "", "Internet Chrome")
         ingrid = newClient("Ingrid", "Haudegen", "Internet Explorer")
@@ -30,10 +30,9 @@ import org.testng.annotations.Test
 
     private fun findMatchingClientsProvider(): List<Pair<String, List<Client>>> = listOf(
             // first name
-            testCase("caro", carolina, caro),
-            testCase("caro schneiderin", carolina, caro),
-            testCase("caroline", caro, carolina),
-            testCase("carolina", carolina, caro),
+            testCase("caro", caroline, carolina),
+            testCase("caroline", caroline, carolina),
+            testCase("carolina", carolina, caroline),
 
             // last name
             testCase("chrome", laura),
