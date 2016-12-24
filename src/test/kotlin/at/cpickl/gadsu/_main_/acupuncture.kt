@@ -15,6 +15,6 @@ fun main(args: Array<String>) {
     val frame = AcupunctureFrame(list)
     val controller = AcupunctureController(frame, service)
     bus.register(controller)
-    bus.post(ShopAcupunctureViewEvent())
+    bus.post(ShowAcupunctureViewEvent())
 
 }

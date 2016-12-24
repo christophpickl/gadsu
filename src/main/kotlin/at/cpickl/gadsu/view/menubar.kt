@@ -4,7 +4,7 @@ import at.cpickl.gadsu.AppStartupEvent
 import at.cpickl.gadsu.Event
 import at.cpickl.gadsu.QuitAskEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
-import at.cpickl.gadsu.acupuncture.ShopAcupunctureViewEvent
+import at.cpickl.gadsu.acupuncture.ShowAcupunctureViewEvent
 import at.cpickl.gadsu.appointment.gcal.sync.RequestGCalSyncEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientChangeStateEvent
@@ -33,6 +33,7 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.PrintFormEvent
 import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
+import at.cpickl.gadsu.tcm.ShowElementsTableViewEvent
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
@@ -168,7 +169,6 @@ open class GadsuMenuBar @Inject constructor(
         itemReconnect = menuApp.addItem("Internet Verbindung herstellen", { ReconnectInternetConnectionEvent() })
         itemReconnect.isVisible = false
 
-        menuApp.addItem("Akupunkturpunkte", { ShopAcupunctureViewEvent() })
         itemSendMail = menuApp.addItem("Mails versenden", { RequestPrepareMailEvent() })
 
         menuApp.add(gcalSync)
@@ -189,6 +189,10 @@ open class GadsuMenuBar @Inject constructor(
     }
 
     private fun menuView() = JMenu("Ansicht").apply {
+        addItem("Akupunkturpunkte", { ShowAcupunctureViewEvent() })
+        addItem("Entsprechungstabelle", { ShowElementsTableViewEvent() })
+        addSeparator()
+
         add(clientTabMain)
         add(clientTabTexts)
         add(clientTabTcm)

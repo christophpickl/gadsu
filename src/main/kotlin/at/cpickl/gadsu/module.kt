@@ -12,6 +12,7 @@ import at.cpickl.gadsu.preferences.PreferencesModule
 import at.cpickl.gadsu.report.ReportModule
 import at.cpickl.gadsu.service.AopModule
 import at.cpickl.gadsu.service.ServiceModule
+import at.cpickl.gadsu.tcm.TcmModule
 import at.cpickl.gadsu.treatment.TreatmentModule
 import at.cpickl.gadsu.version.VersionModule
 import at.cpickl.gadsu.view.ViewModule
@@ -40,7 +41,8 @@ fun allGadsuModules(databaseUrl: String? = null) = listOf(
         AopModule(),
         DevelopmentModule(),
         VersionModule(),
-        MailModule()
+        MailModule(),
+        TcmModule()
 )
 
 class GadsuModule(private val args: Args) : AbstractModule() {

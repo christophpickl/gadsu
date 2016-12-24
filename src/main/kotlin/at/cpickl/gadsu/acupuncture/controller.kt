@@ -36,7 +36,7 @@ open class AcupunctureController @Inject constructor(
 
     }
 
-    @Subscribe open fun onShopAcupunctureViewEvent(event: ShopAcupunctureViewEvent) {
+    @Subscribe open fun onShowAcupunctureViewEvent(event: ShowAcupunctureViewEvent) {
         frame.start()
     }
 

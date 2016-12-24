@@ -59,6 +59,7 @@ Med
 
 Low
 ---
+* @acupuncture: cancel search with ESC, else hide window on ESC
 * fulltext search
 * wenn TCM props CTRL+A zweimal, dann ist speichern button nicht enabled BUG!
 * zungen/puls props mit kuerzel versehen, dieses in UI zusaetzlich rendern, auf schummelzettel drucken, auf protokoll nur kuerzel vermerken

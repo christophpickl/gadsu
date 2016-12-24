@@ -153,7 +153,7 @@ open class DevelopmentController @Inject constructor(
                                         TongueDiagnosis(
                                                 color = listOf(TongueProperty.Color.RedTip),
                                                 shape = emptyList(),
-                                                coat = listOf(TongueProperty.Coat.Yellow, TongueProperty.Coat.Dry),
+                                                coat = listOf(TongueProperty.Coat.Yellow, TongueProperty.Coat.Thick),
                                                 special = emptyList(),
                                                 note = "zunge gruen"),
                                         PulseDiagnosis(
