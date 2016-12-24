@@ -71,9 +71,19 @@ open class ClientViewController @Inject constructor(
     })
 
     @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE).map({ extendClient(it) })) // initially only display actives
+        reinitClients(showInactives = false)
         bus.post(ChangeMainContentEvent(view))
         bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
+    }
+
+    private fun reinitClients(showInactives: Boolean) {
+        val clients = clientService
+                .findAll(filterState = if (showInactives) null else ClientState.ACTIVE)
+                .map { extendClient(it) }
+                .sortedBy { it.client.preferredName }
+        view.masterView.initClients(clients)
+
+//        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE).map({ extendClient(it) })) // initially only display actives
     }
 
     @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
@@ -178,8 +188,7 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
-        val clients = clientService.findAll(filterState = if (event.showInactives) null else ClientState.ACTIVE)
-        view.masterView.initClients(clients.map { extendClient(it) })
+        reinitClients(event.showInactives)
     }
 
     @Subscribe open fun onClientNavigateUpEvent(event: ClientNavigateUpEvent) {

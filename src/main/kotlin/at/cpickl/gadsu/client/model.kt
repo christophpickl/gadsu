@@ -12,7 +12,6 @@ import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.inputs.Labeled
-import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -136,7 +135,7 @@ data class Client(
 
     override fun compareTo(other: Client): Int {
         return ComparisonChain.start()
-                .compare(this.firstName, other.firstName)
+                .compare(this.preferredName, other.preferredName)
                 .compare(this.lastName, other.lastName)
                 .compare(this.created, other.created)
                 .result()
