@@ -210,11 +210,9 @@ private fun _clickAndDisposeDialog(buttonLabelToClick: String, trigger: Trigger,
 }
 
 
-
-
-fun ListBox.deleteAtRow(index: Int) {
+fun ListBox.deleteAtRow(index: Int, menuToClick: String = "L\u00F6schen") {
     val popup = PopupMenuInterceptor.run(this.triggerRightClick(index))
-    val popupMenuItemDelete = popup.getSubMenu("Klient L\u00F6schen")
+    val popupMenuItemDelete = popup.getSubMenu(menuToClick)
     popupMenuItemDelete.clickAndDisposeDialog("L\u00F6schen")
 }
 

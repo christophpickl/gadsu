@@ -134,6 +134,7 @@ open class GadsuMenuBar @Inject constructor(
             log.debug("Set content type to: {}", value)
             field = value
             allEntries.forEach { it.isVisible = false }
+            @Suppress("UNUSED_VARIABLE") // required to enforce compiler enforcing all branches
             val entriesToShow = when (field) {
                 MainContentType.CLIENT -> clientEntries
                 MainContentType.TREATMENT -> treatmentEntries

@@ -131,7 +131,8 @@ class ClientUiTest : UiTest() {
 //    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun `deleteClient sunshine`() {
         driver.saveBasicClient(client)
-        driver.deleteClient(client)
+
+        mainDriver.menuBarDriver.deleteClient()
 
         driver.assertListNotContains(client)
     }

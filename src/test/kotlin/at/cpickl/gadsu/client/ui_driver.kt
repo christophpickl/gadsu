@@ -7,7 +7,6 @@ import at.cpickl.gadsu.testinfra.PROFILE_PICTURE_CLASSPATH_1
 import at.cpickl.gadsu.testinfra.ui.BaseDriver
 import at.cpickl.gadsu.testinfra.ui.DateSpecPicker
 import at.cpickl.gadsu.testinfra.ui.UiTest
-import at.cpickl.gadsu.testinfra.ui.deleteAtRow
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyListModel
 import org.hamcrest.MatcherAssert
@@ -139,11 +138,16 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         // picture is not setable in client view (yet)
     }
 
-    fun deleteClient(client: Client) {
-        log.debug("deleteClient(client={})", client)
+//    fun deleteClient(client: Client) {
+//        log.debug("deleteClient(client={})", client)
+//        list.deleteAtRow(listIndexOf(client))
+//    }
 
-        list.deleteAtRow(listIndexOf(client))
-    }
+//    fun ListBox.deleteAtRow(index: Int) {
+//        val popup = PopupMenuInterceptor.run(this.triggerRightClick(index))
+//        val popupMenuItemDelete = popup.getSubMenu("Klient L\u00F6schen")
+//        popupMenuItemDelete.clickAndDisposeDialog("L\u00F6schen")
+//    }
 
     fun assertPanelVisible() {
         test.assertPanelContainedInMainWindow(ViewNames.Client.MainPanel)
