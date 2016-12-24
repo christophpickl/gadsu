@@ -8,8 +8,8 @@ import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.view.SwingTreatmentView
 import at.cpickl.gadsu.view.GadsuMenuBar
 import at.cpickl.gadsu.view.MacHandler
+import at.cpickl.gadsu.view.TestMacHandler
 import at.cpickl.gadsu.view.components.Framed
-import org.mockito.Mockito
 import java.awt.Dimension
 
 
@@ -24,6 +24,6 @@ fun main(args: Array<String>) {
             aboutHomework = dummyLines(20), aboutContent = dummyLines(20)
     )
     Framed.showWithContext({ context ->
-        SwingTreatmentView(context.swing, GadsuMenuBar(context.bus, Mockito.mock(MacHandler::class.java)), client, treatment)
+        SwingTreatmentView(context.swing, GadsuMenuBar(context.bus, TestMacHandler), client, treatment)
     }, size = Dimension(1000, 600))
 }

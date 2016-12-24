@@ -12,7 +12,12 @@ fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
 
 fun String.nullIfEmpty() = if (this.isEmpty()) null else this
 
-fun String.wrapParenthesisIf(condition: Boolean) = if (condition) "($this)" else this
+
+fun String.wrapIf(condition: Boolean, wrappingLeft: String, wrappingRight: String) = if (condition) wrappingLeft + this + wrappingRight else this
+
+fun String.wrapParenthesisIf(condition: Boolean) = wrapIf(condition, "(", ")")
+
+fun String.htmlize() = "<html>" + this.replace("\n", "<br/>") + "</html>"
 
 fun String.saveToFile(target: File) {
     Files.write(this, target, Charsets.UTF_8)

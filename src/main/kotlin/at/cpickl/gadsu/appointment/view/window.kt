@@ -32,6 +32,8 @@ import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import java.awt.BorderLayout
+import java.awt.Dimension
+import java.awt.GridBagConstraints
 import java.net.URL
 import javax.inject.Inject
 import javax.swing.BorderFactory
@@ -74,7 +76,7 @@ class SwingAppointmentWindow @Inject constructor(
     private val outClient = DisabledTextField()
     private val inpStartDate = fields.newDateAndTimePicker("Beginn", DateTime(0), { it.start }, ViewNames.Appointment.InputStartDate)
     private val inpDuration = fields.newMinutesField("Dauer", { Duration(it.start, it.end).standardMinutes.toInt() }, ViewNames.Appointment.InputDuration, 3)//fields.newTimePicker("Ende", DateTime(0), { it.end }, "Appointment.DateEnd")
-    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote)
+    private val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Appointment.InputNote).apply { preferredSize = Dimension(preferredSize.width, 80) }
     private val btnOpenGcal = JButton("Calender \u00f6ffnen").apply { addActionListener { onOpenGCal() } }
 
     private val btnNewTreatment = JButton().apply {
@@ -100,7 +102,7 @@ class SwingAppointmentWindow @Inject constructor(
         isResizable = false
     }
 
-    private fun initMainPanel(gcalVisible: Boolean) = FormPanel().apply {
+    private fun initMainPanel(gcalVisible: Boolean) = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
         addFormInput("Klient", outClient)
 
         val durationPanel = GridPanel()
@@ -116,9 +118,10 @@ class SwingAppointmentWindow @Inject constructor(
         addFormInput("Datum", durationPanel)
 
         addFormInput(inpNote)
-        addFormInput("", btnNewTreatment)
 
         if (gcalVisible) addFormInput("Google", btnOpenGcal)
+
+        addFormInput("", btnNewTreatment)
     }
 
     private fun initSouthPanel() = GridPanel().apply {

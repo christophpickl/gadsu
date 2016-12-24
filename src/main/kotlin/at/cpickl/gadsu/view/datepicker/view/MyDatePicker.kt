@@ -15,8 +15,8 @@ import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.changeBackgroundForASec
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
+import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -103,7 +103,7 @@ class MyDatePicker(viewNamePrefix: String,
         button.name = viewNameButton(viewNamePrefix)
 
         formattedTextField.isFocusable = false
-        formattedTextField.columns = if (IS_OS_WIN) 8 else 6
+        formattedTextField.columns = if (IS_OS_WIN) 9 else 7
         formattedTextField.horizontalAlignment = textFieldAlignment
         formattedTextField.name = viewNameText(viewNamePrefix)
         formattedTextField.addMouseListener(object : MouseAdapter() {
