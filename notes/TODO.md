@@ -26,6 +26,7 @@ High
 
 Med
 ---
+* BUG: nachdem geburtsdatum eingetippt und enter druecken, sollte fokus korrekt sein (spring irgendwohin!)z
 * new field: where from (social media, mundpropaganda, ... flyer/werbung/website)
 * rich text editor: incorporate html editor from http://memoranda.sourceforge.net
 * on mouse over fuer hara diagnose fields

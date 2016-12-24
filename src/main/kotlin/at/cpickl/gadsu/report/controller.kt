@@ -57,11 +57,11 @@ open class ReportController @Inject constructor(
     companion object {
 
         @VisibleForTesting fun generateStatistics(protocols: List<ProtocolReportData>): MultiProtocolStatistics {
-            val numberOfClients = protocols.size
-            val numberOfTreatments = protocols.sumBy { it.rows.size }
-            val treatmentDateRange = DateRange(
-                    protocols.flatMap { it.rows }.minBy { it.date }!!.date,
-                    protocols.flatMap { it.rows }.maxBy { it.date }!!.date)
+                val numberOfClients = protocols.size
+                val numberOfTreatments = protocols.sumBy { it.rows.size }
+                val treatmentDateRange = DateRange(
+                        protocols.flatMap { it.rows }.minBy { it.date }!!.date,
+                        protocols.flatMap { it.rows }.maxBy { it.date }!!.date)
             val totalTreatmentTime = protocols.sumBy { it.rows.sumBy { it.duration } }
             return MultiProtocolStatistics(numberOfClients, numberOfTreatments, treatmentDateRange, minutes(totalTreatmentTime))
         }
