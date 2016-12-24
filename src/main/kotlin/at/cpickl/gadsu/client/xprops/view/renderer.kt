@@ -39,7 +39,7 @@ class CPropsRenderer(
         val cprops = HashMap<XProp, CProp>()
         map.forEach { xprop, ui ->
             val cprop = ui.toCProp()
-            if (cprop.isClientValueNotEmpty) {
+            if (cprop.isValueOrNoteSet) {
                 cprops.put(xprop, cprop)
             }
         }

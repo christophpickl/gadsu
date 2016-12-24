@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.client.xprops
 
-import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProp
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
@@ -49,16 +48,15 @@ class XPropsServiceImpl @Inject constructor(
         val xprop = XProps.findByKey(sprop.key)
         return xprop.onType(object: XPropTypeCallback<CProp> {
             override fun onEnum(xprop: XPropEnum): CProp {
-                if (sprop.value.isEmpty()) {
-                    throw GadsuException("Enum property value must not be empty for: $sprop (targeting $xprop)")
+                val selectedOpts = if (sprop.value.isEmpty()) {
+                    emptyList()
+                } else {
+                    sprop.value.split(",").map { XProps.findEnumValueByKey(it) }
                 }
-                val selectedOpts = sprop.value.split(",").map { XProps.findEnumValueByKey(it) }
                 return CPropEnum(xprop, selectedOpts, sprop.note)
             }
-
         })
     }
-
 
 }
 

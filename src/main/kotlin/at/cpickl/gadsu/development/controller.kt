@@ -116,7 +116,7 @@ open class DevelopmentController @Inject constructor(
                         "zyklus 24T-6T; drahtiger puls",
                         MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
                         CProps.builder()
-                                .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
+                                .add(XProps.Sleep, "* ur gross!", XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
                                 .add(XProps.Hungry, XProps.HungryOpts.BigHunger)
                                 .build()
 
@@ -149,7 +149,18 @@ open class DevelopmentController @Inject constructor(
                                 aboutContent = "Den Herzmeridian hab ich behandelt.",
                                 aboutHomework = "Er soll mehr sport machen, eh kloa. Und weniger knoblauch essen!",
                                 note = "Aja, und der kommentar passt sonst nirgends rein ;)",
-                                dynTreatments = emptyList()
+                                dynTreatments = listOf(
+                                        TongueDiagnosis(
+                                                color = listOf(TongueProperty.Color.RedTip),
+                                                shape = emptyList(),
+                                                coat = listOf(TongueProperty.Coat.Yellow, TongueProperty.Coat.Dry),
+                                                special = emptyList(),
+                                                note = "zunge gruen"),
+                                        PulseDiagnosis(
+                                                properties = listOf(PulseProperty.Ascending, PulseProperty.Deep),
+                                                note = ""
+                                        )
+                                )
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,

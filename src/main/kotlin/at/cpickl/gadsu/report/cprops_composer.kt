@@ -7,6 +7,7 @@ import at.cpickl.gadsu.client.xprops.model.CPropTypeCallback
 
 object CPropsComposer {
     fun compose(client: Client) : String? {
+        // MINOR CPropsComposer does not take notes into account yet
         if (client.cprops.isEmpty()) {
             return null
         }

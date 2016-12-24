@@ -33,7 +33,7 @@ class ClientTabTcm(
     private val fields = Fields<Client>(modificationChecker)
     private val renderer = CPropsRenderer(fields, bus)
 
-    val inpTcmNote = fields.newTextArea("Notiz", {it.tcmNote}, ViewNames.Client.InputTcmNote)
+    val inpTcmNote = fields.newTextArea("Notiz", { it.tcmNote }, ViewNames.Client.InputTcmNote)
 
     private fun form(vararg xprops: XPropEnum): FormPanel {
         return FormPanel(labelAnchor = GridBagConstraints.NORTH).apply {

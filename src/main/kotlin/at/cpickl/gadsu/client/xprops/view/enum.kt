@@ -75,6 +75,25 @@ class CPropEnumView(
     override fun toComponent() = containerPanel
 
     override fun isModified(value: Client): Boolean {
+        val enteredNote = editorView.note.text
+        val originalNote = value.cprops.findOrNull(xprop)?.note ?: ""
+        val noteChanged = enteredNote != originalNote
+        if (noteChanged) {
+            println("yes")
+        }
+        val selectionModified = isSelectionModified(value)
+        if (selectionModified) {
+            println("yes2")
+        }
+        return selectionModified || noteChanged // || editorView.note.text != value.cprops.findOrNull(xprop)?.note ?: ""
+    }
+
+    override fun enableFor(modifications: ModificationChecker) {
+        modifications.enableChangeListener(editorView.list)
+        modifications.enableChangeListener(editorView.note)
+    }
+
+    private fun isSelectionModified(value: Client): Boolean {
         val selected = editorView.list.selectedValuesList
         val cprop = value.cprops.findOrNull(xprop) ?: return selected.isNotEmpty()
 
@@ -85,10 +104,6 @@ class CPropEnumView(
         val enumProp = cprop as CPropEnum
         return !enumProp.clientValue.containsAll(selected) ||
                 !selected.containsAll(enumProp.clientValue)
-    }
-
-    override fun enableFor(modifications: ModificationChecker) {
-        modifications.enableChangeListener(editorView.list)
     }
 }
 
@@ -176,7 +191,11 @@ private class CPropEnumEditorView(
 
     override fun updateValue(cprops: CProps) {
         list.clearSelection()
-        val cprop = cprops.findOrNull(xprop) ?: return
+        val cprop = cprops.findOrNull(xprop)
+        if (cprop == null) {
+            note.text = ""
+            return
+        }
         list.addSelectedValues((cprop as CPropEnum).clientValue)
         note.text = cprop.note
     }

@@ -69,7 +69,7 @@ interface CProp : XProp {
     val note: String
 
     val isClientValueEmpty: Boolean
-    val isClientValueNotEmpty: Boolean
+    val isValueOrNoteSet: Boolean
 
     fun <R> onType(callback: CPropTypeCallback<R>): R
 
@@ -82,7 +82,7 @@ data class CPropEnum(
 ) : CProp, XProp by xprop {
 
     override val isClientValueEmpty = clientValue.isEmpty()
-    override val isClientValueNotEmpty = !isClientValueEmpty
+    override val isValueOrNoteSet = !isClientValueEmpty || note.isNotEmpty()
 
     override fun <R> onType(callback: CPropTypeCallback<R>) = callback.onEnum(this)
 
