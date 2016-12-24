@@ -21,3 +21,13 @@ ALTER TABLE client ADD COLUMN syndrom VARCHAR(5120) DEFAULT '' NOT NULL;
 -- ========================================================================= --
 
 ALTER TABLE xprops ADD COLUMN note VARCHAR(5120);
+
+-- #74 Improved anamnese report
+-- ========================================================================= --
+
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'SHAKY';
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'PARTLY MISSING';
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'COAT WET';
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'COAT DRY';
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'VIOLETT DOTS';
+DELETE FROM tongue_diagnosis_properties WHERE sql_code = 'VIOLETT PATCH';

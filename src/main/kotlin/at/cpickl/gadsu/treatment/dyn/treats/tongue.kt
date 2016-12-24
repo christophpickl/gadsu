@@ -73,14 +73,14 @@ enum class TongueProperty {;
         Thin("dünn", "THIN SHAPE"),
         Thick("dick", "SHAPE THICK"), // verdickter, vergroessert
         Swollen("geschwollen", "SWOLLEN"),
-        Stiff("steif", "STIFF"),
         Flaccid("schlaff", "FLACCID"),
-        Long("lang", "LONG"),
+        Stiff("steif", "STIFF"),
         Short("kurz", "SHORT"),
+        Long("lang", "LONG"),
         Sharp("spitz", "SHARP"),
         Cracked("rissig", "CRACKED"),
-        Shaky("zitternd", "SHAKY"), // means wind
-        OneSideAligned("einseitig ausgerichtet", "ONESIDE ALIGNED")
+        // DELETED! Shaky("zitternd", "SHAKY"),
+        OneSideAligned("einseitig", "ONESIDE ALIGNED")
         ;
 
         companion object {
@@ -97,19 +97,19 @@ enum class TongueProperty {;
         Black("schwarz", "BLACK"),
 
         // thickness
-        Missing("kein Belag", "MISSING"), // belaglos, kein, fehlt
-        Less("wenig", "LESS"),
-        Much("vermehrt", "MUCH"),
         Thin("dünn", "THIN COAT"),
         Thick("dick", "COAT THICK"),
-        PartlyMissing("teilweise fehlend", "PARTLY MISSING"),
-        Rooted("mit Wurzel", "ROOTED"),
-        Unrooted("ohne Wurzel", "UNROOTED"),
+        Missing("kein", "MISSING"), // belaglos, kein, fehlt
+        Less("wenig", "LESS"),
+        Much("vermehrt", "MUCH"),
+        Spotted("fleckig", "SPOTTED"),
 
         // sonstiges
-        Wet("feucht", "COAT WET"),
-        Dry("trocken", "COAT DRY"),
-        Spotted("fleckig", "SPOTTED"),
+        // DELETED! PartlyMissing("teilweise fehlend", "PARTLY MISSING"),
+        Unrooted("Wurzel ohne", "UNROOTED"),
+        Rooted("Wurzel mit", "ROOTED"),
+        // DELETED! Wet("feucht", "COAT WET"),
+        // DELETED! Dry("trocken", "COAT DRY"),
         Slobbery("schmierig", "SLOBBERY"),
         ;
 
@@ -119,33 +119,29 @@ enum class TongueProperty {;
     }
 
     enum class Special(override val label: String, override val sqlCode: String) : TonguePropertable {
-        // zeigen
-        ShowsQuick("schnell zeigen", "SHOWS QUICK"),
-        ShowsHesitate("zögerlich zeigen", "SHOWS HESITATE"),
-        ShowsShaky("zittert", "SHOWS SHAKY"), // yin
-        TipDown("Spitze hängt runter", "TIP DOWN"),
-
-        // feuchtigkeit
-        Moist("zu feucht", "MOST"),
-        Dry("zu trocken", "SPECIAL DRY"),
-        Wet("nass", "SPECIAL WET"),
-        Sticky("klebrig", "STICKY"), // = schlüpfrig (?)
-
-        // misc
+        ShowsHesitate("zeigt zögerlich", "SHOWS HESITATE"),
+        ShowsQuick("zeigt schnell", "SHOWS QUICK"),
+        Dry("trocken", "SPECIAL DRY"),
+        Moist("feucht", "MOST"),
         TeethMarks("Zahnabdrücke", "TEETH MARKS"), // -eindruecke
         MiddleCrack("Mittelriss", "MID CRACK"),
         HorizontalCrack("Querriss(e)", "HORIZONTAL CRACK"),
 
         RedDots("rote Papillen", "RED DOTS"),
         RedPatch("rote Flecken", "RED PATCH"),
-        ViolettDots("violette Papillen", "VIOLETT DOTS"),
-        ViolettPatch("violette Flecken", "VIOLETT PATCH"),
+        // DELETED! ViolettDots("violette Papillen", "VIOLETT DOTS"),
+        // DELETED! ViolettPatch("violette Flecken", "VIOLETT PATCH"),
+        ShowsShaky("zittert", "SHOWS SHAKY"), // yin, means wind
+        TipDown("Spitze hängt runter", "TIP DOWN"),
+        Wet("nass", "SPECIAL WET"),
+        Sticky("klebrig", "STICKY"), // = schlüpfrig (?)
+        Thorns("Dornen", "THORNS"),
 
+        BelowTongueBright("Untervenen Hell", "BELOW BRIGHT"),
         BelowTongueBlue("Untervenen Blau", "BELOW BLUE"),
         BelowTonguePurple("Untervenen Lila", "BELOW PURPLE"),
         BelowTongueSwell("Untervenen gestaut", "BELOW SWELL"),
         BelowTongueSwollen("Untervenen geschwollen", "BELOW SWOLLEN"),
-        Thorns("Dornen", "THORNS"),
         ;
 
         companion object {

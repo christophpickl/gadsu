@@ -46,40 +46,31 @@ enum class PulseProperty(
     Superficial("oberflächlich", "SUPERFICIAL", true, YinYang.Yang),
     Deep("tief", "DEEP", true, YinYang.Yin),
 
-    // FREQUENCE
     // beschleunigt
-    Fast("schnell", "FAST", true, YinYang.Yang),
     Slow("langsam", "SLOW", true, YinYang.Yin),
-
-    // SHAPE
-    Full("voll", "FULL", true, YinYang.Yang),
+    Fast("schnell", "FAST", true, YinYang.Yang),
     Empty("leer", "EMPTY", true, YinYang.Yin),
-
-    Powerful("kräftig", "POWERFUL", true, YinYang.Yang),
+    Full("voll", "FULL", true, YinYang.Yang),
     Weak("schwach", "WEAK", true, YinYang.Yin),
-
-    Slippery("schlüpfrig", "SLIPPERY", false, YinYang.Yang),
-    Raugh("rauh", "RAUGH", false, YinYang.Yin),
-
-    Moving("bewegend", "MOVING", false, YinYang.Yang),
-    Fine("fein", "FINE", false, YinYang.Yin),
-
-    Sharp("spitz", "SHARP", true),
-    Round("rund", "ROUND", true),
-
+    Powerful("kräftig", "POWERFUL", true, YinYang.Yang),
+    Round("rund", "ROUND", true, YinYang.Yin),
+    Sharp("spitz", "SHARP", true, YinYang.Yang),
+    Thin("dünn", "THIN", true),
+    Wiry("drahtig", "WIRY", true),
+    Fine("fein", "FINE", true, YinYang.Yin),
+    Stringlike("saitenförmig", "STRINGLIKE", true),
+    Slowly("verlangsamt", "SLOWLY", true),
     Rhythmical("rhythmisch", "RHYTHMICAL", true),
     Arhythmical("arhythmisch", "ARHYTHMICAL", true), // unregelmaessig
 
+    Hidden("versteckt", "HIDDEN", false),
+    Thready("fadenförmig", "THREADY", false), // duenn-fadenfoermig
+    Slipery("rutschig", "SLIPERY", false),
+    Hesitate("zögernd", "HESITATE", false),
+    Slippery("schlüpfrig", "SLIPPERY", false, YinYang.Yang),
+    Raugh("rauh", "RAUGH", false, YinYang.Yin),
+    Moving("bewegend", "MOVING", false, YinYang.Yang),
     Soft("weich", "SOFT", false),
-    Thin("dünn", "THIN", true),
-    Thready("fadenförmig", "THREADY", true), // duenn-fadenfoermig
-    Slipery("rutschig", "SLIPERY", true),
-    Hesitate("zögernd", "HESITATE", true),
-
-
-    Wiry("drahtig", "WIRY", false),
-    Stringlike("saitenförmig", "STRINGLIKE", false),
-
     Ascending("ansteigend", "ASCENDING", false),
     Tight("gespannt", "TIGHT", false),
     Abrupt("abrupt", "ABRUPT", false),
@@ -88,8 +79,6 @@ enum class PulseProperty(
     Hanging("hängend", "HANGING", false),
     Hunty("jagend", "HUNTY", false),
     Floody("überflutend", "FLOODY", false),
-    Slowly("verlangsamt", "SLOWLY", false),
-    Hidden("versteckt", "HIDDEN", false),
     ;
 
     companion object {
