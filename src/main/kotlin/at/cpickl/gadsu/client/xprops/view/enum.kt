@@ -25,6 +25,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
+import javax.swing.ScrollPaneConstants
 
 interface ElFieldForProps<in V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
@@ -106,7 +107,7 @@ private class CPropEnumRendererView(
     }
 
     init {
-        panel.add(text, BorderLayout.CENTER)
+        panel.add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER)
         panel.add(JButton("Bearbeiten").apply {
             addActionListener{ onEditClicked() }
         }, BorderLayout.SOUTH)

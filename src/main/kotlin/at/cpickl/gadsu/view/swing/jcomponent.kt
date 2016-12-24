@@ -67,6 +67,10 @@ fun JComponent.registerMyKeyListener(listener: MyKeyListener): RegisteredKeyList
     registerYourself()
 }
 
+/**
+ * @param hPolicy e.g.: ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS
+ * @param vPolicy e.g.: ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER
+ */
 fun JComponent.scrolled(hPolicy: Int? = null, vPolicy: Int? = null): JScrollPane {
     return JScrollPane(this).apply {
         if (hPolicy != null) horizontalScrollBarPolicy = hPolicy
