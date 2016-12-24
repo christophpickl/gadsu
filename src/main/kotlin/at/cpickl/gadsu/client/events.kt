@@ -53,6 +53,8 @@ class ClientUpdatedEvent(val client: Client) : AppEvent() {
     }
 }
 
+class DeleteCurrentClientEvent : UserEvent()
+
 class DeleteClientEvent(val client: Client) : UserEvent() {
     override fun toString(): String {
         return MoreObjects.toStringHelper(javaClass)

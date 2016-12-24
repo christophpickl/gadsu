@@ -13,6 +13,7 @@ import at.cpickl.gadsu.client.ClientNavigateUpEvent
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.DeleteCurrentClientEvent
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowInClientsListEvent
 import at.cpickl.gadsu.client.forClient
@@ -109,11 +110,12 @@ open class GadsuMenuBar @Inject constructor(
 
     private val clientActivate = buildItem("Klient aktivieren", { ClientChangeStateEvent(ClientState.ACTIVE) })
     private val clientDeactivate = buildItem("Klient deaktivieren", { ClientChangeStateEvent(ClientState.INACTIVE) })
+    private val clientDelete = buildItem("Klient löschen", { DeleteCurrentClientEvent() })
     private val clientTabMain = buildItem("Tab Allgemein", { SelectClientTab(ClientTabType.MAIN) }, KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", { SelectClientTab(ClientTabType.TEXTS) }, KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", { SelectClientTab(ClientTabType.TCM) }, KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
 
-    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientSeperator2, clientShowInactives, clientSave, clientActivate, clientDeactivate,
+    private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientSeperator2, clientShowInactives, clientSave, clientActivate, clientDeactivate, clientDelete,
             clientTabMain, clientTabTexts, clientTabTcm, clientNavigateUp, clientNavigateDown)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK, true))
@@ -121,7 +123,7 @@ open class GadsuMenuBar @Inject constructor(
     val treatmentSave = buildItem("Behandlung speichern", { TreatmentSaveEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MODIFIER, true))
     private val treatmentEntries = listOf(treatmentPrevious, treatmentNext, treatmentSave)
 
-    private val allEntries = listOf(clientEntries, treatmentEntries)
+    private val allEntries = clientEntries.union(treatmentEntries)
 
     lateinit var itemReconnect: JMenuItem
     private lateinit var itemSendMail: JMenuItem
@@ -129,13 +131,14 @@ open class GadsuMenuBar @Inject constructor(
     var contentType = MainContentType.CLIENT
         get() = field
         set(value) {
+            println("fuchuuuru content")
             log.debug("Set content type to: {}", value)
             field = value
+            allEntries.forEach { it.isVisible = false }
             val entriesToShow = when (field) {
                 MainContentType.CLIENT -> clientEntries
                 MainContentType.TREATMENT -> treatmentEntries
             }.apply { forEach { it.isVisible = true } }
-            allEntries.filter { it != entriesToShow }.forEach { it.forEach { it.isVisible = false } }
         }
 
 
@@ -182,6 +185,7 @@ open class GadsuMenuBar @Inject constructor(
         add(treatmentSave)
         add(clientActivate)
         add(clientDeactivate)
+        add(clientDelete)
     }
 
     private fun menuView() = JMenu("Ansicht").apply {
@@ -200,15 +204,21 @@ open class GadsuMenuBar @Inject constructor(
 
     fun currentClient(client: Client?) {
         log.trace("currentClient(client={})", client)
+        if (contentType != MainContentType.CLIENT) {
+            return
+        }
         val isPersisted = client?.yetPersisted ?: false
         itemProtocol.isEnabled = isPersisted
+        clientDelete.isEnabled = isPersisted
 
         if (client == null) {
             clientActivate.isVisible = false
             clientDeactivate.isVisible = false
+            clientDelete.isVisible = false
         } else {
             clientActivate.isVisible = client.state == ClientState.INACTIVE
             clientDeactivate.isVisible = client.state == ClientState.ACTIVE
+            clientDelete.isVisible = true
         }
     }
 

@@ -5,7 +5,6 @@ import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
-import at.cpickl.gadsu.client.DeleteClientEvent
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.SelectImageEvent
@@ -28,7 +27,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import java.util.*
+import java.util.HashMap
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -131,18 +130,15 @@ class SwingClientMasterView @Inject constructor(
 
         list.enableSmartPopup(bus, { selectedClient ->
             val list: List<Pair<String, () -> UserEvent>>
-            val menuDeleteClient = Pair<String, () -> UserEvent>("Klient L\u00f6schen", { DeleteClientEvent(selectedClient.client) })
 
             if (selectedClient.picture.isUnsavedDefaultPicture) {
                 list = listOf(
-                        Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() }),
-                        menuDeleteClient
+                        Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() })
                 )
             } else {
                 list = listOf(
                         Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
-                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) }),
-                        menuDeleteClient
+                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
                 )
             }
             list

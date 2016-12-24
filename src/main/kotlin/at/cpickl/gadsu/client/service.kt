@@ -94,6 +94,8 @@ open class ClientServiceImpl @Inject constructor(
         return savedClient
     }
 
+
+
     @Subscribe open fun onClientChangeState(event: ClientChangeStateEvent) {
         val client = currentClient.data
         if (client.state == event.newState) {

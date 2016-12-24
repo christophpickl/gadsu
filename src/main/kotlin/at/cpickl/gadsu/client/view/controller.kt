@@ -18,6 +18,7 @@ import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.DeleteClientEvent
+import at.cpickl.gadsu.client.DeleteCurrentClientEvent
 import at.cpickl.gadsu.client.InvalidMailException
 import at.cpickl.gadsu.client.SaveClientEvent
 import at.cpickl.gadsu.client.ShowClientViewEvent
@@ -135,14 +136,12 @@ open class ClientViewController @Inject constructor(
         view.closePreparations()
     }
 
-    @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
-        dialogs.confirmedDelete("den Klienten '${event.client.fullName}'", {
-            clientService.delete(event.client)
+    @Subscribe open fun onDeleteCurrentClientEvent(event: DeleteCurrentClientEvent) {
+        doDeleteClient(currentClient.data)
+    }
 
-            if (event.client.id!! == currentClient.data.id) {
-                bus.post(ClientUnselectedEvent(event.client))
-            }
-        })
+    @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
+        doDeleteClient(event.client)
     }
 
     @Subscribe open fun onRequestClientPictureSaveEvent(event: RequestClientPictureSaveEvent) {
@@ -223,6 +222,16 @@ open class ClientViewController @Inject constructor(
 
     @Subscribe open fun onAppointmentChangedEvent(event: AppointmentChangedEvent) {
         recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
+    }
+
+    private fun doDeleteClient(client: Client) {
+        dialogs.confirmedDelete("den Klienten '${client.fullName}'", {
+            clientService.delete(client)
+
+            if (client.id!! == currentClient.data.id) {
+                bus.post(ClientUnselectedEvent(client))
+            }
+        })
     }
 
     private fun extendClient(client: Client): ExtendedClient {
