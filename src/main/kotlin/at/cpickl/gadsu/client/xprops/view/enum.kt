@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.client.xprops.view
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.xprops.model.CProp
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
@@ -52,6 +53,7 @@ class CPropEnumView(
         rendererView.updateValue(CProps(mapOf(xprop to toCProp())))
         changeContainerContent(rendererView)
     }
+
     private fun changeToEditor() {
         changeContainerContent(editorView)
     }
@@ -68,7 +70,7 @@ class CPropEnumView(
         editorView.updateValue(value.cprops)
     }
 
-    override fun toCProp() = CPropEnum(xprop, editorView.list.selectedValuesList)
+    override fun toCProp() = CPropEnum(xprop, editorView.list.selectedValuesList, editorView.note.text)
 
     override fun toComponent() = containerPanel
 
@@ -109,22 +111,29 @@ private class CPropEnumRendererView(
     init {
         panel.add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER)
         panel.add(JButton("Bearbeiten").apply {
-            addActionListener{ onEditClicked() }
+            addActionListener { onEditClicked() }
         }, BorderLayout.SOUTH)
     }
 
     override fun updateValue(cprops: CProps) {
-        val cprop = cprops.findOrNull(xprop)
-        if (cprop == null) {
-            text.text = ""
-            return
-        }
-        text.text = cprop.clientValue.map { "* " + it.label }.joinToString("\n")
-        // FIXME #71 add xprop specific note
+        text.text = cprops.findOrNull(xprop).formatData()
     }
 
     override fun toComponent() = panel
 }
+
+fun CProp?.formatData(): String {
+    if (this == null) {
+        return ""
+    }
+    val selectedEnumOpts = this.formatClientValues()
+    return selectedEnumOpts + (
+            if (this.note.isEmpty()) "" else
+                (if (selectedEnumOpts.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + this.note
+            )
+}
+
+fun CProp.formatClientValues() = this.clientValue.map { "* " + it.label }.joinToString("\n")
 
 
 private class CPropEnumEditorView(
@@ -135,7 +144,7 @@ private class CPropEnumEditorView(
 
     val list: MyList<XPropEnumOpt>
     private val panel: JPanel
-    private val specificNote = MyTextArea("TcmNote.${xprop.key}", visibleRows = 3)
+    val note = MyTextArea("TcmNote.${xprop.key}", visibleRows = 3)
 
     init {
         val model = MyListModel<XPropEnumOpt>()
@@ -156,11 +165,11 @@ private class CPropEnumEditorView(
             c.gridy++
             c.weighty = 0.0
             c.fill = GridBagConstraints.HORIZONTAL
-            add(specificNote.scrolled())
+            add(note.scrolled())
 
             c.gridy++
             add(JButton("Fertig").apply {
-                addActionListener{ onDoneClicked() }
+                addActionListener { onDoneClicked() }
             })
         }
     }
@@ -169,7 +178,7 @@ private class CPropEnumEditorView(
         list.clearSelection()
         val cprop = cprops.findOrNull(xprop) ?: return
         list.addSelectedValues((cprop as CPropEnum).clientValue)
-        // FIXME #71 text for specificNote = client.cpropsNote[xprop]
+        note.text = cprop.note
     }
 
     override fun toComponent() = panel

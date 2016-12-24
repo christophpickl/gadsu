@@ -2,7 +2,11 @@ package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.xprops.model.*
+import at.cpickl.gadsu.client.xprops.model.CPropEnum
+import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.client.xprops.model.XProp
+import at.cpickl.gadsu.client.xprops.model.XPropEnum
+import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.TEST_UUID2
 import at.cpickl.gadsu.testinfra.TestBusListener
@@ -120,5 +124,5 @@ fun buildCPropEnumPair(xprop: XPropEnum, vararg opts: XPropEnumOpt): Pair<XProp,
 }
 
 fun buildCPropEnum(xprop: XPropEnum, vararg opts: XPropEnumOpt): CPropEnum {
-    return CPropEnum(xprop, listOf(*opts))
+    return CPropEnum(xprop, listOf(*opts), "")
 }

@@ -21,7 +21,7 @@ class XPropsServiceImplTest {
     private val testEnum = XProps.Sleep
     private val testOps = listOf(XProps.SleepOpts.ProblemsFallAsleep.opt, XProps.SleepOpts.TiredInMorning.opt)
     private val testProps = CProps(mapOf(
-            testEnum to CPropEnum(XProps.Sleep, testOps)
+            testEnum to CPropEnum(XProps.Sleep, testOps, "")
     ))
 
     private lateinit var repo: XPropsSqlRepository
@@ -43,7 +43,7 @@ class XPropsServiceImplTest {
         testee.update(client)
 
         verify(repo).delete(client)
-        verify(repo).insert(client, listOf(SProp(testEnum.key, testOps.map { it.key }.joinToString(","))))
+        verify(repo).insert(client, listOf(SProp(testEnum.key, testOps.map { it.key }.joinToString(","), "")))
     }
 
     fun `read empty sunshine`() {
@@ -56,7 +56,7 @@ class XPropsServiceImplTest {
 
     fun `read single sunshine`() {
         val client = Client.savedValidInstance().copy(cprops = testProps)
-        `when`(repo.select(client)).thenReturn(listOf(SProp(testEnum.key, testOps.map { it.key }.joinToString(","))))
+        `when`(repo.select(client)).thenReturn(listOf(SProp(testEnum.key, testOps.map { it.key }.joinToString(","), "")))
 
         assertThat(testee.read(client), equalTo(testProps))
         verifyRepoSelectAll(client)

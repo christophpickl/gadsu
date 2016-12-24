@@ -21,8 +21,6 @@ interface XPropsService {
 
 }
 
-
-
 class XPropsServiceImpl @Inject constructor(
         private val repo: XPropsSqlRepository
 ) : XPropsService {
@@ -55,7 +53,7 @@ class XPropsServiceImpl @Inject constructor(
                     throw GadsuException("Enum property value must not be empty for: $sprop (targeting $xprop)")
                 }
                 val selectedOpts = sprop.value.split(",").map { XProps.findEnumValueByKey(it) }
-                return CPropEnum(xprop, selectedOpts)
+                return CPropEnum(xprop, selectedOpts, sprop.note)
             }
 
         })
@@ -67,7 +65,7 @@ class XPropsServiceImpl @Inject constructor(
 private fun transformCPropToSProp(genericCProp: CProp): SProp {
     return genericCProp.onType(object : CPropTypeCallback<SProp> {
         override fun onEnum(cprop: CPropEnum): SProp {
-            return SProp(cprop.key, cprop.clientValue.map { it.key }.joinToString(","))
+            return SProp(cprop.key, cprop.clientValue.map { it.key }.joinToString(","), cprop.note)
         }
     })
 }

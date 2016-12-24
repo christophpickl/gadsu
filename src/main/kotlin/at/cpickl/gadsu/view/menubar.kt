@@ -131,7 +131,6 @@ open class GadsuMenuBar @Inject constructor(
     var contentType = MainContentType.CLIENT
         get() = field
         set(value) {
-            println("fuchuuuru content")
             log.debug("Set content type to: {}", value)
             field = value
             allEntries.forEach { it.isVisible = false }

@@ -20,4 +20,4 @@ ALTER TABLE client ADD COLUMN syndrom VARCHAR(5120) DEFAULT '' NOT NULL;
 -- #71 TCM xprops revised
 -- ========================================================================= --
 
---ALTER TABLE xprops ADD COLUMN note VARCHAR(5120) DEFAULT '' NOT NULL;
+ALTER TABLE xprops ADD COLUMN note VARCHAR(5120);

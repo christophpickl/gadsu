@@ -15,7 +15,7 @@ class XPropsSqlJdbcRepositoryTest : HsqldbTest() {
 
     private val table = TABLE_XPROPS
     private val mapper = SProp.ROW_MAPPER
-    private val testProp = SProp("testKey", "testVal")
+    private val testProp = SProp("testKey", "testVal", "note")
 
     private lateinit var testee: XPropsSqlJdbcRepository
     private lateinit var client: Client
@@ -31,7 +31,6 @@ class XPropsSqlJdbcRepositoryTest : HsqldbTest() {
     fun `insert, single prop inserted`() {
         testee.insert(client, listOf(testProp))
         assertRows(table, mapper, testProp)
-
     }
 
     fun `select, single prop inserted, returns 1`() {

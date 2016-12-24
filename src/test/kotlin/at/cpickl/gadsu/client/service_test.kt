@@ -103,7 +103,7 @@ class ClientServiceImplIntegrationTest : HsqldbTest() {
 
         assertRows(TABLE_CLIENT, Client.ROW_MAPPER, savedClient.copyWithoutCprops())
         jdbcx.assertEmptyTable(TABLE_TREATMENT)
-        assertRows(TABLE_XPROPS, SProp.ROW_MAPPER, SProp("Sleep", "Sleep_NeedMuch"))
+        assertRows(TABLE_XPROPS, SProp.ROW_MAPPER, SProp("Sleep", "Sleep_NeedMuch", ""))
 
         busListener.assertContains(ClientCreatedEvent(savedClient))
     }

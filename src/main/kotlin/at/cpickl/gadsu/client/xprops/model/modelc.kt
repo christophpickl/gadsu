@@ -8,8 +8,10 @@ import java.util.LinkedList
 class CPropsBuilder {
     private val cprops = LinkedList<CProp>()
 
-    fun add(xprop: XPropEnum, vararg selectedOpts: IsEnumOption): CPropsBuilder {
-        cprops.add(CPropEnum(xprop, selectedOpts.map { it.opt }))
+    fun add(xprop: XPropEnum, vararg selectedOpts: IsEnumOption) = add(xprop, "", *selectedOpts)
+
+    fun add(xprop: XPropEnum, note: String, vararg selectedOpts: IsEnumOption): CPropsBuilder {
+        cprops.add(CPropEnum(xprop, selectedOpts.map { it.opt }, note))
         return this
     }
 
@@ -64,6 +66,8 @@ data class CProps(private val props: Map<XProp, CProp>) {
 interface CProp : XProp {
     val xprop: XProp
     val clientValue: List<XPropEnumOpt>
+    val note: String
+
     val isClientValueEmpty: Boolean
     val isClientValueNotEmpty: Boolean
 
@@ -73,7 +77,8 @@ interface CProp : XProp {
 
 data class CPropEnum(
         override val xprop: XPropEnum,
-        override val clientValue: List<XPropEnumOpt>
+        override val clientValue: List<XPropEnumOpt>,
+        override val note: String
 ) : CProp, XProp by xprop {
 
     override val isClientValueEmpty = clientValue.isEmpty()
