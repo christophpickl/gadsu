@@ -37,9 +37,6 @@ class XPropsSqlJdbcRepository @Inject constructor(
 
     companion object {
         val TABLE = "xprops"
-
-
-
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
