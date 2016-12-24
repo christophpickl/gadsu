@@ -24,8 +24,10 @@ import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.registerMyKeyListener
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -34,6 +36,7 @@ import java.net.URL
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JLabel
 
 interface AppointmentWindow {
@@ -84,6 +87,7 @@ class SwingAppointmentWindow @Inject constructor(
     }
 
     init {
+        (contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("disposeMyWindow", { hideWindow() })) // nah ... registerCloseOnEscape()
         val gcalVisible = internetController.isConnected && prefs.preferencesData.gcalName != null
         modificationChecker.disableAll()
 
