@@ -48,10 +48,17 @@ class CPropEnumView(
     override val formLabel = xprop.label
     override val fillType = GridBagFill.Both
 
-    private val multiProperties: MultiProperties = MultiProperties(xprop, bus, XPropCellRenderer, xprop.key)
+    private val multiProperties: MultiProperties<XPropEnumOpt> = MultiProperties(xprop.options, bus, XPropCellRenderer,
+            xprop.key, { values, note -> CPropEnum(xprop, values, note).formatData() }, true)
 
     override fun updateValue(value: Client) {
-        multiProperties.updateValue(value)
+        val cprop = value.cprops.findOrNull(xprop)
+
+        multiProperties.updateValue(
+                renderText = cprop?.formatData() ?: "",
+                selectedValues = cprop?.clientValue ?: emptyList(),
+                note = cprop?.note ?: ""
+        )
     }
 
     override fun toCProp(): CPropEnum = CPropEnum(xprop, multiProperties.selectedValues, multiProperties.enteredNote)
@@ -63,7 +70,7 @@ class CPropEnumView(
         val originalNote = value.cprops.findOrNull(xprop)?.note ?: ""
         val noteChanged = enteredNote != originalNote
         val selectionModified = isSelectionModified(value)
-        return selectionModified || noteChanged // || editorView.note.text != value.cprops.findOrNull(xprop)?.note ?: ""
+        return selectionModified || noteChanged
     }
 
     override fun enableFor(modifications: ModificationChecker) {

@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.view.XPropCellRenderer
+import at.cpickl.gadsu.client.xprops.view.formatData
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
@@ -86,7 +88,7 @@ private class MultiPropertiesDriver(
     init {
         val xprop = XProps.Sleep
         val bus = EventBus()
-        val testee = MultiProperties(xprop, bus, XPropCellRenderer, viewNameId)
+        val testee = MultiProperties(xprop.options, bus, XPropCellRenderer, viewNameId, { values, note -> CPropEnum(xprop, values, note).formatData() }, true)
         component = testee.toComponent()
     }
 

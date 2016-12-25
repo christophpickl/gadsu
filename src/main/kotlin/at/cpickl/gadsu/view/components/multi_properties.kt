@@ -1,10 +1,5 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.CPropEnum
-import at.cpickl.gadsu.client.xprops.model.XPropEnum
-import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
-import at.cpickl.gadsu.client.xprops.view.formatData
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -19,30 +14,31 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 import javax.swing.ScrollPaneConstants
+import javax.swing.event.ListSelectionListener
 
-class MultiProperties(
-        private val xprop: XPropEnum,
+class MultiProperties<T : Comparable<T>>(
+        initialData: List<T>,
         bus: EventBus,
-        editorCellRenderer: MyListCellRenderer<XPropEnumOpt>,
-        viewNameId: String
+        editorCellRenderer: MyListCellRenderer<T>,
+        viewNameId: String,
+        private val createRenderText: (List<T>, String) -> String,
+        noteEnabled: Boolean
 ) {
 
     private val containerPanel = JPanel(BorderLayout())
     private val rendererView = MultiPropertiesRenderer({ changeToEditor() }, viewNameId)
-    private val editorView = MultiPropertiesEditor(xprop, editorCellRenderer, bus, { changeToRenderer() }, viewNameId)
+    private val editorView = MultiPropertiesEditor<T>(initialData, editorCellRenderer, bus, { changeToRenderer() }, viewNameId, noteEnabled)
 
     init {
         changeContainerContent(rendererView)
     }
 
-    val selectedValues: List<XPropEnumOpt> get() = editorView.list.selectedValuesList
+    val selectedValues: List<T> get() = editorView.list.selectedValuesList
     val enteredNote: String get() = editorView.note.text
 
-    fun updateValue(value: Client) {
-        val cprop = value.cprops.findOrNull(xprop)
-
-        rendererView.updateValue(cprop?.formatData() ?: "")
-        editorView.updateValue(cprop?.clientValue ?: emptyList(), cprop?.note ?: "")
+    fun updateValue(renderText: String, selectedValues: List<T>, note: String) {
+        rendererView.updateValue(renderText)
+        editorView.updateValue(selectedValues, note)
     }
 
     fun toComponent() = containerPanel
@@ -53,7 +49,7 @@ class MultiProperties(
     }
 
     private fun changeToRenderer() {
-        rendererView.updateValue(CPropEnum(xprop, selectedValues, enteredNote).formatData())
+        rendererView.updateValue(createRenderText(selectedValues, enteredNote))
         changeContainerContent(rendererView)
     }
 
@@ -68,6 +64,10 @@ class MultiProperties(
         containerPanel.repaint()
     }
 
+    fun addListSelectionListener(listener: ListSelectionListener) {
+        editorView.list.addListSelectionListener(listener)
+    }
+
 }
 
 private interface ContainerContent {
@@ -78,18 +78,28 @@ private class MultiPropertiesRenderer(
         onEditClicked: () -> Unit,
         viewNameId: String
 ) : ContainerContent {
-    private val panel = JPanel(BorderLayout())
+    private val panel = GridPanel()
     private val text = MyTextArea(ViewNames.Components.MultiProperties.RenderText(viewNameId), maxChars = null).apply {
         isEditable = false
         background = Colors.LIGHT_GRAY
     }
 
     init {
-        panel.add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER)
-        panel.add(JButton("Bearbeiten").apply {
-            name = ViewNames.Components.MultiProperties.ButtonEdit(viewNameId)
-            addActionListener { onEditClicked() }
-        }, BorderLayout.SOUTH)
+        with(panel) {
+            c.weightx = 1.0
+            c.weighty = 1.0
+            c.fill = GridBagConstraints.BOTH
+            add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED))
+
+            c.gridy++
+            c.weightx = 1.0
+            c.weighty = 0.0
+            c.fill = GridBagConstraints.HORIZONTAL
+            add(JButton("Bearbeiten").apply {
+                name = ViewNames.Components.MultiProperties.ButtonEdit(viewNameId)
+                addActionListener { onEditClicked() }
+            })
+        }
     }
 
     fun updateValue(newText: String) {
@@ -100,21 +110,22 @@ private class MultiPropertiesRenderer(
 }
 
 
-private class MultiPropertiesEditor(
-        xprop: XPropEnum,
-        myCellRenderer: MyListCellRenderer<XPropEnumOpt>,
+private class MultiPropertiesEditor<T : Comparable<T>>(
+        initialData: List<T>,
+        myCellRenderer: MyListCellRenderer<T>,
         bus: EventBus,
         onDoneClicked: () -> Unit,
-        viewNameId: String
+        viewNameId: String,
+        noteEnabled: Boolean
 ) : ContainerContent {
 
-    val list: MyList<XPropEnumOpt>
+    val list: MyList<T>
     private val panel: JPanel
     val note = MyTextArea(ViewNames.Components.MultiProperties.InputNote(viewNameId), visibleRows = 3)
 
     init {
-        val model = MyListModel<XPropEnumOpt>()
-        model.resetData(xprop.options)
+        val model = MyListModel<T>()
+        model.resetData(initialData)
         list = MyList(ViewNames.Components.MultiProperties.InputList(viewNameId), model, bus, myCellRenderer)
         list.enableToggleSelectionMode()
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
@@ -126,12 +137,17 @@ private class MultiPropertiesEditor(
             c.fill = GridBagConstraints.BOTH
             add(list.scrolled(hPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER))
 
-            c.gridy++
-            c.weighty = 0.0
-            c.fill = GridBagConstraints.HORIZONTAL
-            add(note.scrolled())
+            if (noteEnabled) {
+                c.gridy++
+                c.weighty = 0.0
+                c.fill = GridBagConstraints.HORIZONTAL
+                add(note.scrolled())
+            }
 
             c.gridy++
+            c.weightx = 1.0
+            c.weighty = 0.0
+            c.fill = GridBagConstraints.HORIZONTAL
             add(JButton("Fertig").apply {
                 name = ViewNames.Components.MultiProperties.ButtonDone(viewNameId)
                 addActionListener { onDoneClicked() }
@@ -139,7 +155,7 @@ private class MultiPropertiesEditor(
         }
     }
 
-    fun updateValue(newValues: List<XPropEnumOpt>, newNote: String) {
+    fun updateValue(newValues: List<T>, newNote: String) {
         list.clearSelection()
         list.addSelectedValues(newValues)
         note.text = newNote

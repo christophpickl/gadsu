@@ -19,10 +19,10 @@ import com.google.common.eventbus.EventBus
 
 fun main(args: Array<String>) {
     Framed.show(
-//            pulseDiagnosis().view
+            pulseDiagnosis().view
 //            haraDiagnosis().view
 //            tongueDiagnosis().view
-        bloodPressure().view
+//        bloodPressure().view
     )
 }
 
@@ -46,7 +46,7 @@ private fun tongueDiagnosis() =
 
 private fun pulseDiagnosis() =
         PulseDiagnosisRenderer(PulseDiagnosis(
-                properties = listOf(PulseProperty.Superficial),
+                properties = listOf(PulseProperty.Superficial, PulseProperty.Full, PulseProperty.Raugh),
                 note = "test note"
         ), EventBus())
 

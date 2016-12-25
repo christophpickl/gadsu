@@ -9,9 +9,8 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.MultiProperties
 import at.cpickl.gadsu.view.components.MyListCellRenderer
-import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.addChangeListener
@@ -25,7 +24,7 @@ import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JLabel
-import javax.swing.ListSelectionModel
+import javax.swing.event.ListSelectionListener
 
 
 // MODEL
@@ -41,7 +40,7 @@ enum class PulseProperty(
         // used to decide whether to render in list 1 or list 2
         val isPrimary: Boolean,
         val yy: YinYang? = null
-        ) {
+) {
 
     Superficial("oberflächlich", "SUPERFICIAL", true, YinYang.Yang),
     Deep("tief", "DEEP", true, YinYang.Yin),
@@ -191,6 +190,10 @@ private class PulsePropertyCellView(value: PulseProperty) : DefaultCellView<Puls
     }
 }
 
+private object PulsePropertyCellRenderer : MyListCellRenderer<PulseProperty>() {
+    override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
+}
+
 class PulseDiagnosisRenderer(
         pulseDiagnosis: PulseDiagnosis,
         bus: EventBus
@@ -209,20 +212,11 @@ class PulseDiagnosisRenderer(
         }
     }
 
-    private val inpPulseProps1 = MyList("PulseDiagnosisRenderer.Properties1",
-            MyListModel(ALL_PRIMARY), bus, object : MyListCellRenderer<PulseProperty>() {
-        override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
-    }).apply {
-        selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        enableToggleSelectionMode()
-    }
-    private val inpPulseProps2 = MyList("PulseDiagnosisRenderer.Properties2",
-            MyListModel(ALL_SECONDARY), bus, object : MyListCellRenderer<PulseProperty>() {
-        override fun newCell(value: PulseProperty) = PulsePropertyCellView(value)
-    }).apply {
-        selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        enableToggleSelectionMode()
-    }
+    // FIXME make modification aware!
+    private val inpPulseProps1: MultiProperties<PulseProperty> = MultiProperties(ALL_PRIMARY, bus, PulsePropertyCellRenderer,
+            "Puls1", { values, note -> values.map { "* ${it.label}" }.joinToString("\n") }, false)
+    private val inpPulseProps2: MultiProperties<PulseProperty> = MultiProperties(ALL_SECONDARY, bus, PulsePropertyCellRenderer,
+            "Puls2", { values, note -> values.map { "* ${it.label}" }.joinToString("\n") }, false)
 
     private val inpNote = MyTextArea("PulseDiagnosisRenderer.inpNote", 1)
 
@@ -233,11 +227,11 @@ class PulseDiagnosisRenderer(
             c.fill = GridBagConstraints.BOTH
             c.weighty = 0.7
             c.insets = Insets(GAP, GAP, 0, GAP)
-            add(inpPulseProps1.scrolled())
+            add(inpPulseProps1.toComponent())
 
             c.gridx++
             c.insets = Insets(GAP, 0, 0, GAP)
-            add(inpPulseProps2.scrolled())
+            add(inpPulseProps2.toComponent())
 
             c.gridx = 0
             c.gridy++
@@ -251,20 +245,26 @@ class PulseDiagnosisRenderer(
         }
     }
 
+    private val NOTE_IGNORED = ""
     private fun initValues(pulseDiagnosis: PulseDiagnosis) {
-        inpPulseProps1.addSelectedValues(pulseDiagnosis.properties.filter { ALL_PRIMARY.contains(it) })
-        inpPulseProps2.addSelectedValues(pulseDiagnosis.properties.filter { ALL_SECONDARY.contains(it) })
+
+        val primaryValues = pulseDiagnosis.properties.filter { ALL_PRIMARY.contains(it) }
+        inpPulseProps1.updateValue(primaryValues.map { "* ${it.label}" }.joinToString("\n"), primaryValues, NOTE_IGNORED)
+
+        val secondaryValues = pulseDiagnosis.properties.filter { ALL_SECONDARY.contains(it) }
+        inpPulseProps2.updateValue(secondaryValues.map { "* ${it.label}" }.joinToString("\n"), secondaryValues, NOTE_IGNORED)
+
         inpNote.text = pulseDiagnosis.note
     }
 
     override fun readDynTreatment() = PulseDiagnosis(
-            inpPulseProps1.selectedValuesList.union(inpPulseProps2.selectedValuesList).toList(),
+            inpPulseProps1.selectedValues.union(inpPulseProps2.selectedValues).toList(),
             inpNote.text
     )
 
     override fun registerOnChange(changeListener: () -> Unit) {
-        inpPulseProps1.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
-        inpPulseProps2.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpPulseProps1.addListSelectionListener(ListSelectionListener { e -> if (!e.valueIsAdjusting) changeListener() })
+        inpPulseProps2.addListSelectionListener(ListSelectionListener { e -> if (!e.valueIsAdjusting) changeListener() })
         inpNote.addChangeListener { changeListener() }
     }
 
