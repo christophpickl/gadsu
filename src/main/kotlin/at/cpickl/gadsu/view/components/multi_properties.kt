@@ -9,6 +9,8 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -68,7 +70,7 @@ class MultiProperties<T : Comparable<T>>(
         rendererView.updateValue(buildRenderText(createRenderText(newSelectedValues), newNote))
     }
 
-    private fun changeToEditor() {
+    @VisibleForTesting fun changeToEditor() {
         changeContainerContent(editorView)
     }
 
@@ -105,14 +107,13 @@ private class MultiPropertiesRenderer(
             c.weighty = 1.0
             c.fill = GridBagConstraints.BOTH
             add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED))
-
-            c.gridy++
-            c.weightx = 1.0
-            c.weighty = 0.0
-            c.fill = GridBagConstraints.HORIZONTAL
-            add(JButton("Bearbeiten").apply {
-                name = ViewNames.Components.MultiProperties.ButtonEdit(viewNameId)
-                addActionListener { onEditClicked() }
+            text.addMouseListener(object : MouseAdapter() {
+                override fun mouseClicked(e: MouseEvent) {
+                    println("mouse click: $e")
+                    if (e.button == 1) {
+                        onEditClicked()
+                    }
+                }
             })
         }
     }

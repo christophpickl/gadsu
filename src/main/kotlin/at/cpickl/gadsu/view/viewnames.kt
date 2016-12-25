@@ -120,7 +120,6 @@ object ComponentsViewNames {
 
 object MultiPropertiesViewNames {
     fun RenderText(id: String) = "MultiProperties.RenderText.$id"
-    fun ButtonEdit(id: String) = "MultiProperties.ButtonEdit.$id"
     fun ButtonDone(id: String) = "MultiProperties.ButtonDone.$id"
     fun InputNote(id: String) = "MultiProperties.InputNote.$id"
     fun InputList(id: String) = "MultiProperties.InputList.$id"

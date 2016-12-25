@@ -16,6 +16,7 @@ import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
+import java.awt.event.MouseEvent
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JList
@@ -101,8 +102,6 @@ private class MultiPropertiesDriver(
 
     private val viewNameRenderText = ViewNames.Components.MultiProperties.RenderText(viewNameId)
     private val renderText: TextBox get() = window.getTextBox(viewNameRenderText)
-    private val viewNameButtonEdit = ViewNames.Components.MultiProperties.ButtonEdit(viewNameId)
-    private val buttonEdit: Button get() = window.getButton(viewNameButtonEdit)
 
     private val viewNameInputList = ViewNames.Components.MultiProperties.InputList(viewNameId)
     private val inputList: ListBox get() = window.getListBox(viewNameInputList)
@@ -129,7 +128,8 @@ private class MultiPropertiesDriver(
 
     fun hitEditButton() {
         assertRenderMode()
-        buttonEdit.click()
+        val textArea = renderText.awtComponent as MyTextArea
+        textArea.mouseListeners.forEach { it.mouseClicked(MouseEvent(textArea, 0, 0, 0, 0, 0, 1, false, 1)) }
     }
 
     fun hitDoneButton() {
@@ -139,7 +139,6 @@ private class MultiPropertiesDriver(
 
     private fun assertRenderMode() {
         test.assertThat(renderText.isVisible)
-        test.assertThat(buttonEdit.isVisible)
 
         test.not(window.containsSwingComponent(JList::class.java, viewNameInputList))
         test.not(window.containsSwingComponent(JTextArea::class.java, viewNameInputNote))
@@ -148,7 +147,6 @@ private class MultiPropertiesDriver(
 
     private fun assertEditMode() {
         test.not(window.containsSwingComponent(JTextArea::class.java, viewNameRenderText))
-        test.not(window.containsSwingComponent(JButton::class.java, viewNameButtonEdit))
 
         test.assertThat(inputList.isVisible)
         test.assertThat(inputNote.isVisible)

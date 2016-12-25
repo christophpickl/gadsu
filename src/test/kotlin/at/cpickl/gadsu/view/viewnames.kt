@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.GadsuException
 import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -27,17 +28,24 @@ import kotlin.reflect.memberProperties
         ViewNames::class.memberProperties.forEach {
             val containerRef = it
             log.debug("Checking container (${containerRef.name}): {}", containerRef)
-            val containerObj = containerRef.get(ViewNames)!!
-            containerObj.javaClass.kotlin.memberProperties.forEach {
-                val viewNameRef = it
+            if (containerRef.name == "Components") {
+                log.debug("Skip Components... dynamic view names.")
+            } else {
+                val containerObj = containerRef.get(ViewNames)!!
+                containerObj.javaClass.kotlin.memberProperties.forEach {
+                    val viewNameRef = it
 
-                val containerId = "${containerRef.name}.${viewNameRef.name}"
-                val viewNameObj = viewNameRef.get(containerObj) as String
-                if (!viewNamesByContainerId.containsKey(viewNameObj)) {
-                    viewNamesByContainerId.put(viewNameObj, LinkedList())
+                    val containerId = "${containerRef.name}.${viewNameRef.name}"
+                    val viewNameObj = viewNameRef.get(containerObj)
+                    if (viewNameObj !is String) {
+                        throw GadsuException("Expected to be a String: " + viewNameObj)
+                    }
+                    if (!viewNamesByContainerId.containsKey(viewNameObj)) {
+                        viewNamesByContainerId.put(viewNameObj, LinkedList())
+                    }
+                    log.debug("Found view name '{}' => '{}'", containerId, viewNameObj)
+                    viewNamesByContainerId.get(viewNameObj)!!.add(containerId)
                 }
-                log.debug("Found view name '{}' => '{}'", containerId, viewNameObj)
-                viewNamesByContainerId.get(viewNameObj)!!.add(containerId)
             }
         }
         return viewNamesByContainerId
