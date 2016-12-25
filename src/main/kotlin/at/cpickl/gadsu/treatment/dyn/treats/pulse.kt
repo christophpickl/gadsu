@@ -213,9 +213,9 @@ class PulseDiagnosisRenderer(
     }
 
     private val inpPulseProps1: MultiProperties<PulseProperty> = MultiProperties(ALL_PRIMARY, bus, PulsePropertyCellRenderer,
-            "Puls1", { values, note -> values.map { "* ${it.label}" }.joinToString("\n") }, false)
+            "Puls1", { it.map { it.label } }, false)
     private val inpPulseProps2: MultiProperties<PulseProperty> = MultiProperties(ALL_SECONDARY, bus, PulsePropertyCellRenderer,
-            "Puls2", { values, note -> values.map { "* ${it.label}" }.joinToString("\n") }, false)
+            "Puls2", { it.map { it.label } }, false)
 
     private val inpNote = MyTextArea("PulseDiagnosisRenderer.inpNote", 1)
 
@@ -248,10 +248,10 @@ class PulseDiagnosisRenderer(
     private fun initValues(pulseDiagnosis: PulseDiagnosis) {
 
         val primaryValues = pulseDiagnosis.properties.filter { ALL_PRIMARY.contains(it) }
-        inpPulseProps1.updateValue(primaryValues.map { "* ${it.label}" }.joinToString("\n"), primaryValues, NOTE_IGNORED)
+        inpPulseProps1.updateValue(primaryValues, NOTE_IGNORED)
 
         val secondaryValues = pulseDiagnosis.properties.filter { ALL_SECONDARY.contains(it) }
-        inpPulseProps2.updateValue(secondaryValues.map { "* ${it.label}" }.joinToString("\n"), secondaryValues, NOTE_IGNORED)
+        inpPulseProps2.updateValue(secondaryValues, NOTE_IGNORED)
 
         inpNote.text = pulseDiagnosis.note
     }

@@ -21,7 +21,7 @@ class MultiProperties<T : Comparable<T>>(
         bus: EventBus,
         editorCellRenderer: MyListCellRenderer<T>,
         viewNameId: String,
-        private val createRenderText: (List<T>, String) -> String,
+        private val createRenderText: (List<T>) -> List<String>,
         noteEnabled: Boolean
 ) {
 
@@ -36,9 +36,9 @@ class MultiProperties<T : Comparable<T>>(
     val selectedValues: List<T> get() = editorView.list.selectedValuesList
     val enteredNote: String get() = editorView.note.text
 
-    fun updateValue(renderText: String, selectedValues: List<T>, note: String) {
-        rendererView.updateValue(renderText)
-        editorView.updateValue(selectedValues, note)
+    fun updateValue(newSelectedValues: List<T>, newNote: String) {
+        updateRendererText(newSelectedValues, newNote)
+        editorView.updateValue(newSelectedValues, newNote)
     }
 
     fun toComponent() = containerPanel
@@ -49,8 +49,32 @@ class MultiProperties<T : Comparable<T>>(
     }
 
     private fun changeToRenderer() {
-        rendererView.updateValue(createRenderText(selectedValues, enteredNote))
+        updateRendererText(selectedValues, enteredNote)
         changeContainerContent(rendererView)
+    }
+
+    /*
+    fun CProp?.formatData(): String {
+        if (this == null) {
+            return ""
+        }
+        val selectedEnumOpts = this.formatClientValues()
+        return selectedEnumOpts + (
+                if (this.note.isEmpty()) "" else
+                    (if (selectedEnumOpts.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + this.note
+                )
+    }
+     */
+    // fun CProp.formatClientValues() = this.clientValue.map { "* " + it.label }.joinToString("\n")
+    private fun updateRendererText(newSelectedValues: List<T>, newNote: String) {
+        rendererView.updateValue(
+                createRenderText(newSelectedValues)
+                        .map { "* " + it }
+                        .joinToString("\n") + (
+                        if (newNote.isEmpty()) "" else
+                            (if (newSelectedValues.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + newNote
+                        )
+        )
     }
 
     private fun changeToEditor() {

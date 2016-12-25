@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client.xprops.view
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.CProp
 import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
@@ -18,24 +17,11 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 
 
-fun CProp?.formatData(): String {
-    if (this == null) {
-        return ""
-    }
-    val selectedEnumOpts = this.formatClientValues()
-    return selectedEnumOpts + (
-            if (this.note.isEmpty()) "" else
-                (if (selectedEnumOpts.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + this.note
-            )
-}
-
-fun CProp.formatClientValues() = this.clientValue.map { "* " + it.label }.joinToString("\n")
-
 interface ElFieldForProps<in V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
 }
 
-object XPropCellRenderer : MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true)  {
+object XPropCellRenderer : MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true) {
     override fun newCell(value: XPropEnumOpt): CellView = XPropEnumCell(value)
 }
 
@@ -49,15 +35,14 @@ class CPropEnumView(
     override val fillType = GridBagFill.Both
 
     private val multiProperties: MultiProperties<XPropEnumOpt> = MultiProperties(xprop.options, bus, XPropCellRenderer,
-            xprop.key, { values, note -> CPropEnum(xprop, values, note).formatData() }, true)
+            xprop.key, { it.map { it.label } }, true)
 
     override fun updateValue(value: Client) {
         val cprop = value.cprops.findOrNull(xprop)
 
         multiProperties.updateValue(
-                renderText = cprop?.formatData() ?: "",
-                selectedValues = cprop?.clientValue ?: emptyList(),
-                note = cprop?.note ?: ""
+                newSelectedValues = cprop?.clientValue ?: emptyList(),
+                newNote = cprop?.note ?: ""
         )
     }
 
