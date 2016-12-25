@@ -6,6 +6,7 @@ import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.view.ElField
+import at.cpickl.gadsu.view.components.CellView
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MultiProperties
 import at.cpickl.gadsu.view.components.MyListCellRenderer
@@ -34,6 +35,9 @@ interface ElFieldForProps<in V> : ElField<V> {
     fun enableFor(modifications: ModificationChecker)
 }
 
+object XPropCellRenderer : MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true)  {
+    override fun newCell(value: XPropEnumOpt): CellView = XPropEnumCell(value)
+}
 
 class CPropEnumView(
         override val icon: ImageIcon?,
@@ -44,21 +48,18 @@ class CPropEnumView(
     override val formLabel = xprop.label
     override val fillType = GridBagFill.Both
 
-    private val multiProperties: MultiProperties = MultiProperties(xprop, { toCProp() }, bus,
-            object : MyListCellRenderer<XPropEnumOpt>(shouldHoverChangeSelectedBg = true) {
-                override fun newCell(value: XPropEnumOpt) = XPropEnumCell(value)
-            })
+    private val multiProperties: MultiProperties = MultiProperties(xprop, bus, XPropCellRenderer, xprop.key)
 
     override fun updateValue(value: Client) {
         multiProperties.updateValue(value)
     }
 
-    override fun toCProp(): CPropEnum = CPropEnum(xprop, multiProperties.selectedValues, multiProperties.note)
+    override fun toCProp(): CPropEnum = CPropEnum(xprop, multiProperties.selectedValues, multiProperties.enteredNote)
 
     override fun toComponent() = multiProperties.toComponent()
 
     override fun isModified(value: Client): Boolean {
-        val enteredNote = multiProperties.note
+        val enteredNote = multiProperties.enteredNote
         val originalNote = value.cprops.findOrNull(xprop)?.note ?: ""
         val noteChanged = enteredNote != originalNote
         val selectionModified = isSelectionModified(value)

@@ -11,6 +11,7 @@ object ViewNames {
     val Acupunct = AcupunctViewNames
     val Preferences = PreferencesViewNames
     val MultiProtocol = MultiProtocolViewNames
+    val Components = ComponentsViewNames
 }
 
 object MainViewNames {
@@ -111,4 +112,16 @@ object MultiProtocolViewNames {
     val InputDescription = "MultiProtocol.InputDescription"
     val ButtonPrint = "MultiProtocol.ButtonPrint"
     val ButtonTestPrint = "MultiProtocol.ButtonTestPrint"
+}
+
+object ComponentsViewNames {
+    val MultiProperties = MultiPropertiesViewNames
+}
+
+object MultiPropertiesViewNames {
+    fun RenderText(id: String) = "MultiProperties.RenderText.$id"
+    fun ButtonEdit(id: String) = "MultiProperties.ButtonEdit.$id"
+    fun ButtonDone(id: String) = "MultiProperties.ButtonDone.$id"
+    fun InputNote(id: String) = "MultiProperties.InputNote.$id"
+    fun InputList(id: String) = "MultiProperties.InputList.$id"
 }

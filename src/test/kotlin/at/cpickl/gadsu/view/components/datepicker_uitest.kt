@@ -15,9 +15,11 @@ import javax.swing.JPanel
 
 @Test(groups = arrayOf("uiTest"))
 class DatePickerUiTest : SimpleUiTest() {
+
     companion object {
         private val VIEWNAME_PREFIX = "myTest"
     }
+
     private val container = JPanel(BorderLayout())
     private var _testee: DateSpecPicker? = null
     private val testee: DateSpecPicker get() = _testee!!
@@ -43,7 +45,7 @@ class DatePickerUiTest : SimpleUiTest() {
 
     private fun testee(initial: DateTime?): MyDatePicker {
         container.removeAll()
-        val testee =  MyDatePicker.build(initial, VIEWNAME_PREFIX)
+        val testee = MyDatePicker.build(initial, VIEWNAME_PREFIX)
         container.add(testee, BorderLayout.CENTER)
         return testee
     }
