@@ -212,10 +212,11 @@ class PulseDiagnosisRenderer(
         }
     }
 
-    private val inpPulseProps1: MultiProperties<PulseProperty> = MultiProperties(ALL_PRIMARY, bus, PulsePropertyCellRenderer,
-            "Puls1", { it.map { it.label } }, false)
-    private val inpPulseProps2: MultiProperties<PulseProperty> = MultiProperties(ALL_SECONDARY, bus, PulsePropertyCellRenderer,
-            "Puls2", { it.map { it.label } }, false)
+    private val inpPulseProps1: MultiProperties<PulseProperty> = MultiProperties(
+            ALL_PRIMARY, bus, PulsePropertyCellRenderer, "Puls1", { it.map { it.label } }, false)
+
+    private val inpPulseProps2: MultiProperties<PulseProperty> = MultiProperties(
+            ALL_SECONDARY, bus, PulsePropertyCellRenderer, "Puls2", { it.map { it.label } }, false)
 
     private val inpNote = MyTextArea("PulseDiagnosisRenderer.inpNote", 1)
 

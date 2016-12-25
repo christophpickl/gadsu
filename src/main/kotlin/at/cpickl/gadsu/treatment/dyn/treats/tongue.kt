@@ -9,9 +9,8 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty.*
 import at.cpickl.gadsu.view.components.DefaultCellView
-import at.cpickl.gadsu.view.components.MyList
+import at.cpickl.gadsu.view.components.MultiProperties
 import at.cpickl.gadsu.view.components.MyListCellRenderer
-import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.addChangeListener
@@ -26,7 +25,7 @@ import java.awt.Insets
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JLabel
-import javax.swing.ListSelectionModel
+import javax.swing.event.ListSelectionListener
 
 // MODEL
 // =====================================================================================================================
@@ -271,44 +270,27 @@ private class TonguePropertableCellView<T : TonguePropertable>(value: T) : Defau
 }
 
 
-//private class TongueList<T : TonguePropertable>(
-//        viewNameSuffix: String,
-//        values: Array<T>,
-//        bus: EventBus
-//) : MyList<T>("TongueList.$viewNameSuffix", MyListModel<T>(values.toList()), bus, TonguePropertableRenderer()) {
-//    init {
-//        enableToggleSelectionMode()
-//        visibleRowCount = 3
-//    }
-//}
 class TongueDiagnosisRenderer(
         tongueDiagnosis: TongueDiagnosis,
         bus: EventBus
 ) : DynTreatmentRenderer {
 
-    // FIXME #71 make the TCM prop a generic component and reuse here
-    // MINOR copy'n'paste as i dont get generics :(
-    private val inpListColor = MyList("TongueDiagnosisRenderer.Color",
-            MyListModel(Color.values().toList()), bus, TonguePropertableRenderer(), "Farbe")
-    private val inpListShape = MyList("TongueDiagnosisRenderer.Shape",
-            MyListModel(Shape.values().toList()), bus, TonguePropertableRenderer(), "Form")
-    private val inpListCoat = MyList("TongueDiagnosisRenderer.Coat",
-            MyListModel(Coat.values().toList()), bus, TonguePropertableRenderer(), "Belag")
-    private val inpListSpecial = MyList("TongueDiagnosisRenderer.Special",
-            MyListModel(Special.values().toList()), bus, TonguePropertableRenderer(), "Besonderheiten")
+
+    private val inpListColor: MultiProperties<Color> = MultiProperties(
+            Color.values().toList(), bus, TonguePropertableRenderer(), "TongueColor", { it.map { it.label } }, false)
+
+    private val inpListShape: MultiProperties<Shape> = MultiProperties(
+            Shape.values().toList(), bus, TonguePropertableRenderer(), "TongueShape", { it.map { it.label } }, false)
+
+    private val inpListCoat: MultiProperties<Coat> = MultiProperties(
+            Coat.values().toList(), bus, TonguePropertableRenderer(), "TongueCoat", { it.map { it.label } }, false)
+
+    private val inpListSpecial: MultiProperties<Special> = MultiProperties(
+            Special.values().toList(), bus, TonguePropertableRenderer(), "TongueSpecial", { it.map { it.label } }, false)
 
     private val inpLists = arrayOf(inpListColor, inpListShape, inpListCoat, inpListSpecial)
     private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2) // does not work, see gridpanel...
     override var originalDynTreatment: DynTreatment = tongueDiagnosis
-
-    init {
-        inpLists.forEach {
-            with(it) {
-                setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-                enableToggleSelectionMode()
-            }
-        }
-    }
 
     override val view: JComponent by lazy {
         GridPanel().apply {
@@ -317,40 +299,40 @@ class TongueDiagnosisRenderer(
             c.fill = GridBagConstraints.HORIZONTAL
             c.weighty = 0.0
             c.insets = Insets(0, GAP, 0, GAP)
-            add(JLabel(inpListColor.label).bold())
+            add(JLabel("Farbe").bold())
             c.gridx++
             c.insets = Insets(0, 0, 0, GAP)
-            add(JLabel(inpListShape.label).bold())
+            add(JLabel("Form").bold())
 
             c.gridy++
             c.gridx = 0
             c.fill = GridBagConstraints.BOTH
             c.weighty = 1.0
             c.insets = Insets(0, GAP, GAP, GAP)
-            add(inpListColor.scrolled())
+            add(inpListColor.toComponent())
             c.gridx++
             c.insets = Insets(0, 0, GAP, GAP)
-            add(inpListShape.scrolled())
+            add(inpListShape.toComponent())
 
             c.gridy++
             c.gridx = 0
             c.fill = GridBagConstraints.HORIZONTAL
             c.weighty = 0.0
             c.insets = Insets(0, GAP, 0, GAP)
-            add(JLabel(inpListCoat.label).bold())
+            add(JLabel("Belag").bold())
             c.gridx++
             c.insets = Insets(0, 0, 0, GAP)
-            add(JLabel(inpListSpecial.label).bold())
+            add(JLabel("Besonderheiten").bold())
 
             c.gridy++
             c.gridx = 0
             c.fill = GridBagConstraints.BOTH
             c.weighty = 1.0
             c.insets = Insets(0, GAP, 0, GAP)
-            add(inpListCoat.scrolled())
+            add(inpListCoat.toComponent())
             c.gridx++
             c.insets = Insets(0, 0, 0, GAP)
-            add(inpListSpecial.scrolled())
+            add(inpListSpecial.toComponent())
 
             c.gridy++
             c.gridx = 0
@@ -366,26 +348,25 @@ class TongueDiagnosisRenderer(
     }
 
     private fun initValues(tongueDiagnosis: TongueDiagnosis) {
-        inpListColor.addSelectedValues(tongueDiagnosis.color)
-        inpListShape.addSelectedValues(tongueDiagnosis.shape)
-        inpListCoat.addSelectedValues(tongueDiagnosis.coat)
-        inpListSpecial.addSelectedValues(tongueDiagnosis.special)
+        inpListColor.updateValue(tongueDiagnosis.color, "")
+        inpListShape.updateValue(tongueDiagnosis.shape, "")
+        inpListCoat.updateValue(tongueDiagnosis.coat, "")
+        inpListSpecial.updateValue(tongueDiagnosis.special, "")
         inpNote.text = tongueDiagnosis.note
     }
 
     override fun readDynTreatment() = TongueDiagnosis(
-            inpListColor.selectedValuesList,
-            inpListShape.selectedValuesList,
-            inpListCoat.selectedValuesList,
-            inpListSpecial.selectedValuesList,
+            inpListColor.selectedValues,
+            inpListShape.selectedValues,
+            inpListCoat.selectedValues,
+            inpListSpecial.selectedValues,
             inpNote.text
     )
 
     override fun registerOnChange(changeListener: () -> Unit) {
-        inpListColor.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
-        inpListShape.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
-        inpListCoat.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
-        inpListSpecial.addListSelectionListener { if (!it.valueIsAdjusting) changeListener() }
+        inpLists.forEach {
+            it.addListSelectionListener(ListSelectionListener { if (!it.valueIsAdjusting) changeListener() })
+        }
         inpNote.addChangeListener { changeListener() }
     }
 
