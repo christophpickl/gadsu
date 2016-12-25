@@ -212,7 +212,6 @@ class PulseDiagnosisRenderer(
         }
     }
 
-    // FIXME make modification aware!
     private val inpPulseProps1: MultiProperties<PulseProperty> = MultiProperties(ALL_PRIMARY, bus, PulsePropertyCellRenderer,
             "Puls1", { values, note -> values.map { "* ${it.label}" }.joinToString("\n") }, false)
     private val inpPulseProps2: MultiProperties<PulseProperty> = MultiProperties(ALL_SECONDARY, bus, PulsePropertyCellRenderer,
