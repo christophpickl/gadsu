@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.acupuncture
 
-import at.cpickl.gadsu.tcm.model.AcupunctureRepository
-import at.cpickl.gadsu.tcm.model.StaticAcupunctureRepository
+import at.cpickl.gadsu.acupuncture.AcupunctureRepository
+import at.cpickl.gadsu.acupuncture.StaticAcupunctureRepository
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 

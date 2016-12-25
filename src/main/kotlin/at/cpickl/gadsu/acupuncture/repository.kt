@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.tcm.model
+package at.cpickl.gadsu.acupuncture
 
 // for better testability
 interface AcupunctureRepository {

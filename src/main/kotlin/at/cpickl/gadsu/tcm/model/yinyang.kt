@@ -15,6 +15,7 @@ enum class YinYangMiddle(val yy: YinYang?) {
 }
 
 enum class YinYangSize(val labelChinese: String) {
+    // TODO i think this is mixed up. shai/tao vs small/bg?!
     Small("Tai"),
     Big("Shao")
 }

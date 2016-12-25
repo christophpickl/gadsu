@@ -1,0 +1,289 @@
+package at.cpickl.gadsu.acupuncture
+
+import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.tcm.model.Element
+import at.cpickl.gadsu.tcm.model.Meridian
+import at.cpickl.gadsu.tcm.model.UnpairedMeridian
+import com.google.common.base.Splitter
+import com.google.common.collect.ComparisonChain
+import java.util.HashMap
+import java.util.regex.Pattern
+
+
+// synonym
+fun AcupunctCoordinate.Companion.byLabel(label: String) = Acupunct.coordinateByLabel(label)
+
+data class Acupunct(
+        val coordinate: AcupunctCoordinate,
+        val germanName: String,
+        val chineseName: String,
+        val note: String,
+        val localisation: String,
+        val indications: List<String>,
+        val flags: List<AcupunctFlag>
+) :
+        Comparable<Acupunct> {
+
+    companion object {
+        private val acupunctByCoordinate = HashMap<AcupunctCoordinate, Acupunct>()
+        private val coordinatesByLabel = HashMap<String, AcupunctCoordinate>()
+
+        fun build(meridian: Meridian, number: Int, germanName: String, chineseName: String, note: String, localisation: String, joinedIndications: String, flags: List<AcupunctFlag>): Acupunct {
+            val indications = Splitter.on(",").trimResults().split(joinedIndications).toList()
+            val coordinate = AcupunctCoordinate(meridian, number)
+            coordinatesByLabel.put(coordinate.label, coordinate)
+            return Acupunct(coordinate, germanName, chineseName, note, localisation, indications, flags).apply {
+                acupunctByCoordinate.put(coordinate, this)
+            }
+        }
+        fun coordinateByLabel(label: String) = coordinatesByLabel[label]
+        fun byCoordinate(coordinate: AcupunctCoordinate) = acupunctByCoordinate[coordinate]
+    }
+
+    init {
+        verifyFlags()
+    }
+
+    private fun verifyFlags() {
+        if (flags.sorted() != flags) {
+            throw GadsuException("Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
+        }
+        if (flags.filter { it is AcupunctFlag.ElementPoint }.size > 1) {
+            throw GadsuException("Flags must only contain 0 or 1 element point, but was: " + flags.joinToString(", "))
+        }
+    }
+
+    override fun compareTo(other: Acupunct) = this.coordinate.compareTo(other.coordinate)
+
+    val isMarinaportant: Boolean by lazy { flags.contains(AcupunctFlag.Marinaportant) }
+
+    // delegation is not working properly due to mismatching Comparable<T> interfaces
+    val meridian: Meridian = coordinate.meridian
+    val number: Int = coordinate.number
+
+    // move to and delegate by AcupunctCoordinate??
+    val titleLong: String get() = "${meridian.labelLong} $number"
+    val titleShort: String get() = "${meridian.labelShort} $number"
+}
+
+data class AcupunctCoordinate(
+        val meridian: Meridian,
+        val number: Int
+) : Comparable<AcupunctCoordinate> {
+
+    companion object {
+        private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Dü)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
+        fun isPotentialLabel(potent: String) = regexp.matcher(potent).matches()
+    }
+
+    /** E.g. "Lu1", "3E21, "Dü14" */
+    val label = meridian.labelShort + number
+
+    override fun compareTo(other: AcupunctCoordinate): Int {
+        return ComparisonChain.start()
+                .compare(this.meridian, other.meridian)
+                .compare(this.number, other.number)
+                .result()
+    }
+}
+
+
+interface AcupunctFlagCallback<T> {
+
+    companion object {
+        val LABELIZE: AcupunctFlagCallback<String> = AcupunctFlagStringCallback.INSTANCE
+        val LABELIZE_SHORT: AcupunctFlagCallback<String> = AcupunctFlagStringShortCallback.INSTANCE
+    }
+
+    fun onMarinaportant(flag: AcupunctFlag.Marinaportant): T
+    fun onBoPoint(flag: AcupunctFlag.BoPoint): T
+    fun onElementPoint(flag: AcupunctFlag.ElementPoint): T
+    fun onYuPoint(flag: AcupunctFlag.YuPoint): T
+    fun onOriginalPoint(flag: AcupunctFlag.OriginalPoint): T
+    fun onNexusPoint(flag: AcupunctFlag.NexusPoint): T
+    fun onMasterPoint(flag: AcupunctFlag.MasterPoint): T
+    fun onKeyPoint(flag: AcupunctFlag.KeyPoint): T
+    fun onTonePoint(flag: AcupunctFlag.TonePoint): T
+    fun onSedatePoint(flag: AcupunctFlag.SedatePoint): T
+    fun onJingPoint(flag: AcupunctFlag.JingPoint): T
+    fun onEntryPoint(flag: AcupunctFlag.EntryPoint): T
+}
+
+open class AcupunctFlagStringCallback private constructor() : AcupunctFlagCallback<String> {
+    companion object {
+        val INSTANCE = AcupunctFlagStringCallback()
+    }
+
+    override fun onMarinaportant(flag: AcupunctFlag.Marinaportant) = flag.label
+    override fun onBoPoint(flag: AcupunctFlag.BoPoint) = "${flag.label} ${flag.meridian.labelShort}"
+    override fun onYuPoint(flag: AcupunctFlag.YuPoint) = "${flag.label} ${flag.meridian.labelShort}"
+    override fun onElementPoint(flag: AcupunctFlag.ElementPoint) = flag.element.label + "punkt"
+    override fun onOriginalPoint(flag: AcupunctFlag.OriginalPoint) = flag.label
+    override fun onNexusPoint(flag: AcupunctFlag.NexusPoint) = flag.label
+    override fun onMasterPoint(flag: AcupunctFlag.MasterPoint) = flag.label
+    override fun onKeyPoint(flag: AcupunctFlag.KeyPoint) = "${flag.label} ${flag.meridianx.label}"
+    override fun onTonePoint(flag: AcupunctFlag.TonePoint) = flag.label
+    override fun onSedatePoint(flag: AcupunctFlag.SedatePoint) = flag.label
+    override fun onJingPoint(flag: AcupunctFlag.JingPoint) = flag.label
+    override fun onEntryPoint(flag: AcupunctFlag.EntryPoint) = "${flag.label} ${flag.meridian.labelShort}"
+}
+
+open class AcupunctFlagStringShortCallback private constructor() : AcupunctFlagCallback<String> {
+    companion object {
+        val INSTANCE = AcupunctFlagStringShortCallback()
+    }
+
+    override fun onMarinaportant(flag: AcupunctFlag.Marinaportant) = flag.labelShort
+    override fun onBoPoint(flag: AcupunctFlag.BoPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
+    override fun onYuPoint(flag: AcupunctFlag.YuPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
+    override fun onElementPoint(flag: AcupunctFlag.ElementPoint) = flag.element.label
+    override fun onOriginalPoint(flag: AcupunctFlag.OriginalPoint) = flag.labelShort
+    override fun onNexusPoint(flag: AcupunctFlag.NexusPoint) = flag.labelShort
+    override fun onMasterPoint(flag: AcupunctFlag.MasterPoint) = flag.labelShort
+    override fun onKeyPoint(flag: AcupunctFlag.KeyPoint) = "${flag.labelShort} ${flag.meridianx.label}"
+    override fun onTonePoint(flag: AcupunctFlag.TonePoint) = flag.labelShort
+    override fun onSedatePoint(flag: AcupunctFlag.SedatePoint) = flag.labelShort
+    override fun onJingPoint(flag: AcupunctFlag.JingPoint) = flag.labelShort
+    override fun onEntryPoint(flag: AcupunctFlag.EntryPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
+}
+
+sealed class AcupunctFlag(
+        val label: String,
+        val labelShort: String,
+        private val compareWeight: Int
+) : Comparable<AcupunctFlag> {
+
+    abstract fun <T> onFlagType(callback: AcupunctFlagCallback<T>): T
+
+    open protected fun additionalCompareTo(other: AcupunctFlag): Int {
+        return 0
+    }
+
+    // erfahrungsstelle (marina) == verbindungspunkt (DTV) fuer zb Lu?
+    // RIM?
+
+
+    override fun compareTo(other: AcupunctFlag): Int {
+        if (this.compareWeight == other.compareWeight) {
+            return additionalCompareTo(other)
+        }
+        return this.compareWeight - other.compareWeight
+    }
+
+    /** Important for marina. */
+    // =================================================================================================================
+    object Marinaportant : AcupunctFlag("Wichtig", "*", 1) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onMarinaportant(this)
+        override fun toString() = "Marinaportant"
+    }
+
+    /** Alarmpunkt, japan. "bo", chin. "mu" */
+    // con ab = sammlungspunkt lt dtv atlas
+    // =================================================================================================================
+    class BoPoint private constructor(val meridian: Meridian) : AcupunctFlag("Bopunkt", "BO", 2) {
+        companion object {
+
+            val Lung = BoPoint(Meridian.Lung)
+            // ... finish list ...
+
+        }
+
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onBoPoint(this)
+        override fun toString() = "BoPoint[meridian=$meridian]"
+    }
+
+    /** Zustimmungspunkt japan. "yu", chin. "shu" */
+    // =================================================================================================================
+    class YuPoint private constructor(val meridian: Meridian) : AcupunctFlag("Yupunkt", "YU", 3) {
+        companion object {
+
+            val Lung = YuPoint(Meridian.Lung)
+            // ... finish list ...
+
+        }
+
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onYuPoint(this)
+        override fun toString() = "YuPoint[meridian=$meridian]"
+    }
+
+    /** Wandlungsphasen Zuordnung. */
+    // =================================================================================================================
+    class ElementPoint private constructor(val element: Element) : AcupunctFlag("Element", "5E", 4) {
+        companion object {
+            val Wood = ElementPoint(Element.Wood)
+            val Fire = ElementPoint(Element.Fire)
+            val Earth = ElementPoint(Element.Earth)
+            val Metal = ElementPoint(Element.Metal)
+            val Water = ElementPoint(Element.Water)
+        }
+
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onElementPoint(this)
+        override fun toString() = "ElementPoint[element=$element]"
+    }
+
+    /** Quellpunkt / yuan / ORIG, ursprungsqi */
+    // =================================================================================================================
+    object OriginalPoint : AcupunctFlag("Quellpunkt", "ORIG", 5) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onOriginalPoint(this)
+        override fun toString() = "OriginalPoint"
+    }
+
+    /** Durchgangspunkt / luo / NEX(orien) */
+    // NEX=verknuepfungspunkt; zb mit KG!!!
+    // =================================================================================================================
+    object NexusPoint : AcupunctFlag("Durchgangspunkt", "NEX", 6) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onNexusPoint(this)
+        override fun toString() = "NexusPoint"
+    }
+
+    /** Meisterpunkt fuer meridian (gefaesssystem) / ba hui xue */
+    // =================================================================================================================
+    object MasterPoint : AcupunctFlag("Meisterpunkt", "MAST", 7) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onMasterPoint(this)
+        override fun toString() = "MasterPoint"
+    }
+
+    /** Schluesselpunkt (oeffnungspunkt) / ba mai jiao hui xue */
+    // =================================================================================================================
+    class KeyPoint private constructor(val meridianx: UnpairedMeridian) : AcupunctFlag("Schlüsselpunkt", "KEY", 8) {
+        companion object {
+            val ChongMai = KeyPoint(UnpairedMeridian.ChongMai)
+        }
+
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onKeyPoint(this)
+        override fun toString() = "KeyPoint[meridianx=$meridianx]"
+    }
+
+    /** Tonisierungspunkt / bu punkt */
+    // =================================================================================================================
+    object TonePoint : AcupunctFlag("Tonisierungspunkt", "TON", 9) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onTonePoint(this)
+        override fun toString() = "TonePoint"
+    }
+
+    /** Sedierungspunkt / xie punkt */
+    // =================================================================================================================
+    object SedatePoint : AcupunctFlag("Sedierungspunkt", "SED", 10) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onSedatePoint(this)
+        override fun toString() = "SedatePoint"
+    }
+
+    /** brunnenpunkt / jing*/
+    // =================================================================================================================
+    object JingPoint : AcupunctFlag("Brunnenpunkt", "JING", 11) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onJingPoint(this)
+        override fun toString() = "JingPoint"
+    }
+
+    /** Eintrittspunkt */
+    // =================================================================================================================
+    class EntryPoint private constructor(val meridian: Meridian) : AcupunctFlag("Eintrittspunkt", "EIN", 12) {
+        companion object {
+            val Heart = EntryPoint(Meridian.Heart)
+        }
+
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onEntryPoint(this)
+        override fun toString() = "EntryPoint[meridian=$meridian]"
+    }
+
+}

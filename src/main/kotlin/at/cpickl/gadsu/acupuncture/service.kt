@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.service.SearchableService
-import at.cpickl.gadsu.tcm.model.Acupunct
-import at.cpickl.gadsu.tcm.model.AcupunctureRepository
+import at.cpickl.gadsu.acupuncture.Acupunct
+import at.cpickl.gadsu.acupuncture.AcupunctureRepository
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

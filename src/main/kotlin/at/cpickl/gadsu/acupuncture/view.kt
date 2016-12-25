@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.service.SearchableList
-import at.cpickl.gadsu.tcm.model.Acupunct
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MyFrame
@@ -13,18 +12,23 @@ import at.cpickl.gadsu.view.components.inputs.SearchTextField
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.enforceWidth
+import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.toHexString
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.FlowLayout
 import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.JPanel
 
 
 class AcupunctureFrame @Inject constructor(
@@ -78,18 +82,30 @@ class AcupunctureFrame @Inject constructor(
     fun clearAcupunct() {
         bigText.text = "Bitte einen Akupunkturpunkt ausw\u00e4hlen."
     }
+
     fun changeAcupunct(punct: Acupunct) {
         log.debug("changeAcupunct(newAcupunct={})", punct)
         val meridian = punct.meridian
         val element = meridian.element
         bigText.text = """
         <h1>${punct.titleLong}</h1>
-        <b>Element</b>: <span color="#${element.color.toHexString()}">${element.label}</span><br/>
-        <b>Extremit${"\u00e4"}t</b>: ${meridian.extremity.label}<br/>
-        <b>Indikationen</b>: ${punct.indications.joinToString()}<br/>
+        <p><b>Name</b>: ${punct.germanName} (<i>${punct.chineseName}</i>)</p>
+        <p><b>Element</b>: <span color="#${element.color.toHexString()}">${element.label}</span></p>
+        ${flattenFlags(punct.flags)}
+        <p><b>Extremit${"\u00e4"}t</b>: ${meridian.extremity.label}</p>
+        <br/>
+        <p><b>Lokalisierung</b>: ${punct.localisation}</p>
+        <p><b>Indikationen</b>: ${punct.indications.joinToString()}</p>
         <br/>
         ${punct.note}
         """
+    }
+
+    private fun flattenFlags(flags: List<AcupunctFlag>): String {
+        if (flags.isEmpty()) {
+            return ""
+        }
+        return "<p><b>Auszeichnungen</b>: " + flags.map { it.onFlagType(AcupunctFlagCallback.LABELIZE) }.joinToString() + "</p>"
     }
 
     // MINOR @REFACTOR UI - make reusable in MyFrame for others (controller should take over some more functionality)
@@ -108,23 +124,47 @@ class AcupunctureFrame @Inject constructor(
 
 }
 
-class AcupunctCell(punct: Acupunct): DefaultCellView<Acupunct>(punct) {
 
-    private val txtTitle = JLabel(punct.titleShort).bold()
-    private val txtIndications = JLabel(punct.indications.joinToString())
+class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
-    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtIndications)
+    private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
+    private val txtFlags = JLabel(flagsToString(punct.flags))
+
+    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtFlags)
 
     init {
         c.anchor = GridBagConstraints.NORTHWEST
         c.weightx = 1.0
         c.fill = GridBagConstraints.HORIZONTAL
-        add(txtTitle)
+        add(JPanel(FlowLayout(FlowLayout.LEFT)).apply {
+            transparent()
+            add(txtTitle)
+            val elementPoint = elementPointView(punct.flags)
+            if (elementPoint != null) {
+                add(elementPoint)
+            }
+        })
 
         c.gridy++
-        add(txtIndications)
+        add(txtFlags)
     }
 
+    private fun flagsToString(flags: List<AcupunctFlag>): String {
+        return flags
+                .filter { it !is AcupunctFlag.ElementPoint && it !is AcupunctFlag.Marinaportant }
+                .map { it.onFlagType(AcupunctFlagCallback.LABELIZE_SHORT) }
+                .joinToString()
+    }
+
+    private fun elementPointView(flags: List<AcupunctFlag>): JComponent? {
+        val pointx = flags.firstOrNull { it is AcupunctFlag.ElementPoint } ?: return null
+        val point = pointx as AcupunctFlag.ElementPoint
+        return JPanel().apply {
+            enforceSize(15, 15)
+            opaque()
+            background = point.element.color
+        }
+    }
 }
 
 class AcupunctureList @Inject constructor(

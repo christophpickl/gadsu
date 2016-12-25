@@ -1,16 +1,31 @@
 package at.cpickl.gadsu.tcm.model
 
+import at.cpickl.gadsu.acupuncture.Acupunct
+import at.cpickl.gadsu.acupuncture.Acupuncts
 import at.cpickl.gadsu.tcm.model.Element.*
 import at.cpickl.gadsu.tcm.model.Extremity.Foot
 import at.cpickl.gadsu.tcm.model.Extremity.Hand
+import at.cpickl.gadsu.tcm.model.Family.*
 import at.cpickl.gadsu.tcm.model.YinYang.Yang
 import at.cpickl.gadsu.tcm.model.YinYang.Yin
+import at.cpickl.gadsu.tcm.model.ZangFu.Fu
+import at.cpickl.gadsu.tcm.model.ZangFu.Zang
 
 // https://en.wikipedia.org/wiki/Meridian_%28Chinese_medicine%29#Twelve_standard_meridians
 
 enum class ZangFu(val yy: YinYang) {
     Zang(Yin),
     Fu(Yang)
+}
+
+// 12 hauptleitbahnen, 12 leitbahnzweige, 8 unpaarige, 15 netzleitbahne, netzbahnzweige, netzbahnen 3rd generation, 12 muskelleitbahne, hauptregionen
+
+enum class UnpairedMeridian(val label: String) {
+    RenMai("Ren Mai"),
+    DuMai("Du Mai"),
+    ChongMai("Chong Mai")
+    // ...
+    ;
 }
 
 /**
@@ -24,28 +39,23 @@ enum class Meridian(
         val element: Element,
         val zangFu: ZangFu,
         val extremity: Extremity,
-        val organTime: Int // start hour time, for end time add 2 hours to it
+        val organTime: Int, // start hour time, for end time add 2 hours to it
+        val family: Family
+) : Comparable<Meridian> { // this means, the meridians will be sorted the way they are DEFINED HERE! so watch out.
 
-        /// List of Acupunct via Acupuncts
-) :
-// this means, the meridians will be sorted the way they are DEFINED HERE! so watch out.
-        Comparable<Meridian> {
-    Lung("Lunge", "Lu", "Fei", "LU", Metal, ZangFu.Zang, Hand, 3),
-    LargeIntestine("Dickdarm", "Di", "Da Chang", "DI", Metal, ZangFu.Fu, Hand, 5),
-    Stomach("Magen", "Ma", "Wei", "MA", Earth, ZangFu.Fu, Foot, 7),
-    Spleen("Milz", "MP", "Pi", "MP", Earth, ZangFu.Zang, Foot, 9),
-    Heart("Herz", "He", "Xin", "HE", Fire, ZangFu.Zang, Hand, 11),
-    SmallIntestine("Dünndarm", "Dü", "Xio Chang", "DU", Fire, ZangFu.Fu, Hand, 13),
-    UrinaryBladder("Blase", "Bl", "Pang Guang", "BL", Water, ZangFu.Fu, Foot, 15),
-    Kidney("Niere", "Ni", "Shen", "NI", Water, ZangFu.Zang, Foot, 17),
+    Lung("Lunge", "Lu", "Fei", "LU", Metal, Zang, Hand, 3, First),
+    LargeIntestine("Dickdarm", "Di", "Da Chang", "DI", Metal, Fu, Hand, 5, First),
+    Stomach("Magen", "Ma", "Wei", "MA", Earth, Fu, Foot, 7, First),
+    Spleen("Milz", "MP", "Pi", "MP", Earth, Zang, Foot, 9, First),
+    Heart("Herz", "He", "Xin", "HE", Fire, Zang, Hand, 11, Second),
+    SmallIntestine("Dünndarm", "Dü", "Xio Chang", "DU", Fire, Fu, Hand, 13, Second),
+    UrinaryBladder("Blase", "Bl", "Pang Guang", "BL", Water, Fu, Foot, 15, Second),
+    Kidney("Niere", "Ni", "Shen", "NI", Water, Zang, Foot, 17, Second),
     // MINOR @TCM model - Pk and 3E are actually no ZangFu, but do have a YinYang association
-    Pericardium("Perikard", "Pk", "Xin Bao", "PK", Fire, ZangFu.Zang, Hand, 19),
-    TripleBurner("3xErwärmer", "3E", "San Jiao", "3E", Fire, ZangFu.Fu, Hand, 21),
-    GallBladder("Gallenblase", "Gb", "Dan", "GB", Wood, ZangFu.Fu, Foot, 23),
-    Liver("Leber", "Le", "Gan", "LE", Wood, ZangFu.Zang, Foot, 1);
-
-    // right now, would only return the important ones
-//    val pointsCount = lazy { Acupuncts.byMeridian(this).size }
+    Pericardium("Perikard", "Pk", "Xin Bao", "PK", Fire, Zang, Hand, 19, Third),
+    TripleBurner("3xErwärmer", "3E", "San Jiao", "3E", Fire, Fu, Hand, 21, Third),
+    GallBladder("Gallenblase", "Gb", "Dan", "GB", Wood, Fu, Foot, 23, Third),
+    Liver("Leber", "Le", "Gan", "LE", Wood, Zang, Foot, 1, Third);
 
     companion object {
         private val map: Map<String, Meridian> by lazy {
@@ -56,4 +66,16 @@ enum class Meridian(
             return map.get(sqlCode) ?: throw IllegalArgumentException("Invalid meridian SQL code: '$sqlCode'")
         }
     }
+
+    val acupuncts: List<Acupunct> by lazy { Acupuncts.byMeridian(this) }
+
+    init {
+        if (sqlCode.length != 2) throw IllegalArgumentException("sqlCode expected to be of length 2! Was: [$sqlCode]")
+    }
+}
+
+enum class Family {
+    First, // front
+    Second, // back
+    Third // side/middle
 }
