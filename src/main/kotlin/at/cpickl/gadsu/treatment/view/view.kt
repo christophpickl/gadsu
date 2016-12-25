@@ -219,9 +219,11 @@ class SwingTreatmentView @Inject constructor(
             weightx = 0.0
             weighty = 0.0
             anchor = GridBagConstraints.NORTH
+            insets = Pad.right(10)
             panel.add(meridianSelector.component)
 
             gridx++
+            insets = Pad.ZERO
             weightx = 1.0
             weighty = 1.0
             fill = GridBagConstraints.BOTH
