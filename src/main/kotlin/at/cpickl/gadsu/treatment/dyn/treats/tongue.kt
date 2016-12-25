@@ -275,7 +275,6 @@ class TongueDiagnosisRenderer(
         bus: EventBus
 ) : DynTreatmentRenderer {
 
-
     private val inpListColor: MultiProperties<Color> = MultiProperties(
             Color.values().toList(), bus, TonguePropertableRenderer(), "TongueColor", { it.map { it.label } }, false)
 

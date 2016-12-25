@@ -1,13 +1,13 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.client.xprops.model.CPropEnum
 import at.cpickl.gadsu.client.xprops.view.XPropCellRenderer
-import at.cpickl.gadsu.client.xprops.view.formatData
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.view.ViewNames
 import com.google.common.eventbus.EventBus
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.Test
 import org.uispec4j.Button
 import org.uispec4j.ListBox
@@ -22,8 +22,35 @@ import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JTextArea
 
+
+@Test
+class MultiPropertiesTest {
+
+    private val bullet = "*"
+    private val noteHeader = "[NOTIZ]"
+    private val value1 = "val1"
+    private val values1 = listOf(value1)
+    private val note = "test note"
+
+    fun `formatData enum opts and note`() {
+        assertThat(MultiProperties.buildRenderText(values1, note),
+                equalTo("$bullet $value1\n\n$noteHeader\n$note"))
+    }
+
+    fun `formatData enum opts only`() {
+        assertThat(MultiProperties.buildRenderText(values1, ""),
+                equalTo("$bullet $value1"))
+    }
+
+    fun `formatData note only`() {
+        assertThat(MultiProperties.buildRenderText(emptyList(), note),
+                equalTo("$noteHeader\n$note"))
+    }
+
+}
+
 @Test(groups = arrayOf("uiTest"))
-class MultiPropertiesTest : SimpleUiTest() {
+class MultiPropertiesUiTest : SimpleUiTest() {
 
     private val container = JPanel(BorderLayout())
     private lateinit var driver: MultiPropertiesDriver
@@ -88,7 +115,7 @@ private class MultiPropertiesDriver(
     init {
         val xprop = XProps.Sleep
         val bus = EventBus()
-        val testee = MultiProperties(xprop.options, bus, XPropCellRenderer, viewNameId, { values, note -> CPropEnum(xprop, values, note).formatData() }, true)
+        val testee = MultiProperties(xprop.options, bus, XPropCellRenderer, viewNameId, { it.map { it.label } }, true)
         component = testee.toComponent()
     }
 

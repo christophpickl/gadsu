@@ -5,6 +5,7 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
@@ -24,6 +25,16 @@ class MultiProperties<T : Comparable<T>>(
         private val createRenderText: (List<T>) -> List<String>,
         noteEnabled: Boolean
 ) {
+
+    companion object {
+        @VisibleForTesting fun buildRenderText(values: List<String>, note: String): String {
+            return values.map { "* " + it }
+                    .joinToString("\n") + (
+                    if (note.isEmpty()) "" else
+                        (if (values.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + note
+                    )
+        }
+    }
 
     private val containerPanel = JPanel(BorderLayout())
     private val rendererView = MultiPropertiesRenderer({ changeToEditor() }, viewNameId)
@@ -53,28 +64,8 @@ class MultiProperties<T : Comparable<T>>(
         changeContainerContent(rendererView)
     }
 
-    /*
-    fun CProp?.formatData(): String {
-        if (this == null) {
-            return ""
-        }
-        val selectedEnumOpts = this.formatClientValues()
-        return selectedEnumOpts + (
-                if (this.note.isEmpty()) "" else
-                    (if (selectedEnumOpts.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + this.note
-                )
-    }
-     */
-    // fun CProp.formatClientValues() = this.clientValue.map { "* " + it.label }.joinToString("\n")
     private fun updateRendererText(newSelectedValues: List<T>, newNote: String) {
-        rendererView.updateValue(
-                createRenderText(newSelectedValues)
-                        .map { "* " + it }
-                        .joinToString("\n") + (
-                        if (newNote.isEmpty()) "" else
-                            (if (newSelectedValues.isNotEmpty()) "\n\n" else "") + "[NOTIZ]\n" + newNote
-                        )
-        )
+        rendererView.updateValue(buildRenderText(createRenderText(newSelectedValues), newNote))
     }
 
     private fun changeToEditor() {
