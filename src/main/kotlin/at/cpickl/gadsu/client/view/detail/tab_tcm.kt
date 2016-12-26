@@ -53,13 +53,15 @@ class ClientTabTcm(
         c.anchor = GridBagConstraints.NORTH
         c.insets = Pad.RIGHT
 
-        add(form(XProps.BodyConception, XProps.Sleep, XProps.Hungry))
+
+
+        add(form(XProps.Impression, XProps.Temperature, XProps.Sleep))
         c.gridx++
         // got additional string field: "TemperatureColdLocation" / "MenstruationTimes"
-        add(form(XProps.Digestion, XProps.Temperature, XProps.Menstruation))
+        add(form(XProps.BodyConception, XProps.Hungry, XProps.Digestion))
         c.gridx++
         c.insets = Pad.ZERO
-        add(form(XProps.Impression, XProps.Liquid, XProps.ChiStatus))
+        add(form(XProps.ChiStatus, XProps.Liquid, XProps.Menstruation))
 
         c.gridx = 0
         c.gridy++
