@@ -56,10 +56,10 @@ class ClientTabTcm(
         add(form(XProps.BodyConception, XProps.Sleep, XProps.Hungry))
         c.gridx++
         // got additional string field: "TemperatureColdLocation" / "MenstruationTimes"
-        add(form(XProps.Taste, XProps.Temperature, XProps.Menstruation))
+        add(form(XProps.Digestion, XProps.Temperature, XProps.Menstruation))
         c.gridx++
         c.insets = Pad.ZERO
-        add(form(XProps.Impression, XProps.Liquid, XProps.ChiLocation))
+        add(form(XProps.Impression, XProps.Liquid, XProps.ChiStatus))
 
         c.gridx = 0
         c.gridy++
