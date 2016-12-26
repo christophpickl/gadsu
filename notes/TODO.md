@@ -25,6 +25,7 @@ High
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
 * client mastercell, wiedersehen in tagen (anstatt absolutes datum)
+* gameify via achievements
 
 Med
 ---

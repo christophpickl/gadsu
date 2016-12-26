@@ -1,6 +1,6 @@
 
-* RELEASE SCRIPT = `/scripts/release.sh`
-* BUILD DIR = `../gadsu_release_build`
+* RELEASE_SCRIPT = `/scripts/release.sh`
+* BUILD_DIR = `../gadsu_release_build`
 
 # Preconditions
 
@@ -60,20 +60,13 @@ total 327848
 $ 
 ```
 
-# Current Workaround
-
-* Pull changes made by the release script into your local gadsu repository
-* Manually create a tag (e.g.: `v1.4.0`) from the release commit with message: "[Auto-Release] current release version: 1.4.0"
-* Push this tag to github, so you can start drafting a new release afterwards
-* Reason: this is due to a bug in the current release script (somehow git tagging does not work...)
-
 # Postdoings
 
 * Make a backup of local `~/.gadsu` folder
 * Start the APP and JAR (and EXE if possible), and verify functionality via smoke tests
     * If there was an error, fix it, and create new x.x.1 bugfix version
 * Pull changes from remote git repo to local
-* Copy the released artifacts to the local __Gadsu/Releases directory
+* Copy the 3 released artifacts in $BUILD_DIR/release_artifacts to the local __Gadsu/Releases/v1.x.0 directory
 
 ## GitHub Release
 
@@ -96,5 +89,5 @@ New stuff:
 
 * Create a new milestone, so we always have 3 ahead of us
     * Think about what could be included in next version(s)
+* Clean up the [taskboard](https://github.com/christophpickl/gadsu/projects/1)
 * Update screenshot on website (use the development action to prepare database accordingly)
-
