@@ -10,7 +10,7 @@ import org.testng.annotations.Test
 
     fun `compose cprops for single entry`() {
         assertCProps({ it.add(XProps.Hungry, XProps.HungryOpts.BigHunger, XProps.HungryOpts.DietVegan) },
-                "Essen: Hunger gro\u00df; Vegan")
+                "${XProps.Hungry.label}: ${XProps.HungryOpts.BigHunger.opt.label}; ${XProps.HungryOpts.DietVegan.opt.label}")
 
     }
 
@@ -18,7 +18,8 @@ import org.testng.annotations.Test
         assertCProps({
             it.add(XProps.Hungry, XProps.HungryOpts.BigHunger)
                     .add(XProps.Sleep, XProps.SleepOpts.NeedLess)
-        }, "Essen: Hunger gro\u00df\nSchlaf: wenig Schlaf")
+        }, "${XProps.Hungry.label}: ${XProps.HungryOpts.BigHunger.opt.label}\n" +
+                "${XProps.Sleep.label}: ${XProps.SleepOpts.NeedLess.opt.label}")
     }
 
     private fun assertCProps(withBuilder: (CPropsBuilder) -> Unit, expectedText: String) {
