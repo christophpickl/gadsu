@@ -91,7 +91,7 @@ object XProps : XPropsFinder by XPropsFactory {
         Outside(opt("ChiLocation_Outside", "aussen"))
     }
 
-    val ChiStatus = enum("ChiStatus", "Qi Status") // Energiekonzentration
+    val ChiStatus = enum("ChiLocation", "Qi Status") // Energiekonzentration
 
     // SLEEP
     // ============================================================
