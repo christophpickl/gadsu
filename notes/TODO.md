@@ -28,8 +28,9 @@ High
 
 Med
 ---
+* display honey icon next to person (maybe render overlay with icons: honey, birthday, attention sign when A client treated last far ago)
 * geburtstagsicon auch anzeigen wenns zb 2 wochen her ist
-* BUG: nachdem geburtsdatum eingetippt und enter druecken, sollte fokus korrekt sein (spring irgendwohin!)z
+* BUG: nachdem geburtsdatum eingetippt und enter druecken, sollte fokus korrekt sein (spring irgendwohin!)
 * new field: where from (social media, mundpropaganda, ... flyer/werbung/website)
 * rich text editor: incorporate html editor from http://memoranda.sourceforge.net
 * on mouse over fuer hara diagnose fields
