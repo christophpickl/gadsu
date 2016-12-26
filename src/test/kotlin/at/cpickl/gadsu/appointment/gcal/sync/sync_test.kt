@@ -37,7 +37,7 @@ class SyncManualTest {
 
     fun `WHEN insert client, create gcal DO sync and import ASSERT appointment in DB and gcal updated with gadsu metadata`() {
         GadsuSystemProperty.development.enable()
-        val injector = Guice.createInjector(GadsuModule(Args.EMPTY.copy(databaseUrl = buildDatabaseUrl(javaClass))))
+        val injector = Guice.createInjector(GadsuModule(Args.EMPTY.copy(databaseUrl = buildDatabaseUrl(javaClass.simpleName))))
         initPreferences(injector)
 
         calendarSafe { gcals ->

@@ -6,9 +6,12 @@ import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.FlywayException
+import org.flywaydb.core.api.MigrationInfo
+import org.flywaydb.core.api.callback.BaseFlywayCallback
 import org.flywaydb.core.internal.util.jdbc.JdbcUtils
 import org.hsqldb.HsqlException
 import org.hsqldb.error.ErrorCode
@@ -17,6 +20,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.awt.image.BufferedImage
 import java.sql.Blob
+import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Timestamp
 import javax.inject.Inject
@@ -67,8 +71,13 @@ interface DatabaseManager {
  */
 @Logged
 open class FlywayDatabaseManager @Inject constructor(
-        private val dataSource: DataSource
+        private val ds: DataSource
 ) : DatabaseManager {
+
+    companion object {
+        private val MIGRATION_LOCATION = "/gadsu/persistence"
+    }
+
     init {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable {
 
@@ -85,7 +94,7 @@ open class FlywayDatabaseManager @Inject constructor(
     override fun migrateDatabase() {
         log.info("migrateDatabase()")
 
-        val flyway = flyway(dataSource)
+        val flyway = buildFlyway()
         try {
             flyway.migrate()
         } catch(e: FlywayException) {
@@ -106,16 +115,24 @@ open class FlywayDatabaseManager @Inject constructor(
 
     override fun repairDatabase() {
         log.info("repairDatabase()")
-        flyway(dataSource).repair()
+        buildFlyway().repair()
     }
 
-    private fun flyway(hsqldb: DataSource) = Flyway().apply {
-        setLocations(*arrayOf("/gadsu/persistence"))
-        dataSource = hsqldb
+    @VisibleForTesting fun buildFlyway() = Flyway().apply {
+        // "/at/cpickl/gadsu/persistence/migration"
+        setLocations(*arrayOf(MIGRATION_LOCATION))
+        dataSource = ds
+
+        val myCallback = object : BaseFlywayCallback() {
+            override fun beforeEachMigrate(connection: Connection, info: MigrationInfo) {
+                log.debug("Execute migration step v{}: {}", info.version, info.description)
+            }
+        }
+        setCallbacks(*callbacks.toMutableList().apply { add(myCallback) }.toTypedArray())
     }
 
     private fun changeTransactionControl(mode: String) {
-        val connection = JdbcUtils.openConnection(dataSource)
+        val connection = JdbcUtils.openConnection(ds)
         connection.createStatement().execute("SET DATABASE TRANSACTION CONTROL $mode")
         JdbcUtils.closeConnection(connection)
     }
@@ -132,7 +149,7 @@ open class FlywayDatabaseManager @Inject constructor(
         }
         log.debug("Closing database connection.")
         try {
-            dataSource.connection.close()
+            ds.connection.close()
         } catch (e: Exception) {
             // when there is a lock, the shutdown hook will fail, avoid this!
             log.error("Could not close database connection.", e)

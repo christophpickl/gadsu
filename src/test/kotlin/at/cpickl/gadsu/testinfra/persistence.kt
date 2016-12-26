@@ -31,13 +31,21 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 
-fun buildDatabaseUrl(javaClazz: Class<Any>) =
-        "jdbc:hsqldb:mem:testDb${javaClazz.simpleName}"
+fun buildDatabaseUrl(dbNameSuffix: String) =
+        "jdbc:hsqldb:mem:testDb$dbNameSuffix"
+
+fun newTestDataSource(javaClazz: Class<Any>) = newTestDataSource(javaClazz.simpleName)
+
+fun newTestDataSource(dbNameSuffix: String): JDBCDataSource {
+    val ds = JDBCDataSource()
+    ds.url = buildDatabaseUrl(dbNameSuffix)
+    ds.user = "SA"
+    return ds
+}
 
 fun setupTestDatabase(javaClazz: Class<Any>): Pair<JDBCDataSource, SpringJdbcx> {
-    val ds = JDBCDataSource()
-    ds.url = buildDatabaseUrl(javaClazz)
-    ds.user = "SA"
+    val ds = newTestDataSource(javaClazz)
+
     val jdbcx = SpringJdbcx(ds)
 
     FlywayDatabaseManager(ds).migrateDatabase()

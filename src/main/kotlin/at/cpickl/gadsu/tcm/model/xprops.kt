@@ -180,8 +180,14 @@ object XProps : XPropsFinder by XPropsFactory {
         LittleHunger(opt("Hungry_LittleHunger", "Hunger klein")),
         BigHunger(opt("Hungry_BigHunger", "Hunger gro\u00df")),
 
-        // FIXME 5 tastes here!!!, digestion stuff down
 
+        TasteSweet(opt("Hungry_TasteSweet", "süß")),
+        TasteSalty(opt("Hungry_TasteSalty", "salzig")),
+        TasteSour(opt("Hungry_TasteSour", "sauer")),
+        TasteHot(opt("Hungry_TasteHot", "scharf")),
+        TasteBitter(opt("Hungry_TasteBitter", "bitter")),
+
+        // FIXME digestion stuff down
         DigestionSlow(opt("Hungry_DigestionSlow", "Verdauung träge")),
         DigestionFast(opt("Hungry_DigestionFast", "Verdauung schnell")),
         Blockage(opt("Hungry_Blockage", "Verstopfungen")),
@@ -198,18 +204,13 @@ object XProps : XPropsFinder by XPropsFactory {
     // DIGESTION
     // ============================================================
 
-    private val eager_Digestion = TasteOpts.Sweet
+    private val eager_Digestion = DigestionOpts.DELME
 
-    enum class TasteOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        // FIXME move digestion stuff here
-        Sweet(opt("Taste_Sweet", "süß")),
-        Salty(opt("Taste_Salty", "salzig")),
-        Sour(opt("Taste_Sour", "sauer")),
-        Hot(opt("Taste_Hot", "scharf")),
-        Bitter(opt("Taste_Bitter", "bitter"))
+    enum class DigestionOpts(override val opt: XPropEnumOpt) : IsEnumOption {
+        DELME(opt("Digestion_DELME", "DELME")),
     }
 
-    val Digestion = enum("Taste", "Geschmack")
+    val Digestion = enum("Digestion", "Verdauung")
 
     // MENSTRUATION
     // ============================================================

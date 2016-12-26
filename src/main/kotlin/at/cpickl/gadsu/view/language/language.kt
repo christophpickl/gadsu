@@ -35,7 +35,7 @@ object Languages {
             return supports
         }
 
-        log.warn("Your locale language '{}' is NOT supported, switching to default language '{}' instead.",
+        log.debug("Your locale language '{}' is NOT supported, switching to default language '{}' instead.",
                 defaultLocale, Language.DEFAULT_LANGUAGE)
         return Language.DEFAULT_LANGUAGE
     }
