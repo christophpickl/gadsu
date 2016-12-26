@@ -186,28 +186,31 @@ object XProps : XPropsFinder by XPropsFactory {
         TasteSour(opt("Hungry_TasteSour", "sauer")),
         TasteHot(opt("Hungry_TasteHot", "scharf")),
         TasteBitter(opt("Hungry_TasteBitter", "bitter")),
-
-        // FIXME digestion stuff down
-        DigestionSlow(opt("Hungry_DigestionSlow", "Verdauung träge")),
-        DigestionFast(opt("Hungry_DigestionFast", "Verdauung schnell")),
-        Blockage(opt("Hungry_Blockage", "Verstopfungen")),
-        Diarrhea(opt("Hungry_Diarrhea", "Durchfall")),
-        UndigestedParts(opt("Hungry_UndigestedParts", "Unverdaute Teile")),
-        StoolHard(opt("Hungry_StoolHard", "Stuhl geformt, hart")),
-        StoolSoft(opt("Hungry_StoolSoft", "Stuhl ungeformt, weich")),
-        WindBelly(opt("Hungry_WindBelly", "Blähbauch")),
-        Farts(opt("Hungry_Farts", "Blähungen")) // wind
     }
 
-    val Hungry = enum("Hungry", "Essen") // Verdauung
+    val Hungry = enum("Hungry", "Essen")
 
     // DIGESTION
     // ============================================================
 
-    private val eager_Digestion = DigestionOpts.DELME
+    private val eager_Digestion = DigestionOpts.DigestionSlow
 
     enum class DigestionOpts(override val opt: XPropEnumOpt) : IsEnumOption {
-        DELME(opt("Digestion_DELME", "DELME")),
+
+        DigestionSlow(opt("Digestion_DigestionSlow", "Verdauung träge")),
+        DigestionFast(opt("Digestion_DigestionFast", "Verdauung schnell")),
+
+        StoolSoft(opt("Digestion_StoolSoft", "Stuhl weich")),
+        StoolHard(opt("Digestion_StoolHard", "Stuhl hart")),
+
+        UndigestedParts(opt("Digestion_UndigestedParts", "Unverdaute Teile")),
+        Farts(opt("Digestion_Farts", "Blähungen")), // wind
+        WindBelly(opt("Digestion_WindBelly", "Blähbauch")),
+
+        Blockage(opt("Digestion_Blockage", "Verstopfungen")),
+        Diarrhea(opt("Digestion_Diarrhea", "Durchfall")),
+        Pyrosis(opt("Digestion_Pyrosis", "Sodbrennen"))
+
     }
 
     val Digestion = enum("Digestion", "Verdauung")

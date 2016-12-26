@@ -202,7 +202,7 @@ private fun Client.toReportData(firstTreatment: DateTime?) = ClientReportData(
         textsPersonal = textPersonal.removeAllTags(),
         textsObjective = textObjective.removeAllTags(),
 
-        tcmProps = CPropsComposer.compose(this),
+        tcmProps = CPropsComposer.compose(cprops),
         tcmNotes = tcmNote.removeAllTags().nullIfEmpty()
 )
 

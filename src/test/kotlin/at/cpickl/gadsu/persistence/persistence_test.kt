@@ -2,9 +2,9 @@ package at.cpickl.gadsu.persistence
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.testinfra.newTestDataSource
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import gadsu.persistence.V6_1__xprop_update.Companion.hungryDigestParts
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.MigrationVersion
 import org.hamcrest.MatcherAssert.assertThat
@@ -61,6 +61,20 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         migrate()
 
         assertXPropsTableContent_V6(XpropsDboV6(clientId, "Hungry", "Hungry_BigHunger,Hungry_TasteSweet,Hungry_TasteHot", null))
+    }
+
+    private val hungryNonDigestParts = listOf("BigHunger", "LittleHunger")
+    private val hungryAllParts = hungryNonDigestParts.plus(hungryDigestParts)
+
+    fun `given hungry exists, when migrate, move new digestion parts`() {
+        insertXProp_V5(SpropDboV5(clientId, "Hungry", hungryAllParts.map { "Hungry_$it" }.joinToString(",")))
+
+        migrate()
+
+        assertXPropsTableContent_V6(
+                XpropsDboV6(clientId, "Digestion", hungryDigestParts.map { "Digestion_$it" }.joinToString(","), null),
+                XpropsDboV6(clientId, "Hungry", hungryNonDigestParts.map { "Hungry_$it" }.joinToString(","), null)
+        )
     }
 
 

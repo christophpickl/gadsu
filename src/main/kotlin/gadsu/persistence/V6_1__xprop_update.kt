@@ -1,6 +1,7 @@
 package gadsu.persistence
 
 import at.cpickl.gadsu.service.LOG
+import com.google.common.annotations.VisibleForTesting
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration
 import java.sql.Connection
 import java.util.LinkedList
@@ -8,6 +9,13 @@ import java.util.LinkedList
 
 // https://flywaydb.org/documentation/migration/java
 class V6_1__xprop_update : JdbcMigration {
+
+    companion object {
+        @VisibleForTesting val hungryDigestParts = listOf(
+                "DigestionSlow", "DigestionFast", "Blockage", "Diarrhea", "UndigestedParts",
+                "StoolHard", "StoolSoft", "WindBelly", "Farts")
+        private val hungryDigest_prefixHungry = hungryDigestParts.map { "Hungry_$it" }
+    }
 
     private val log = LOG(javaClass)
 
@@ -20,7 +28,6 @@ class V6_1__xprop_update : JdbcMigration {
 
     private fun migrateTastesIntoExistingHungryAndDelete(connection: Connection) {
         val xprops = selectXProps(connection)
-
         xprops.filter { it.key == "Taste" }.forEach { xprop ->
 
             val tasteVals = xprop.values.map { it.replace("Taste_", "Hungry_Taste") }
@@ -37,7 +44,19 @@ class V6_1__xprop_update : JdbcMigration {
     }
 
     private fun migrateHungryPartlyIntoNewDigestion(connection: Connection) {
-        // FIXME implement me
+        val xprops = selectXProps(connection)
+        xprops.filter { it.key == "Hungry" }.forEach { xprop ->
+            val intersect = xprop.values.intersect(hungryDigest_prefixHungry)
+            if (intersect.isNotEmpty()) {
+
+                val digestionValues = intersect.map { it.replace("Hungry_", "Digestion_") }
+                connection.prepareStatement("INSERT INTO xprops (id_client, key, val) VALUES " +
+                        "('${xprop.idClient}', 'Digestion', '${digestionValues.joinToString(",")}')").apply { executeUpdate();close() }
+
+                val hungryCleaned = xprop.values.minus(hungryDigest_prefixHungry)
+                connection.prepareStatement("UPDATE xprops SET val = '${hungryCleaned.joinToString(",")}' WHERE id_client = '${xprop.idClient}' AND key =  'Hungry'").apply { executeUpdate();close() }
+            }
+        }
     }
 
     private fun selectXProps(connection: Connection): LinkedList<XPropDbo> {
