@@ -272,9 +272,9 @@ class Fields<V>(private val modifications: ModificationChecker) {
     fun isAnyModified(value : V): Boolean {
         return fields.any {
             val modified = it.isModified(value)
-//            if (modified && log.isTraceEnabled) {
-//                log.trace("Modification detected by '{}' for value: {}", it, value)
-//            }
+            if (modified && log.isTraceEnabled) {
+                log.trace("Modification detected by '{}' for value: {}", it, value)
+            }
             modified
         }
     }

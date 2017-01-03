@@ -85,6 +85,8 @@ New stuff:
 * #33 And finally this
 ---
 
+* Close the current milestone in GitHub
+
 # Optional
 
 * Create a new milestone, so we always have 3 ahead of us

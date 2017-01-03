@@ -183,6 +183,11 @@ object XProps : XPropsFinder by XPropsFactory {
         LittleHunger(opt("Hungry_LittleHunger", "kleinen Hunger")),
         BigHunger(opt("Hungry_BigHunger", "gro\u00dfen Hunger")),
 
+        EatCold(opt("Hungry_EatCold", "isst Kalt")),
+        EatWarm(opt("Hungry_EatWarm", "isst Warm")),
+
+        ChewMuch(opt("Hungry_ChewMuch", "kauen")),
+        ChewLess(opt("Hungry_ChewLess", "schlingen")),
 
         TasteSweet(opt("Hungry_TasteSweet", "mag süß")),
         TasteSalty(opt("Hungry_TasteSalty", "mag salzig")),
@@ -218,7 +223,8 @@ object XProps : XPropsFinder by XPropsFactory {
 
         Blockage(opt("Digestion_Blockage", "Verstopfungen")),
         Diarrhea(opt("Digestion_Diarrhea", "Durchfall")),
-        Pyrosis(opt("Digestion_Pyrosis", "Sodbrennen"))
+        Pyrosis(opt("Digestion_Pyrosis", "Sodbrennen")),
+        Eructation(opt("Digestion_Eructation", "Aufstoßen"))
 
     }
 

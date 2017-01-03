@@ -23,12 +23,18 @@ High
 ------------------------------------------------------------
 * alter berechnen und anzeigen
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
-* BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder trotz "Abbrechen" klicken
+* BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder (endless) trotz "Abbrechen" klicken
 * client mastercell, wiedersehen in tagen (anstatt absolutes datum)
-* gameify via achievements
+* speichern shortcut funktioniert nicht gscheit
 
 Med
 ---
+* wenn mit ctrl-arrow klientin durchscrollen, dann soll scrollbar mit scrollen damit aktiver klient auch gleich sichtbar ist
+* tab reihenfolge in treatments: nach minutenangabe soll in textfeld "zustand", und NICHT durch meridian selector
+* statt "[NOTIZ]" einen horizontal ruler rendern
+* resizing of multiproperties (especially increase TCM note height)
+  * wenn edit mode, dann mehr height in anspruch nehmen
+* collapse/expand all TCM multiproperties views
 * display honey icon next to person (maybe render overlay with icons: honey, birthday, attention sign when A client treated last far ago)
 * geburtstagsicon auch anzeigen wenns zb 2 wochen her ist
 * BUG: nachdem geburtsdatum eingetippt und enter druecken, sollte fokus korrekt sein (spring irgendwohin!)
