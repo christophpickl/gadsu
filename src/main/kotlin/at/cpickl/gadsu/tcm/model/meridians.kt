@@ -48,7 +48,7 @@ enum class Meridian(
     Stomach("Magen", "Ma", "Wei", "MA", Earth, Fu, Foot, 7, First),
     Spleen("Milz", "MP", "Pi", "MP", Earth, Zang, Foot, 9, First),
     Heart("Herz", "He", "Xin", "HE", Fire, Zang, Hand, 11, Second),
-    SmallIntestine("Dünndarm", "Dü", "Xio Chang", "DU", Fire, Fu, Hand, 13, Second),
+    SmallIntestine("Dünndarm", "Due", "Xio Chang", "DU", Fire, Fu, Hand, 13, Second),
     UrinaryBladder("Blase", "Bl", "Pang Guang", "BL", Water, Fu, Foot, 15, Second),
     Kidney("Niere", "Ni", "Shen", "NI", Water, Zang, Foot, 17, Second),
     // MINOR @TCM model - Pk and 3E are actually no ZangFu, but do have a YinYang association

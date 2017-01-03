@@ -38,6 +38,10 @@ data class Acupunct(
         }
         fun coordinateByLabel(label: String) = coordinatesByLabel[label]
         fun byCoordinate(coordinate: AcupunctCoordinate) = acupunctByCoordinate[coordinate]
+        fun byLabel(label: String): Acupunct? {
+            val coordinate = coordinateByLabel(label) ?: return null
+            return acupunctByCoordinate[coordinate]
+        }
     }
 
     init {
@@ -72,11 +76,11 @@ data class AcupunctCoordinate(
 ) : Comparable<AcupunctCoordinate> {
 
     companion object {
-        private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Dü)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
+        private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
         fun isPotentialLabel(potent: String) = regexp.matcher(potent).matches()
     }
 
-    /** E.g. "Lu1", "3E21, "Dü14" */
+    /** E.g. "Lu1", "3E21, "Due14" */
     val label = meridian.labelShort + number
 
     override fun compareTo(other: AcupunctCoordinate): Int {

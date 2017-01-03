@@ -1,5 +1,8 @@
 package at.cpickl.gadsu._main_
 
+import at.cpickl.gadsu.acupuncture.Acupunct
+import at.cpickl.gadsu.acupuncture.AcupunctListener
+import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.tcm.model.Meridian
@@ -21,7 +24,10 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
+
 fun main(args: Array<String>) {
+
+
     Framed.showWithContext({ context ->
 //        ClientTabMain(
 //                Client.INSERT_PROTOTYPE,
@@ -48,6 +54,13 @@ fun richWordTextArea(): JComponent {
         override fun onWord(word: String) {
             println("word pressed: [$word]")
         }
+    })
+    words.addWordListener(AcupunctWordDetector().apply {
+        addAcupunctListener(object : AcupunctListener {
+            override fun onAcupunct(punct: Acupunct) {
+                println("punct: [$punct]")
+            }
+        })
     })
     return text
 }
