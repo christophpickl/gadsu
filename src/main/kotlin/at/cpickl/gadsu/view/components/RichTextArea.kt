@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view.components
 import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.acupuncture.Acupunct
 import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
+import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
 import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Colors
@@ -11,6 +12,7 @@ import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
+import com.google.common.eventbus.EventBus
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
@@ -119,6 +121,7 @@ fun AttributeSet.toMap(): Map<Any, Any> {
 
 open class RichTextArea(
         viewName: String,
+        private val bus: EventBus,
         private val maxChars: Int = MAX_FIELDLENGTH_LONG
 ) : JTextPane() {
 
@@ -177,8 +180,8 @@ open class RichTextArea(
             override fun mouseClicked(e: MouseEvent) {
                 if (e.button == MouseEvent.BUTTON1 && e.clickCount == 1) {
                     val acupunct = extractAcupunctInSelection() ?: return
-                    // FIXME open dialog with acupunct
-                    println("acupunct pressed: $acupunct")
+                    log.debug("Acupunct clicked in view: {}", acupunct)
+                    bus.post(ShowAcupunctEvent(acupunct))
                 }
             }
         })
@@ -345,7 +348,7 @@ open class RichTextArea(
     }
 
     private fun simulationSaysLengthIsTooLong(format: RichFormat): Boolean {
-        val simulation = RichTextArea("simulation", maxChars)
+        val simulation = RichTextArea("simulation", EventBus(), maxChars)
         simulation.readEnrichedText(this.toEnrichedText())
         simulation.select(this.selectionStart, this.selectionEnd)
         simulation.onToggleFormat(format, enableSimulation = false)

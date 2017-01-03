@@ -20,6 +20,7 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.titledBorder
+import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -29,7 +30,8 @@ class ClientTabMain(
         modificationChecker: ModificationChecker,
         appointmentsSubView: AppoinmentsInClientView,
         treatmentsSubview: TreatmentsInClientView,
-        suggester: SuggesterController
+        suggester: SuggesterController,
+        bus: EventBus
 ) : DefaultClientTab(
         title = Labels.Tabs.ClientMain,
         type = ClientTabType.MAIN
@@ -60,7 +62,7 @@ class ClientTabMain(
     val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", { it.contact.city }, ViewNames.Client.InputCity)
     val inpWantReceiveDoodleMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveDoodleMails }, ViewNames.Client.InputReceiveDoodleMails, true)
-    val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote)
+    val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote, bus)
 
     // texts
     val inpMainObjective = fields.newTextField("Hauptanliegen", { it.textMainObjective }, ViewNames.Client.InputTextMainObjective)

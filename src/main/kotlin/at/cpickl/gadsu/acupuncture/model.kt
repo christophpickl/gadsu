@@ -4,6 +4,7 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.model.UnpairedMeridian
+import com.google.common.base.MoreObjects
 import com.google.common.base.Splitter
 import com.google.common.collect.ComparisonChain
 import java.util.HashMap
@@ -68,6 +69,8 @@ data class Acupunct(
     // move to and delegate by AcupunctCoordinate??
     val titleLong: String get() = "${meridian.labelLong} $number"
     val titleShort: String get() = "${meridian.labelShort} $number"
+
+    override fun toString() = coordinate.label
 }
 
 data class AcupunctCoordinate(

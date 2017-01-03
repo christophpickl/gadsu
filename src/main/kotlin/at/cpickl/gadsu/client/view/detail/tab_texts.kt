@@ -7,11 +7,13 @@ import at.cpickl.gadsu.view.addFormInput
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
 
 
 class ClientTabTexts(
-        modificationChecker: ModificationChecker
+        modificationChecker: ModificationChecker,
+        bus: EventBus
 ) : DefaultClientTab(
         title = Labels.Tabs.ClientTexts,
         type = ClientTabType.TEXTS
@@ -20,11 +22,11 @@ class ClientTabTexts(
 
     private val fields = Fields<Client>(modificationChecker)
 
-    val inpImpression = fields.newTextArea("Allgemeiner Eindruck", {it.textImpression}, ViewNames.Client.InputTextImpression)
-    val inpMedical = fields.newTextArea("Medizinisches", {it.textMedical}, ViewNames.Client.InputTextMedical)
-    val inpComplaints = fields.newTextArea("Beschwerden", {it.textComplaints}, ViewNames.Client.InputTextComplaints)
-    val inpPersonal = fields.newTextArea("Lebensprofil", {it.textPersonal}, ViewNames.Client.InputTextPersonal)
-    val inpObjective = fields.newTextArea("Ziele", {it.textObjective}, ViewNames.Client.InputTextObjective)
+    val inpImpression = fields.newTextArea("Allgemeiner Eindruck", {it.textImpression}, ViewNames.Client.InputTextImpression, bus)
+    val inpMedical = fields.newTextArea("Medizinisches", {it.textMedical}, ViewNames.Client.InputTextMedical, bus)
+    val inpComplaints = fields.newTextArea("Beschwerden", {it.textComplaints}, ViewNames.Client.InputTextComplaints, bus)
+    val inpPersonal = fields.newTextArea("Lebensprofil", {it.textPersonal}, ViewNames.Client.InputTextPersonal, bus)
+    val inpObjective = fields.newTextArea("Ziele", {it.textObjective}, ViewNames.Client.InputTextObjective, bus)
 
     init {
         c.fill = GridBagConstraints.BOTH

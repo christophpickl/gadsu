@@ -17,6 +17,7 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.base.MoreObjects
+import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
@@ -87,8 +88,9 @@ class ElTextArea<in V>(
 class ElRichTextArea<in V> (
         override val formLabel: String,
         private val extractValue: (V) -> String,
-        viewName: String
-) : RichTextArea(viewName), ElField<V> {
+        viewName: String,
+        bus: EventBus
+) : RichTextArea(viewName, bus), ElField<V> {
 
     override fun isModified(value: V) = _isModified(toEnrichedText(), extractValue, value)
     override fun updateValue(value: V) {
@@ -210,8 +212,8 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String): ElRichTextArea<V> {
-        val field = ElRichTextArea(label, extractValue, viewName)
+    fun newTextArea(label: String, extractValue: (V) -> String, viewName: String, bus: EventBus): ElRichTextArea<V> {
+        val field = ElRichTextArea(label, extractValue, viewName, bus)
         modifications.enableChangeListener(field)
         fields.add(field)
         return field

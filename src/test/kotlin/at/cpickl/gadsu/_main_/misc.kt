@@ -11,6 +11,7 @@ import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
+import com.google.common.eventbus.EventBus
 import org.mockito.Mockito
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -54,7 +55,7 @@ fun richWordTextArea(): JComponent {
 //        addAcupunctListener { println("punct: [$it]") }
 //    })
 //    return text
-    return RichTextArea("")
+    return RichTextArea("", EventBus())
 }
 
 fun meridianSelector() = MeridianSelector().apply {

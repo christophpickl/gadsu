@@ -70,8 +70,8 @@ open class SwingClientDetailView @Inject constructor(
 
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
-    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester)
-    private val tabTexts = ClientTabTexts(modificationChecker)
+    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester, bus)
+    private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)

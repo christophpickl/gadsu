@@ -86,6 +86,7 @@ class SwingTreatmentView @Inject constructor(
 
     override val type = MainContentType.TREATMENT
     private val log = LoggerFactory.getLogger(javaClass)
+    private val bus: EventBus = swing.bus
 
     private val btnSave = swing.newPersistableEventButton(ViewNames.Treatment.SaveButton, { TreatmentSaveEvent() }).gadsuWidth()
     private val btnBack = swing.newEventButton(Labels.Buttons.Back, ViewNames.Treatment.BackButton, { TreatmentBackEvent() }).gadsuWidth()
@@ -96,28 +97,26 @@ class SwingTreatmentView @Inject constructor(
     private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
 
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
-    private val inpAboutDiscomfort = fields.newTextArea("Zustand", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort)
+    private val inpAboutDiscomfort = fields.newTextArea("Zustand", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort, bus)
 
-    private val inpAboutContent = fields.newTextArea("Inhalt (Begründung)", { it.aboutContent }, ViewNames.Treatment.InputAboutContent)
-    private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis)
-    private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback)
-    private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework)
-    private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming)
-    private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote)
+    private val inpAboutContent = fields.newTextArea("Inhalt (Begründung)", { it.aboutContent }, ViewNames.Treatment.InputAboutContent, bus)
+    private val inpAboutDiagnosis = fields.newTextArea("Diagnose", { it.aboutDiagnosis }, ViewNames.Treatment.InputAboutDiagnosis, bus)
+    private val inpAboutFeedback = fields.newTextArea("Feedback", { it.aboutFeedback }, ViewNames.Treatment.InputAboutFeedback, bus)
+    private val inpAboutHomework = fields.newTextArea("Homework", { it.aboutHomework }, ViewNames.Treatment.InputAboutHomework, bus)
+    private val inpAboutUpcoming = fields.newTextArea("Upcoming", { it.aboutUpcoming }, ViewNames.Treatment.InputAboutUpcoming, bus)
+    private val inpNote = fields.newTextArea("Sonstige Anmerkungen", { it.note }, ViewNames.Treatment.InputNote, bus)
 
     private val meridianSelector = MeridianSelector(MeridianSelectorLayout.Vertical)
 
     private val btnPrev = swing.newEventButton("<<", ViewNames.Treatment.ButtonPrevious, { PreviousTreatmentEvent() }).gadsuWidth()
     private val btnNext = swing.newEventButton(">>", ViewNames.Treatment.ButtonNext, { NextTreatmentEvent() }).gadsuWidth()
 
-    private val subTreatmentView = DynTreatmentTabbedPane(treatment, swing.bus)
-    private val bus: EventBus
+    private val subTreatmentView = DynTreatmentTabbedPane(treatment, bus)
 
     init {
         modificationChecker.enableChangeListener(subTreatmentView)
         modificationChecker.enableChangeListener(meridianSelector)
 
-        bus = swing.bus
         if (treatment.yetPersisted) {
             modificationChecker.disableAll()
         }

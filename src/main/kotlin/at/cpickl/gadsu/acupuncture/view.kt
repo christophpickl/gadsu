@@ -33,7 +33,7 @@ import javax.swing.JPanel
 
 class AcupunctureFrame @Inject constructor(
         val list: AcupunctureList
-) : MyFrame("Akupunktur Datenbank") {
+) : MyFrame("Akupunktur Punkte") {
 
     val inpSearch = SearchTextField()
 

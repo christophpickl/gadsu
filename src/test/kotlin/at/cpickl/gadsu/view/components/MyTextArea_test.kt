@@ -11,6 +11,7 @@ import at.cpickl.gadsu.view.components.RichFormat.Bold
 import at.cpickl.gadsu.view.components.RichFormat.Italic
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.testng.annotations.BeforeMethod
@@ -42,7 +43,7 @@ import javax.swing.JPanel
 @Test class RichTextAreaTest {
 
     fun readComplexEnrichedText() {
-        val testee = RichTextArea("viewName")
+        val testee = RichTextArea("viewName", EventBus())
         val text = "${Bold.wrap("one")} two t${Italic.wrap("hre")}e ${Bold.wrap("four")}"
         testee.readEnrichedText(text)
         MatcherAssert.assertThat(testee.toEnrichedText(), Matchers.equalTo(text))
@@ -182,7 +183,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     private fun testee(): RichTextArea {
         container.removeAll()
-        val testee = RichTextArea(maxChars = MAX_CHARS, viewName = VIEWNAME)
+        val testee = RichTextArea(maxChars = MAX_CHARS, viewName = VIEWNAME, bus = EventBus())
         container.add(testee, BorderLayout.CENTER)
         return testee
     }
@@ -192,7 +193,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
         val modificationChecker = ModificationChecker(this)
         val fields = Fields<Client>(modificationChecker)
-        val inpNote = fields.newTextArea("Notiz", { it.note }, VIEWNAME)
+        val inpNote = fields.newTextArea("Notiz", { it.note }, VIEWNAME, EventBus())
 
         override fun isModified() = inpNote.isModified(client)
 

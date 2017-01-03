@@ -40,6 +40,14 @@ open class AcupunctureController @Inject constructor(
         frame.start()
     }
 
+    @Subscribe open fun onShowAcupunctEvent(event: ShowAcupunctEvent) {
+        frame.start()
+
+        frame.list.setSelectedValue(event.punct, true)
+        frame.changeAcupunct(event.punct)
+
+    }
+
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
         frame.destroy()
     }
