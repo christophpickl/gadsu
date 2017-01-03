@@ -29,6 +29,7 @@ High
 
 Med
 ---
+* ad acupunct detector: hover tooltip popup with short description and icons (tags like quellpunkt/bo/yu)
 * wenn mit ctrl-arrow klientin durchscrollen, dann soll scrollbar mit scrollen damit aktiver klient auch gleich sichtbar ist
 * tab reihenfolge in treatments: nach minutenangabe soll in textfeld "zustand", und NICHT durch meridian selector
 * statt "[NOTIZ]" einen horizontal ruler rendern

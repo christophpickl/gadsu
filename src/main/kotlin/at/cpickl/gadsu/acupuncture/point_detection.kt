@@ -8,7 +8,7 @@ class AcupunctWordDetector : WordListener {
     companion object {
         init {
             // enforce eager loading ;)
-            Acupuncts.allPuncts
+            Acupunct.all()
         }
     }
     private val listeners = LinkedList<(Acupunct, Int) -> Unit>()

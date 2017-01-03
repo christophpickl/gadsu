@@ -6,5 +6,5 @@ interface AcupunctureRepository {
 }
 
 class StaticAcupunctureRepository : AcupunctureRepository {
-    override fun loadAll(): List<Acupunct> = Acupuncts.allPuncts.value
+    override fun loadAll(): List<Acupunct> = Acupunct.all()
 }

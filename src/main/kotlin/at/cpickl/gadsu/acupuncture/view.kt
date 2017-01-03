@@ -87,9 +87,9 @@ class AcupunctureFrame @Inject constructor(
         log.debug("changeAcupunct(newAcupunct={})", punct)
         val meridian = punct.meridian
         val element = meridian.element
+
         bigText.text = """
-        <h1>${punct.titleLong}</h1>
-        <p><b>Name</b>: ${punct.germanName} (<i>${punct.chineseName}</i>)</p>
+        <h1>${punct.titleShort} - ${punct.germanName} - <i>${punct.chineseName}</i></h1>
         <p><b>Element</b>: <span color="#${element.color.toHexString()}">${element.label}</span></p>
         ${flattenFlags(punct.flags)}
         <p><b>Extremit${"\u00e4"}t</b>: ${meridian.extremity.label}</p>
@@ -128,9 +128,11 @@ class AcupunctureFrame @Inject constructor(
 class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
     private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
+    private val txtTitle2 = JLabel("(${punct.chineseName})")
+
     private val txtFlags = JLabel(flagsToString(punct.flags))
 
-    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtFlags)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtTitle2, txtFlags)
 
     init {
         c.anchor = GridBagConstraints.NORTHWEST
@@ -139,10 +141,8 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
         add(JPanel(FlowLayout(FlowLayout.LEFT)).apply {
             transparent()
             add(txtTitle)
-            val elementPoint = elementPointView(punct.flags)
-            if (elementPoint != null) {
-                add(elementPoint)
-            }
+            elementPointView(punct.flags)?.apply { add(this) }
+            add(txtTitle2)
         })
 
         c.gridy++

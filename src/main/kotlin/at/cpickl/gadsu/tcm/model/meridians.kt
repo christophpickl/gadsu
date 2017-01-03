@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.tcm.model
 
 import at.cpickl.gadsu.acupuncture.Acupunct
-import at.cpickl.gadsu.acupuncture.Acupuncts
 import at.cpickl.gadsu.tcm.model.Element.*
 import at.cpickl.gadsu.tcm.model.Extremity.Foot
 import at.cpickl.gadsu.tcm.model.Extremity.Hand
@@ -58,16 +57,19 @@ enum class Meridian(
     Liver("Leber", "Le", "Gan", "LE", Wood, Zang, Foot, 1, Third);
 
     companion object {
-        private val map: Map<String, Meridian> by lazy {
-            Meridian.values().associate { Pair(it.sqlCode, it) }
+        private val mapSqlCode: Map<String, Meridian> by lazy { Meridian.values().associate { Pair(it.sqlCode, it) } }
+        private val mapLabelShort: Map<String, Meridian> by lazy { Meridian.values().associate { Pair(it.labelShort.toLowerCase(), it) } }
+
+        fun bySqlCode(search: String): Meridian {
+            return mapSqlCode[search] ?: throw IllegalArgumentException("Invalid meridian SQL code: '$search'")
         }
 
-        fun bySqlCode(sqlCode: String): Meridian {
-            return map.get(sqlCode) ?: throw IllegalArgumentException("Invalid meridian SQL code: '$sqlCode'")
+        fun byLabelShort(search: String): Meridian {
+            return mapLabelShort[search.toLowerCase()] ?: throw IllegalArgumentException("Invalid meridian short label: '$search'")
         }
     }
 
-    val acupuncts: List<Acupunct> by lazy { Acupuncts.byMeridian(this) }
+    val acupuncts: List<Acupunct> by lazy { Acupunct.allForMeridian(this) }
 
     init {
         if (sqlCode.length != 2) throw IllegalArgumentException("sqlCode expected to be of length 2! Was: [$sqlCode]")

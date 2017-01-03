@@ -1,18 +1,22 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.model.UnpairedMeridian
-import com.google.common.base.MoreObjects
 import com.google.common.base.Splitter
 import com.google.common.collect.ComparisonChain
+import gadsu.generated.Acupuncts
 import java.util.HashMap
+import java.util.LinkedList
 import java.util.regex.Pattern
 
 
 // synonym
 fun AcupunctCoordinate.Companion.byLabel(label: String) = Acupunct.coordinateByLabel(label)
+
+
 
 data class Acupunct(
         val coordinate: AcupunctCoordinate,
@@ -28,20 +32,34 @@ data class Acupunct(
     companion object {
         private val acupunctByCoordinate = HashMap<AcupunctCoordinate, Acupunct>()
         private val coordinatesByLabel = HashMap<String, AcupunctCoordinate>()
+        private val byMeridian = HashMap<Meridian, MutableList<Acupunct>>()
+        private val all = LinkedList<Acupunct>()
 
         fun build(meridian: Meridian, number: Int, germanName: String, chineseName: String, note: String, localisation: String, joinedIndications: String, flags: List<AcupunctFlag>): Acupunct {
             val indications = Splitter.on(",").trimResults().split(joinedIndications).toList()
+
             val coordinate = AcupunctCoordinate(meridian, number)
             coordinatesByLabel.put(coordinate.label, coordinate)
+
             return Acupunct(coordinate, germanName, chineseName, note, localisation, indications, flags).apply {
                 acupunctByCoordinate.put(coordinate, this)
+                if (!byMeridian.contains(meridian)) byMeridian.put(meridian, LinkedList<Acupunct>())
+                byMeridian[meridian]!!.add(this)
+                all.add(this)
             }
         }
+
         fun coordinateByLabel(label: String) = coordinatesByLabel[label]
         fun byCoordinate(coordinate: AcupunctCoordinate) = acupunctByCoordinate[coordinate]
         fun byLabel(label: String): Acupunct? {
             val coordinate = coordinateByLabel(label) ?: return null
             return acupunctByCoordinate[coordinate]
+        }
+
+        fun allForMeridian(meridian: Meridian): List<Acupunct> = byMeridian[meridian]!!
+        fun all(): List<Acupunct> {
+            Acupuncts.Lu1 // enforce loading
+            return all
         }
     }
 
@@ -68,7 +86,7 @@ data class Acupunct(
 
     // move to and delegate by AcupunctCoordinate??
     val titleLong: String get() = "${meridian.labelLong} $number"
-    val titleShort: String get() = "${meridian.labelShort} $number"
+    val titleShort: String get() = "${meridian.labelShort}$number"
 
     override fun toString() = coordinate.label
 }
@@ -103,6 +121,7 @@ interface AcupunctFlagCallback<T> {
     }
 
     fun onMarinaportant(flag: AcupunctFlag.Marinaportant): T
+    fun onOrientation(flag: AcupunctFlag.Orientation): T
     fun onBoPoint(flag: AcupunctFlag.BoPoint): T
     fun onElementPoint(flag: AcupunctFlag.ElementPoint): T
     fun onYuPoint(flag: AcupunctFlag.YuPoint): T
@@ -122,6 +141,7 @@ open class AcupunctFlagStringCallback private constructor() : AcupunctFlagCallba
     }
 
     override fun onMarinaportant(flag: AcupunctFlag.Marinaportant) = flag.label
+    override fun onOrientation(flag: AcupunctFlag.Orientation) = flag.label
     override fun onBoPoint(flag: AcupunctFlag.BoPoint) = "${flag.label} ${flag.meridian.labelShort}"
     override fun onYuPoint(flag: AcupunctFlag.YuPoint) = "${flag.label} ${flag.meridian.labelShort}"
     override fun onElementPoint(flag: AcupunctFlag.ElementPoint) = flag.element.label + "punkt"
@@ -141,6 +161,7 @@ open class AcupunctFlagStringShortCallback private constructor() : AcupunctFlagC
     }
 
     override fun onMarinaportant(flag: AcupunctFlag.Marinaportant) = flag.labelShort
+    override fun onOrientation(flag: AcupunctFlag.Orientation) = flag.labelShort
     override fun onBoPoint(flag: AcupunctFlag.BoPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
     override fun onYuPoint(flag: AcupunctFlag.YuPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
     override fun onElementPoint(flag: AcupunctFlag.ElementPoint) = flag.element.label
@@ -169,6 +190,7 @@ sealed class AcupunctFlag(
     // erfahrungsstelle (marina) == verbindungspunkt (DTV) fuer zb Lu?
     // RIM?
 
+    // TODO orientierungspunkte lt. skriptum
 
     override fun compareTo(other: AcupunctFlag): Int {
         if (this.compareWeight == other.compareWeight) {
@@ -184,6 +206,13 @@ sealed class AcupunctFlag(
         override fun toString() = "Marinaportant"
     }
 
+    /** Helpful for orientation. */
+    // =================================================================================================================
+    object Orientation : AcupunctFlag("Orientation", "Ort", 1) {
+        override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onOrientation(this)
+        override fun toString() = "Orientation"
+    }
+
     /** Alarmpunkt, japan. "bo", chin. "mu" */
     // con ab = sammlungspunkt lt dtv atlas
     // =================================================================================================================
@@ -191,7 +220,7 @@ sealed class AcupunctFlag(
         companion object {
 
             val Lung = BoPoint(Meridian.Lung)
-            // ... finish list ...
+            // TODO #12 ... finish bo list ...
 
         }
 
@@ -205,7 +234,9 @@ sealed class AcupunctFlag(
         companion object {
 
             val Lung = YuPoint(Meridian.Lung)
-            // ... finish list ...
+            val LargeIntestine = YuPoint(Meridian.LargeIntestine)
+            val Stomach = YuPoint(Meridian.Stomach)
+            // TODO #12 ... finish yu list ...
 
         }
 

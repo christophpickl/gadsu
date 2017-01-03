@@ -76,7 +76,7 @@ class TestableAcupunctureRepository : AcupunctureRepository {
     }
 
     @DataProvider
-    fun allCoordinateLabelsProvider(): Array<Array<out Any>> = Acupuncts.allPuncts.value.map { arrayOf(it.coordinate.label) }.toTypedArray()
+    fun allCoordinateLabelsProvider(): Array<Array<out Any>> = Acupunct.all().map { arrayOf(it.coordinate.label) }.toTypedArray()
 
     @Test(dataProvider = "allCoordinateLabelsProvider")
     fun `isPotentialLabel for all acupuncts`(label: String) {
@@ -110,7 +110,7 @@ class TestableAcupunctureRepository : AcupunctureRepository {
     }
 
     @DataProvider
-    fun allCoordinatesProvider(): Array<Array<out Any>> = Acupuncts.allPuncts.value.map { arrayOf(it.coordinate, it) }.toTypedArray()
+    fun allCoordinatesProvider(): Array<Array<out Any>> = Acupunct.all().map { arrayOf(it.coordinate, it) }.toTypedArray()
 
     @Test(dataProvider = "allCoordinatesProvider")
     fun `byCoordinate for all acupuncts`(coordinate: AcupunctCoordinate, expected: Acupunct) {

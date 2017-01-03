@@ -129,6 +129,7 @@ dependencies {
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
     testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'
 
+    testCompile 'org.jopendocument:jOpenDocument:1.3'
 }
 
 // =====================================================================================================================
