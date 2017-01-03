@@ -11,21 +11,17 @@ class AcupunctWordDetector : WordListener {
             Acupuncts.allPuncts
         }
     }
-    private val listeners = LinkedList<AcupunctListener>()
+    private val listeners = LinkedList<(Acupunct) -> Unit>()
 
     override fun onWord(word: String) {
         if (!AcupunctCoordinate.isPotentialLabel(word)) return
 
         val punct = Acupunct.byLabel(word) ?: return
-        listeners.forEach { it.onAcupunct(punct) }
+        listeners.forEach { it.invoke(punct) }
     }
 
-    fun addAcupunctListener(listener: AcupunctListener) {
+    fun addAcupunctListener(listener: (Acupunct) -> Unit) {
         listeners.add(listener)
     }
 
-}
-
-interface AcupunctListener {
-    fun onAcupunct(punct: Acupunct)
 }

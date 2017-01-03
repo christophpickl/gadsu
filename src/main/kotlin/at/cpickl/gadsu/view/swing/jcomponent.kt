@@ -5,6 +5,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Font
+import java.awt.KeyboardFocusManager
 import java.awt.Point
 import java.awt.event.ActionEvent
 import java.awt.event.InputEvent
@@ -147,4 +148,9 @@ fun <T : JComponent> T.opaque(): T {
 
 fun JComponent.emptyBorderForDialogs() {
     border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
+}
+
+fun <J : JComponent> J.focusTraversalWithTabs() = apply {
+    setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null)
+    setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null)
 }

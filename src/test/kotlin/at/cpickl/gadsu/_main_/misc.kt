@@ -1,8 +1,5 @@
 package at.cpickl.gadsu._main_
 
-import at.cpickl.gadsu.acupuncture.Acupunct
-import at.cpickl.gadsu.acupuncture.AcupunctListener
-import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.tcm.model.Meridian
@@ -10,9 +7,7 @@ import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
 import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.MyTextArea
-import at.cpickl.gadsu.view.components.WordDetector
-import at.cpickl.gadsu.view.components.WordListener
+import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
@@ -48,21 +43,18 @@ fun main(args: Array<String>) {
 }
 
 fun richWordTextArea(): JComponent {
-    val text = MyTextArea("")
-    val words = WordDetector(text)
-    words.addWordListener(object : WordListener {
-        override fun onWord(word: String) {
-            println("word pressed: [$word]")
-        }
-    })
-    words.addWordListener(AcupunctWordDetector().apply {
-        addAcupunctListener(object : AcupunctListener {
-            override fun onAcupunct(punct: Acupunct) {
-                println("punct: [$punct]")
-            }
-        })
-    })
-    return text
+//    val text = MyTextArea("")
+//    val words = WordDetector(text)
+//    words.addWordListener(object : WordListener {
+//        override fun onWord(word: String) {
+//            println("word pressed: [$word]")
+//        }
+//    })
+//    words.addWordListener(AcupunctWordDetector().apply {
+//        addAcupunctListener { println("punct: [$it]") }
+//    })
+//    return text
+    return RichTextArea("").apply { enableAcupunctDetection() }
 }
 
 fun meridianSelector() = MeridianSelector().apply {
