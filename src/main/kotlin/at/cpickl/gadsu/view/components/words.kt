@@ -1,9 +1,10 @@
 package at.cpickl.gadsu.view.components
 
 import com.google.common.annotations.VisibleForTesting
-import java.awt.event.KeyAdapter
-import java.awt.event.KeyEvent
+import java.awt.event.ActionEvent
 import java.util.LinkedList
+import javax.swing.AbstractAction
+import javax.swing.KeyStroke
 import javax.swing.text.JTextComponent
 
 
@@ -27,19 +28,20 @@ class WordDetector(val jtext: JTextComponent) {
     private val listeners = LinkedList<WordListener>()
 
     init {
-        jtext.addKeyListener(object : KeyAdapter() {
-            override fun keyTyped(e: KeyEvent) {
-                if (e.keyChar == ' ') {
-                    onSpaceEntered()
-                }
+        // http://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html
+        jtext.inputMap.put(KeyStroke.getKeyStroke("released SPACE"), "released")
+        jtext.actionMap.put("released", object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent) {
+                onSpaceEntered()
             }
+
         })
     }
 
     private fun onSpaceEntered() {
-        val position = jtext.selectionStart // should no area selected anyway
+        val position = jtext.selectionStart - 1 // ignore selectionEnd as no area should be selected anyway
         val word = extractPreviousWord(jtext.text, position) ?: return
-        listeners.forEach { it.onWord(word) }
+        listeners.forEach { it.onWord(word, position) }
     }
 
 
@@ -50,5 +52,5 @@ class WordDetector(val jtext: JTextComponent) {
 }
 
 interface WordListener {
-    fun onWord(word: String)
+    fun onWord(word: String, position: Int)
 }

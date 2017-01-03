@@ -27,6 +27,7 @@ object Colors {
     val BG_COLOR_HOVER = byHex("#bed9fe")
 
     val TEXTEDITOR_BOLD = byHex("#E3E30A")
+    val ACUPUNCT_LINK = byHex("#3A82FE")
 
     fun byHex(hex: String) = Color.decode(hex)!!
 }

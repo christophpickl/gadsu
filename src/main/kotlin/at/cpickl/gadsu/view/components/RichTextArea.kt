@@ -120,6 +120,16 @@ open class RichTextArea(
 
     companion object {
         private val FORMATS = RichFormat.values().associateBy { it.shortcutKey }
+
+        private val ACUPUNCT_ASET = buildAcupunctFormat()
+
+        private fun buildAcupunctFormat(): AttributeSet? {
+            val sc = StyleContext()//StyleContext.getDefaultStyleContext()
+            var aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Colors.ACUPUNCT_LINK)
+            aset = sc.addAttribute(aset, StyleConstants.Underline, true)
+            return aset
+        }
+
     }
 
     private val log = LOG(javaClass)
@@ -146,10 +156,12 @@ open class RichTextArea(
 
     fun enableAcupunctDetection() {
         val words = WordDetector(this)
-
         words.addWordListener(AcupunctWordDetector().apply {
-            addAcupunctListener {
-
+            addAcupunctListener { punct, position ->
+                replaceTextStyle { adoc ->
+                    val label = punct.coordinate.label
+                    adoc.replace(position - label.length, label.length, label, ACUPUNCT_ASET)
+                }
             }
         })
     }
