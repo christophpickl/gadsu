@@ -1,16 +1,20 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.IS_OS_WIN
+import at.cpickl.gadsu.acupuncture.Acupunct
 import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
+import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.util.HashMap
 import java.util.LinkedList
 import javax.swing.JLabel
@@ -130,6 +134,10 @@ open class RichTextArea(
             return aset
         }
 
+        private fun isAcupunctFormat(aset: AttributeSet): Boolean {
+            return aset.toMap()[StyleConstants.Foreground]?.equals(Colors.ACUPUNCT_LINK) ?: false // sufficient to check color ;)
+        }
+
     }
 
     private val log = LOG(javaClass)
@@ -139,11 +147,13 @@ open class RichTextArea(
         focusTraversalWithTabs()
 
         enforceMaxCharacters(maxChars)
+        enableAcupunctDetection() // enable for ALL by defaut ;)
 
         if (IS_OS_WIN) {
             font = JLabel().font
         }
 
+        @Suppress("LeakingThis")
         addKeyListener(object : KeyAdapter() {
             override fun keyReleased(e: KeyEvent) {
 
@@ -154,9 +164,8 @@ open class RichTextArea(
         })
     }
 
-    fun enableAcupunctDetection() {
-        val words = WordDetector(this)
-        words.addWordListener(AcupunctWordDetector().apply {
+    private fun enableAcupunctDetection() {
+        WordDetector(this).addWordListener(AcupunctWordDetector().apply {
             addAcupunctListener { punct, position ->
                 replaceTextStyle { adoc ->
                     val label = punct.coordinate.label
@@ -164,7 +173,46 @@ open class RichTextArea(
                 }
             }
         })
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                if (e.button == MouseEvent.BUTTON1 && e.clickCount == 1) {
+                    val acupunct = extractAcupunctInSelection() ?: return
+                    // FIXME open dialog with acupunct
+                    println("acupunct pressed: $acupunct")
+                }
+            }
+        })
     }
+
+    private fun extractAcupunctInSelection(): Acupunct? {
+        val txt = text
+        if (txt.isEmpty()) return null
+
+        val start = selectionStart
+        if (start == 0 || start == txt.length) return null
+
+        var cursor = start
+        while (cursor != 0 && isAcupunctFormatAt(cursor - 1)) {
+            cursor--
+        }
+        val label = StringBuilder()
+        while (isAcupunctFormatAt(cursor)) {
+            label.append(txt[cursor])
+            cursor++
+            if (cursor == txt.length) {
+                break
+            }
+        }
+        if (label.isEmpty()) return null
+        val punct = Acupunct.byLabel(label.toString())
+        if (punct == null) {
+            log.warn("Formatted as an acupunct label, but ain't one: [$label]!")
+            beep()
+        }
+        return punct
+    }
+
+    private fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
 
     fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
 
@@ -173,7 +221,8 @@ open class RichTextArea(
 
         // dont forget to reset style before reading new!
         replaceTextStyle { adoc ->
-            adoc.replace(0, text.length, text, RichFormat.CLEAN_FORMAT)
+            val txt = text
+            adoc.replace(0, txt.length, txt, RichFormat.CLEAN_FORMAT)
         }
 
         var cleanText = enrichedText

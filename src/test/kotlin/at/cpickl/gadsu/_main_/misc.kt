@@ -54,7 +54,7 @@ fun richWordTextArea(): JComponent {
 //        addAcupunctListener { println("punct: [$it]") }
 //    })
 //    return text
-    return RichTextArea("").apply { enableAcupunctDetection() }
+    return RichTextArea("")
 }
 
 fun meridianSelector() = MeridianSelector().apply {
