@@ -7,7 +7,9 @@ import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
 import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.RichTextArea
+import at.cpickl.gadsu.view.components.MyTextArea
+import at.cpickl.gadsu.view.components.WordDetector
+import at.cpickl.gadsu.view.components.WordListener
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
@@ -16,6 +18,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.FlowLayout
 import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JPanel
 
 fun main(args: Array<String>) {
@@ -33,12 +36,21 @@ fun main(args: Array<String>) {
 //        triState()
 //        meridianSelector()
 
-        richTextArea()
+        richWordTextArea()
 
     }, Dimension(600, 600))
 }
 
-fun richTextArea() = RichTextArea("")
+fun richWordTextArea(): JComponent {
+    val text = MyTextArea("")
+    val words = WordDetector(text)
+    words.addWordListener(object : WordListener {
+        override fun onWord(word: String) {
+            println("word pressed: [$word]")
+        }
+    })
+    return text
+}
 
 fun meridianSelector() = MeridianSelector().apply {
     selectedMeridians = listOf(Meridian.Lung, Meridian.UrinaryBladder)
