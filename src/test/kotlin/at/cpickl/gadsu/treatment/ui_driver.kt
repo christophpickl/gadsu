@@ -35,15 +35,8 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
 
     fun windowContainsMainPanel() = window.findUIComponent(Panel::class.java, ViewNames.Treatment.MainPanel) != null
 
-    fun assertPanelVisible() {
-        test.assertPanelContainedInMainWindow(ViewNames.Treatment.MainPanel)
-    }
-
-    fun assertTreatmentsInClientViewContains(expectedRows: Int) {
-        MatcherAssert.assertThat(treatmentsList.size, equalTo(expectedRows))
-    }
-
     fun save(treatment: Treatment, returnToClientView: Boolean = false) {
+
         openNewButton.click()
         // MINOR @TEST - change date as well (DatePicker aufbrechen und in die interne reingreifen mit static casts)
         inputNote.text = treatment.note
@@ -64,18 +57,6 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         treatmentsList.deleteAtRow(findListRowForTreatmentNumber(treatment.number).second)
     }
 
-    fun assertSaveButtonLabel(expectedLabel: String) {
-        MatcherAssert.assertThat(saveButton.label, equalTo(expectedLabel))
-    }
-
-    private fun listCellAt(row: Int): TreatmentCell {
-        val rendering = treatmentsList.getSwingRendererComponentAt(row)
-        if (rendering is TreatmentCell) {
-            return rendering
-        }
-        throw AssertionError("Expecting treatments list rendered component to be a TreatmentCell, but was: ${rendering.javaClass.name} ($rendering)")
-    }
-
     // MINOR @TEST - reusable for client list!
     fun treatmentsListContent(): List<Pair<Treatment, Int>> {
         val list = ArrayList<Pair<Treatment, Int>>(treatmentsList.size)
@@ -86,10 +67,17 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         return list
     }
 
-    // MINOR @TEST - make reusable for client list (client resolved via using the direct table model... different approach!)
-    private fun findListRowForTreatmentNumber(number: Int): Pair<Treatment, Int> {
-        return treatmentsListContent().firstOrNull { it.first.number == number }
-                ?: throw GadsuException("Could not find index for treatment number: $number!")
+    fun goBackIfIsTreatmentVisible() {
+        if (windowContainsMainPanel()) {
+            // MINOR @TEST - this could lead to a "save confirmation dialog" if there have been any changes, discard if so
+            backButton.click()
+        }
+    }
+
+    // asserts
+
+    fun assertSaveButtonLabel(expectedLabel: String) {
+        MatcherAssert.assertThat(saveButton.label, equalTo(expectedLabel))
     }
 
     fun assertTreatmentsListContains(vararg expectedNumbers: Int) {
@@ -106,11 +94,26 @@ class TreatmentDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         test.assertThat(treatmentsList.isEmpty)
     }
 
-    fun goBackIfIsTreatmentVisible() {
-        if (windowContainsMainPanel()) {
-            // MINOR @TEST - this could lead to a "save confirmation dialog" if there have been any changes, discard if so
-            backButton.click()
+    fun assertPanelVisible() {
+        test.assertPanelContainedInMainWindow(ViewNames.Treatment.MainPanel)
+    }
+
+    fun assertTreatmentsInClientViewContains(expectedRows: Int) {
+        MatcherAssert.assertThat(treatmentsList.size, equalTo(expectedRows))
+    }
+
+    private fun listCellAt(row: Int): TreatmentCell {
+        val rendering = treatmentsList.getSwingRendererComponentAt(row)
+        if (rendering is TreatmentCell) {
+            return rendering
         }
+        throw AssertionError("Expecting treatments list rendered component to be a TreatmentCell, but was: ${rendering.javaClass.name} ($rendering)")
+    }
+
+    // MINOR @TEST - make reusable for client list (client resolved via using the direct table model... different approach!)
+    private fun findListRowForTreatmentNumber(number: Int): Pair<Treatment, Int> {
+        return treatmentsListContent().firstOrNull { it.first.number == number }
+                ?: throw GadsuException("Could not find index for treatment number: $number!")
     }
 
 }

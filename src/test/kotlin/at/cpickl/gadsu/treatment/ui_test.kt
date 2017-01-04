@@ -11,6 +11,11 @@ import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Listeners
 import org.testng.annotations.Test
+import org.uispec4j.Trigger
+import org.uispec4j.Window
+import org.uispec4j.interception.PopupMenuInterceptor
+import org.uispec4j.interception.WindowHandler
+import org.uispec4j.interception.WindowInterceptor
 
 @Test(groups = arrayOf("uiTest"))
 @Listeners(LogTestListener::class)
@@ -28,8 +33,9 @@ class TreatmentUiTest : UiTest() {
     }
 
 
-    // --------------------------------------------------------------------------- create button
+    // ---------------------------------------------------------------------------
 
+    //<editor-fold desc="create button">
     fun `New treatment button only enabled when client is selected`() {
         assertThat("Expected new treatment button to be disabled at startup!",
                 not(driver.openNewButton.isEnabled))
@@ -54,17 +60,59 @@ class TreatmentUiTest : UiTest() {
 
         driver.assertTreatmentsListEmpty()
     }
+    //</editor-fold>
 
-    // --------------------------------------------------------------------------- open new
+    // ---------------------------------------------------------------------------
 
+    //<editor-fold desc="delete">
+
+    fun `Delete existing treatment by context menu and confirm by pressing enter key`() {
+        skip("not reproducable")
+        // while focus is on old treatment list instead of new dialog as this happens to happen in swing
+        // somehow a bug, but ok, going to fix it myself
+
+        mainDriver.createClientAndTreatment(client, treatment, returnToClientView = true)
+
+        val popup = PopupMenuInterceptor.run(driver.treatmentsList.triggerRightClick(0))
+        val popupMenuItemDelete = popup.getSubMenu("L\u00F6schen")
+        WindowInterceptor
+                .init(popupMenuItemDelete.triggerClick())
+                .process(object : WindowHandler() {
+                    override fun process(dialog: Window): Trigger {
+                        // this seems to happen, when pressing enter immediately after popup gets displayed
+                        // once lead to a null problem, because selectedValue is obviously null as deletion operation already done
+
+                        // BUT: dont get it to reproduce properly !!!
+//                        driver.treatmentsList.typeKey(Key.ENTER) ... this will provoke the error but not the deletion
+
+//                        KeyUtils.pressKey(mainWindow, Key.ENTER) ... this will simply abort the confirm delete dialog
+//                        KeyUtils.releaseKey(mainWindow.awtComponent, Key.ENTER)
+
+                        return Trigger.DO_NOTHING
+                    }
+                })
+                .run()
+
+        Thread.sleep(500)
+        driver.assertTreatmentsListEmpty()
+    }
+
+    //</editor-fold>
+
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="open new">
     fun `Given user is selected, when hit new treatment button, then panel should be displayed`() {
         saveClient(client)
 
         driver.openNewButton.click()
         driver.assertPanelVisible()
     }
+    //</editor-fold>
 
-    // --------------------------------------------------------------------------- back button
+    // ---------------------------------------------------------------------------
+
+    //<editor-fold desc="back button">
 
     fun `Given creating new treatment, hitting back button leads to client view again`() {
         saveClient(client)
@@ -86,7 +134,7 @@ class TreatmentUiTest : UiTest() {
             context.assertPopupVisible(false)
         })
     }
-
+    //</editor-fold>
 
     // ---------------------------------------------------------------------------
 
@@ -182,8 +230,6 @@ class TreatmentUiTest : UiTest() {
     // MINOR @TEST - create new treatment and insert, update it, then check if updates propagated to treatment table in client view
 
 }
-
-
 
 
 @Suppress("UNUSED")

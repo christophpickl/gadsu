@@ -29,10 +29,10 @@ class MainDriver(
 
     val log = LoggerFactory.getLogger(javaClass)
 
-    fun createClientAndTreatment(client: Client, treatment: Treatment) {
+    fun createClientAndTreatment(client: Client, treatment: Treatment, returnToClientView: Boolean = false) {
         clientDriver.saveBasicClient(client)
 
-        treatmentDriver.save(treatment)
+        treatmentDriver.save(treatment, returnToClientView)
     }
 
     fun openPreferencesWindow(): Window {

@@ -47,6 +47,7 @@ class Dialogs @Inject constructor(
 
 
     fun confirmedDelete(promptPart: String, onSuccess: () -> Unit, promptSuffix: String = "") {
+        log.trace("confirmedDelete(promptPart='{}', ..)", promptPart)
         val selected = show(
                 title = "Bist du dir sicher?",
                 message = "Willst du $promptPart wirklich l\u00f6schen?$promptSuffix",
@@ -54,8 +55,10 @@ class Dialogs @Inject constructor(
                 buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
         )
         if (selected === null || selected.equals("Abbrechen")) {
+            log.trace("Abort")
             return
         }
+        log.trace("Confirmed")
         onSuccess()
     }
 

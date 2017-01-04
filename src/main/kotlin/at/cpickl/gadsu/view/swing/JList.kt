@@ -22,6 +22,11 @@ fun <E> JList<E>.registerEnterPressed(listener: (Int, E) -> Unit) {
             if (e.keyCode != KeyEvent.VK_ENTER) {
                 return
             }
+            log.debug("registerEnterPressed() triggered, selectedIndex=$selectedIndex, selectedValue=$selectedValue")
+            if (selectedValue == null) {
+                // happens when e.g. deleting a treatment, then confirm delete dialog by pressing enter
+                return
+            }
             listener.invoke(selectedIndex, selectedValue)
             e.consume()
         }

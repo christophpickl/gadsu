@@ -112,6 +112,7 @@ class TreatmentServiceImpl @Inject constructor(
     }
 
     private fun _delete(treatment: Treatment) {
+        log.debug("_delete(treatment)")
         val beenProtocolized = multiProtocolRepository.hasBeenProtocolizedYet(treatment) // has to happen before multiProtocolRepository.delete(treat)
 
         multiProtocolRepository.deleteTreatmentRefs(treatment)
