@@ -55,7 +55,7 @@ interface ClientMasterView {
     fun treatmentCountDecrease(clientId: String)
 
     fun changeUpcomingAppointment(clientId: String, date: DateTime?)
-    fun changeRecentTreatmentCount(clientId: String, days: Int?)
+    fun changeDifferenceDaysToRecentTreatment(clientId: String, days: Int?)
 
 }
 
@@ -225,8 +225,8 @@ class SwingClientMasterView @Inject constructor(
         list.repaint()
     }
 
-    override fun changeRecentTreatmentCount(clientId: String, days: Int?) {
-        xclientById(clientId).recentTreatmentCount = days
+    override fun changeDifferenceDaysToRecentTreatment(clientId: String, days: Int?) {
+        xclientById(clientId).differenceDaysToRecentTreatment = days
         list.repaint()
     }
 

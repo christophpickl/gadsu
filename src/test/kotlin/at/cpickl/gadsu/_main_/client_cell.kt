@@ -12,12 +12,17 @@ import javax.swing.JPanel
 
 fun main(args: Array<String>) {
     Framed.show(JPanel().apply {
-        val xclient1 = ExtendedClient(Client.savedValidInstance(), 42, DateTime.now(), null)
-        val xclient2 = ExtendedClient(Client.savedValidInstance().copy(firstName = "Rise", lastName = "Shine", picture = MyImage.DEFAULT_PROFILE_WOMAN), 0, null, null)
-        val xclient3 = ExtendedClient(Client.savedValidInstance().copy(
-                firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_ALIEN),
-                0, null, 12
-        )
-        add(ClientList(MyListModel<ExtendedClient>().apply { resetData(listOf(xclient1, xclient2, xclient3)) }))
+        add(ClientList(MyListModel<ExtendedClient>().apply {
+            resetData(listOf(
+                    ExtendedClient(Client.savedValidInstance(), 0, DateTime.now(), null),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Rise", lastName = "Shine", picture = MyImage.DEFAULT_PROFILE_WOMAN), 1, null, null),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Oxy"), 3, null, 0),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_ALIEN), 5, null, 1),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Thomas"), 9, null, 12),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Rolf"), 10, null, 40),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Oft"), 16, null, 80),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Ur oft"), 39, null, 150)
+            ))
+        }))
     })
 }

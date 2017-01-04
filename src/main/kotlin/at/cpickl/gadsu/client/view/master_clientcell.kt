@@ -29,7 +29,7 @@ class ExtendedClient(
         var client: Client,
         var countTreatments: Int,
         var upcomingAppointment: DateTime?,
-        var recentTreatmentCount: Int?
+        var differenceDaysToRecentTreatment: Int?
 ) : IClient, Comparable<ExtendedClient> {
 
     override fun compareTo(other: ExtendedClient): Int {
@@ -80,6 +80,29 @@ class ExtendedClient(
 
 }
 
+enum class TreatCount(number: Int) {
+    Count1(1),
+    Count5(5),
+    Count10(10);
+
+    companion object {
+        fun listify(count: Int): List<TreatCount> {
+            var currentCount = count
+            val count10s: Int = currentCount / 10
+            currentCount %= 10
+            val count5s: Int = currentCount / 5
+            currentCount %= 5
+            val count1s: Int = currentCount
+
+            return count10s.downTo(1).map { TreatCount.Count10 }
+                    .plus(count5s.downTo(1).map { TreatCount.Count5 })
+                    .plus(count1s.downTo(1).map { TreatCount.Count1 })
+        }
+    }
+
+    val icon = Images.loadFromClasspath("/gadsu/images/treatment_count_$number.png")
+}
+
 class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(client) {
 
     companion object {
@@ -99,24 +122,23 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     }
 
     private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
-    private val countTreatments = JLabel("Behandlungen: ${client.countTreatments}")
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
-    private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.recentTreatmentCount))
+    private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.differenceDaysToRecentTreatment))
 
-    private val detailLabels = arrayOf(countTreatments, upcomingAppointment, recentTreatmentLabel)
-    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, countTreatments, upcomingAppointment, recentTreatmentLabel)
+    private val detailLabels = arrayOf(upcomingAppointment, recentTreatmentLabel)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, upcomingAppointment, recentTreatmentLabel)
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     init {
-        val detailFont = countTreatments.font.deriveFont(9.0F)
+        val detailFont = nameLbl.font.deriveFont(9.0F)
         detailLabels.forEach { it.font = detailFont }
 
         val calculatedRows =
                 1 + // name
                         1 + // count treatments
                         (if (client.upcomingAppointment == null) 0 else 1) +
-                        (if (client.recentTreatmentCount == null) 0 else 1) +
+                        (if (client.differenceDaysToRecentTreatment == null) 0 else 1) +
                         1 // ui hack to fill vertical space
 
         c.anchor = GridBagConstraints.NORTHWEST
@@ -148,14 +170,15 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         }
 
         c.gridy++
-        add(countTreatments)
+        c.insets = Pad.ZERO
+        add(TreatmentCountPanel(client.countTreatments))
 
         if (client.upcomingAppointment != null) {
             c.gridy++
             add(upcomingAppointment)
         }
 
-        if (client.recentTreatmentCount != null) {
+        if (client.differenceDaysToRecentTreatment != null) {
             c.gridy++
             add(recentTreatmentLabel)
         }
@@ -168,3 +191,33 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
+private class TreatmentCountPanel(count: Int) : GridPanel() {
+
+    companion object {
+        private val GAP_SMALL = Pad.right(1)
+        private val GAP_BIG = Pad.right(3)
+    }
+
+    init {
+        c.weightx = 0.0
+        c.weighty = 0.0
+        c.fill = GridBagConstraints.NONE
+        c.anchor = GridBagConstraints.WEST
+        c.insets = Pad.right(5)
+
+        add(JLabel(count.toString()))
+
+        val treatCounts = TreatCount.listify(count)
+        treatCounts.forEachIndexed { i, treatCount ->
+            c.gridx++
+            c.insets = if (treatCounts.size >= (i + 2) && treatCounts[i + 1] != treatCount) GAP_BIG else GAP_SMALL
+            add(JLabel(treatCount.icon))
+        }
+
+        // fill east gap with a UI hack ;)
+        c.gridx++
+        c.fill = GridBagConstraints.BOTH
+        c.weightx = 1.0
+        add(JPanel().transparent())
+    }
+}

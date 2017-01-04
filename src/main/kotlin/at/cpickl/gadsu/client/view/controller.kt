@@ -235,10 +235,10 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun extendClient(client: Client): ExtendedClient {
-        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start, calcRecentTreatmentCount(client.id!!))
+        return ExtendedClient(client, treatmentRepo.countAllFor(client), appointmentService.upcomingAppointmentFor(client)?.start, calcDifferenceDaysToRecentTreatment(client.id!!))
     }
 
-    private fun calcRecentTreatmentCount(clientId: String): Int? {
+    private fun calcDifferenceDaysToRecentTreatment(clientId: String): Int? {
         return treatmentRepo.findLastFor(clientId)?.date?.differenceDaysTo(clock.now())
     }
 
@@ -247,7 +247,7 @@ open class ClientViewController @Inject constructor(
     }
 
     private fun recalcRecentTreatmentCount(clientId: String) {
-        view.masterView.changeRecentTreatmentCount(clientId, calcRecentTreatmentCount(clientId))
+        view.masterView.changeDifferenceDaysToRecentTreatment(clientId, calcDifferenceDaysToRecentTreatment(clientId))
     }
 
     private fun saveClient(client: Client) {
