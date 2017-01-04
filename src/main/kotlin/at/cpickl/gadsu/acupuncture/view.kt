@@ -133,6 +133,7 @@ private class ElementPanel(element: Element) : JPanel() {
         background = element.color
     }
 }
+
 class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
     private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
@@ -149,15 +150,7 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
         add(JPanel(FlowLayout(FlowLayout.LEFT)).apply {
             transparent()
             add(txtTitle)
-
-//            punct.flags.filterIsInstanceTo<AcupunctFlag.ElementPoint>()
-            val pointx = punct.flags.firstOrNull { it is AcupunctFlag.ElementPoint }
-            if (pointx != null) {
-                val point = pointx as AcupunctFlag.ElementPoint
-                add(ElementPanel(point.element))
-            }
-
-
+            punct.elementFlag?.let { flag -> add(ElementPanel(flag.element)) }
             add(txtTitle2)
         })
 

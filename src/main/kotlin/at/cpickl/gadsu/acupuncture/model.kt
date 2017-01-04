@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.model.UnpairedMeridian
@@ -25,6 +24,10 @@ data class Acupunct(
         val note: String,
         val localisation: String,
         val indications: List<String>,
+        /**
+         * Always in the same ordered as its natural sort order.
+         * Always only contains 0 or 1 ElementPoint.
+         */
         val flags: List<AcupunctFlag>
 ) :
         Comparable<Acupunct> {
@@ -67,17 +70,6 @@ data class Acupunct(
         verifyFlags()
     }
 
-    private fun verifyFlags() {
-        if (flags.sorted() != flags) {
-            throw GadsuException("Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
-        }
-        if (flags.filter { it is AcupunctFlag.ElementPoint }.size > 1) {
-            throw GadsuException("Flags must only contain 0 or 1 element point, but was: " + flags.joinToString(", "))
-        }
-    }
-
-    override fun compareTo(other: Acupunct) = this.coordinate.compareTo(other.coordinate)
-
     val isMarinaportant: Boolean by lazy { flags.contains(AcupunctFlag.Marinaportant) }
 
     // delegation is not working properly due to mismatching Comparable<T> interfaces
@@ -88,7 +80,20 @@ data class Acupunct(
     val titleLong: String get() = "${meridian.labelLong} $number"
     val titleShort: String get() = "${meridian.labelShort}$number"
 
+    val elementFlag: AcupunctFlag.ElementPoint? = flags.filterIsInstance(AcupunctFlag.ElementPoint::class.java).firstOrNull()
+
+    override fun compareTo(other: Acupunct) = this.coordinate.compareTo(other.coordinate)
+
     override fun toString() = coordinate.label
+
+    private fun verifyFlags() {
+        if (flags.sorted() != flags) {
+            throw GadsuException("Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
+        }
+        if (flags.filter { it is AcupunctFlag.ElementPoint }.size > 1) {
+            throw GadsuException("Flags must only contain 0 or 1 element point, but was: " + flags.joinToString(", "))
+        }
+    }
 }
 
 data class AcupunctCoordinate(
