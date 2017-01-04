@@ -16,13 +16,17 @@ import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
 import at.cpickl.gadsu.view.swing.withFontSize
 import org.joda.time.DateTime
+import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
+import java.awt.Graphics
 import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -109,33 +113,22 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
-
-        private fun labelTextForRecentTreatment(days: Int?): String {
-            if (days != null && days < 0) {
-                return "Datum in der Zukunft?! ;)"
-            }
-            return "Letzte Behandlung: " + when (days) {
-                null -> "N/A"
-                0 -> "Heute"
-                1 -> "1 Tag"
-                else -> "$days Tage"
-            }
-        }
     }
 
     private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
     private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
-    private val recentTreatmentLabel = JLabel(labelTextForRecentTreatment(client.differenceDaysToRecentTreatment))
 
-    private val detailLabels = arrayOf(upcomingAppointment, recentTreatmentLabel)
-    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, upcomingAppointment, recentTreatmentLabel)
+    private val detailLabels = arrayOf(upcomingAppointment)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, upcomingAppointment)
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
+    private val recentPanel = if(client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!)
     private val countPanel = TreatmentCountPanel(client.countTreatments)
 
     override fun onChangeForeground(foreground: Color) {
         countPanel.countLabel.foreground = foreground
+        recentPanel?.apply { labelColor = foreground }
     }
 
     init {
@@ -181,17 +174,21 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.insets = Pad.ZERO
         add(countPanel)
 
+        if (client.differenceDaysToRecentTreatment != null) {
+            c.gridy++
+            c.insets = Insets(2, 0, 2, 0)
+            add(JPanel(BorderLayout()).apply { transparent(); add(recentPanel!!, BorderLayout.WEST) })
+        }
+
         if (client.upcomingAppointment != null) {
+            c.insets = Pad.ZERO
             c.gridy++
             add(upcomingAppointment)
         }
 
-        if (client.differenceDaysToRecentTreatment != null) {
-            c.gridy++
-            add(recentTreatmentLabel)
-        }
         // fill south gap with a UI hack ;)
         c.gridy++
+        c.insets = Pad.ZERO
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
         add(JPanel().transparent())
@@ -199,15 +196,66 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
+private class RecentTreatmentPanel(private val days: Int) : JPanel() {
+    companion object {
+        private fun labelTextForRecentTreatment(days: Int): String {
+            if (days < 0) {
+                return "Funny?!"
+            }
+            return when (days) {
+                0 -> "Heute"
+                1 -> "Gestern"
+                2 -> "Vorgestern"
+                else -> "Vor $days Tagen"
+            }
+        }
+
+        private fun calculateColor(days: Int): Color {
+            return if (days < 10) Color.GREEN
+            else if (days < 20) Color.YELLOW
+            else if (days < 30) Color.ORANGE
+            else if (days < 100) Color.RED
+            else Color.PINK
+        }
+
+        private val relativeMaxPivot = 40 // will end up in 100% horizontal filled bar
+    }
+
+    private val labelText = labelTextForRecentTreatment(days)
+    private val color = calculateColor(days)
+    private val color2 = color.darker()
+    private val percentWidth = Math.min(days.toFloat() / relativeMaxPivot, 1.0F)
+    var labelColor = Color.BLACK!!
+
+    init {
+        enforceSize(138, 12)
+    }
+
+    override fun paint(g: Graphics) {
+        super.paint(g)
+
+        g.color = color
+        g.fillRect(0, 0, width, height)
+
+        g.color = color2
+        g.fillRect(0, 0, (width * percentWidth).toInt(), height)
+        g.drawRect(0, 0, width - 1, height - 1)
+
+        g.color = labelColor
+        g.font = g.font.deriveFont(9.0F)
+        g.drawString(labelText, 4, 9)
+    }
+
+}
 
 private class TreatmentCountPanel(count: Int) : GridPanel() {
 
     companion object {
         private val GAP_SMALL = Pad.right(1)
-        private val GAP_BIG = Pad.right(3)
+        private val GAP_BIG = Pad.right(4)
     }
 
-    val countLabel = JLabel(count.toString()).withFontSize(11)
+    val countLabel = JLabel("Bhdlg: $count").withFontSize(11)
 
     init {
         c.weightx = 0.0
@@ -218,10 +266,12 @@ private class TreatmentCountPanel(count: Int) : GridPanel() {
 
         add(countLabel)
 
-        val treatCounts = TreatCount.listify(count)
+//        val treatCounts = TreatCount.listify(count)
+        val treatCounts = count.downTo(1).map { TreatCount.Count1 }
         treatCounts.forEachIndexed { i, treatCount ->
             c.gridx++
-            c.insets = if (treatCounts.size >= (i + 2) && treatCounts[i + 1] != treatCount) GAP_BIG else GAP_SMALL
+//            c.insets = if (treatCounts.size >= (i + 2) && treatCounts[i + 1] != treatCount) GAP_BIG else GAP_SMALL
+            c.insets = if ((i + 1) % 5 == 0) GAP_BIG else GAP_SMALL
             add(JLabel(treatCount.icon))
         }
 

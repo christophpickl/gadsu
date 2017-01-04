@@ -111,6 +111,13 @@ fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     preferredSize = Dimension(myWidth, preferredSize.height)
     return this
 }
+fun <T : JComponent> T.enforceHeight(myHeight: Int): T {
+    size = Dimension(size.width, myHeight)
+    maximumSize = Dimension(maximumSize.width, myHeight)
+    minimumSize = Dimension(minimumSize.width, myHeight)
+    preferredSize = Dimension(preferredSize.width, myHeight)
+    return this
+}
 fun <T : JComponent> T.enforceSize(myWidth: Int, myHeight: Int): T {
     size = Dimension(myWidth, size.height)
     maximumSize = Dimension(myWidth, myHeight)

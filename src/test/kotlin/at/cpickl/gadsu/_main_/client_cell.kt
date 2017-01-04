@@ -18,10 +18,12 @@ fun main(args: Array<String>) {
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Rise", lastName = "Shine", picture = MyImage.DEFAULT_PROFILE_WOMAN), 1, null, null),
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Oxy"), 3, null, 0),
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Anna", lastName = "Nym", picture = MyImage.DEFAULT_PROFILE_ALIEN), 5, null, 1),
-                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Thomas"), 9, null, 12),
-                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Rolf"), 10, null, 40),
-                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Oft"), 16, null, 80),
-                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Ur oft", birthday = DateTime.now().plusDays(1)), 39, null, 150)
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Thomas"), 9, null, 3),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Rolf"), 10, DateTime.now().plusDays(3), 8),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Adolf"), 14, null, 21),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Oft"), 16, null, 40),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Ur oft", birthday = DateTime.now().plusDays(1)), 39, null, 99),
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Long Ago"), 1, null, 390)
             ))
         }))
     })
