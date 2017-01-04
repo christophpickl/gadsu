@@ -31,6 +31,11 @@ abstract class DefaultCellView<T>(protected val value: T): GridPanel(), CellView
 
     override final fun changeForeground(foreground: Color) {
         applicableForegrounds.forEach { it.foreground = foreground }
+        onChangeForeground(foreground)
+    }
+
+    protected open fun onChangeForeground(foreground: Color) {
+        // can be overridden
     }
 
     override final fun changeBackground(background: Color) {

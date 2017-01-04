@@ -17,6 +17,7 @@ class DateFormats {
     companion object {
         val TIME_WITHOUT_SECONDS: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+        val DATE_NO_YEAR: DateTimeFormatter = DateTimeFormat.forPattern("d.M.")
         val DATE_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yyyy").withLocale(Languages.locale)
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val DATE_TIME_TALKATIVE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM. 'um' HH:mm 'Uhr'")
@@ -65,6 +66,7 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 // --------------------------------------------------------------------------- extension methods
 
 fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
+fun DateTime.formatDateNoYear(): String = DateFormats.DATE_NO_YEAR.print(this)
 fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
 fun DateTime.formatDateLong(locale: Locale = Languages.locale): String = DateFormats.DATE_LONG.withLocale(locale).print(this)
 fun DateTime.formatDateTime(): String = DateFormats.DATE_TIME.print(this)

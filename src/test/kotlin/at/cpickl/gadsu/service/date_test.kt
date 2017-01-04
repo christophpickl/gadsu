@@ -25,6 +25,10 @@ class DateFormatsTest {
         assertThat(date.formatDate(), equalTo("20.04.2016"))
     }
 
+    fun `formatDateNoYear`() {
+        assertThat(date.formatDateNoYear(), equalTo("20.4."))
+    }
+
     fun `formatDateLong`() {
         assertThat(date.formatDateLong(Locale.GERMAN), equalTo("Mittwoch, 20.04.2016"))
     }

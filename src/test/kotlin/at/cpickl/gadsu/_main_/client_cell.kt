@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Thomas"), 9, null, 12),
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Rolf"), 10, null, 40),
                     ExtendedClient(Client.savedValidInstance().copy(firstName = "Oft"), 16, null, 80),
-                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Ur oft"), 39, null, 150)
+                    ExtendedClient(Client.savedValidInstance().copy(firstName = "Ur oft", birthday = DateTime.now().plusDays(1)), 39, null, 150)
             ))
         }))
     })

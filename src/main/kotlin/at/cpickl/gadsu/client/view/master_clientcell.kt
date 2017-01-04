@@ -18,7 +18,9 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
+import at.cpickl.gadsu.view.swing.withFontSize
 import org.joda.time.DateTime
+import java.awt.Color
 import java.awt.Font
 import java.awt.GridBagConstraints
 import javax.swing.JComponent
@@ -130,6 +132,12 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
+    private val countPanel = TreatmentCountPanel(client.countTreatments)
+
+    override fun onChangeForeground(foreground: Color) {
+        countPanel.countLabel.foreground = foreground
+    }
+
     init {
         val detailFont = nameLbl.font.deriveFont(9.0F)
         detailLabels.forEach { it.font = detailFont }
@@ -171,7 +179,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
         c.gridy++
         c.insets = Pad.ZERO
-        add(TreatmentCountPanel(client.countTreatments))
+        add(countPanel)
 
         if (client.upcomingAppointment != null) {
             c.gridy++
@@ -191,12 +199,15 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
+
 private class TreatmentCountPanel(count: Int) : GridPanel() {
 
     companion object {
         private val GAP_SMALL = Pad.right(1)
         private val GAP_BIG = Pad.right(3)
     }
+
+    val countLabel = JLabel(count.toString()).withFontSize(11)
 
     init {
         c.weightx = 0.0
@@ -205,7 +216,7 @@ private class TreatmentCountPanel(count: Int) : GridPanel() {
         c.anchor = GridBagConstraints.WEST
         c.insets = Pad.right(5)
 
-        add(JLabel(count.toString()))
+        add(countLabel)
 
         val treatCounts = TreatCount.listify(count)
         treatCounts.forEachIndexed { i, treatCount ->
