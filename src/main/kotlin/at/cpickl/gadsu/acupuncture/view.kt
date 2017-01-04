@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.service.SearchableList
+import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.MyFrame
@@ -125,6 +126,13 @@ class AcupunctureFrame @Inject constructor(
 }
 
 
+private class ElementPanel(element: Element) : JPanel() {
+    init {
+        enforceSize(15, 15)
+        opaque()
+        background = element.color
+    }
+}
 class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
     private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
@@ -141,7 +149,15 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
         add(JPanel(FlowLayout(FlowLayout.LEFT)).apply {
             transparent()
             add(txtTitle)
-            elementPointView(punct.flags)?.apply { add(this) }
+
+//            punct.flags.filterIsInstanceTo<AcupunctFlag.ElementPoint>()
+            val pointx = punct.flags.firstOrNull { it is AcupunctFlag.ElementPoint }
+            if (pointx != null) {
+                val point = pointx as AcupunctFlag.ElementPoint
+                add(ElementPanel(point.element))
+            }
+
+
             add(txtTitle2)
         })
 
@@ -156,15 +172,6 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
                 .joinToString()
     }
 
-    private fun elementPointView(flags: List<AcupunctFlag>): JComponent? {
-        val pointx = flags.firstOrNull { it is AcupunctFlag.ElementPoint } ?: return null
-        val point = pointx as AcupunctFlag.ElementPoint
-        return JPanel().apply {
-            enforceSize(15, 15)
-            opaque()
-            background = point.element.color
-        }
-    }
 }
 
 class AcupunctureList @Inject constructor(
