@@ -192,7 +192,7 @@ sealed class AcupunctFlag(
         return 0
     }
 
-    // erfahrungsstelle (marina) == verbindungspunkt (DTV) fuer zb Lu?
+    // erfahrungsstelle (marina) =??= verbindungspunkt (DTV) fuer zb Lu?
     // RIM?
 
     // TODO orientierungspunkte lt. skriptum

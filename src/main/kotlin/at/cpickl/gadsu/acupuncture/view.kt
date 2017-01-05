@@ -34,7 +34,7 @@ import javax.swing.JPanel
 
 class AcupunctureFrame @Inject constructor(
         val list: AcupunctureList
-) : MyFrame("Akupunktur Punkte") {
+) : MyFrame("Akupunkturpunkte") {
 
     val inpSearch = SearchTextField()
 
@@ -137,11 +137,10 @@ private class ElementPanel(element: Element) : JPanel() {
 class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
     private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
-    private val txtTitle2 = JLabel("(${punct.chineseName})")
 
     private val txtFlags = JLabel(flagsToString(punct.flags))
 
-    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtTitle2, txtFlags)
+    override val applicableForegrounds: Array<JComponent> = arrayOf(txtTitle, txtFlags)
 
     init {
         c.anchor = GridBagConstraints.NORTHWEST
@@ -151,7 +150,6 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
             transparent()
             add(txtTitle)
             punct.elementFlag?.let { flag -> add(ElementPanel(flag.element)) }
-            add(txtTitle2)
         })
 
         c.gridy++
