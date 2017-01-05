@@ -29,6 +29,7 @@ High
 
 Med
 ---
+* die textareas sind in hoehe nicht mehr variabel! :(
 * BUG: if create new appointment, then google gcal sync opens up, then simply close browser => app hangs
 * ad acupunct detector: hover tooltip popup with short description and icons (tags like quellpunkt/bo/yu)
 * wenn mit ctrl-arrow klientin durchscrollen, dann soll scrollbar mit scrollen damit aktiver klient auch gleich sichtbar ist
