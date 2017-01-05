@@ -79,6 +79,7 @@ private class MeridianCheckBox(val meridian: Meridian) : JCheckBox(), Icon {
     private var isOver = false
 
     init {
+        isFocusable = false
         preferredSize = Dimension(SIZE, SIZE)
         @Suppress("LeakingThis")
         icon = this

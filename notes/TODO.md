@@ -29,9 +29,9 @@ High
 
 Med
 ---
+* BUG: if create new appointment, then google gcal sync opens up, then simply close browser => app hangs
 * ad acupunct detector: hover tooltip popup with short description and icons (tags like quellpunkt/bo/yu)
 * wenn mit ctrl-arrow klientin durchscrollen, dann soll scrollbar mit scrollen damit aktiver klient auch gleich sichtbar ist
-* tab reihenfolge in treatments: nach minutenangabe soll in textfeld "zustand", und NICHT durch meridian selector
 * statt "[NOTIZ]" einen horizontal ruler rendern
 * resizing of multiproperties (especially increase TCM note height)
   * wenn edit mode, dann mehr height in anspruch nehmen
