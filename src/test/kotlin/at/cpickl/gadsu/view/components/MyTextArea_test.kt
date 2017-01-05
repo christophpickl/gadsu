@@ -14,6 +14,7 @@ import at.cpickl.gadsu.view.logic.ModificationChecker
 import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
@@ -179,6 +180,37 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertPlainTextEquals(xes + "o")
         textAsserter.assertEnrichedTextEquals(atMaxTextWithTag)
         textAsserter.assertHasBeeped()
+    }
+
+    fun `emphasize acupuncture as single word`() {
+        textArea.readEnrichedText("Lu1")
+        assertAcupunctFormat(0, 2)
+    }
+
+    fun `emphasize acupuncture within`() {
+        textArea.readEnrichedText("a Lu1 b")
+        assertNotAcupunctFormat(0, 1)
+        assertAcupunctFormat(2, 4)
+        assertNotAcupunctFormat(5, 5)
+    }
+
+    fun `emphasize acupuncture many points`() {
+        textArea.readEnrichedText("a Lu1 b Lu1 c Bl1")
+        assertAcupunctFormat(2, 4)
+        assertAcupunctFormat(8, 10)
+        assertAcupunctFormat(14, 16)
+    }
+
+    private fun assertAcupunctFormat(from: Int, to: Int) {
+        from.rangeTo(to).forEach {
+            MatcherAssert.assertThat("Expected character at position $it which is '${textArea.text[it]}' to be formated as acupunct in text: [${textArea.text}]",
+                    textArea.isAcupunctFormatAt(it), equalTo(true))
+        }
+    }
+    private fun assertNotAcupunctFormat(from: Int, to: Int) {
+        from.rangeTo(to).forEach {
+            MatcherAssert.assertThat(textArea.isAcupunctFormatAt(it), equalTo(false))
+        }
     }
 
     private fun testee(): RichTextArea {

@@ -1,7 +1,9 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.acupuncture.Acupunct
+import at.cpickl.gadsu.acupuncture.AcupunctCoordinate
 import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
 import at.cpickl.gadsu.isShortcutDown
@@ -12,6 +14,7 @@ import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -167,13 +170,24 @@ open class RichTextArea(
         })
     }
 
+    private var isAcupunctDetectionEnabled = false
+
+    private fun formatAcupunct(punct: Acupunct, position: Int) {
+        replaceTextStyle { adoc ->
+            val label = punct.coordinate.label
+            adoc.replace(position - label.length, label.length, label, ACUPUNCT_ASET)
+        }
+    }
+
     private fun enableAcupunctDetection() {
+        if (isAcupunctDetectionEnabled) {
+            log.warn("acupunct detection already enabled!")
+            return
+        }
+        isAcupunctDetectionEnabled = true
         WordDetector(this).addWordListener(AcupunctWordDetector().apply {
             addAcupunctListener { punct, position ->
-                replaceTextStyle { adoc ->
-                    val label = punct.coordinate.label
-                    adoc.replace(position - label.length, label.length, label, ACUPUNCT_ASET)
-                }
+                formatAcupunct(punct, position)
             }
         })
         addMouseListener(object : MouseAdapter() {
@@ -215,7 +229,37 @@ open class RichTextArea(
         return punct
     }
 
-    private fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
+    private fun applyAcupunctStyles() {
+        if (!isAcupunctDetectionEnabled) {
+            return
+        }
+        val puncts = text
+                .split(" ")
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+                .filter { AcupunctCoordinate.isPotentialLabel(it) }
+                .map { Acupunct.byLabel(it) }
+                .filterNotNull()
+                .distinct()
+
+        puncts.forEach { punct ->
+            var position = text.indexOf(punct.coordinate.label)
+            if (position == -1) {
+                throw GadsuException("Expected acupunct to be existing in text! punct=$punct")
+            }
+            var positionAfterLabel = position + punct.coordinate.label.length
+            formatAcupunct(punct, positionAfterLabel)
+
+            position = text.indexOf(punct.coordinate.label, positionAfterLabel)
+            while (position != -1) {
+                positionAfterLabel = position + punct.coordinate.label.length
+                formatAcupunct(punct, positionAfterLabel)
+                position = text.indexOf(punct.coordinate.label, positionAfterLabel)
+            }
+        }
+    }
+
+    @VisibleForTesting fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
 
     fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
 
@@ -256,6 +300,7 @@ open class RichTextArea(
                 txt = txt.replaceFirst(tag1, "").replaceFirst(tag2, "")
             }
         }
+        applyAcupunctStyles()
 
         caretPosition = text.length
     }
