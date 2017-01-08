@@ -36,6 +36,8 @@ object XProps : XPropsFinder by XPropsFactory {
         VoiceLoud(opt("Impression_VoiceLoud", "spricht laut")),
         VoiceSlow(opt("Impression_VoiceSlow", "spricht langsam")),
         VoiceQuick(opt("Impression_VoiceQuick", "spricht schnell")),
+        SpeaksLess(opt("Impression_SpeaksLess", "spricht wenig")),
+        SpeaksMuch(opt("Impression_SpeaksMuch", "spricht viel")),
 
         MovementSlow(opt("Impression_MovementSlow", "langsame Bewegung")),
         MovementFast(opt("Impression_MovementFast", "schnelle Bewegung")),

@@ -228,7 +228,7 @@ enum class Gender(override val order: Int, override val sqlCode: String, overrid
 
 enum class Relationship(override val order: Int, override val sqlCode: String, override val label: String) :
         Ordered, SqlEnum, Labeled {
-    SINGLE(1, "SINGLE", "ledig"),
+    SINGLE(1, "SINGLE", "single"),
     RELATION(2, "RELATION", "partnerschaft"),
     MARRIED(3, "MARRIED", "verheiratet"),
     DIVORCED(4, "DIVORCED", "geschieden"),
