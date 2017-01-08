@@ -151,7 +151,11 @@ open class RichTextArea(
                     .flatMap { it.split(" ") }
                     .map(String::trim)
                     .filter(String::isNotEmpty)
-                    .map{ it.removePreAndSuffix(".").removePreAndSuffix(",").removePreAndSuffix("\n") }
+                    .map{ it.removePreAndSuffix(".")
+                            .removePreAndSuffix(",")
+                            .removePreAndSuffix("(")
+                            .removePreAndSuffix(")")
+                            .removePreAndSuffix("\n") }
 //                    .map { println("word: [$it]"); it }
                     .filter { AcupunctCoordinate.isPotentialLabel(it) }
                     .map { Acupunct.byLabel(it) }

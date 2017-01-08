@@ -23,18 +23,19 @@ import org.testng.annotations.Test
             arrayOf("", emptyList<Acupunct>()),
             arrayOf("something", emptyList<Acupunct>()),
             arrayOf("Lu1", listOf(Acupuncts.Lu1)),
-            arrayOf("Das Lu1 ist.", listOf(Acupuncts.Lu1)),
+            arrayOf("Words Lu1 words.", listOf(Acupuncts.Lu1)),
             arrayOf("Suffix Dot Lu1. Yes.", listOf(Acupuncts.Lu1)),
             arrayOf("Suffix Comma Lu1, Yes.", listOf(Acupuncts.Lu1)),
             arrayOf("Suffix Linebreak Lu1\nYes.", listOf(Acupuncts.Lu1)),
             arrayOf("Within Dot Lu.1", emptyList<Acupunct>()),
             arrayOf("Distinct Lu1 Lu1", listOf(Acupuncts.Lu1)),
-            arrayOf("Multiple Bl1, Lu1", listOf(Acupuncts.Bl1, Acupuncts.Lu1))
+            arrayOf("Multiple Bl1, Lu1", listOf(Acupuncts.Bl1, Acupuncts.Lu1)),
+            arrayOf("Paran (He1)", listOf(Acupuncts.He1))
     )
 
     @Test(dataProvider = "dpAcupuncts")
     fun `extractAcupuncts`(text: String, expected: List<Acupunct>) {
-        assertThat(RichTextArea.extractAcupuncts(text), equalTo(expected))
+        assertThat("Given text: [$text]", RichTextArea.extractAcupuncts(text), equalTo(expected))
     }
 
 }
