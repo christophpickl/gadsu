@@ -30,6 +30,8 @@ fun String.times(count: Int): String {
     }.toString()
 }
 
+fun String.removePreAndSuffix(search: String) = this.removePrefix(search).removeSuffix(search)
+
 fun <T> T?.nullOrWith(wither: (T) -> T): T? {
     if (this == null) {
         return null

@@ -7,14 +7,11 @@ import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.components.RichFormat.Bold
-import at.cpickl.gadsu.view.components.RichFormat.Italic
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
@@ -24,40 +21,13 @@ import java.awt.BorderLayout
 import java.util.LinkedList
 import javax.swing.JPanel
 
-@Test class RichFormatExtensionTest {
-
-    @DataProvider
-    fun removeAllTagsProvider(): Array<Array<Any>> = arrayOf(
-            arrayOf<Any>("", ""),
-            arrayOf<Any>("a", "a"),
-            arrayOf<Any>(" a ", " a "),
-            arrayOf<Any>("a" + RichFormat.Bold.wrap("x"), "ax")
-    )
-
-    @Test(dataProvider = "removeAllTagsProvider")
-    fun `removeAllTags works`(given: String, expected: String) {
-        MatcherAssert.assertThat(given.removeAllTags(), Matchers.equalTo(expected))
-    }
-
-}
-
-@Test class RichTextAreaTest {
-
-    fun readComplexEnrichedText() {
-        val testee = RichTextArea("viewName", EventBus())
-        val text = "${Bold.wrap("one")} two t${Italic.wrap("hre")}e ${Bold.wrap("four")}"
-        testee.readEnrichedText(text)
-        MatcherAssert.assertThat(testee.toEnrichedText(), Matchers.equalTo(text))
-    }
-
-}
 
 @Test(groups = arrayOf("uiTest"))
 class RichTextAreaUiTest : SimpleUiTest() {
 
     companion object {
         private val VIEWNAME = "testRichTextAreaViewName"
-        private val ANY_FORMAT = Bold
+        private val ANY_FORMAT = RichFormat.Bold
         private val MAX_CHARS = 100
     }
 
@@ -97,7 +67,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun testSetEnrichedText() {
-        val enrichedText = "${Bold.wrap("one")} mid1 ${Bold.wrap("two")} mid2 ${Bold.wrap("three")}"
+        val enrichedText = "${RichFormat.Bold.wrap("one")} mid1 ${RichFormat.Bold.wrap("two")} mid2 ${RichFormat.Bold.wrap("three")}"
         textArea.readEnrichedText(enrichedText)
 
         textAsserter.assertEnrichedTextEquals(enrichedText)
@@ -106,21 +76,21 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     fun testSetEnrichedTextShouldMergeTwoAdjacent() {
         textArea.readEnrichedText("ab")
-        textAsserter.select(0, 1).hitShortcut(Bold)
+        textAsserter.select(0, 1).hitShortcut(RichFormat.Bold)
 
-        textAsserter.assertEnrichedTextEquals("${Bold.wrap("a")}b")
+        textAsserter.assertEnrichedTextEquals("${RichFormat.Bold.wrap("a")}b")
 
-        textAsserter.select(1, 1).hitShortcut(Bold)
-        textAsserter.assertEnrichedTextEquals(Bold.wrap("ab"))
+        textAsserter.select(1, 1).hitShortcut(RichFormat.Bold)
+        textAsserter.assertEnrichedTextEquals(RichFormat.Bold.wrap("ab"))
     }
 
     fun twoDifferentProperIndexCalculation() {
         textAsserter.enterText("one two three four")
-        textAsserter.select(0, 3).hitShortcut(Bold)
-        textAsserter.select(14, 4).hitShortcut(Bold)
-        textAsserter.select(9, 3).hitShortcut(Italic)
+        textAsserter.select(0, 3).hitShortcut(RichFormat.Bold)
+        textAsserter.select(14, 4).hitShortcut(RichFormat.Bold)
+        textAsserter.select(9, 3).hitShortcut(RichFormat.Italic)
 
-        textAsserter.assertEnrichedTextEquals(Bold.wrap("one") + " two t" + Italic.wrap("hre") + "e " + Bold.wrap("four"))
+        textAsserter.assertEnrichedTextEquals(RichFormat.Bold.wrap("one") + " two t" + RichFormat.Italic.wrap("hre") + "e " + RichFormat.Bold.wrap("four"))
     }
 
     fun selectAllAndHighlightShouldDispatchShortcutEvent() {
@@ -136,7 +106,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.hitShortcut(ANY_FORMAT)
 
         MatcherAssert.assertThat(events, Matchers.hasSize(1))
-        MatcherAssert.assertThat(events[0], Matchers.equalTo(ShortcutEvent(Bold, "123")))
+        MatcherAssert.assertThat(events[0], Matchers.equalTo(ShortcutEvent(RichFormat.Bold, "123")))
     }
 
     fun modificationCheck() {
@@ -170,7 +140,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
     fun `enforce length, restrict respecting format tags`() {
-        val oTag = Bold.wrap("o")
+        val oTag = RichFormat.Bold.wrap("o")
         val xes = "x".times(MAX_CHARS - oTag.length)
         val atMaxTextWithTag = xes + oTag
         textArea.readEnrichedText(atMaxTextWithTag)
@@ -204,12 +174,12 @@ class RichTextAreaUiTest : SimpleUiTest() {
     private fun assertAcupunctFormat(from: Int, to: Int) {
         from.rangeTo(to).forEach {
             MatcherAssert.assertThat("Expected character at position $it which is '${textArea.text[it]}' to be formated as acupunct in text: [${textArea.text}]",
-                    textArea.isAcupunctFormatAt(it), equalTo(true))
+                    textArea.isAcupunctFormatAt(it), Matchers.equalTo(true))
         }
     }
     private fun assertNotAcupunctFormat(from: Int, to: Int) {
         from.rangeTo(to).forEach {
-            MatcherAssert.assertThat(textArea.isAcupunctFormatAt(it), equalTo(false))
+            MatcherAssert.assertThat(textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))
         }
     }
 
@@ -232,6 +202,3 @@ class RichTextAreaUiTest : SimpleUiTest() {
     }
 
 }
-
-
-private fun RichFormat.wrap(innerHtml: String) = tag1 + innerHtml + tag2

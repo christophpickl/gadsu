@@ -8,6 +8,7 @@ import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
 import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.removePreAndSuffix
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.beep
@@ -144,6 +145,20 @@ open class RichTextArea(
             return aset.toMap()[StyleConstants.Foreground]?.equals(Colors.ACUPUNCT_LINK) ?: false // sufficient to check color ;)
         }
 
+        @VisibleForTesting fun extractAcupuncts(text: String): List<Acupunct> {
+            return text
+                    .split("\n")
+                    .flatMap { it.split(" ") }
+                    .map(String::trim)
+                    .filter(String::isNotEmpty)
+                    .map{ it.removePreAndSuffix(".").removePreAndSuffix(",").removePreAndSuffix("\n") }
+//                    .map { println("word: [$it]"); it }
+                    .filter { AcupunctCoordinate.isPotentialLabel(it) }
+                    .map { Acupunct.byLabel(it) }
+                    .filterNotNull()
+                    .distinct()
+        }
+
     }
 
     private val log = LOG(javaClass)
@@ -233,15 +248,7 @@ open class RichTextArea(
         if (!isAcupunctDetectionEnabled) {
             return
         }
-        val puncts = text
-                .split(" ")
-                // FIXME detect "Bl21.", remove trailing dot
-                .map(String::trim)
-                .filter(String::isNotEmpty)
-                .filter { AcupunctCoordinate.isPotentialLabel(it) }
-                .map { Acupunct.byLabel(it) }
-                .filterNotNull()
-                .distinct()
+        val puncts = extractAcupuncts(text)
 
         puncts.forEach { punct ->
             var position = text.indexOf(punct.coordinate.label)
@@ -259,6 +266,7 @@ open class RichTextArea(
             }
         }
     }
+
 
     @VisibleForTesting fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
 
