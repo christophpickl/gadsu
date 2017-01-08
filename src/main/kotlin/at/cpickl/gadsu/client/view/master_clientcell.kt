@@ -91,21 +91,6 @@ enum class TreatCount(number: Int) {
     Count5(5),
     Count10(10);
 
-    companion object {
-        fun listify(count: Int): List<TreatCount> {
-            var currentCount = count
-            val count10s: Int = currentCount / 10
-            currentCount %= 10
-            val count5s: Int = currentCount / 5
-            currentCount %= 5
-            val count1s: Int = currentCount
-
-            return count10s.downTo(1).map { TreatCount.Count10 }
-                    .plus(count5s.downTo(1).map { TreatCount.Count5 })
-                    .plus(count1s.downTo(1).map { TreatCount.Count1 })
-        }
-    }
-
     val icon = Images.loadFromClasspath("/gadsu/images/treatment_count_$number.png")
 }
 
@@ -248,6 +233,10 @@ private class RecentTreatmentPanel(private val days: Int) : JPanel() {
 
 }
 
+fun JPanel.add(count: TreatCount) {
+    add(JLabel(count.icon))
+}
+
 private class TreatmentCountPanel(count: Int) : GridPanel() {
 
     companion object {
@@ -256,6 +245,8 @@ private class TreatmentCountPanel(count: Int) : GridPanel() {
     }
 
     val countLabel = JLabel("Bhdlg: $count").withFontSize(11)
+
+
 
     init {
         c.weightx = 0.0
@@ -266,13 +257,19 @@ private class TreatmentCountPanel(count: Int) : GridPanel() {
 
         add(countLabel)
 
-//        val treatCounts = TreatCount.listify(count)
         val treatCounts = count.downTo(1).map { TreatCount.Count1 }
+        if (count >= 10) {
+            c.gridx++
+            add(TreatCount.Count10)
+        } else if (count >= 5) {
+            c.gridx++
+            add(TreatCount.Count5)
+        }
+
         treatCounts.forEachIndexed { i, treatCount ->
             c.gridx++
-//            c.insets = if (treatCounts.size >= (i + 2) && treatCounts[i + 1] != treatCount) GAP_BIG else GAP_SMALL
             c.insets = if ((i + 1) % 5 == 0) GAP_BIG else GAP_SMALL
-            add(JLabel(treatCount.icon))
+            add(treatCount)
         }
 
         // fill east gap with a UI hack ;)
