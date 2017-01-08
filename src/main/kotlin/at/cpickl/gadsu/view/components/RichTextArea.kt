@@ -235,6 +235,7 @@ open class RichTextArea(
         }
         val puncts = text
                 .split(" ")
+                // FIXME detect "Bl21.", remove trailing dot
                 .map(String::trim)
                 .filter(String::isNotEmpty)
                 .filter { AcupunctCoordinate.isPotentialLabel(it) }

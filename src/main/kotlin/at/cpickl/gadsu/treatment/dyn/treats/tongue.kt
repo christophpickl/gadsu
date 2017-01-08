@@ -88,20 +88,21 @@ enum class TongueProperty {;
     }
 
     enum class Coat(override val label: String, override val sqlCode: String) : TonguePropertable {
+
+        // thickness
+        Missing("kein", "MISSING"), // belaglos, kein, fehlt
+        Less("wenig", "LESS"),
+        Much("vermehrt", "MUCH"),
+        Thin("dünn", "THIN COAT"),
+        Thick("dick", "COAT THICK"),
+        Spotted("fleckig", "SPOTTED"),
+
         // color
         White("weiß", "WHITE"), // kaelte = yin
         Yellow("gelb", "COAT YELLOW"), // hitze = yang
         Brown("braun", "BROWN"),
         Grey("grau", "GREY"),
         Black("schwarz", "BLACK"),
-
-        // thickness
-        Thin("dünn", "THIN COAT"),
-        Thick("dick", "COAT THICK"),
-        Missing("kein", "MISSING"), // belaglos, kein, fehlt
-        Less("wenig", "LESS"),
-        Much("vermehrt", "MUCH"),
-        Spotted("fleckig", "SPOTTED"),
 
         // sonstiges
         // DELETED! PartlyMissing("teilweise fehlend", "PARTLY MISSING"),

@@ -29,6 +29,8 @@ High
 
 Med
 ---
+* multiproperties on click (not pressed; release should not be necessary)
+* clear selection on focus lost for textarea
 * die textareas sind in hoehe nicht mehr variabel! :(
 * BUG: if create new appointment, then google gcal sync opens up, then simply close browser => app hangs
 * ad acupunct detector: hover tooltip popup with short description and icons (tags like quellpunkt/bo/yu)
