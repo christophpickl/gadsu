@@ -30,7 +30,7 @@ import org.testng.annotations.Test
             arrayOf("Within Dot Lu.1", emptyList<Acupunct>()),
             arrayOf("Distinct Lu1 Lu1", listOf(Acupuncts.Lu1)),
             arrayOf("Multiple Bl1, Lu1", listOf(Acupuncts.Bl1, Acupuncts.Lu1)),
-            arrayOf("Paran (He1)", listOf(Acupuncts.He1))
+            arrayOf("Paran (Lu1)", listOf(Acupuncts.Lu1))
     )
 
     @Test(dataProvider = "dpAcupuncts")

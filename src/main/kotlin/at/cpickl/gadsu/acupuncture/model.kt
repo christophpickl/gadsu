@@ -39,7 +39,16 @@ data class Acupunct(
         private val byMeridian = HashMap<Meridian, MutableList<Acupunct>>()
         private val all = LinkedList<Acupunct>()
 
-        fun build(meridian: Meridian, number: Int, germanName: String, chineseName: String, note: String, localisation: String, joinedIndications: String, flags: List<AcupunctFlag>): Acupunct {
+        fun build(
+                meridian: Meridian,
+                number: Int,
+                germanName: String,
+                chineseName: String,
+                note: String,
+                localisation: String,
+                joinedIndications: String,
+                flags: List<AcupunctFlag>
+        ): Acupunct {
             val indications = Splitter.on(",").trimResults().split(joinedIndications).toList()
 
             val coordinate = AcupunctCoordinate(meridian, number)
@@ -201,6 +210,9 @@ sealed class AcupunctFlag(
     // ? RIM?
     // notfallpunkt
     // akutpunkt, zb Ma34
+
+//    https://en.renmai.at/index.php?m=meridiane&style=0&page=28
+//    https://www.renmai.at/index.php?m=meridiane&style=0&page=28
 
     override fun compareTo(other: AcupunctFlag): Int {
         if (this.compareWeight == other.compareWeight) {
