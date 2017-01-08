@@ -65,7 +65,9 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
 
 // --------------------------------------------------------------------------- extension methods
 
+/** HH:mm */
 fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
+/** d.M. */
 fun DateTime.formatDateNoYear(): String = DateFormats.DATE_NO_YEAR.print(this)
 fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
 fun DateTime.formatDateLong(locale: Locale = Languages.locale): String = DateFormats.DATE_LONG.withLocale(locale).print(this)
@@ -76,6 +78,7 @@ fun DateTime.formatDateTimeLong(locale: Locale = Languages.locale): String = Dat
 fun DateTime.formatDateTimeFile(): String = DateFormats.DATE_TIME_FILE.print(this)
 
 fun String.parseTimeWithoutSeconds(): DateTime = DateFormats.TIME_WITHOUT_SECONDS.parseDateTime(this)
+/** dd.MM.yyyy */
 fun String.parseDate(): DateTime {
     val parts = this.split(".")
     if (parts.size != 3) {
@@ -88,6 +91,7 @@ fun String.parseDate(): DateTime {
     }
     return DateFormats.DATE.parseDateTime(this)
 }
+/** dd.MM.yyyy HH:mm:ss **/
 fun String.parseDateTime(): DateTime = DateFormats.DATE_TIME.parseDateTime(this)
 fun String.parseDateTimeFile(): DateTime = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 

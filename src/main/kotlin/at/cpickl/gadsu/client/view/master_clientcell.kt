@@ -8,10 +8,13 @@ import at.cpickl.gadsu.client.IClient
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.differenceDaysWithinYear
-import at.cpickl.gadsu.service.formatDateTimeSemiLong
+import at.cpickl.gadsu.service.formatDateNoYear
+import at.cpickl.gadsu.service.formatTimeWithoutSeconds
 import at.cpickl.gadsu.service.isBetweenInclusive
 import at.cpickl.gadsu.service.wrapParenthesisIf
+import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -20,7 +23,9 @@ import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
 import at.cpickl.gadsu.view.swing.withFontSize
+import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
+import org.joda.time.Days
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
@@ -98,10 +103,24 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
+        @VisibleForTesting fun upcomingAppointmentLabel(now: DateTime, date: DateTime): String {
+            if (date.isBefore(now)) {
+                return "N/A"
+            }
+            val days = Days.daysBetween(now.clearTime(), date.clearTime()).days
+            return when (days) {
+                0 -> "Heute, um ${date.formatTimeWithoutSeconds()} Uhr"
+                1 -> "Morgen, um ${date.formatTimeWithoutSeconds()} Uhr"
+                2 -> "Übermorgen, um ${date.formatTimeWithoutSeconds()} Uhr"
+                else -> {
+                    "In $days Tage, am ${date.formatDateNoYear()}"
+                }
+            }
+        }
     }
 
     private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
-    private val upcomingAppointment = JLabel("Wiedersehen: ${client.upcomingAppointment?.formatDateTimeSemiLong()}")
+    private val upcomingAppointment = JLabel(if (client.upcomingAppointment == null) "" else upcomingAppointmentLabel(DateTime.now(), client.upcomingAppointment!!))
 
     private val detailLabels = arrayOf(upcomingAppointment)
     override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, upcomingAppointment)
@@ -181,7 +200,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
-private class RecentTreatmentPanel(private val days: Int) : JPanel() {
+private class RecentTreatmentPanel(days: Int) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -195,21 +214,33 @@ private class RecentTreatmentPanel(private val days: Int) : JPanel() {
             }
         }
 
+        private val LIMIT_OK = 10
+        private val LIMIT_ATTENTION = 20
+        private val LIMIT_WARN = 30
+        private val LIMIT_CRITICAL = 100
+
         private fun calculateColor(days: Int): Color {
-            return if (days < 10) Color.GREEN
-            else if (days < 20) Color.YELLOW
-            else if (days < 30) Color.ORANGE
-            else if (days < 100) Color.RED
-            else Color.PINK
+            return if (days < LIMIT_OK) Colors.byHex("02bb1c")
+            else if (days < LIMIT_ATTENTION) Colors.byHex("acbb02")
+            else if (days < LIMIT_WARN) Colors.byHex("e0b520")
+            else if (days < LIMIT_CRITICAL) Colors.byHex("cb3412")
+            else Colors.byHex("9512cb")
+        }
+        private fun calculateColor2(days: Int): Color {
+            return if (days < LIMIT_OK) Colors.byHex("015d0e")
+            else if (days < LIMIT_ATTENTION) Colors.byHex("565d01")
+            else if (days < LIMIT_WARN) Colors.byHex("705a10")
+            else if (days < LIMIT_CRITICAL) Colors.byHex("651a09")
+            else Colors.byHex("4a0965")
         }
 
-        private val relativeMaxPivot = 40 // will end up in 100% horizontal filled bar
+//        private val relativeMaxDays = 40 // will end up in 100% horizontal filled bar
     }
 
     private val labelText = labelTextForRecentTreatment(days)
     private val color = calculateColor(days)
-    private val color2 = color.darker()
-    private val percentWidth = Math.min(days.toFloat() / relativeMaxPivot, 1.0F)
+    private val color2 = calculateColor2(days)
+//    private val percentWidth = Math.min(days.toFloat() / relativeMaxDays, 1.0F)
     var labelColor = Color.BLACK!!
 
     init {
@@ -223,7 +254,7 @@ private class RecentTreatmentPanel(private val days: Int) : JPanel() {
         g.fillRect(0, 0, width, height)
 
         g.color = color2
-        g.fillRect(0, 0, (width * percentWidth).toInt(), height)
+//        g.fillRect(0, 0, (width * percentWidth).toInt(), height)
         g.drawRect(0, 0, width - 1, height - 1)
 
         g.color = labelColor
@@ -245,8 +276,6 @@ private class TreatmentCountPanel(count: Int) : GridPanel() {
     }
 
     val countLabel = JLabel("Bhdlg: $count").withFontSize(11)
-
-
 
     init {
         c.weightx = 0.0
