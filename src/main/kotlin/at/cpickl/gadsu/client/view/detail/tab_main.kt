@@ -18,12 +18,19 @@ import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.titledBorder
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
+import org.joda.time.DateTime
+import org.joda.time.Years
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.FlowLayout
 import java.awt.GridBagConstraints
+import javax.swing.JLabel
+import javax.swing.JPanel
 
 class ClientTabMain(
         initialClient: Client,
@@ -47,6 +54,7 @@ class ClientTabMain(
     val inpNickName = fields.newTextField("Spitzname", { it.nickName }, ViewNames.Client.InputNickName)
     val inpGender = fields.newComboBox(Gender.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
+    val outAge = JLabel().bold()
     val outStarsign = DisabledTextField()
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Wohnort", { it.origin }, ViewNames.Client.InputOrigin)
@@ -83,7 +91,13 @@ class ClientTabMain(
             addFormInput(inpLastName)
             addFormInput(inpNickName)
             addFormInput(inpGender)
-            addFormInput(inpBirthday)
+//            addFormInput(inpBirthday)
+            addFormInput(inpBirthday.formLabel, JPanel(FlowLayout(FlowLayout.LEFT)).apply {
+                transparent()
+                add(inpBirthday.toComponent())
+                add(outAge)
+            })
+
             addFormInput("Sternzeichen", outStarsign)
             addFormInput(inpCountryOfOrigin)
             addFormInput(inpOrigin)
@@ -163,6 +177,8 @@ class ClientTabMain(
     override fun updateFields(client: Client) {
         log.trace("updateFields(client={})", client)
         fields.updateAll(client)
+
+        outAge.text = if (client.birthday == null) "" else Years.yearsBetween(client.birthday, DateTime.now()).years.toString() + " Jahre"
         outStarsign.text = if (client.birthday == null) "" else StarSignCalculator.signFor(client.birthday).label
     }
 
