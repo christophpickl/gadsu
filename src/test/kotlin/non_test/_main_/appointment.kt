@@ -1,4 +1,4 @@
-package at.cpickl.gadsu._main_
+package non_test._main_
 
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.view.SwingAppointmentWindow

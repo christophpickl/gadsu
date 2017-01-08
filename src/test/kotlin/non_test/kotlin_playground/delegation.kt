@@ -1,4 +1,4 @@
-package kotlin_playground
+package non_test.kotlin_playground
 
 
 fun main(args: Array<String>) {

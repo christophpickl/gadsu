@@ -1,7 +1,7 @@
-package kotlin_playground
+package non_test.kotlin_playground
 
-import kotlin_playground.ConfigFields.baseUrl
-import kotlin_playground.ConfigFields.threshold
+import non_test.kotlin_playground.ConfigFields.baseUrl
+import non_test.kotlin_playground.ConfigFields.threshold
 import java.net.URL
 
 

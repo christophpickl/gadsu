@@ -1,4 +1,4 @@
-package kotlin_playground
+package non_test.kotlin_playground
 
 import at.cpickl.gadsu.allGadsuModules
 import at.cpickl.gadsu.client.Client

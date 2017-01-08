@@ -1,4 +1,4 @@
-package kotlin_playground
+package non_test.kotlin_playground
 
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.RichTextArea
