@@ -9,6 +9,7 @@ import com.google.common.collect.ComparisonChain
 import gadsu.generated.Acupuncts
 import java.util.HashMap
 import java.util.LinkedList
+import java.util.Objects
 import java.util.regex.Pattern
 
 
@@ -69,9 +70,11 @@ data class Acupunct(
             return acupunctByCoordinate[coordinate]
         }
 
-        fun allForMeridian(meridian: Meridian): List<Acupunct> = byMeridian[meridian]!!
+        fun allForMeridian(meridian: Meridian): List<Acupunct> {
+            return byMeridian[meridian] ?: throw IllegalStateException("This sucks. Acupunct loading is cripled, as not yet loaded for meridian $meridian!")
+        }
         fun all(): List<Acupunct> {
-            Acupuncts.Lu1 // enforce eager loading
+            Acupuncts.enforceEagerLoading()
             return all
         }
     }
@@ -134,6 +137,16 @@ data class AcupunctCoordinate(
                 .compare(this.number, other.number)
                 .result()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is AcupunctCoordinate) {
+            return false
+        }
+        return Objects.equals(this.meridian, other.meridian) &&
+                this.number == other.number
+    }
+
+    override fun hashCode() = Objects.hash(meridian, number)
 }
 
 

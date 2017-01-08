@@ -16,6 +16,10 @@ import at.cpickl.gadsu.tcm.model.Meridian
 @Suppress("unused")
 object Acupuncts {
 
+    fun enforceEagerLoading() {
+        Lu1
+    }
+
     val Lu1 = Acupunct.build(
             meridian = Meridian.Lung,
             number = 1,

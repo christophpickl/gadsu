@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.acupuncture
 
 import at.cpickl.gadsu.tcm.model.Meridian
+import gadsu.generated.Acupuncts
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
@@ -52,6 +54,10 @@ class TestableAcupunctureRepository : AcupunctureRepository {
 }
 
 @Test class AcupunctCoordinateTest {
+
+    @BeforeClass fun initAcupuncts() {
+        Acupuncts.enforceEagerLoading()
+    }
 
     @DataProvider
     fun potentialProvider(): Array<Array<out Any>> = arrayOf(
