@@ -234,13 +234,11 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
             else Colors.byHex("4a0965")
         }
 
-//        private val relativeMaxDays = 40 // will end up in 100% horizontal filled bar
     }
 
     private val labelText = labelTextForRecentTreatment(days)
     private val color = calculateColor(days)
     private val color2 = calculateColor2(days)
-//    private val percentWidth = Math.min(days.toFloat() / relativeMaxDays, 1.0F)
     var labelColor = Color.BLACK!!
 
     init {
@@ -254,7 +252,6 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
         g.fillRect(0, 0, width, height)
 
         g.color = color2
-//        g.fillRect(0, 0, (width * percentWidth).toInt(), height)
         g.drawRect(0, 0, width - 1, height - 1)
 
         g.color = labelColor
