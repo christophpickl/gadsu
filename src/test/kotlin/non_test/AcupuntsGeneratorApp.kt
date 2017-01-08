@@ -12,14 +12,19 @@ import java.io.FileNotFoundException
 import java.nio.charset.Charset
 import java.util.LinkedList
 
+
+/*
+ * Transform an OpenOffice spreadsheet to kotlin code. See Acupuncts.
+ */
+
 private val ODS_SOURCE_PATH = "gadsu/src/misc/acupoints.ods"
 private val KT_TARGET_PATH = "gadsu/src/main/kotlin/gadsu/generated/acupuncts.kt"
 
 fun main(args: Array<String>) {
-    AcupunctsGenerator.generate()
+    AcupunctsGeneratorApp.generate()
 }
 
-object AcupunctsGenerator {
+object AcupunctsGeneratorApp {
     fun generate() {
         println("Read ...")
         val acupuncts = AcupunctsReader().read(ODS_SOURCE_PATH)
@@ -32,7 +37,7 @@ object AcupunctsGenerator {
     }
 }
 
-data class OdsAcupunct(
+data class SpreadsheetRow(
         val meridian: Meridian,
         val number: Int,
         val germanName: String,
@@ -64,13 +69,13 @@ class AcupunctsReader {
 
     private val log = LOG(javaClass)
 
-    fun read(odsPath: String): List<OdsAcupunct> {
+    fun read(odsPath: String): List<SpreadsheetRow> {
         val doc = openDoc(odsPath)
 
         val table: TableTable = doc.body.officeSpreadsheets[0].tables[0]
 
         var recentMeridian: Meridian? = null
-        val result = LinkedList<OdsAcupunct>()
+        val result = LinkedList<SpreadsheetRow>()
         var i = 1
         while (true) {
             val row = table.rows[i++]
@@ -82,7 +87,7 @@ class AcupunctsReader {
 
             if (rawNumber.isEmpty()) break
 
-            result.add(OdsAcupunct(
+            result.add(SpreadsheetRow(
                     meridian = meridian,
                     number = rawNumber.toInt(),
                     germanName = cells[COL_NAME_DE].fullText,
@@ -125,9 +130,8 @@ private object FlagMapper {
             //    TODO override fun onKeyPoint(flag: AcupunctFlag.KeyPoint) = "${flag.labelShort} ${flag.meridianx.label}"
             "ton" to "AcupunctFlag.TonePoint",
             "sed" to "AcupunctFlag.SedatePoint",
-            "jing" to "AcupunctFlag.JingPoint"
-//    TODO override fun onEntryPoint(flag: AcupunctFlag.EntryPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
-
+            "jing" to "AcupunctFlag.JingPoint",
+            "ein" to "AcupunctFlag.EntryPoint"
     )
 
     /**
@@ -137,17 +141,25 @@ private object FlagMapper {
     fun mapFlags(input: String): String {
         return input.split(",").map {
             val singleFlagText = it.trim().toLowerCase()
-            val before = """
-                """
-            if (singleFlagText.startsWith("bo") || singleFlagText.startsWith("yu")) {
-                if (singleFlagText.length <= 2) {
-                    throw IllegalArgumentException("Forgot to define meridian, huh?! ;) Flag was '$singleFlagText'.")
-                }
-                before + flagFor(singleFlagText.substring(0, 2)) + Meridian.byLabelShort(singleFlagText.substring(3, singleFlagText.length))
+            if (singleFlagText.startsWith("bo")) {
+                mapFlagWithMeridian(singleFlagText, "bo")
+            } else if (singleFlagText.startsWith("yu")) {
+                mapFlagWithMeridian(singleFlagText, "yu")
+            } else if (singleFlagText.startsWith("ein")) {
+                mapFlagWithMeridian(singleFlagText, "ein")
             } else {
                 before + flagFor(singleFlagText)
             }
         }.joinToString(", ")
+    }
+
+    private val before = """
+                """
+    private fun mapFlagWithMeridian(fullText: String, searchCode: String): String {
+        if (fullText.length == searchCode.length) {
+            throw IllegalArgumentException("Forgot to define meridian, huh?! ;) Flag was '$fullText'.")
+        }
+        return before + flagFor(fullText.substring(0, searchCode.length)) + Meridian.byLabelShort(fullText.substring(searchCode.length + 1, fullText.length))
     }
 
     private fun flagFor(key: String) = FLAGS[key] ?: throw IllegalArgumentException("Invalid flag key: '$key'! (Allowed: ${FLAGS.keys.joinToString(", ")})")
@@ -158,7 +170,7 @@ class AcupunctsWriter {
     private val log = LOG(javaClass)
 
 
-    fun write(acupuncts: List<OdsAcupunct>, targetPath: String) {
+    fun write(acupuncts: List<SpreadsheetRow>, targetPath: String) {
         val acupunctsText = StringBuilder()
         acupuncts.forEach { punct ->
             punct.apply {
