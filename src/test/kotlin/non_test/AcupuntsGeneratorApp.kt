@@ -131,7 +131,7 @@ private object FlagMapper {
             "ton" to "AcupunctFlag.TonePoint",
             "sed" to "AcupunctFlag.SedatePoint",
             "jing" to "AcupunctFlag.JingPoint",
-            "ein" to "AcupunctFlag.EntryPoint"
+            "ein" to "AcupunctFlag.EntryPoint.Companion."
     )
 
     /**

@@ -136,7 +136,7 @@ private class ElementPanel(element: Element) : JPanel() {
 
 class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
-    private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "*" else "")).bold()
+    private val txtTitle = JLabel(punct.titleShort + (if (punct.isMarinaportant) "!!!" else "")).bold()
 
     private val txtFlags = JLabel(flagsToString(punct.flags))
 
@@ -158,7 +158,7 @@ class AcupunctCell(punct: Acupunct) : DefaultCellView<Acupunct>(punct) {
 
     private fun flagsToString(flags: List<AcupunctFlag>): String {
         return flags
-                .filter { it !is AcupunctFlag.ElementPoint && it !is AcupunctFlag.Marinaportant }
+                .filter { it.renderShortLabel }
                 .map { it.onFlagType(AcupunctFlagCallback.LABELIZE_SHORT) }
                 .joinToString()
     }

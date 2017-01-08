@@ -19,11 +19,15 @@ enum class ZangFu(val yy: YinYang) {
 
 // 12 hauptleitbahnen, 12 leitbahnzweige, 8 unpaarige, 15 netzleitbahne, netzbahnzweige, netzbahnen 3rd generation, 12 muskelleitbahne, hauptregionen
 
-enum class UnpairedMeridian(val label: String) {
-    RenMai("Ren Mai"),
-    DuMai("Du Mai"),
-    ChongMai("Chong Mai")
-    // ...
+enum class UnpairedMeridian(val label: String, val labelDe: String) {
+    DuMai("Du Mai", "Lenkergefäß"), // Gouverneur
+    RenMai("Ren Mai", "Konzeptionsgefäß"),
+    ChongMai("Chong Mai", "Vitalitätsgefäß"),
+    DaiMai("Dai Mai", "Gürtelgefäß"),
+    YangQiaoMai("Yang Qiao Mai", "Yang Motilitätsgefäß"),
+    YinQiaoMai("Yin Qiao Mai", "Yin Motilitätsgefäß"),
+    YangWeiMai("Yang Wei Mai", "Yang Regulationsgefäß"),
+    YinWeiMai("Yin Wei Mai", "Yin Regulationsgefäß")
     ;
 }
 

@@ -13,6 +13,7 @@ import java.util.regex.Pattern
 
 
 // synonym
+@Suppress("unused")
 fun AcupunctCoordinate.Companion.byLabel(label: String) = Acupunct.coordinateByLabel(label)
 
 
@@ -88,10 +89,10 @@ data class Acupunct(
 
     private fun verifyFlags() {
         if (flags.sorted() != flags) {
-            throw GadsuException("Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
+            throw GadsuException("$this: Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
         }
         if (flags.filter { it is AcupunctFlag.ElementPoint }.size > 1) {
-            throw GadsuException("Flags must only contain 0 or 1 element point, but was: " + flags.joinToString(", "))
+            throw GadsuException("$this: Flags must only contain 0 or 1 element point, but was: " + flags.joinToString(", "))
         }
     }
 }
@@ -180,10 +181,12 @@ open class AcupunctFlagStringShortCallback private constructor() : AcupunctFlagC
     override fun onEntryPoint(flag: AcupunctFlag.EntryPoint) = "${flag.labelShort} ${flag.meridian.labelShort}"
 }
 
+@Suppress("unused")
 sealed class AcupunctFlag(
         val label: String,
         val labelShort: String,
-        private val compareWeight: Int
+        private val compareWeight: Int,
+        val renderShortLabel: Boolean = true
 ) : Comparable<AcupunctFlag> {
 
     abstract fun <T> onFlagType(callback: AcupunctFlagCallback<T>): T
@@ -192,10 +195,12 @@ sealed class AcupunctFlag(
         return 0
     }
 
-    // erfahrungsstelle (marina) =??= verbindungspunkt (DTV) fuer zb Lu?
-    // RIM?
+    // ! kontrindiziert bei schwangerschaft
 
-    // TODO orientierungspunkte lt. skriptum
+    // ? erfahrungsstelle (marina) =??= verbindungspunkt (DTV) fuer zb Lu? oder nase
+    // ? RIM?
+    // notfallpunkt
+    // akutpunkt, zb Ma34
 
     override fun compareTo(other: AcupunctFlag): Int {
         if (this.compareWeight == other.compareWeight) {
@@ -206,7 +211,7 @@ sealed class AcupunctFlag(
 
     /** Important for marina. */
     // =================================================================================================================
-    object Marinaportant : AcupunctFlag("Wichtig", "*", 1) {
+    object Marinaportant : AcupunctFlag("Wichtig", "!!!", 0, renderShortLabel = false) {
         override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onMarinaportant(this)
         override fun toString() = "Marinaportant"
     }
@@ -223,10 +228,17 @@ sealed class AcupunctFlag(
     // =================================================================================================================
     class BoPoint private constructor(val meridian: Meridian) : AcupunctFlag("Bopunkt", "BO", 2) {
         companion object {
-
             val Lung = BoPoint(Meridian.Lung)
-            // TODO #12 ... finish bo list ...
-
+            val LargeIntestine = BoPoint(Meridian.LargeIntestine)
+            val Stomach = BoPoint(Meridian.Stomach)
+            val Spleen = BoPoint(Meridian.Spleen)
+            val Heart = BoPoint(Meridian.Heart)
+            val SmallIntestine = BoPoint(Meridian.SmallIntestine)
+            val UrinaryBladder = BoPoint(Meridian.UrinaryBladder)
+            val Kidney = BoPoint(Meridian.Kidney)
+            val Pericardium = BoPoint(Meridian.Pericardium)
+            val TripleBurner = BoPoint(Meridian.TripleBurner)
+            val GallBladder = BoPoint(Meridian.GallBladder)
         }
 
         override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onBoPoint(this)
@@ -237,12 +249,17 @@ sealed class AcupunctFlag(
     // =================================================================================================================
     class YuPoint private constructor(val meridian: Meridian) : AcupunctFlag("Yupunkt", "YU", 3) {
         companion object {
-
             val Lung = YuPoint(Meridian.Lung)
             val LargeIntestine = YuPoint(Meridian.LargeIntestine)
             val Stomach = YuPoint(Meridian.Stomach)
-            // TODO #12 ... finish yu list ...
-
+            val Spleen = YuPoint(Meridian.Spleen)
+            val Heart = YuPoint(Meridian.Heart)
+            val SmallIntestine = YuPoint(Meridian.SmallIntestine)
+            val UrinaryBladder = YuPoint(Meridian.UrinaryBladder)
+            val Kidney = YuPoint(Meridian.Kidney)
+            val Pericardium = YuPoint(Meridian.Pericardium)
+            val TripleBurner = YuPoint(Meridian.TripleBurner)
+            val GallBladder = YuPoint(Meridian.GallBladder)
         }
 
         override fun <T> onFlagType(callback: AcupunctFlagCallback<T>) = callback.onYuPoint(this)
@@ -251,7 +268,7 @@ sealed class AcupunctFlag(
 
     /** Wandlungsphasen Zuordnung. */
     // =================================================================================================================
-    class ElementPoint private constructor(val element: Element) : AcupunctFlag("Element", "5E", 4) {
+    class ElementPoint private constructor(val element: Element) : AcupunctFlag("Element", "5E", 4, renderShortLabel = false) {
         companion object {
             val Wood = ElementPoint(Element.Wood)
             val Fire = ElementPoint(Element.Fire)
