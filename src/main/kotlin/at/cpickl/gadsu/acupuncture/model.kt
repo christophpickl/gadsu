@@ -71,7 +71,7 @@ data class Acupunct(
 
         fun allForMeridian(meridian: Meridian): List<Acupunct> = byMeridian[meridian]!!
         fun all(): List<Acupunct> {
-            Acupuncts.Lu1 // enforce loading
+            Acupuncts.Lu1 // enforce eager loading
             return all
         }
     }
@@ -91,6 +91,15 @@ data class Acupunct(
     val titleShort: String get() = "${meridian.labelShort}$number"
 
     val elementFlag: AcupunctFlag.ElementPoint? = flags.filterIsInstance(AcupunctFlag.ElementPoint::class.java).firstOrNull()
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Acupunct) {
+            return false
+        }
+        return this.coordinate == other.coordinate
+    }
+
+    override fun hashCode() = this.coordinate.hashCode()
 
     override fun compareTo(other: Acupunct) = this.coordinate.compareTo(other.coordinate)
 
