@@ -11,6 +11,7 @@ class MailModule : AbstractModule() {
         log.debug("configure()")
 
         bind(MailSender::class.java).to(GMailSender::class.java).`in`(Scopes.SINGLETON)
+        bind(MailService::class.java).to(MailServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         bind(MailView::class.java).to(MailSwingView::class.java).`in`(Scopes.SINGLETON)
         bind(MailController::class.java).asEagerSingleton()

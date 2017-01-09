@@ -23,6 +23,7 @@ data class MailPreferencesData(
 open class MailController @Inject constructor(
         private val prefs: Prefs,
         private val mailSender: MailSender,
+        private val mailService: MailService,
         private val clientService: ClientService,
         private val view: MailView,
         private val dialogs: Dialogs,
@@ -52,12 +53,8 @@ open class MailController @Inject constructor(
     @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendMailEvent) {
         val mail = readMailFromView() ?: return
 
-        // brute force access, as already checked in: ensurePreferencesSet()
-        val myAddress = prefs.preferencesData.gmailAddress!!
-        val credentials = prefs.preferencesData.gapiCredentials!!
-
         asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut ..."),
-                { mailSender.send(mail, myAddress, credentials) },
+                { mailService.send(mail) },
                 {
                     dialogs.show(
                             title = "Mail versendet",
