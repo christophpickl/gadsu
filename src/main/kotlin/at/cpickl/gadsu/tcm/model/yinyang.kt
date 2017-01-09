@@ -15,22 +15,27 @@ enum class YinYangMiddle(val yy: YinYang?) {
 }
 
 enum class YinYangSize(val labelChinese: String) {
-    // TODO i think this is mixed up. shai/tao vs small/bg?!
-    Small("Tai"),
-    Big("Shao")
+    Lesser("Shao"),
+    Greater("Tai"),
+    Bright("Ming"),
+    Terminal("Jue")
 }
 
-enum class YinYangDetail(val labelChinese: String, val yy: YinYang, val size: YinYangSize) {
-    YinBig("Tai Yin", YinYang.Yin, YinYangSize.Big),
-    YinSmall("Shao Yin", YinYang.Yin, YinYangSize.Small),
-    YangBig("Tai Yang", YinYang.Yang, YinYangSize.Big),
-    YangSmall("Shao Yang", YinYang.Yang, YinYangSize.Small)
+// https://en.wikipedia.org/wiki/Six_levels
+enum class YinYangLevel(val labelChinese: String, val yy: YinYang, val size: YinYangSize) {
+    GreaterYin("Tai Yin", YinYang.Yin, YinYangSize.Greater),
+    LesserYin("Shao Yin", YinYang.Yin, YinYangSize.Lesser),
+    TerminalYin("Jue Yin", YinYang.Yin, YinYangSize.Terminal),
+
+    GreaterYang("Tai Yang", YinYang.Yang, YinYangSize.Greater),
+    BrightYang("Yang Ming", YinYang.Yang, YinYangSize.Bright),
+    LesserYang("Shao Yang", YinYang.Yang, YinYangSize.Lesser)
 }
 
-enum class YinYangDetailMiddle(val yy: YinYangDetail?) {
-    YinBig(YinYangDetail.YinBig),
-    YinSmall(YinYangDetail.YinSmall),
-    YangBig(YinYangDetail.YangBig),
-    YangSmall(YinYangDetail.YangSmall),
+enum class YinYangDetailMiddle(val yy: YinYangLevel?) {
+    YinBig(YinYangLevel.GreaterYin),
+    YinSmall(YinYangLevel.LesserYin),
+    YangBig(YinYangLevel.GreaterYang),
+    YangSmall(YinYangLevel.LesserYang),
     Middle(null),
 }
