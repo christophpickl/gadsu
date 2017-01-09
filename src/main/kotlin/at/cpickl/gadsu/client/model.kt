@@ -31,6 +31,7 @@ fun CurrentEvent.forClient(function: (Client?) -> Unit) {
 }
 
 interface IClient : HasId, Persistable {
+
     val created: DateTime
     val firstName: String
     val lastName: String
@@ -39,6 +40,7 @@ interface IClient : HasId, Persistable {
     val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
+    val hasMail: Boolean // inferred
     val wantReceiveDoodleMails: Boolean
     val birthday: DateTime?
     val gender: Gender
@@ -113,6 +115,8 @@ data class Client(
                 "", "", "", "", "", "", "", "", "",
                 "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
+
+    override val hasMail: Boolean = this.contact.mail.isNotEmpty()
 
     override val yetPersisted: Boolean get() = id != null
 

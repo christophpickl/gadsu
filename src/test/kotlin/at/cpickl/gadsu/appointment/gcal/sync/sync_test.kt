@@ -68,7 +68,7 @@ class SyncManualTest {
         assertThat(gcalEvent.id, equalTo(event.id))
         assertThat(gcalEvent.gadsuId, nullValue())
 
-        syncer.import(listOf(ImportAppointment(gcalEvent, true, client, clients).toAppointment(now)))
+        syncer.import(listOf(ImportAppointment(gcalEvent, true, false, client, clients).toAppointment(now)))
 
         return gcalEvent
     }

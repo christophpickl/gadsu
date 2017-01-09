@@ -7,9 +7,13 @@ import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.mail.Mail
+import at.cpickl.gadsu.mail.MailService
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.formatDateWithDayNoYear
+import at.cpickl.gadsu.service.formatTimeWithoutSeconds
 import org.joda.time.DateTime
 import javax.inject.Inject
 
@@ -36,7 +40,8 @@ class GCalSyncService @Inject constructor(
         private val clientService: ClientService,
         private val matcher: MatchClients,
         private val appointmentService: AppointmentService,
-        private val clock: Clock
+        private val clock: Clock,
+        private val mailService: MailService
 ) : SyncService {
 
     companion object {
@@ -86,10 +91,29 @@ class GCalSyncService @Inject constructor(
     override fun import(appointmentsToImport: List<Appointment>) {
         log.debug("import(appointmentsToImport.size={})", appointmentsToImport.size)
 
-        appointmentsToImport.forEach {
+        appointmentsToImport.forEach { appointment ->
             // no check for duplicates, you have to delete them manually ;)
-            appointmentService.insertOrUpdate(appointment = it)
+            appointmentService.insertOrUpdate(appointment)
+
+            sendConfirmationMail(clientService.findById(appointment.clientId), appointment)
         }
+    }
+
+    private fun sendConfirmationMail(client: Client, appointment: Appointment) {
+        // verify ...
+//        client.contact.mail.isNotEmpty()
+//        client.firstName.isNotEmpty()
+
+        val date = appointment.start // should we also display the end/length?
+        // FIXME #87 configurable mail confirmation text (subject + body), using own simple template mechanism (reference name and date variables)
+        mailService.send(Mail(client.contact.mail, "Shiatsu Terminbestaetigung",
+                """halli hallo ${client.firstName},
+
+hiermit bestaetige ich dir den termin am ${date.formatDateWithDayNoYear()} um ${date.formatTimeWithoutSeconds()} uhr.
+
+auf bald und alles liebe,
+christoph
+"""))
     }
 
     private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {

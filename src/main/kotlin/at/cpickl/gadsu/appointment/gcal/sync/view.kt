@@ -4,6 +4,7 @@ import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.components.MyEnableValue
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.components.TableColumn
@@ -35,6 +36,7 @@ interface SyncReportWindow : ClosableWindow {
 data class ImportAppointment(
         val event: GCalEvent,
         var enabled: Boolean,
+        var sendConfirmation: Boolean,
         var selectedClient: Client,
         val allClients: List<Client> // order is specific to this appointment
 ) {
@@ -53,8 +55,7 @@ data class ImportAppointment(
     }
 }
 
-class SyncReportSwingWindow
-@Inject constructor(
+class SyncReportSwingWindow @Inject constructor(
         mainFrame: MainFrame,
         bus: EventBus
 )
@@ -67,13 +68,16 @@ class SyncReportSwingWindow
             TableColumn("", 30, { it.enabled }),
             TableColumn("Titel", 250, { it.event.summary }),
             TableColumn("Client", 300, { it.selectedClient.preferredName }),
-            TableColumn("Zeit", 200, { Pair(it.event.start, it.event.end) })
+            TableColumn("Zeit", 500, { Pair(it.event.start, it.event.end) }),
+            TableColumn("ConfMail", 30, { MyEnableValue(enabled = it.selectedClient.hasMail, selected = it.sendConfirmation) })
     ))
     private val table = SyncTable(model)
-    private val btnImport = JButton("Synchronisieren").apply { addActionListener {
-        table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
-        bus.post(RequestImportSyncEvent())
-    } }
+    private val btnImport = JButton("Synchronisieren").apply {
+        addActionListener {
+            table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
+            bus.post(RequestImportSyncEvent())
+        }
+    }
 
     private val topText = HtmlEditorPane()
 
@@ -108,11 +112,11 @@ class SyncReportSwingWindow
         rootPane.defaultButton = btnImport
     }
 
-    override fun readImportAppointments() = model.getData()
+    override fun readImportAppointments(): List<ImportAppointment> = model.getData()
 
-    override fun readDeleteAppointments() = deleteAppointments
+    override fun readDeleteAppointments(): List<Appointment> = deleteAppointments
 
-    override fun readUpdateAppointments() = updateAppointments
+    override fun readUpdateAppointments(): List<Appointment> = updateAppointments
 
     // MINOR @VIEW - outsource logic from proper starting, see PreferencesWindow
     override fun start() {
@@ -122,17 +126,20 @@ class SyncReportSwingWindow
     override fun initReport(report: SyncReport, clients: List<Client>) {
         val defaultSelected = clients.first()
         model.resetData(report.importEvents.map {
-            ImportAppointment(it.key, true, it.value.firstOrNull() ?: defaultSelected, clientsOrdered(it.value, clients))
+            val selectedClient = it.value.firstOrNull() ?: defaultSelected
+            ImportAppointment(it.key, true, selectedClient.hasMail, selectedClient, clientsOrdered(it.value, clients))
         })
 
         deleteAppointments = report.deleteAppointments
 
         // copy values from GCalEvent to local Appointment
-        updateAppointments = report.updateAppointments.map { it.value.copy(
-                start = it.key.start,
-                end = it.key.end,
-                note = it.key.description
-        ) }
+        updateAppointments = report.updateAppointments.map {
+            it.value.copy(
+                    start = it.key.start,
+                    end = it.key.end,
+                    note = it.key.description
+            )
+        }
 
         val isSingular = model.size == 1
         topText.text = "Folgende${if (isSingular) "r" else ""} ${model.size} Termin${if (isSingular) " kann" else "e können"} importiert werden " +

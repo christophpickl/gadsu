@@ -4,9 +4,11 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.ClientRenderer
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewConstants
+import at.cpickl.gadsu.view.components.DateRangeTableCellRenderer
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellEditor
 import at.cpickl.gadsu.view.components.MyCheckboxTableCellRenderer
-import at.cpickl.gadsu.view.components.MyDateTimeTableCellRenderer
+import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellEditor
+import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellRenderer
 import at.cpickl.gadsu.view.components.MyTable
 import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.registerOnStopped
@@ -17,6 +19,9 @@ import javax.swing.JComboBox
 import javax.swing.JTable
 import javax.swing.table.TableCellEditor
 
+// TODO more gap to borders
+// TODO Zeit column width fix
+// MINOR bg color of column confirmation, is white
 class SyncTable(
         private val model: MyTableModel<ImportAppointment>
 ) :
@@ -26,6 +31,7 @@ class SyncTable(
         private val COL_CHECKBOX = 0
         private val COL_CLIENT = 2
         private val COL_DATE = 3
+        private val COL_CONFIRMATION = 4
     }
 
     private val logg = LOG(javaClass)
@@ -33,23 +39,30 @@ class SyncTable(
     init {
         val enabledEditor = MyCheckboxTableCellEditor().apply {
             registerOnStopped {
-                val importApp = model.entityAt(selectedRow)
-                logg.debug("on stopped for {}, to state: {}", importApp, currentState)
-                importApp.enabled = currentState
+                model.entityAt(selectedRow).enabled = currentState
+            }
+        }
+        val confirmationEditor = MyEnableCheckboxTableCellEditor().apply {
+            registerOnStopped {
+                model.entityAt(selectedRow).sendConfirmation = currentState
             }
         }
 
         // textTable.setDefaultRenderer(String.class, new RowHeightCellRenderer());
         columnModel.getColumn(COL_CHECKBOX).cellEditor = enabledEditor
         columnModel.getColumn(COL_CHECKBOX).cellRenderer = MyCheckboxTableCellRenderer()
-        columnModel.getColumn(COL_DATE).cellRenderer = MyDateTimeTableCellRenderer()
+        columnModel.getColumn(COL_DATE).cellRenderer = DateRangeTableCellRenderer()
+        columnModel.getColumn(COL_CONFIRMATION).cellEditor = confirmationEditor
+        columnModel.getColumn(COL_CONFIRMATION).cellRenderer = MyEnableCheckboxTableCellRenderer()
 
         rowHeight = 40
 
         val clientEditor = ImportAppointmentClientEditor(this).apply {
             registerOnStopped {
+                logg.trace("Selected client: {}", currentClient)
                 val importApp = model.entityAt(selectedRow)
                 importApp.selectedClient = currentClient
+                importApp.sendConfirmation = currentClient.hasMail
             }
         }
         columnModel.getColumn(COL_CLIENT).cellEditor = clientEditor
@@ -57,7 +70,7 @@ class SyncTable(
 
     override fun isCellEditable(row: Int, column: Int): Boolean {
         return when (column) {
-            COL_CHECKBOX, COL_CLIENT -> true
+            COL_CHECKBOX, COL_CLIENT, COL_CONFIRMATION -> true
             else -> super.isCellEditable(row, column)
         }
     }

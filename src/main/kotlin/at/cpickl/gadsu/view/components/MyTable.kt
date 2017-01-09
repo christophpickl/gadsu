@@ -92,6 +92,6 @@ class MyTableModel<E>(val columns: List<TableColumn<E>>) : AbstractTableModel(),
 
     fun entityAt(index: Int): E = data[index]
 
-    fun getData() = data.toList()
+    fun getData(): List<E> = data.toList()
 
 }

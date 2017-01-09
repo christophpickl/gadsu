@@ -62,6 +62,7 @@ class ExtendedClient(
     override val fullName: String get() = client.fullName
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
+    override val hasMail: Boolean get() = client.hasMail
     override val wantReceiveDoodleMails = client.wantReceiveDoodleMails
     override val birthday: DateTime? get() = client.birthday
     override val gender: Gender get() = client.gender

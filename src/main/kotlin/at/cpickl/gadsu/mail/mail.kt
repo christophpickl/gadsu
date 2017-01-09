@@ -8,6 +8,9 @@ data class Mail(
         val subject: String,
         val body: String
 ) {
+
+    constructor(recipient: String, subject: String, body: String): this(listOf(recipient), subject, body)
+
     init {
         if (recipients.isEmpty()) {
             throw IllegalArgumentException("Recipients must not be empty! ($this)")

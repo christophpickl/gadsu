@@ -5,6 +5,7 @@ import at.cpickl.gadsu.appointment.gcal.sync.RequestImportSyncEvent
 import at.cpickl.gadsu.appointment.gcal.sync.SyncReport
 import at.cpickl.gadsu.appointment.gcal.sync.SyncReportSwingWindow
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.view.DisabledMacHandler
@@ -15,7 +16,7 @@ import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
 
 fun main(args: Array<String>) {
-    val client1 = Client.savedValidInstance().copy(firstName = "client1")
+    val client1 = Client.savedValidInstance().copy(firstName = "client1", contact = Contact.INSERT_PROTOTYPE.copy(mail = "client1@home.at"))
     val client2 = Client.savedValidInstance2().copy(firstName = "client2")
     val client3 = Client.savedValidInstance2().copy(firstName = "client3")
     val client4 = Client.savedValidInstance2().copy(firstName = "client4")
@@ -43,7 +44,7 @@ private class RequestImportSyncEventListener(private val window: SyncReportSwing
     @Suppress("UNUSED_PARAMETER")
     @Subscribe fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
         val foo = window.readImportAppointments().filter { it.enabled }.map {
-            "- " + it.event.summary + " => " + it.selectedClient.fullName
+            "- " + it.event.summary + " => " + it.selectedClient.fullName + (if(it.sendConfirmation) " (confirmation mail enabled)" else "")
         }.joinToString("\n")
         println("import:\n$foo")
     }
