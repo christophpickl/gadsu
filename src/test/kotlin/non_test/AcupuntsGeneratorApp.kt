@@ -127,7 +127,7 @@ private object FlagMapper {
             "orig" to "AcupunctFlag.OriginalPoint",
             "nex" to "AcupunctFlag.NexusPoint",
             "master" to "AcupunctFlag.MasterPoint",
-            //    TODO override fun onKeyPoint(flag: AcupunctFlag.KeyPoint) = "${flag.labelShort} ${flag.meridianx.label}"
+            // TODO @acupuncts - "key" to "AcupunctFlag.KeyPoint",
             "ton" to "AcupunctFlag.TonePoint",
             "sed" to "AcupunctFlag.SedatePoint",
             "jing" to "AcupunctFlag.JingPoint",
@@ -136,7 +136,7 @@ private object FlagMapper {
 
     /**
      * @param input e.g.: "wichtig, Bo"
-     * @return "AcupunctFlag.BoPoint.Companion.Lung, AcupunctFlag.Marinaportant"
+     * @return "AcupunctFlag.Marinaportant, AcupunctFlag.BoPoint.Companion.Lung"
      */
     fun mapFlags(input: String): String {
         return input.split(",").map {
