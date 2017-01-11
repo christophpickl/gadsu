@@ -13,12 +13,6 @@ import java.util.Objects
 import java.util.regex.Pattern
 
 
-// synonym
-@Suppress("unused")
-fun AcupunctCoordinate.Companion.byLabel(label: String) = Acupunct.coordinateByLabel(label)
-
-
-
 data class Acupunct(
         val coordinate: AcupunctCoordinate,
         val germanName: String,
@@ -74,6 +68,7 @@ data class Acupunct(
             return byMeridian[meridian] ?: throw IllegalStateException("This sucks. Acupunct loading is cripled, as not yet loaded for meridian $meridian!")
         }
         fun all(): List<Acupunct> {
+            // this is kind of a hack... needs complete rework this acupunct stuff...
             Acupuncts.enforceEagerLoading()
             return all
         }
@@ -126,6 +121,9 @@ data class AcupunctCoordinate(
     companion object {
         private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
         fun isPotentialLabel(potent: String) = regexp.matcher(potent).matches()
+
+        /** Just a synonym. */
+        fun byLabel(label: String) = Acupunct.coordinateByLabel(label)
     }
 
     /** E.g. "Lu1", "3E21, "Due14" */
