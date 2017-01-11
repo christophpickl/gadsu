@@ -7,6 +7,7 @@ import java.util.HashMap
 
 
 fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
+//    if (this.keys.any { that.containsKey(it) }) throw GadsuException("Expected no intersections! This: $this. That: $that.")
     this.keys.forEach { if (that.containsKey(it)) throw GadsuException("Expected no intersections! This: $this. That: $that.") }
 }
 
@@ -23,6 +24,11 @@ fun String.saveToFile(target: File) {
     Files.write(this, target, Charsets.UTF_8)
 }
 
+//fun String.times(count: Int): String = StringBuilder().let { sb ->
+//    repeat(count) {
+//        sb.append(this)
+//    }
+//}.toString()
 fun String.times(count: Int): String {
     val symbol = this
     return StringBuilder().apply {
