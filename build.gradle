@@ -90,8 +90,8 @@ dependencies {
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3' // hsqldb 2.3.4 leads to the application to hang :-/
-    compile 'org.springframework:spring-jdbc:4.3.4.RELEASE'
-    compile 'org.springframework:spring-context-support:4.3.4.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.3.5.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.5.RELEASE'
     compile 'org.flywaydb:flyway-core:4.0.3'
 
     // REPORTING
@@ -102,10 +102,10 @@ dependencies {
 
     // LOGGING
     // -------------------------------------------------------------------------
-    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'org.slf4j:jcl-over-slf4j:1.7.22' // everyone who uses apaches common logging should use this instead
     compile 'ch.qos.logback:logback-core:1.1.8'
     compile 'ch.qos.logback:logback-classic:1.1.8'
-    compile 'org.slf4j:jcl-over-slf4j:1.7.21' // everyone who uses apaches common logging should use this instead
 
     // GOOGLE
     // -------------------------------------------------------------------------
@@ -114,7 +114,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-calendar:v3-rev225-1.22.0'
     compile 'com.google.apis:google-api-services-gmail:v1-rev53-1.22.0'
     compile 'javax.mail:mail:1.4.7'
-    compile 'org.apache.pdfbox:pdfbox:2.0.3'
+    compile 'org.apache.pdfbox:pdfbox:2.0.4'
 
     // TEST
     // -------------------------------------------------------------------------
@@ -124,7 +124,7 @@ dependencies {
     testCompile 'org.exparity:hamcrest-date:2.0.4'
 //    testCompile 'com.natpryce:hamkrest:1.2.3.0'
     testCompile('org.testng:testng:6.10')
-    testCompile 'org.mockito:mockito-core:2.3.0'
+    testCompile 'org.mockito:mockito-core:2.5.5'
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
     testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'
@@ -249,7 +249,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // >> gradle test testIt testUi
 
 jacoco {
-    toolVersion = "0.7.7.201606060606"
+    toolVersion = "0.7.8"
 }
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
