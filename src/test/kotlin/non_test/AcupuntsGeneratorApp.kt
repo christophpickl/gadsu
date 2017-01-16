@@ -81,11 +81,14 @@ class AcupunctsReader {
             val row = table.rows[i++]
             val cells = row.getCellsInRange(0, COL_LAST)
             val rawMeridian = cells[COL_MERIDIAN].fullText
+            println("Processing row ${i - 1}, raw meridian: [$rawMeridian], recent meridian: [$recentMeridian]")
             val meridian = if (rawMeridian.isEmpty()) recentMeridian!! else meridianByLabel(rawMeridian)
             recentMeridian = meridian
             val rawNumber = cells[COL_NUMBER].fullText
 
-            if (rawNumber.isEmpty()) break
+            if (rawNumber.isEmpty()) {
+                break
+            }
 
             result.add(SpreadsheetRow(
                     meridian = meridian,
@@ -150,11 +153,12 @@ private object FlagMapper {
             } else {
                 before + flagFor(singleFlagText)
             }
-        }.joinToString(", ")
+        }.joinToString(",")
     }
 
     private val before = """
-                """
+                    """
+
     private fun mapFlagWithMeridian(fullText: String, searchCode: String): String {
         if (fullText.length == searchCode.length) {
             throw IllegalArgumentException("Forgot to define meridian, huh?! ;) Flag was '$fullText'.")
@@ -184,14 +188,14 @@ class AcupunctsWriter {
 
                 acupunctsText.append("""
     val $meridian3ESafe$number = Acupunct.build(
-        meridian = Meridian.${meridian.name},
-        number = $number,
-        germanName = "$germanName",
-        chineseName="$chineseName",
-        note = "$note",
-        localisation = "$localisation",
-        joinedIndications = "$joinedIndications",
-        flags = $flagsText
+            meridian = Meridian.${meridian.name},
+            number = $number,
+            germanName = "$germanName",
+            chineseName = "$chineseName",
+            note = "$note",
+            localisation = "$localisation",
+            joinedIndications = "$joinedIndications",
+            flags = $flagsText
     )
 """)
             }
@@ -216,6 +220,10 @@ import at.cpickl.gadsu.tcm.model.Meridian
 //
 @Suppress("unused")
 object Acupuncts {
+
+    fun enforceEagerLoading() { // hacky hacky method
+        Lu1
+    }
 $acupunctsText
 }
 """)

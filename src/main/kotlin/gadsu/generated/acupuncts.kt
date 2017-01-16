@@ -11,12 +11,12 @@ import at.cpickl.gadsu.tcm.model.Meridian
 // this is a GENERATED file! dont edit it!
 // see: AcupunctsGenerator.generate()
 //
-// generated: 08.01.2017 22:47:15
+// generated: 16.01.2017 22:07:31
 //
 @Suppress("unused")
 object Acupuncts {
 
-    fun enforceEagerLoading() {
+    fun enforceEagerLoading() { // hacky hacky method
         Lu1
     }
 
@@ -862,8 +862,7 @@ object Acupuncts {
             flags = listOf<AcupunctFlag>(
                     AcupunctFlag.Marinaportant,
                     AcupunctFlag.ElementPoint.Fire,
-                    AcupunctFlag.TonePoint
-            )
+                    AcupunctFlag.TonePoint)
     )
 
     val Ma42 = Acupunct.build(
@@ -925,8 +924,7 @@ object Acupuncts {
                     AcupunctFlag.Marinaportant,
                     AcupunctFlag.Orientation,
                     AcupunctFlag.ElementPoint.Wood,
-                    AcupunctFlag.JingPoint
-            )
+                    AcupunctFlag.JingPoint)
     )
 
     val MP2 = Acupunct.build(
@@ -951,8 +949,7 @@ object Acupuncts {
             flags = listOf<AcupunctFlag>(
                     AcupunctFlag.Marinaportant,
                     AcupunctFlag.ElementPoint.Earth,
-                    AcupunctFlag.OriginalPoint
-            )
+                    AcupunctFlag.OriginalPoint)
     )
 
     val MP4 = Acupunct.build(
@@ -1026,8 +1023,7 @@ object Acupuncts {
                     AcupunctFlag.Marinaportant,
                     AcupunctFlag.Orientation,
                     AcupunctFlag.ElementPoint.Water,
-                    AcupunctFlag.EntryPoint.Companion.Heart
-            )
+                    AcupunctFlag.EntryPoint.Companion.Heart)
     )
 
     val MP10 = Acupunct.build(
@@ -1171,21 +1167,23 @@ object Acupuncts {
     val He1 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 1,
-            germanName = "",
-            chineseName = "",
-            note = "",
-            localisation = "",
-            joinedIndications = "",
-            flags = emptyList<AcupunctFlag>()
+            germanName = "Äußerste Quelle",
+            chineseName = "Jiquan",
+            note = "befreit die Brust, aktiviert den Meridian, nützt den Armen, verbindet Herz und Hand",
+            localisation = "In der Mitte der Achselhöhle",
+            joinedIndications = "Herzschmerzen, Brustschmerzen, Brustenge, Kurzatmigkeit, Herzklopfen, Schulterschmerzen (wenn Arm nicht hebbar)",
+            flags = listOf<AcupunctFlag>(
+                    AcupunctFlag.Marinaportant,
+                    AcupunctFlag.Orientation)
     )
 
     val He2 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 2,
-            germanName = "",
-            chineseName = "",
+            germanName = "Blaugrüne Quelle",
+            chineseName = "Qingling",
             note = "",
-            localisation = "",
+            localisation = "An der Innenseite des Oberarmes, 3C proximal des Ellbogens am medialen Rand des Biceps",
             joinedIndications = "",
             flags = emptyList<AcupunctFlag>()
     )
@@ -1193,21 +1191,25 @@ object Acupuncts {
     val He3 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 3,
-            germanName = "",
-            chineseName = "",
-            note = "",
-            localisation = "",
-            joinedIndications = "",
-            flags = emptyList<AcupunctFlag>()
+            germanName = "Das kleine Meer",
+            chineseName = "Shaohai",
+            note = "Erfahrungsstelle für Herzbeklemmung; beruhigt den Geist, wandelt Schleim um, klärt Hitze",
+            localisation = "Bei gebeugtem Arm am medialen Ende der Ellbogenfalte",
+            joinedIndications = "Nervösität, heftige Erregung, Schlaflosigkeit, Armschmerzen, Ellbogenschmerzen, steifer Nacken, kalte Hände",
+            flags = listOf<AcupunctFlag>(
+                    AcupunctFlag.Marinaportant,
+                    AcupunctFlag.Orientation,
+                    AcupunctFlag.ElementPoint.Water,
+                    AcupunctFlag.EntryPoint.Companion.Heart)
     )
 
     val He4 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 4,
-            germanName = "",
-            chineseName = "",
+            germanName = "Geisterweg",
+            chineseName = "Lingdao",
             note = "",
-            localisation = "",
+            localisation = "1.5C proximal der Handgelenksfalte, radial der Sehne des Flexor carpi ulnaris",
             joinedIndications = "",
             flags = emptyList<AcupunctFlag>()
     )
@@ -1215,10 +1217,10 @@ object Acupuncts {
     val He5 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 5,
-            germanName = "",
-            chineseName = "",
+            germanName = "Innerer Verbindungsweg",
+            chineseName = "Tongli",
             note = "",
-            localisation = "",
+            localisation = "1.0C proximal der Handgelenksfalte, radial der Sehne des Flexor carpi ulnaris",
             joinedIndications = "",
             flags = emptyList<AcupunctFlag>()
     )
@@ -1226,10 +1228,10 @@ object Acupuncts {
     val He6 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 6,
-            germanName = "",
-            chineseName = "",
+            germanName = "Yin Spalt",
+            chineseName = "Yinxi",
             note = "",
-            localisation = "",
+            localisation = "0.5C proximal der Handgelenksfalte, radial der Sehne des Flexor carpi ulnaris",
             joinedIndications = "",
             flags = emptyList<AcupunctFlag>()
     )
@@ -1237,21 +1239,26 @@ object Acupuncts {
     val He7 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 7,
-            germanName = "",
-            chineseName = "",
-            note = "",
-            localisation = "",
-            joinedIndications = "",
-            flags = emptyList<AcupunctFlag>()
+            germanName = "Göttliches Tor",
+            chineseName = "Shenmen",
+            note = "Erfahrungsstelle bei Herzrhythmusstörungen und Schlafstörungen; beruhigt den Geist, reguliert und stärkt das Herz",
+            localisation = "In der Handgelenksfalte, in einer Vertiefung radial der Sehne Flexor carpi ulnaris, am Hinterrand des Os pisiforme",
+            joinedIndications = "Unruhe, Nervosität, emotionale Disharmonie, Angstzustände, Reizbarkeit, Schlafstörungen, Herzschmerzen, Herzklopfen, Herzrasen, Schwindelgefühl, Konzentrationsprobleme, Gedächtnisprobleme",
+            flags = listOf<AcupunctFlag>(
+                    AcupunctFlag.Marinaportant,
+                    AcupunctFlag.Orientation,
+                    AcupunctFlag.ElementPoint.Earth,
+                    AcupunctFlag.SedatePoint,
+                    AcupunctFlag.OriginalPoint)
     )
 
     val He8 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 8,
-            germanName = "",
-            chineseName = "",
+            germanName = "Kleiner Amtssitz",
+            chineseName = "Shaofu",
             note = "",
-            localisation = "",
+            localisation = "Zwischen 4. und 5. Mittelhandknochen, wenn man die Hand zur Faust ballt, wo die Spitze des kleinen Fingers den Handteller trifft",
             joinedIndications = "",
             flags = emptyList<AcupunctFlag>()
     )
@@ -1259,12 +1266,17 @@ object Acupuncts {
     val He9 = Acupunct.build(
             meridian = Meridian.Heart,
             number = 9,
-            germanName = "",
-            chineseName = "",
-            note = "",
-            localisation = "",
-            joinedIndications = "",
-            flags = emptyList<AcupunctFlag>()
+            germanName = "Kleiner Stoß",
+            chineseName = "Shaochong",
+            note = "Notfallspunkt bei Herz- und Kreislaufbeschwerden; belebt das Bewusstsein, klärt Hitze, nützt der Zunge, Augen und Rachen, reguliert das Herz, Ki, beruhigt den Geist",
+            localisation = "Am radialen Nagelfalzwinkel des kleinen Fingers",
+            joinedIndications = "Herzschmerzen, Brustschmerzen, Schmerzen seitliche Rippen, Herzklopfen, Beklemmungsgefühl, Bewußtseinsverlust, Delirium, Epilepsie, emotionale Disharmonie",
+            flags = listOf<AcupunctFlag>(
+                    AcupunctFlag.Marinaportant,
+                    AcupunctFlag.ElementPoint.Wood,
+                    AcupunctFlag.Orientation,
+                    AcupunctFlag.TonePoint,
+                    AcupunctFlag.JingPoint)
     )
 
     val Due1 = Acupunct.build(
