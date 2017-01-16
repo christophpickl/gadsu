@@ -26,9 +26,11 @@ High
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder (endless) trotz "Abbrechen" klicken
 * client mastercell, wiedersehen in tagen (anstatt absolutes datum)
 * speichern shortcut funktioniert nicht gscheit
+* reorder clients on name change
 
 Med
 ---
+* new client properties: yin/yang typ, primaer kontakt (whatsapp/telegram/sms/mail + note), woher kommt (social media/freund, + note)
 * multiproperties on click (not pressed; release should not be necessary)
 * clear selection on focus lost for textarea
 * die textareas sind in hoehe nicht mehr variabel! :(
