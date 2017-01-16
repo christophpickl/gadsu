@@ -1,14 +1,17 @@
 package at.cpickl.gadsu.acupuncture
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.tcm.model.Meridian
 import gadsu.generated.Acupuncts
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.slf4j.LoggerFactory
+import org.testng.Assert.fail
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+import java.util.LinkedList
 
 
 object TestAcupunctures {
@@ -56,7 +59,22 @@ class TestableAcupunctureRepository : AcupunctureRepository {
 @Test class AcupunctCoordinateTest {
 
     @BeforeClass fun initAcupuncts() {
+        disableAcupunctVerification = true
         Acupuncts.enforceEagerLoading()
+        disableAcupunctVerification = false
+
+        val es = LinkedList<GadsuException>()
+        Acupunct.all().forEach {
+            try {
+                it.verifyFlags()
+            } catch(e: GadsuException) {
+                es += e
+            }
+        }
+
+        if (es.isNotEmpty()) {
+            fail("Invalid flags found!\n-> " + es.map { it.message }.joinToString("\n"))
+        }
     }
 
     @DataProvider

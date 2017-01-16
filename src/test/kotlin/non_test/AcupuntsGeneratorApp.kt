@@ -1,9 +1,11 @@
 package non_test
 
+import at.cpickl.gadsu.acupuncture.AcupunctCoordinateTest
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.tcm.model.Meridian
 import com.google.common.io.Files
+import gadsu.generated.Acupuncts
 import org.joda.time.DateTime
 import org.jopendocument.model.OpenDocument
 import org.jopendocument.model.table.TableTable

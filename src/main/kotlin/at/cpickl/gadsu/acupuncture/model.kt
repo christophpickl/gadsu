@@ -12,7 +12,7 @@ import java.util.LinkedList
 import java.util.Objects
 import java.util.regex.Pattern
 
-
+var disableAcupunctVerification = false
 data class Acupunct(
         val coordinate: AcupunctCoordinate,
         val germanName: String,
@@ -75,7 +75,9 @@ data class Acupunct(
     }
 
     init {
-        verifyFlags()
+        if (!disableAcupunctVerification) {
+            verifyFlags()
+        }
     }
 
     val isMarinaportant: Boolean by lazy { flags.contains(AcupunctFlag.Marinaportant) }
@@ -103,7 +105,7 @@ data class Acupunct(
 
     override fun toString() = coordinate.label
 
-    private fun verifyFlags() {
+    fun verifyFlags() {
         if (flags.sorted() != flags) {
             throw GadsuException("$this: Flags must be in precise order! Was: ${flags.joinToString()}, but should be: ${flags.sorted().joinToString()}")
         }

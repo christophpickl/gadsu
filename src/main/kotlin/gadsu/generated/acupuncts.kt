@@ -11,7 +11,7 @@ import at.cpickl.gadsu.tcm.model.Meridian
 // this is a GENERATED file! dont edit it!
 // see: AcupunctsGenerator.generate()
 //
-// generated: 16.01.2017 22:07:31
+// generated: 16.01.2017 22:30:16
 //
 @Suppress("unused")
 object Acupuncts {
@@ -1248,8 +1248,8 @@ object Acupuncts {
                     AcupunctFlag.Marinaportant,
                     AcupunctFlag.Orientation,
                     AcupunctFlag.ElementPoint.Earth,
-                    AcupunctFlag.SedatePoint,
-                    AcupunctFlag.OriginalPoint)
+                    AcupunctFlag.OriginalPoint,
+                    AcupunctFlag.SedatePoint)
     )
 
     val He8 = Acupunct.build(
@@ -1273,8 +1273,8 @@ object Acupuncts {
             joinedIndications = "Herzschmerzen, Brustschmerzen, Schmerzen seitliche Rippen, Herzklopfen, Beklemmungsgefühl, Bewußtseinsverlust, Delirium, Epilepsie, emotionale Disharmonie",
             flags = listOf<AcupunctFlag>(
                     AcupunctFlag.Marinaportant,
-                    AcupunctFlag.ElementPoint.Wood,
                     AcupunctFlag.Orientation,
+                    AcupunctFlag.ElementPoint.Wood,
                     AcupunctFlag.TonePoint,
                     AcupunctFlag.JingPoint)
     )
