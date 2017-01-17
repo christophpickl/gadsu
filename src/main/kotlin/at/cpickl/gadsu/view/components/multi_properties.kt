@@ -108,8 +108,7 @@ private class MultiPropertiesRenderer(
             c.fill = GridBagConstraints.BOTH
             add(text.scrolled(vPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED))
             text.addMouseListener(object : MouseAdapter() {
-                override fun mouseClicked(e: MouseEvent) {
-                    println("mouse click: $e")
+                override fun mousePressed(e: MouseEvent) {
                     if (e.button == 1) {
                         onEditClicked()
                     }
