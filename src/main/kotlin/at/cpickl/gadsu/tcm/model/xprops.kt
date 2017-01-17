@@ -112,7 +112,8 @@ object XProps : XPropsFinder by XPropsFactory {
         TiredInMorning(opt("Sleep_TiredInMorning", "Morgensmüdigkeit")),
         TiredDuringDay(opt("Sleep_TiredDuringDay", "Tagesmüdigkeit")),
 
-        Dreams(opt("Sleep_Dreams", "Träume"))
+        Dreams(opt("Sleep_Dreams", "Träume")),
+        CrunchTeeth(opt("Sleep_CrunchTeeth", "Zähne knirschen"))
     }
 
     val Sleep = enum("Sleep", "Schlaf")
