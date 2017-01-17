@@ -11,12 +11,12 @@ import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.Test
 import org.uispec4j.Button
 import org.uispec4j.ListBox
+import org.uispec4j.Mouse
 import org.uispec4j.TextBox
 import org.uispec4j.UISpecTestCase
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
-import java.awt.event.MouseEvent
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JList
@@ -129,7 +129,7 @@ private class MultiPropertiesDriver(
     fun hitEditButton() {
         assertRenderMode()
         val textArea = renderText.awtComponent as MyTextArea
-        textArea.mouseListeners.forEach { it.mouseClicked(MouseEvent(textArea, 0, 0, 0, 0, 0, 1, false, 1)) }
+        Mouse.click(renderText)
     }
 
     fun hitDoneButton() {
