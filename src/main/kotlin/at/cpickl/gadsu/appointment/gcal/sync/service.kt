@@ -103,6 +103,8 @@ class GCalSyncService @Inject constructor(
             appointmentService.insertOrUpdate(appointment)
 
             val client = clientService.findById(appointment.clientId)
+
+            // FIXME #87 @confirm - only send confirmation if selected in UI as such
             try {
                 appointmentConfirmationer.confirm(subjectTemplate, bodyTemplate, client, appointment)
             } catch(e: AppointmentConfirmationException) {

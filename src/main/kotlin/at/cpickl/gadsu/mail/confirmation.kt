@@ -29,7 +29,7 @@ class AppointmentConfirmationerImpl @Inject constructor(
     @VisibleForTesting fun buildMail(subjectTemplate: String, bodyTemplate: String, client: Client, appointment: Appointment): Mail {
         val data = mapOf(
                 "name" to client.firstName,
-                "date" to appointment.start.toDate() // TODO should we also display the end/length?
+                "date" to appointment.start.toDate() // TODO #87 @confirm - should we also display the end/length?
         )
         val subject = templating.process(subjectTemplate, data)
         val body = templating.process(bodyTemplate, data)

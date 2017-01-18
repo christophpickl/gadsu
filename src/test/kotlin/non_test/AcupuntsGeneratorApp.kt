@@ -1,11 +1,9 @@
 package non_test
 
-import at.cpickl.gadsu.acupuncture.AcupunctCoordinateTest
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.tcm.model.Meridian
 import com.google.common.io.Files
-import gadsu.generated.Acupuncts
 import org.joda.time.DateTime
 import org.jopendocument.model.OpenDocument
 import org.jopendocument.model.table.TableTable
@@ -132,7 +130,7 @@ private object FlagMapper {
             "orig" to "AcupunctFlag.OriginalPoint",
             "nex" to "AcupunctFlag.NexusPoint",
             "master" to "AcupunctFlag.MasterPoint",
-            // TODO @acupuncts - "key" to "AcupunctFlag.KeyPoint",
+            // TODO #12 @acupuncts - "key" to "AcupunctFlag.KeyPoint",
             "ton" to "AcupunctFlag.TonePoint",
             "sed" to "AcupunctFlag.SedatePoint",
             "jing" to "AcupunctFlag.JingPoint",

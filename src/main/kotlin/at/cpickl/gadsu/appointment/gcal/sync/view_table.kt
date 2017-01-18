@@ -19,9 +19,7 @@ import javax.swing.JComboBox
 import javax.swing.JTable
 import javax.swing.table.TableCellEditor
 
-// TODO more gap to borders
-// TODO Zeit column width fix
-// MINOR bg color of column confirmation, is white
+// TODO #80 @syncUI - more gap to borders; Zeit column width fix; (bg color of column confirmation, is white)
 class SyncTable(
         private val model: MyTableModel<ImportAppointment>
 ) :

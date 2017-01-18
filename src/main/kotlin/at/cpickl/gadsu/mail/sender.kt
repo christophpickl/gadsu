@@ -32,9 +32,9 @@ class GMailApiImpl @Inject constructor(
         val message = mail.toMimeMessage(myAddress).toMessage()
         val gmail = connector.connectGmail(credentials)
 
-        val sent = gmail.users().messages().send(myAddress, message).execute();
+        val sent = gmail.users().messages().send(myAddress, message).execute()!!
         log.debug("Sent message id: {}", sent.id)
-        return sent!!
+        return sent
     }
 
     private fun Mail.toMimeMessage(myAddress: String): MimeMessage {
