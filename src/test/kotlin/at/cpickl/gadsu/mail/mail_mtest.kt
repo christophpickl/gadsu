@@ -19,7 +19,7 @@ class MailManualTest : GoogleManualTest() {
     }
 
     private fun sendMail() =
-            GMailSender(connector).send(Mail(
+            GMailApiImpl(connector).send(Mail(
                     listOf("gadsu1@discard.email"), //, "gadsu2@discard.email"),
                     "my test subject (${DateTime.now().formatDateTime()})",
                     "my test body"),

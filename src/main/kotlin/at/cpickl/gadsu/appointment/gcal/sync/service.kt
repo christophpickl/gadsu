@@ -8,7 +8,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.mail.Mail
-import at.cpickl.gadsu.mail.MailService
+import at.cpickl.gadsu.mail.MailSender
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.clearTime
@@ -41,7 +41,7 @@ class GCalSyncService @Inject constructor(
         private val matcher: MatchClients,
         private val appointmentService: AppointmentService,
         private val clock: Clock,
-        private val mailService: MailService
+        private val mailSender: MailSender
 ) : SyncService {
 
     companion object {
@@ -106,7 +106,7 @@ class GCalSyncService @Inject constructor(
 
         val date = appointment.start // should we also display the end/length?
         // FIXME #87 configurable mail confirmation text (subject + body), using own simple template mechanism (reference name and date variables)
-        mailService.send(Mail(client.contact.mail, "Shiatsu Terminbestaetigung",
+        mailSender.send(Mail(client.contact.mail, "Shiatsu Terminbestaetigung",
                 """halli hallo ${client.firstName},
 
 hiermit bestaetige ich dir den termin am ${date.formatDateWithDayNoYear()} um ${date.formatTimeWithoutSeconds()} uhr.

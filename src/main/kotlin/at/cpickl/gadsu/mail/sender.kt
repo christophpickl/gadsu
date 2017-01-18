@@ -13,16 +13,16 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 
-interface MailSender {
+interface GMailApi {
     /**
      * @param myAddress (user ID) used as the sender and (visible) receiver for sent mails.
      */
     fun send(mail: Mail, myAddress: String, credentials: GapiCredentials): Message
 }
 
-class GMailSender @Inject constructor(
+class GMailApiImpl @Inject constructor(
         private val connector: GoogleConnector
-        ) : MailSender {
+        ) : GMailApi {
 
     private val log = LOG(javaClass)
 

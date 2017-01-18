@@ -4,14 +4,14 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.preferences.Prefs
 import javax.inject.Inject
 
-interface MailService {
+interface MailSender {
     fun send(mail: Mail)
 }
 
-class MailServiceImpl @Inject constructor(
+class MailSenderImpl @Inject constructor(
         private val prefs: Prefs,
-        private val sender: MailSender
-) : MailService {
+        private val gmailApi: GMailApi
+) : MailSender {
 
     override fun send(mail: Mail) {
         verifyMailPrefsSet()
@@ -20,7 +20,7 @@ class MailServiceImpl @Inject constructor(
         val myAddress = prefs.preferencesData.gmailAddress!!
         val credentials = prefs.preferencesData.gapiCredentials!!
 
-        sender.send(mail, myAddress, credentials)
+        gmailApi.send(mail, myAddress, credentials)
     }
 
     private fun verifyMailPrefsSet() {

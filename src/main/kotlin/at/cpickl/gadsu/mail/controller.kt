@@ -23,7 +23,6 @@ data class MailPreferencesData(
 open class MailController @Inject constructor(
         private val prefs: Prefs,
         private val mailSender: MailSender,
-        private val mailService: MailService,
         private val clientService: ClientService,
         private val view: MailView,
         private val dialogs: Dialogs,
@@ -54,7 +53,7 @@ open class MailController @Inject constructor(
         val mail = readMailFromView() ?: return
 
         asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut ..."),
-                { mailService.send(mail) },
+                { mailSender.send(mail) },
                 {
                     dialogs.show(
                             title = "Mail versendet",
