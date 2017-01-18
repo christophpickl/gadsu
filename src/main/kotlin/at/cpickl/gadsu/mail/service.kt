@@ -2,10 +2,18 @@ package at.cpickl.gadsu.mail
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.LOG
 import javax.inject.Inject
 
 interface MailSender {
     fun send(mail: Mail)
+}
+
+class MockMailSender : MailSender {
+    private val log = LOG(javaClass)
+    override fun send(mail: Mail) {
+        log.warn("send(mail) ... mock is NOT! sending mail: $mail")
+    }
 }
 
 class MailSenderImpl @Inject constructor(

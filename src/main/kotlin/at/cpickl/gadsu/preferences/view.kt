@@ -194,7 +194,9 @@ class PreferencesSwingWindow @Inject constructor(
                 inpGcalName.text.nullIfEmpty(),
                 inpGmailAddress.text.nullIfEmpty(),
                 GapiCredentials.buildNullSafe(inpGapiClientId.text.nullIfEmpty(), inpGapiClientSecret.text.nullIfEmpty()),
-                if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue
+                if (inpTreatmentGoal.numberValue <= 0) null else inpTreatmentGoal.numberValue,
+                "confirm subject", // FIXME implement prefs UI
+                "confirm body"
         )
     }
 

@@ -1,10 +1,13 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.GadsuException
+import freemarker.core.InvalidReferenceException
+import freemarker.core.UnknownDateTypeFormattingUnsupportedException
 import freemarker.template.Configuration
 import freemarker.template.Template
 import java.io.StringReader
 import java.io.StringWriter
+import java.util.Locale
 
 interface TemplatingEngine {
 
@@ -23,8 +26,9 @@ class FreemarkerTemplatingEngine : TemplatingEngine {
         val configuration: Configuration by lazy {
             Configuration(Configuration.VERSION_2_3_25).apply {
                 defaultEncoding = "UTF-8"
-            logTemplateExceptions = false
-            templateExceptionHandler = freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER
+                logTemplateExceptions = false
+                templateExceptionHandler = freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER
+                locale = Locale.GERMAN
 //                setSharedVariable("someGadsuVar", "foobar")
             }
         }
@@ -38,16 +42,27 @@ class FreemarkerTemplatingEngine : TemplatingEngine {
         try {
             template.process(data, writer)
             return writer.toString()
+
+        } catch(e: UnknownDateTypeFormattingUnsupportedException) {
+            throw FreemarkerException("some date was fucked up. maybe tried to directly print out a date?!", template, data, e)
+
+        } catch(e: InvalidReferenceException) {
+            throw FreemarkerInvalidReferenceException("The template text contained a reference which was not found in the parameter map.", template, data, e)
+
         } catch(e: Exception) {
-            throw FreemarkerInvalidReferenceException(
-                    "The template text contained a reference which was not found in the parameter map.\n" +
-                            "See the exception cause for details.\n" +
-                            "template text: <<<$template>>>\n" +
-                            "data: $data"
-                    , e)
+            throw FreemarkerException("Unknown reason!", template, data, e)
         }
     }
 
 }
 
-class FreemarkerInvalidReferenceException(message: String, cause: Exception) : GadsuException(message, cause)
+open class FreemarkerException(detailMessage: String, template: Template, data: Map<String, Any>, cause: Exception? = null)
+    : GadsuException("" +
+        "Freemarker template processing failed (mostly because of corrupt template).\n" +
+        "$detailMessage\n" +
+        "See the exception cause for details.\n" +
+        "Template: $template\n" +
+        "Data: $data", cause)
+
+class FreemarkerInvalidReferenceException(detailMessage: String, template: Template, data: Map<String, Any>, cause: InvalidReferenceException? = null)
+    : FreemarkerException(detailMessage, template, data, cause)

@@ -15,7 +15,9 @@ data class PreferencesData(
         val gcalName: String?,
         var gmailAddress: String?,
         var gapiCredentials: GapiCredentials?,
-        val treatmentGoal: Int?
+        val treatmentGoal: Int?,
+        val templateConfirmSubject: String?,
+        val templateConfirmBody: String?
 ) {
     companion object {
         val DEFAULT = PreferencesData(
@@ -25,7 +27,9 @@ data class PreferencesData(
                 gcalName = null,
                 gmailAddress = null,
                 gapiCredentials = null,
-                treatmentGoal = null
+                treatmentGoal = null,
+                templateConfirmSubject = null,
+                templateConfirmBody = null
         )
     }
 }

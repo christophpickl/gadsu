@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
+import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
@@ -7,13 +8,14 @@ import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.mail.Mail
-import at.cpickl.gadsu.mail.MailSender
+import at.cpickl.gadsu.mail.AppointmentConfirmationException
+import at.cpickl.gadsu.mail.AppointmentConfirmationer
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.service.formatDateWithDayNoYear
-import at.cpickl.gadsu.service.formatTimeWithoutSeconds
+import at.cpickl.gadsu.view.components.DialogType
+import at.cpickl.gadsu.view.components.Dialogs
 import org.joda.time.DateTime
 import javax.inject.Inject
 
@@ -41,7 +43,9 @@ class GCalSyncService @Inject constructor(
         private val matcher: MatchClients,
         private val appointmentService: AppointmentService,
         private val clock: Clock,
-        private val mailSender: MailSender
+        private val appointmentConfirmationer: AppointmentConfirmationer,
+        private val dialogs: Dialogs,
+        private val prefs: Prefs
 ) : SyncService {
 
     companion object {
@@ -91,29 +95,25 @@ class GCalSyncService @Inject constructor(
     override fun import(appointmentsToImport: List<Appointment>) {
         log.debug("import(appointmentsToImport.size={})", appointmentsToImport.size)
 
+        val subjectTemplate = prefs.preferencesData.templateConfirmSubject ?: throw GadsuException("confirm subject not set!")
+        val bodyTemplate = prefs.preferencesData.templateConfirmBody?: throw GadsuException("confirm body not set!")
+
         appointmentsToImport.forEach { appointment ->
             // no check for duplicates, you have to delete them manually ;)
             appointmentService.insertOrUpdate(appointment)
 
-            sendConfirmationMail(clientService.findById(appointment.clientId), appointment)
+            val client = clientService.findById(appointment.clientId)
+            try {
+                appointmentConfirmationer.confirm(subjectTemplate, bodyTemplate, client, appointment)
+            } catch(e: AppointmentConfirmationException) {
+                log.error("Could not send appointment confirmation mail to: $client for appointment $appointment", e)
+                dialogs.show(
+                        title = "Bestätigungsmail Fehler",
+                        message = "Das Senden der Bestätigungsmail ist leider fehlgeschlagen für ${client.fullName}. (siehe Log)",
+                        type = DialogType.ERROR
+                )
+            }
         }
-    }
-
-    private fun sendConfirmationMail(client: Client, appointment: Appointment) {
-        // verify ...
-//        client.contact.mail.isNotEmpty()
-//        client.firstName.isNotEmpty()
-
-        val date = appointment.start // should we also display the end/length?
-        // FIXME #87 configurable mail confirmation text (subject + body), using own simple template mechanism (reference name and date variables)
-        mailSender.send(Mail(client.contact.mail, "Shiatsu Terminbestaetigung",
-                """halli hallo ${client.firstName},
-
-hiermit bestaetige ich dir den termin am ${date.formatDateWithDayNoYear()} um ${date.formatTimeWithoutSeconds()} uhr.
-
-auf bald und alles liebe,
-christoph
-"""))
     }
 
     private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {

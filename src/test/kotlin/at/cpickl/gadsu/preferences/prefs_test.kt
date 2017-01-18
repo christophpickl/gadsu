@@ -68,7 +68,7 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
 
     private val testData = PreferencesData(
             "testUsername", true, "proxy:42", "gcal_calendar_name", "gmail@gmail.com",
-            GapiCredentials("gapiId", "gapiSecret"), 20
+            GapiCredentials("gapiId", "gapiSecret"), 20, "subject", "body"
     )
 
     fun `preferencesData, default at startup`() {

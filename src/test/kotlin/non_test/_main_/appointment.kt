@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     val internet = Mockito.mock(InternetConnectionController::class.java)
     val prefs = Mockito.mock(Prefs::class.java)
     Mockito.`when`(internet.isConnected).thenReturn(internetAvailable)
-    Mockito.`when`(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName, null, null, null))
+    Mockito.`when`(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName, null, null, null, null, null))
     Framed.showFrameWithContext({ context ->
         val currentClient = CurrentClient(context.bus)
         currentClient.data = Client.savedValidInstance()

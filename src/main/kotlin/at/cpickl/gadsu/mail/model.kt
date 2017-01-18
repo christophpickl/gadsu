@@ -15,6 +15,9 @@ data class Mail(
         if (recipients.isEmpty()) {
             throw IllegalArgumentException("Recipients must not be empty! ($this)")
         }
+        if (recipients.any(String::isNotValidMail)) {
+            throw IllegalArgumentException("There was an invalid address in the list of recipients! ($this)")
+        }
     }
 }
 

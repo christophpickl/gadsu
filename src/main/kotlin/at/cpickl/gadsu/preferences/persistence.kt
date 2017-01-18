@@ -28,6 +28,8 @@ class JdbcPrefs @Inject constructor(
         private val KEY_GAPI_ID = "KEY_GAPI_ID"
         private val KEY_GAPI_SECRET = "KEY_GAPI_SECRET"
         private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
+        private val KEY_TEMPLATE_CONFIRM_SUBJECT = "KEY_TEMPLATE_CONFIRM_SUBJECT"
+        private val KEY_TEMPLATE_CONFIRM_BODY = "KEY_TEMPLATE_CONFIRM_BODY"
 
         private val KEY_MAIL_SUBJECT = "MAIL_SUBJECT"
         private val KEY_MAIL_BODY = "MAIL_BODY"
@@ -58,7 +60,11 @@ class JdbcPrefs @Inject constructor(
             val gmailAddress = queryValue(KEY_GMAIL_ADDRESS)?.nullIfEmpty()
             val treatmentGoal = queryValue(KEY_TREATMENT_GOAL)?.nullIfEmpty()?.toInt()
             val gapiCredentials = GapiCredentials.buildNullSafe(gapiClientId, gapiClientSecret)
-            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, gapiCredentials, treatmentGoal)
+            val templateConfirmSubject = queryValue(KEY_TEMPLATE_CONFIRM_SUBJECT)?.nullIfEmpty()
+            val templateConfirmBody = queryValue(KEY_TEMPLATE_CONFIRM_BODY)?.nullIfEmpty()
+
+            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, gapiCredentials, treatmentGoal,
+                    templateConfirmSubject, templateConfirmBody)
         }
         set(value) {
             log.trace("set preferencesData(value={})", value)
@@ -70,6 +76,9 @@ class JdbcPrefs @Inject constructor(
             storeValue(KEY_GAPI_ID, value.gapiCredentials?.clientId ?: "")
             storeValue(KEY_GAPI_SECRET, value.gapiCredentials?.clientSecret ?: "")
             storeValue(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
+            storeValue(KEY_TEMPLATE_CONFIRM_SUBJECT, value.templateConfirmSubject ?: "")
+            storeValue(KEY_TEMPLATE_CONFIRM_BODY, value.templateConfirmBody ?: "")
+
         }
 
     override var mailPreferencesData: MailPreferencesData

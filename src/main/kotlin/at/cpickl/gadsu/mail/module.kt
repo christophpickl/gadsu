@@ -12,6 +12,7 @@ class MailModule : AbstractModule() {
 
         bind(GMailApi::class.java).to(GMailApiImpl::class.java).`in`(Scopes.SINGLETON)
         bind(MailSender::class.java).to(MailSenderImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(AppointmentConfirmationer::class.java).to(AppointmentConfirmationerImpl::class.java).`in`(Scopes.SINGLETON)
 
         bind(MailView::class.java).to(MailSwingView::class.java).`in`(Scopes.SINGLETON)
         bind(MailController::class.java).asEagerSingleton()
