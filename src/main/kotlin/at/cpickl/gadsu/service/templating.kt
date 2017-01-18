@@ -1,44 +1,39 @@
-package at.cpickl.gadsu.mail.confirmation
+package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.service.LOG
 import freemarker.template.Configuration
 import freemarker.template.Template
 import java.io.StringReader
 import java.io.StringWriter
 
+interface TemplatingEngine {
 
-fun main(args: Array<String>) {
-    val templateText = "hallo \${name} \${not}!"
+    /**
+     * @throws FreemarkerInvalidReferenceException if templateText contained variable not contained in data
+     */
+    fun process(templateText: String, data: Map<String, Any>): String
 
-    val root = mapOf("name" to "kotlin")
-
-//    val template = Freemarker.configuration.getTemplate("test.ftlh")
-//    val reader = StringReader(templateText)
-//    val template = Template("myTemplate", reader, Freemarker.configuration)
-//    val out = OutputStreamWriter(System.out)
-//    template.process(root, out)
-    println(Freemarker.process(templateText, root))
 }
 
-object Freemarker {
+class FreemarkerTemplatingEngine : TemplatingEngine {
     private val log = LOG(javaClass)
 
-    // http://freemarker.org/docs/pgui_quickstart_createconfiguration.html
-    private val configuration: Configuration by lazy {
-        Configuration(Configuration.VERSION_2_3_25).apply {
-//            setDirectoryForTemplateLoading(File("/where/you/store/templates"))
-            defaultEncoding = "UTF-8"
+    companion object {
+        // http://freemarker.org/docs/pgui_quickstart_createconfiguration.html
+        val configuration: Configuration by lazy {
+            Configuration(Configuration.VERSION_2_3_25).apply {
+                defaultEncoding = "UTF-8"
             logTemplateExceptions = false
             templateExceptionHandler = freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER
+//                setSharedVariable("someGadsuVar", "foobar")
+            }
         }
     }
 
-    fun process(templateText: String, data: Map<String, Any>): String {
+    override fun process(templateText: String, data: Map<String, Any>): String {
         log.debug("process(..)")
-//    val template = configuration.getTemplate("test.ftlh")
         val reader = StringReader(templateText)
-        val template = Template("dynamic-emplate", reader, configuration)
+        val template = Template("myTemplate", reader, configuration)
         val writer = StringWriter()
         try {
             template.process(data, writer)

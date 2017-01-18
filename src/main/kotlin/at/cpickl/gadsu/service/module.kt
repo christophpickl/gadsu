@@ -23,6 +23,8 @@ class ServiceModule() : AbstractModule() {
         bind(Suggester::class.java).to(SuggesterImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SuggesterController::class.java).to(SuggesterControllerImpl::class.java).`in`(Scopes.SINGLETON)
 
+        bind(TemplatingEngine::class.java).to(FreemarkerTemplatingEngine::class.java).`in`(Scopes.SINGLETON)
+
         install(CurrentModule())
         install(InternetConnectionModule())
     }
