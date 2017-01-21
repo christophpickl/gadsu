@@ -2,6 +2,8 @@ package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.GadsuException
 import com.google.common.io.Files
+import org.slf4j.LoggerFactory
+import java.io.Closeable
 import java.io.File
 import java.util.HashMap
 
@@ -66,5 +68,15 @@ fun Int.isBetweenInclusive(lower: Int, upper: Int) = this >= lower && this <= up
 fun Int.forEach(code: () -> Unit) {
     for (i in 1..this) {
         code()
+    }
+}
+
+
+val LOG_Closeable = LoggerFactory.getLogger(Closeable::class.java)!!
+fun Closeable.closeQuietly() {
+    try {
+        close()
+    } catch (e: Exception) {
+        LOG_Closeable.warn("Could not close '${this}'!", e)
     }
 }

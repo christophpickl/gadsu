@@ -20,6 +20,18 @@ import java.io.File
 
 val GADSU_LOG_FILE = File(GADSU_DIRECTORY, "gadsu.log")
 
+
+fun LOG(javaClass: Class<Any>): Logger {
+    return LoggerFactory.getLogger(javaClass.nameAopCleaned)
+}
+fun LOGUI(javaClass: Class<Any>, viewName: String): Logger {
+    return LoggerFactory.getLogger("${javaClass.nameAopCleaned}#$viewName")
+}
+
+private val Class<Any>.nameAopCleaned: String get() = if (name.contains("$$")) name.substring(0, name.indexOf("$$")) else name
+
+
+
 abstract class BaseLogConfigurator {
 
     protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
