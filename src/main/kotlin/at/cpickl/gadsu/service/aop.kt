@@ -35,7 +35,7 @@ class LoggedAspect : MethodInterceptor {
         if (log.isDebugEnabled) {
             // will be logged by the AllMightyEventCatcher anyway, and leads to event.toStrings from multiple subscribers!
 //            log.debug("{}(event={})", invocation.method.name, invocation.arguments[0])
-            log.debug("{}(event)", invocation.method.name, invocation.arguments)
+            log.debug("{}(event)", invocation.method.name)
         }
         return invocation.proceed()
     }

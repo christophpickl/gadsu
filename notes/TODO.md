@@ -151,6 +151,9 @@ Luxury Ideas
 * xml export (base64 encode image; dont need to think about import from XML, or do we?)
 * encrypt DB with password
 
+INVOICING
+------------------------------------------------------------
+* https://www.fastbill.com
 
 BUILD
 ------------------------------------------------------------
