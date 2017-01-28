@@ -112,8 +112,8 @@ dependencies {
     // -------------------------------------------------------------------------
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
-    compile 'com.google.apis:google-api-services-calendar:v3-rev225-1.22.0'
-    compile 'com.google.apis:google-api-services-gmail:v1-rev53-1.22.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev228-1.22.0'
+    compile 'com.google.apis:google-api-services-gmail:v1-rev55-1.22.0'
     compile 'javax.mail:mail:1.4.7'
     compile 'org.apache.pdfbox:pdfbox:2.0.4'
 
