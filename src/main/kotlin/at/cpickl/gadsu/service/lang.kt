@@ -40,15 +40,7 @@ fun String.times(count: Int): String {
 
 fun String.removePreAndSuffix(search: String) = this.removePrefix(search).removeSuffix(search)
 
-fun <T> T?.nullOrWith(wither: (T) -> T): T? {
-    if (this == null) {
-        return null
-    }
-    return wither(this)
-}
-
-
-fun <IN, OUT> IN?.nullOrWith2(wither: (IN) -> OUT): OUT? {
+fun <IN, OUT> IN?.nullOrWith(wither: (IN) -> OUT): OUT? {
     if (this == null) {
         return null
     }

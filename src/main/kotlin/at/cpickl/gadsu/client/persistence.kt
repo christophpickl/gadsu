@@ -12,7 +12,7 @@ import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toBufferedImage
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.service.nullOrWith2
+import at.cpickl.gadsu.service.nullOrWith
 import com.google.inject.Inject
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -169,7 +169,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("city")
                 ),
                 rs.getBoolean("wantReceiveDoodleMails"),
-                rs.getTimestamp("birthday").nullOrWith2<Timestamp?, DateTime?>(::DateTime),
+                rs.getTimestamp("birthday").nullOrWith<Timestamp?, DateTime?>(::DateTime),
                 gender,
                 rs.getString("countryOfOrigin"),
                 rs.getString("origin"),
