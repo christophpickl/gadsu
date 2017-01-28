@@ -84,7 +84,7 @@ dependencies {
     compile 'com.google.inject:guice:4.1.0'
     testCompile 'com.google.inject.extensions:guice-grapher:4.1.0'
     compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
-    compile 'com.google.guava:guava:20.0' // guice comes with 16.0.1
+    compile 'com.google.guava:guava:21.0' // guice comes with 16.0.1
     compile 'net.ricecode:string-similarity:1.0.0'
     compile 'org.freemarker:freemarker:2.3.25-incubating'
 
