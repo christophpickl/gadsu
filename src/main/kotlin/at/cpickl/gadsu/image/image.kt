@@ -55,7 +55,7 @@ val Gender.defaultImage: MyImage get() =
     when(this) {
         Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
         Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
-        else -> MyImage.DEFAULT_PROFILE_ALIEN
+        Gender.UNKNOWN -> MyImage.DEFAULT_PROFILE_ALIEN
     }
 
 enum class ImageSize(private val _dimension: Dimension) {

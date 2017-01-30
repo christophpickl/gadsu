@@ -55,15 +55,17 @@ class ClientUiTest : UiTest() {
 
     //<editor-fold desc="save">
 
-    fun saveClient_sunshine() {
-        assertThat(driver.saveButton.textEquals("Neu anlegen")) // sanity check
+    fun `save client should change save button text`() {
+        with(driver) {
+            assertSaveButtonTextEquals("Neu anlegen") // sanity check
 
-        driver.saveFullClient(client)
-        assertThat(driver.saveButton.textEquals("Speichern"))
+            saveFullClient(client)
+            assertSaveButtonTextEquals("Speichern")
 
-        driver.assertViewContains(client)
-        driver.assertListContains(client)
-        driver.assertListSelected(client)
+            assertViewContains(client)
+            assertListContains(client)
+            assertListSelected(client)
+        }
     }
 
     fun updateClient_shouldUpdateInListAsWell() {

@@ -170,9 +170,7 @@ class ClientTabMain(
         }
     }
 
-    override fun isModified(client: Client): Boolean {
-        return fields.isAnyModified(client)
-    }
+    override fun isModified(client: Client) = fields.isAnyModified(client)
 
     override fun updateFields(client: Client) {
         log.trace("updateFields(client={})", client)

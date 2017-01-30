@@ -208,4 +208,8 @@ class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
         inputBirthdate.assertMaybeSelected(client.birthday)
     }
 
+    fun assertSaveButtonTextEquals(expectedText: String) {
+        test.assertThat(saveButton.textEquals(expectedText))
+    }
+
 }
