@@ -9,19 +9,10 @@ import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.Test
-import org.uispec4j.Button
-import org.uispec4j.ListBox
-import org.uispec4j.Mouse
-import org.uispec4j.TextBox
-import org.uispec4j.UISpecTestCase
-import org.uispec4j.Window
+import org.uispec4j.*
 import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
-import javax.swing.JButton
-import javax.swing.JComponent
-import javax.swing.JList
-import javax.swing.JPanel
-import javax.swing.JTextArea
+import javax.swing.*
 
 
 @Test
