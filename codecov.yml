@@ -1,4 +1,4 @@
 coverage:
-  range: 40..70
+  range: 30..60
   round: nearest
   precision: 1
