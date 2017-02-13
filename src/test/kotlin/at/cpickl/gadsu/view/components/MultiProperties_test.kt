@@ -128,7 +128,6 @@ private class MultiPropertiesDriver(
 
     fun hitEditButton() {
         assertRenderMode()
-        val textArea = renderText.awtComponent as MyTextArea
         Mouse.click(renderText)
     }
 
