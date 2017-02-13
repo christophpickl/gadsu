@@ -30,6 +30,7 @@ High
 
 Med
 ---
+* wenn enter druecken in textarea, dann gleich ein "* " hinzufuegen (auto-list feature)
 * client.wohnort weg, wenn eh unter contact.city gibt
 * new client properties: yin/yang typ, primaer kontakt (whatsapp/telegram/sms/mail + note), woher kommt (social media/freund, + note)
 * multiproperties on click (not pressed; release should not be necessary)
