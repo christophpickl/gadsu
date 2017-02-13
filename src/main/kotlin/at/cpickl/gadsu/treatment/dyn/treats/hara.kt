@@ -32,7 +32,8 @@ private val HARA_TITLE = "Hara"
 data class HaraDiagnosis(
         val kyos: List<MeridianAndPosition>,
         val jitsus: List<MeridianAndPosition>,
-        val bestConnection: Pair<MeridianAndPosition, MeridianAndPosition>?,
+
+        val bestConnection: Pair<MeridianAndPosition/* =kyo*/, MeridianAndPosition /* =jitsu */>?,
         val note: String
 ) : DynTreatment {
 
@@ -89,6 +90,15 @@ enum class MeridianAndPosition(val meridian: Meridian, val position: HaraPositio
     TripleBurner(Meridian.TripleBurner, HaraPosition.Single),
     GallBladder(Meridian.GallBladder, HaraPosition.Single),
     Liver(Meridian.Liver, HaraPosition.Single)
+    ;
+
+    val prettyString =
+            meridian.labelShort + when (position) {
+                HaraPosition.Left -> " Li"
+                HaraPosition.Right -> " Re"
+                HaraPosition.Single -> ""
+                HaraPosition.Bottom -> ""
+            }
 }
 
 object MeridianAndPositionFactory {

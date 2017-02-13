@@ -98,7 +98,7 @@ fun ProtocolReportData.Companion.testInstance(
 
 fun TreatmentReportData.Companion.testInstance(number: Int = 0, date: String, duration: Int): TreatmentReportData {
     return TreatmentReportData("anyId", number, date.parseDate(), duration,
-            null, null, null, null, null, null, null)
+            null, null, null, null, null, null, null, null, null)
 }
 
 val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = listOf(
@@ -113,7 +113,9 @@ val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = lis
                 aboutFeedback = "war angenehme; gut",
                 aboutHomework = "mehr sport machen",
                 aboutUpcoming = "=> beim naechsten mal GB machen!!!!",
-                note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum."
+                note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum eros luctus, sagittis tellus vel, vestibulum sem. Morbi semper sit amet risus vel tristique. Vestibulum eleifend ante est, sed luctus massa lobortis in. Integer iaculis neque in eros tempor, vitae efficitur quam elementum. Curabitur laoreet leo sed dui commodo blandit. Suspendisse ut dolor sollicitudin mi venenatis vulputate quis quis ipsum. Morbi nec consectetur justo. Sed luctus leo non felis suscipit venenatis. Proin molestie orci blandit, dapibus risus ac, facilisis sem. Nullam hendrerit lacus ut mi lobortis, at malesuada quam facilisis. Morbi at elit eu ex pellentesque commodo non sed augue. Aenean ultrices dui lacus, eget vestibulum turpis vestibulum non. Suspendisse nec egestas felis. Aliquam tristique tincidunt mauris quis elementum. Suspendisse potenti. Sed vulputate volutpat dictum.",
+                treatedMeridians = "Lu, Di, Ma",
+                dynTreatments = "Hara: weich, rund, eckig\nPuls: foo, bar"
         ),
         newTreatmentReportData(number = 2, plusDays = 1),
         newTreatmentReportData(number = 3, plusDays = 4),
@@ -123,7 +125,7 @@ val TreatmentReportData.Companion.DUMMIES: List<TreatmentReportData> get() = lis
 )
 
 private fun newTreatmentReportData(number: Int, plusDays: Int) =
-        TreatmentReportData("", number, DateTime.now().plusDays(plusDays), 60, null, null, null, null, null, null, null)
+        TreatmentReportData("", number, DateTime.now().plusDays(plusDays), 60, null, null, null, null, null, null, null, null, null)
 
 val MultiProtocolStatistics.Companion.DUMMY: MultiProtocolStatistics get() =
     MultiProtocolStatistics(1, 6, DateRange("01.01.2012".parseDate().toDate(), "31.12.2012".parseDate().toDate()), minutes(102))

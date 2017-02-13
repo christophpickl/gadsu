@@ -86,7 +86,9 @@ class TreatmentReportData(
         val aboutFeedback: String?,
         val aboutHomework: String?,
         val aboutUpcoming: String?,
-        val note: String?
+        val note: String?,
+        val dynTreatments: String?,
+        val treatedMeridians: String?
 ) {
     companion object {} // needed for extension
 

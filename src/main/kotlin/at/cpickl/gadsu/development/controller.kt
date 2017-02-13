@@ -22,6 +22,7 @@ import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime
+import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.CurrentTreatment
 import at.cpickl.gadsu.treatment.Treatment
@@ -149,16 +150,27 @@ open class DevelopmentController @Inject constructor(
                                 aboutContent = "Den Herzmeridian hab ich behandelt.",
                                 aboutHomework = "Er soll mehr sport machen, eh kloa. Und weniger knoblauch essen!",
                                 note = "Aja, und der kommentar passt sonst nirgends rein ;)",
+                                treatedMeridians = listOf(Meridian.GallBladder, Meridian.UrinaryBladder, Meridian.Stomach),
                                 dynTreatments = listOf(
+                                        HaraDiagnosis(
+                                                kyos = listOf(MeridianAndPosition.UrinaryBladderBottom),
+                                                jitsus = listOf(MeridianAndPosition.Liver),
+                                                bestConnection = MeridianAndPosition.UrinaryBladderBottom to MeridianAndPosition.Liver,
+                                                note = "* rechts mehr kyo\n* insgesamt sehr hohe spannung"
+                                        ),
                                         TongueDiagnosis(
-                                                color = listOf(TongueProperty.Color.RedTip),
-                                                shape = emptyList(),
+                                                color = listOf(TongueProperty.Color.RedTip, TongueProperty.Color.Pink),
+                                                shape = listOf(TongueProperty.Shape.Long),
                                                 coat = listOf(TongueProperty.Coat.Yellow, TongueProperty.Coat.Thick),
                                                 special = emptyList(),
-                                                note = "zunge gruen"),
+                                                note = "* zunge gruen"),
                                         PulseDiagnosis(
                                                 properties = listOf(PulseProperty.Ascending, PulseProperty.Deep),
-                                                note = ""
+                                                note = "* war irgendwie \"zaeh\""
+                                        ),
+                                        BloodPressure(
+                                                before = BloodPressureMeasurement(90, 110, 80),
+                                                after = BloodPressureMeasurement(80, 100, 70)
                                         )
                                 )
                         ),

@@ -33,6 +33,8 @@ data class BloodPressureMeasurement(
     companion object {
         fun insertPrototype() = BloodPressureMeasurement(0, 0, 0)
     }
+
+    fun prettyString() = "$systolic/$diastolic/$frequency"
 }
 
 data class BloodPressure(

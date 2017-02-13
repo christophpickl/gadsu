@@ -3,11 +3,41 @@ package at.cpickl.gadsu.report
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.parseDate
 import at.cpickl.gadsu.service.toMinutes
+import at.cpickl.gadsu.testinfra.TEST_DYNTREAT_BLOOD
+import at.cpickl.gadsu.testinfra.TEST_DYNTREAT_HARA
+import at.cpickl.gadsu.testinfra.TEST_DYNTREAT_PULSE
+import at.cpickl.gadsu.testinfra.TEST_DYNTREAT_TONGUE
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.jfree.data.time.DateRange
 import org.joda.time.DateTime
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+
+@Test class DynTreatmentXXXtoReportString {
+
+    @DataProvider
+    fun dpToReportString() = arrayOf<Array<Any>>(
+            arrayOf<Any>(TEST_DYNTREAT_HARA, "Haradiagnose: Kyo { Bl }, Jitsu { Le, Gb }, Verbindung { Bl + Le }"),
+            arrayOf<Any>(TEST_DYNTREAT_HARA.copy(bestConnection = null), "Haradiagnose: Kyo { Bl }, Jitsu { Le, Gb }"),
+
+            arrayOf<Any>(TEST_DYNTREAT_TONGUE, "Zungendiagnose: rote Spitze, normal rosa, lang, gelb, dick, Mittelriss\n* zunge gruen"),
+            arrayOf<Any>(PulseDiagnosis(emptyList(), ""), "Pulsdiagnose: "),
+            arrayOf<Any>(TEST_DYNTREAT_PULSE, "Pulsdiagnose: ansteigend, tief\n* war irgendwie \"zaeh\""),
+            arrayOf<Any>(TEST_DYNTREAT_BLOOD, "Blutdruckmessung: " +
+                    "${TEST_DYNTREAT_BLOOD.before.systolic}/${TEST_DYNTREAT_BLOOD.before.diastolic}/${TEST_DYNTREAT_BLOOD.before.frequency}, " +
+                    "${TEST_DYNTREAT_BLOOD.after.systolic}/${TEST_DYNTREAT_BLOOD.after.diastolic}/${TEST_DYNTREAT_BLOOD.after.frequency}")
+    )
+
+    @Test(dataProvider = "dpToReportString")
+    fun `toReportString sunshine`(dynTreatment: DynTreatment, expectedReport: String) {
+        assertThat(dynTreatment.toReportString(), equalTo(expectedReport))
+    }
+
+}
+
 
 @Test class ReportControllerTest {
 

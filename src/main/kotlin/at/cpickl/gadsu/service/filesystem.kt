@@ -39,6 +39,7 @@ object ChooseFile {
             return
         }
         val pdfTarget = chooser.selectedFile.ensureExtension("pdf")
+        LOG_File.debug("Choosen PDF target: {}", pdfTarget.absolutePath)
         onSuccess.invoke(pdfTarget)
     }
 }

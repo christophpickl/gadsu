@@ -23,6 +23,12 @@ import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentRepository
 import at.cpickl.gadsu.treatment.TreatmentService
+import at.cpickl.gadsu.treatment.dyn.DynTreatment
+import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
+import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
+import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
+import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
@@ -57,11 +63,11 @@ open class ReportController @Inject constructor(
     companion object {
 
         @VisibleForTesting fun generateStatistics(protocols: List<ProtocolReportData>): MultiProtocolStatistics {
-                val numberOfClients = protocols.size
-                val numberOfTreatments = protocols.sumBy { it.rows.size }
-                val treatmentDateRange = DateRange(
-                        protocols.flatMap { it.rows }.minBy { it.date }!!.date,
-                        protocols.flatMap { it.rows }.maxBy { it.date }!!.date)
+            val numberOfClients = protocols.size
+            val numberOfTreatments = protocols.sumBy { it.rows.size }
+            val treatmentDateRange = DateRange(
+                    protocols.flatMap { it.rows }.minBy { it.date }!!.date,
+                    protocols.flatMap { it.rows }.maxBy { it.date }!!.date)
             val totalTreatmentTime = protocols.sumBy { it.rows.sumBy { it.duration } }
             return MultiProtocolStatistics(numberOfClients, numberOfTreatments, treatmentDateRange, minutes(totalTreatmentTime))
         }
@@ -95,14 +101,16 @@ open class ReportController @Inject constructor(
 
     @Subscribe open fun onReallyCreateMultiProtocolEvent(event: ReallyCreateMultiProtocolEvent) {
         createAndSave() {
-            it, cover, protocols -> multiProtocolGenerator.generatePdfPersistAndDispatch(it, cover, protocols, event.description)
+            it, cover, protocols ->
+            multiProtocolGenerator.generatePdfPersistAndDispatch(it, cover, protocols, event.description)
             recentWindow?.closeWindow()
         }
     }
 
     @Subscribe open fun onTestCreateMultiProtocolEvent(event: TestCreateMultiProtocolEvent) {
         createAndSave() {
-            it, cover, protocols -> multiProtocolGenerator.generatePdf(it, cover, protocols)
+            it, cover, protocols ->
+            multiProtocolGenerator.generatePdf(it, cover, protocols)
         }
     }
 
@@ -128,7 +136,7 @@ open class ReportController @Inject constructor(
                 onSuccess = {
                     val itt = it
                     asyncWorker.doInBackground(
-                            AsyncDialogSettings("Sammelprotokoll", "Generiere Sammelprotokoll ...", recentWindow!!.asJFrame()),
+                            AsyncDialogSettings("Sammelprotokoll", "Generiere Sammelprotokoll ...", recentWindow?.asJFrame()),
                             { onSuccessCallback(itt, cover, protocols) },
                             {
                                 prefs.recentSaveMultiProtocolFolder = itt.parentFile
@@ -136,7 +144,8 @@ open class ReportController @Inject constructor(
                                         title = "Sammelprotokoll erstellt",
                                         message = "Das Sammelprotokoll wurde erfolgreich gespichert als:\n${itt.absolutePath}",
                                         type = DialogType.INFO
-                                )},
+                                )
+                            },
                             {
                                 dialogs.show(
                                         title = "Sammelprotokoll Fehler",
@@ -178,15 +187,74 @@ private fun Treatment.toReportData() = TreatmentReportData(
         aboutFeedback.removeAllTags().nullIfEmpty(),
         aboutHomework.removeAllTags().nullIfEmpty(),
         aboutUpcoming.removeAllTags().nullIfEmpty(),
-        note.removeAllTags().nullIfEmpty()
+        note.removeAllTags().nullIfEmpty(),
+        // FIXME #101 proper transformation of dynTreatments (type specific!)
+        dynTreatments = dynTreatments.map { it.toReportString() }.joinToString("\n").nullIfEmpty(),
+        treatedMeridians = treatedMeridians.map { it.labelShort }.joinToString(", ").nullIfEmpty()
 )
 
-private fun Client.toReportData(firstTreatment: DateTime?) = ClientReportData(
+@VisibleForTesting fun DynTreatment.toReportString(): String {
+    val byTypeString = this.call(object : DynTreatmentCallback<String> {
+        override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis): String {
+            val string = StringBuilder()
+            string.append("Kyo { ${haraDiagnosis.kyos.map { it.prettyString }.joinToString(", ")} }, ")
+            string.append("Jitsu { ${haraDiagnosis.jitsus.map { it.prettyString }.joinToString(", ")} }")
+            val bestConnection = haraDiagnosis.bestConnection
+            if (bestConnection != null) {
+            string.append(", Verbindung { ${bestConnection.first.prettyString} + ${bestConnection.second.prettyString} }")
+            }
+            return string.toString()
+        }
+
+        override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis): String {
+            val string = StringBuilder()
+
+            string.append(
+                    tongueDiagnosis.color.map { it.label }.plus(
+                            tongueDiagnosis.shape.map { it.label }
+                    ).plus(
+                            tongueDiagnosis.coat.map { it.label }
+                    ).plus(
+                            tongueDiagnosis.special.map { it.label }
+                    ).joinToString(", "))
+
+            if (tongueDiagnosis.note.isNotEmpty()) {
+                string.append("\n").append(tongueDiagnosis.note)
+            }
+            return string.toString()
+        }
+
+        override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis): String {
+            val string = StringBuilder()
+            string.append(pulseDiagnosis.properties.map { it.label }.joinToString(", "))
+            if (pulseDiagnosis.note.isNotEmpty()) {
+                string.append("\n").append(pulseDiagnosis.note)
+            }
+            return string.toString()
+
+        }
+
+        override fun onBloodPressure(bloodPressure: BloodPressure): String {
+            return "${bloodPressure.before.prettyString()}, ${bloodPressure.after.prettyString()}"
+        }
+
+    })
+    return "${this.reportTitle()}: $byTypeString"
+}
+
+private fun DynTreatment.reportTitle() = this.call(object: DynTreatmentCallback<String> {
+    override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = "Haradiagnose"
+    override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = "Zungendiagnose"
+    override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = "Pulsdiagnose"
+    override fun onBloodPressure(bloodPressure: BloodPressure) = "Blutdruckmessung"
+})
+
+private fun Client.toReportData(isClientSince: DateTime?) = ClientReportData(
         anonymizedName = anonymizedName.removeAllTags(),
         picture = picture.toReportRepresentation(),
         gender = gender,
 
-        since = firstTreatment,
+        since = isClientSince,
         birthday = birthday,
         birthPlace = birthPlace.removeAllTags(),
         livePlace = contact.city.removeAllTags(),
