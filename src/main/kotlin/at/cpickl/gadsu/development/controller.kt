@@ -84,41 +84,57 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
 
         arrayOf(
-                Client(null, DUMMY_CREATED/* will not be used anyway, hmpf ... */, ClientState.ACTIVE, "Max", "Mustermann", "Maxi",
-                        Contact(
+                Client(
+                        id = null,
+                        created = DUMMY_CREATED/* will not be used anyway, hmpf ... */,
+                        picture = MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
+                        state = ClientState.ACTIVE,
+                        firstName = "Max",
+                        lastName = "Mustermann",
+                        nickName = "Maxi",
+                        birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
+                        gender = Gender.MALE,
+                        contact = Contact(
                                 mail = "gadsu1@discard.email",
                                 phone = "0699 11 22 33 432",
                                 street = "Hauptstrasse 22/11/A",
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
-                        true,
-                        DateFormats.DATE.parseDateTime("26.10.1986"),
-                        Gender.MALE,
-                        "\u00d6sterreich",
-                        "Eisenstadt, Bgld",
-                        Relationship.MARRIED,
-                        "Computermensch",
-                        "keine",
-                        "Radfahren",
-                        "Meine supi wuzi Anmerkung.",
+                        wantReceiveDoodleMails = true,
+                        countryOfOrigin = "\u00d6sterreich",
+                        origin = "Eisenstadt, Bgld",
+                        relationship = Relationship.MARRIED,
+                        job = "Computermensch",
+                        children = "keine",
+                        hobbies = "Radfahren",
+                        note = "Meine supi wuzi Anmerkung.",
 
-                        "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
-                        "er hatte ein gebrochenes bein",
-                        "nacken; zuwenig selbstbewusstsein",
-                        "perfektionist; schlangen phobie; single",
-                        "mag mehr selbstbewusstein",
+                        textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
+                        textMedical = "er hatte ein gebrochenes bein",
+                        textComplaints = "nacken; zuwenig selbstbewusstsein",
+                        textPersonal = "perfektionist; schlangen phobie; single",
+                        textObjective = "mag mehr selbstbewusstein",
 
-                        "Regelbeschwerden",
-                        "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
-                        "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
-                        "Le-Qi-Stau",
+                        textMainObjective = "Regelbeschwerden",
+                        textSymptoms = "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
+                        textFiveElements = "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
+                        textSyndrom = "Le-Qi-Stau",
 
-                        "zyklus 24T-6T; drahtiger puls",
-                        MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
-                        CProps.builder()
-                                .add(XProps.Sleep, "* ur gross!", XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
-                                .add(XProps.Hungry, XProps.HungryOpts.BigHunger)
+                        tcmNote = "zyklus 24T-6T; drahtiger puls",
+
+                        cprops = CProps.builder()
+                                .add(XProps.Impression, "* war irgendwie anders", XProps.ImpressionOpts.BehaveCalm, XProps.ImpressionOpts.EyesClear)
+                                .add(XProps.BodyConception, XProps.BodyConceptionOpts.HeightTall)
+                                // XProps.ChiStatus not added
+
+                                .add(XProps.Temperature, XProps.TemperatureOpts.AversionCold)
+                                .add(XProps.Hungry, XProps.HungryOpts.BigHunger, XProps.HungryOpts.ChewLess, XProps.HungryOpts.TasteSweet)
+                                .add(XProps.Liquid, XProps.LiquidOpts.DrinkCoffee)
+
+                                .add(XProps.Sleep, "* morgenmuffel", XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
+                                .add(XProps.Digestion, XProps.DigestionOpts.DigestionFast)
+                                .add(XProps.Menstruation, XProps.MenstruationOpts.BloodDark)
                                 .build()
 
                 ),
@@ -133,7 +149,11 @@ open class DevelopmentController @Inject constructor(
         ).forEach {
             val saved = clientService.insertOrUpdate(it)
 
-            if (saved.firstName == "Max") {
+            if (saved.firstName == "Xnna") {
+                val xnnasTreatment = Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = "13.2.2017 21:15:00".parseDateTime())
+                bus.post(TreatmentCreatedEvent(treatmentService.insert(xnnasTreatment)))
+
+            } else if (saved.firstName == "Max") {
                 val firstDate = "31.12.2001 14:15:00".parseDateTime()
                 val clientId = saved.id!!
                 val clientWithPic = saved.copy(picture = it.picture)

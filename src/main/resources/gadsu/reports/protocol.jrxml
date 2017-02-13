@@ -538,7 +538,7 @@
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Diagnose Methoden:]]></text>
+				<text><![CDATA[Diagnosen:]]></text>
 			</staticText>
 		</band>
 	</detail>

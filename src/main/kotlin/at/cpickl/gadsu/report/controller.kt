@@ -243,10 +243,10 @@ private fun Treatment.toReportData() = TreatmentReportData(
 }
 
 private fun DynTreatment.reportTitle() = this.call(object: DynTreatmentCallback<String> {
-    override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = "Haradiagnose"
-    override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = "Zungendiagnose"
-    override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = "Pulsdiagnose"
-    override fun onBloodPressure(bloodPressure: BloodPressure) = "Blutdruckmessung"
+    override fun onHaraDiagnosis(haraDiagnosis: HaraDiagnosis) = "Harad"
+    override fun onTongueDiagnosis(tongueDiagnosis: TongueDiagnosis) = "Zunge"
+    override fun onPulseDiagnosis(pulseDiagnosis: PulseDiagnosis) = "Puls"
+    override fun onBloodPressure(bloodPressure: BloodPressure) = "Blutdruck"
 })
 
 private fun Client.toReportData(isClientSince: DateTime?) = ClientReportData(
