@@ -130,7 +130,6 @@ class ClientUiTest : UiTest() {
 
     //<editor-fold desc="delete">
 
-//    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun `deleteClient sunshine`() {
         driver.saveBasicClient(client)
 
@@ -145,7 +144,6 @@ class ClientUiTest : UiTest() {
 
     //<editor-fold desc="create new">
 
-    @Test(dependsOnMethods = arrayOf("saveClient_sunshine"))
     fun createNewClientRequest_shouldDeselectEntryInMasterList() {
         driver.saveBasicClient(client)
         driver.assertListSelected(client)
