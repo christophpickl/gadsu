@@ -1,18 +1,14 @@
 package non_test._main_
 
-import at.cpickl.gadsu.Args
-import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.report.DUMMY
 import at.cpickl.gadsu.report.JasperEngineImpl
 import at.cpickl.gadsu.report.JasperProtocolGenerator
 import at.cpickl.gadsu.report.ProtocolReportData
-import at.cpickl.gadsu.report.ReportController
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolCoverData
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolGeneratorImpl
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolSwingWindow
-import at.cpickl.gadsu.report.multiprotocol.TestCreateMultiProtocolEvent
 import at.cpickl.gadsu.report.testInstance
 import at.cpickl.gadsu.service.DUMMY
 import at.cpickl.gadsu.service.LogConfigurator
@@ -22,7 +18,6 @@ import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.components.Framed
 import com.google.common.eventbus.EventBus
-import com.google.inject.Guice
 import org.mockito.Mockito
 import java.io.File
 import javax.swing.SwingUtilities
@@ -32,11 +27,13 @@ fun main(args: Array<String>) {
     GadsuSystemProperty.development.enable()
     LogConfigurator(debugEnabled = true).configureLog()
 
-    Guice.createInjector(GadsuModule(Args.EMPTY)).getInstance(ReportController::class.java)
-            .onTestCreateMultiProtocolEvent(TestCreateMultiProtocolEvent())
-
+    generateAndViewMultiProtocol()
 //    view()
 //    generate()
+
+//    Guice.createInjector(GadsuModule(Args.EMPTY)).getInstance(ReportController::class.java)
+//            .onTestCreateMultiProtocolEvent(TestCreateMultiProtocolEvent())
+
 }
 
 private fun generateAndViewMultiProtocol() {

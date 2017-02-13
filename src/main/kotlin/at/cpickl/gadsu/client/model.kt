@@ -90,14 +90,24 @@ data class Client(
         override val hobbies: String,
         override val note: String,
 
+        /** "Texte" tab, textarea: Allgemeiner Eindruck */
         override val textImpression: String,
+        /** "Texte" tab, textarea: Medizinisches */
         override val textMedical: String,
+        /** "Texte" tab, textarea: Beschwerden */
         override val textComplaints: String,
+        /** "Texte" tab, textarea: Lebensprofil */
         override val textPersonal: String,
+        /** "Texte" tab, textarea: Ziele */
         override val textObjective: String,
+
+        /** "Allgemein" tab, textfield: Hauptanliegen */
         override val textMainObjective: String,
+        /** "Allgemein" tab, textfield: symptome */
         override val textSymptoms: String,
+        /** "Allgemein" tab, textfield: 5 Elemente */
         override val textFiveElements: String,
+        /** "Allgemein" tab, textfield: Syndrom */
         override val textSyndrom: String,
 
         override val tcmNote: String,

@@ -202,6 +202,11 @@ private fun Client.toReportData(firstTreatment: DateTime?) = ClientReportData(
         textsPersonal = textPersonal.removeAllTags(),
         textsObjective = textObjective.removeAllTags(),
 
+        textMainObjective = textMainObjective.removeAllTags(),
+        textSymptoms = textSymptoms.removeAllTags(),
+        textFiveElements = textFiveElements.removeAllTags(),
+        textSyndrom = textSyndrom.removeAllTags(),
+
         tcmProps = CPropsComposer.compose(cprops),
         tcmNotes = tcmNote.removeAllTags().nullIfEmpty()
 )
