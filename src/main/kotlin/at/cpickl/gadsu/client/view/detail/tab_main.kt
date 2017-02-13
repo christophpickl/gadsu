@@ -6,7 +6,6 @@ import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.StarSignCalculator
-import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
@@ -37,7 +36,6 @@ class ClientTabMain(
         modificationChecker: ModificationChecker,
         appointmentsSubView: AppoinmentsInClientView,
         treatmentsSubview: TreatmentsInClientView,
-        suggester: SuggesterController,
         bus: EventBus
 ) : DefaultClientTab(
         title = Labels.Tabs.ClientMain,
@@ -80,8 +78,6 @@ class ClientTabMain(
 
     init {
         debugColor = Color.ORANGE
-
-        suggester.enableSuggestionsFor(inpJob, inpCountryOfOrigin, inpOrigin, inpChildren, inpZipCode, inpCity)
 
         val baseForm = FormPanel()
         with(baseForm) {

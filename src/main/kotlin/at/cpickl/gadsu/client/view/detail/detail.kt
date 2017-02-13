@@ -10,7 +10,6 @@ import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.SuggesterController
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.GadsuMenuBar
 import at.cpickl.gadsu.view.SwingFactory
@@ -55,7 +54,6 @@ open class SwingClientDetailView @Inject constructor(
         private val currentClient: CurrentClient,
         appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
         treatmentSubview: TreatmentsInClientView, // passed through to TabMain
-        suggester: SuggesterController, // passed through to TabMain
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
         menuBar: GadsuMenuBar // this is kind a design hack, but it was quicker to do ;)
@@ -70,7 +68,7 @@ open class SwingClientDetailView @Inject constructor(
 
     // attention: must come AFTER list of buttons due to hacky design nature ;)
 
-    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, suggester, bus)
+    private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, bus)
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 

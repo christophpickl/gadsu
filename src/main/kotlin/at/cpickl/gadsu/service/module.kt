@@ -20,9 +20,6 @@ class ServiceModule() : AbstractModule() {
 
         bind(FileSystem::class.java).to(FileSystemImpl::class.java).`in`(Scopes.SINGLETON)
 
-        bind(Suggester::class.java).to(SuggesterImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(SuggesterController::class.java).to(SuggesterControllerImpl::class.java).`in`(Scopes.SINGLETON)
-
         bind(TemplatingEngine::class.java).to(FreemarkerTemplatingEngine::class.java).`in`(Scopes.SINGLETON)
 
         install(CurrentModule())
