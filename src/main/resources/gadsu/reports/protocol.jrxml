@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Protocol" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f3f5e28d-a6f8-4c35-8b5f-189f9078503c">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="1135"/>
+	<property name="ireport.y" value="636"/>
 	<parameter name="countTreatments" class="java.lang.Integer"/>
 	<parameter name="client_picture" class="java.io.InputStream"/>
 	<parameter name="client_name" class="java.lang.String"/>
@@ -393,7 +393,7 @@
 				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="95" width="507" height="21" isRemoveLineWhenBlank="true" uuid="4f384d8c-e979-4143-ae6a-bd70f7c19b16"/>
+				<reportElement positionType="Float" x="23" y="93" width="507" height="21" isRemoveLineWhenBlank="true" uuid="4f384d8c-e979-4143-ae6a-bd70f7c19b16"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
@@ -436,7 +436,7 @@
 				<text><![CDATA[Inhalt:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="137" width="507" height="21" isRemoveLineWhenBlank="true" uuid="8df9e60d-f183-421e-acf5-790c935b934f"/>
+				<reportElement positionType="Float" x="23" y="136" width="507" height="21" isRemoveLineWhenBlank="true" uuid="8df9e60d-f183-421e-acf5-790c935b934f"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
@@ -478,35 +478,35 @@
 				<text><![CDATA[Als Nächstes:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="224" width="507" height="21" isRemoveLineWhenBlank="true" uuid="847f9542-147a-45cf-a9e8-0f235bca0c4b"/>
+				<reportElement positionType="Float" x="23" y="222" width="507" height="21" isRemoveLineWhenBlank="true" uuid="847f9542-147a-45cf-a9e8-0f235bca0c4b"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{aboutDiagnosis}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="270" width="507" height="21" isRemoveLineWhenBlank="true" uuid="c60b06f8-a49b-41f9-be81-2e9a2ed3a6a6"/>
+				<reportElement positionType="Float" x="23" y="268" width="507" height="21" isRemoveLineWhenBlank="true" uuid="c60b06f8-a49b-41f9-be81-2e9a2ed3a6a6"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{aboutFeedback}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="315" width="507" height="21" isRemoveLineWhenBlank="true" uuid="6cadc5fe-3484-42a2-8043-552091cc790c"/>
+				<reportElement positionType="Float" x="23" y="313" width="507" height="21" isRemoveLineWhenBlank="true" uuid="6cadc5fe-3484-42a2-8043-552091cc790c"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{aboutHomework}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="361" width="507" height="21" isRemoveLineWhenBlank="true" uuid="d558aac4-f986-491b-b1d7-169d381060af"/>
+				<reportElement positionType="Float" x="23" y="359" width="507" height="21" isRemoveLineWhenBlank="true" uuid="d558aac4-f986-491b-b1d7-169d381060af"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{aboutUpcoming}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="407" width="507" height="21" isRemoveLineWhenBlank="true" uuid="3c0f38fe-36f3-4f44-9bf7-7f758af7cb6a"/>
+				<reportElement positionType="Float" x="23" y="405" width="507" height="21" isRemoveLineWhenBlank="true" uuid="3c0f38fe-36f3-4f44-9bf7-7f758af7cb6a"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
@@ -523,11 +523,11 @@
 				<text><![CDATA[Meridiane:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="353" y="47" width="177" height="20" uuid="4fbf812d-e674-4b7a-ac7c-c9fc6e1713fe"/>
+				<reportElement x="349" y="47" width="177" height="20" uuid="4fbf812d-e674-4b7a-ac7c-c9fc6e1713fe"/>
 				<textFieldExpression><![CDATA[$F{treatedMeridians}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="23" y="180" width="507" height="21" isRemoveLineWhenBlank="true" uuid="8b1daf32-0a87-4fa2-8d24-592621bf0478"/>
+				<reportElement positionType="Float" x="23" y="178" width="507" height="21" isRemoveLineWhenBlank="true" uuid="8b1daf32-0a87-4fa2-8d24-592621bf0478"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
