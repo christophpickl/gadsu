@@ -9,6 +9,7 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MultiPropExpander
 import at.cpickl.gadsu.view.components.MultiProperties
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyTextArea
@@ -222,8 +223,15 @@ class PulseDiagnosisRenderer(
 
     override val view: JComponent by lazy {
         GridPanel().apply {
-            c.weightx = 0.5
 
+            c.gridwidth = 2
+            c.anchor = GridBagConstraints.EAST
+            add(MultiPropExpander(inpPulseProps1, inpPulseProps2))
+
+            c.gridy++
+            c.anchor = GridBagConstraints.CENTER
+            c.gridwidth = 1
+            c.weightx = 0.5
             c.fill = GridBagConstraints.BOTH
             c.weighty = 0.7
             c.insets = Insets(GAP, GAP, 0, GAP)

@@ -7,7 +7,6 @@
     - zb steinchen inhalt (technik): Le, Bl, ... jedes kann man mit text versehen. oder auch steinchen bein/arm/...?
     - zb steinchen zustand: kopfweh, schlaf, ...
     - idea: wenn man auf steinchen doppelklickt, welches schon im kuebel ist, dann geht popup auf, zb um spezifische akupunkturpunkte auszuwaehlen => das verlinken mit akupunkturpunkt
-* @auto updater: if on windows, suggest to download EXE not JAR (check for mac as well)
 * @appointments: als tooltip when hovered, dann die notiz anzeigen (falls vorhanden)
 * minor BUG: wenn "inaktivieren von klienten", dann list rendering funkt nicht ganz
 * BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
@@ -78,6 +77,7 @@ Med
 
 Low
 ---
+* @auto updater: if on windows, suggest to download EXE not JAR (check for mac as well)
 * @acupuncture
     - cancel search with ESC, else hide window on ESC
     - tree node view component, wo man jeden meridian einzeln auf/zuklappen (klick auf meridian oeffnet uebersicht)

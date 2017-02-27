@@ -37,7 +37,9 @@ class CPropEnumView(
     private val multiProperties: MultiProperties<XPropEnumOpt> = MultiProperties(xprop.options, bus, XPropCellRenderer,
             xprop.key, { it.map { it.label } }, true)
 
+
     override fun updateValue(value: Client) {
+//        multiProperties.changeToEditor()
         val cprop = value.cprops.findOrNull(xprop)
 
         multiProperties.updateValue(
@@ -60,6 +62,14 @@ class CPropEnumView(
 
     override fun enableFor(modifications: ModificationChecker) {
         multiProperties.enableFor(modifications)
+    }
+
+    override fun changeToEditor() {
+        multiProperties.changeToEditor()
+    }
+
+    override fun changeToRenderer() {
+        multiProperties.changeToRenderer()
     }
 
     private fun isSelectionModified(value: Client): Boolean {

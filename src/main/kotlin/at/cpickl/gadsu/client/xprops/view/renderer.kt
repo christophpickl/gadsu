@@ -7,7 +7,9 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XProp
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.components.EditorRendererSwitchable
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import com.google.common.eventbus.EventBus
 import java.awt.Component
@@ -21,23 +23,31 @@ class CPropsRenderer(
         private val bus: EventBus
 ) {
 
-    private val map: HashMap<XProp, CPropView> = HashMap()
+    companion object {
+        private val log = LOG(javaClass)
+    }
+
+    private val xpropToCPropView: HashMap<XProp, CPropView> = HashMap()
+
+    val allSwitchables: List<EditorRendererSwitchable> get() = xpropToCPropView.values.toList()
 
     fun addXProp(xprop: XProp, form: FormPanel) {
+        log.trace("addXProp(xprop={}, form", xprop)
+
         val ui = buildCPropUI(xprop)
-        map.put(xprop, ui)
+        xpropToCPropView.put(xprop, ui)
         form.addFormInput(xprop.label, ui.toComponent(), ui.fillType, ui.icon)
     }
 
     fun updateFields(client: Client) {
-        map.forEach { xprop, ui ->
+        xpropToCPropView.forEach { xprop, ui ->
             ui.updateValue(client)
         }
     }
 
     fun readCProps(): CProps {
         val cprops = HashMap<XProp, CProp>()
-        map.forEach { xprop, ui ->
+        xpropToCPropView.forEach { xprop, ui ->
             val cprop = ui.toCProp()
             if (cprop.isValueOrNoteSet) {
                 cprops.put(xprop, cprop)
@@ -62,9 +72,10 @@ class CPropsRenderer(
     }
 
     private fun XPropEnum.resourcePath() = "/gadsu/images/tcm_props/${this.key}.png"
+
 }
 
-interface CPropView {
+interface CPropView : EditorRendererSwitchable {
     // keep it this way
     fun updateValue(value: Client)
     fun toComponent(): Component

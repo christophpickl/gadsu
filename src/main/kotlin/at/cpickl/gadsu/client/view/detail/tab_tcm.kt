@@ -5,11 +5,11 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.development.debugColor
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
+import at.cpickl.gadsu.view.components.MultiPropExpander
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.language.Labels
@@ -45,20 +45,28 @@ class ClientTabTcm(
         debugColor = Color.PINK
 
         renderer.updateFields(initialClient)
+        val row1 = form(XProps.Impression, XProps.Temperature, XProps.Sleep)
+        val row2 = form(XProps.BodyConception, XProps.Hungry, XProps.Digestion)
+        val row3 = form(XProps.ChiStatus, XProps.Liquid, XProps.Menstruation)
 
+        c.anchor = GridBagConstraints.EAST
+        c.gridwidth = 3
+        add(MultiPropExpander(renderer.allSwitchables)) // requires all xprops already added to renderer!
+        c.gridy++
+
+        c.gridwidth = 1
         c.weightx = 0.3
         c.weighty = 1.0
         c.fill = GridBagConstraints.BOTH
         c.anchor = GridBagConstraints.NORTH
         c.insets = Pad.RIGHT
 
-        add(form(XProps.Impression, XProps.Temperature, XProps.Sleep))
+        add(row1)
         c.gridx++
-        // got additional string field: "TemperatureColdLocation" / "MenstruationTimes"
-        add(form(XProps.BodyConception, XProps.Hungry, XProps.Digestion))
+        add(row2)
         c.gridx++
         c.insets = Pad.ZERO
-        add(form(XProps.ChiStatus, XProps.Liquid, XProps.Menstruation))
+        add(row3)
 
         c.gridx = 0
         c.gridy++
@@ -66,7 +74,7 @@ class ClientTabTcm(
         c.weighty = 0.0
         c.gridwidth = 3
         c.fill = GridBagConstraints.HORIZONTAL
-//        inpTcmNote.rows = 6
+//        inpTcmNote.enforceHeight(60)
         add(VFillFormPanel().apply {
             addFormInput(inpTcmNote)
         })

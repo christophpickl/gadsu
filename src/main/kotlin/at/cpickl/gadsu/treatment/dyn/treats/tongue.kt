@@ -9,6 +9,7 @@ import at.cpickl.gadsu.treatment.dyn.DynTreatmentRenderer.Companion.GAP
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentRepository
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty.*
 import at.cpickl.gadsu.view.components.DefaultCellView
+import at.cpickl.gadsu.view.components.MultiPropExpander
 import at.cpickl.gadsu.view.components.MultiProperties
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyTextArea
@@ -288,12 +289,20 @@ class TongueDiagnosisRenderer(
     private val inpListSpecial: MultiProperties<Special> = MultiProperties(
             Special.values().toList(), bus, TonguePropertableRenderer(), "TongueSpecial", { it.map { it.label } }, false)
 
-    private val inpLists = arrayOf(inpListColor, inpListShape, inpListCoat, inpListSpecial)
+    private val inpLists = listOf(inpListColor, inpListShape, inpListCoat, inpListSpecial)
     private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2) // does not work, see gridpanel...
     override var originalDynTreatment: DynTreatment = tongueDiagnosis
 
     override val view: JComponent by lazy {
         GridPanel().apply {
+
+            c.gridwidth = 2
+            c.anchor = GridBagConstraints.EAST
+            add(MultiPropExpander(inpLists))
+
+            c.gridy++
+            c.gridwidth = 1
+
             c.weightx = 0.5
 
             c.fill = GridBagConstraints.HORIZONTAL
