@@ -22,8 +22,10 @@ fun main(args: Array<String>) {
     GithubApi.createNewRelease("1.9.0", releaseText)
 
     // * check if there are no non-closed issues
+    // * check for release artifacts
     // * display confirmation message with all prepared data
 
+    // * create new release folder locally and move built artifacts there
     // * create new release
     //   - Select existing GIT tag
     //   - upload artifacts (check for existence)

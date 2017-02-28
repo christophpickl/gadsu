@@ -14,7 +14,6 @@
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
 
-
 T-O-D-O
 ============================================================
 
@@ -153,6 +152,7 @@ Luxury Ideas
 * ad windows install: installs the exe, registers in OS; it should be possible to pin it on the taskbar!!!; create desktop shortcut
 * xml export (base64 encode image; dont need to think about import from XML, or do we?)
 * encrypt DB with password
+* gcal sync: resync local appointments if there was no internet connection
 
 INVOICING
 ------------------------------------------------------------

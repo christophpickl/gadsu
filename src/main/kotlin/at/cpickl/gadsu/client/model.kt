@@ -248,7 +248,7 @@ enum class Relationship(override val order: Int, override val sqlCode: String, o
     DIVORCED(4, "DIVORCED", "geschieden"),
     WIDOW(5, "WIDOW", "verwitwet"),
     COMPLICATED(6, "COMPLICATED", "es ist kompliziert"),
-    UNKNOWN(99, "UNKNOWN", "Unbekannt");
+    UNKNOWN(99, "UNKNOWN", "unbekannt");
 
 
     companion object {
