@@ -13,26 +13,14 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.ClosableWindow
-import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.disableFocusable
-import at.cpickl.gadsu.view.swing.disabled
-import at.cpickl.gadsu.view.swing.isTransparent
-import at.cpickl.gadsu.view.swing.leftAligned
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
-import at.cpickl.gadsu.view.swing.selectAllOnFocus
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.BorderFactory
-import javax.swing.BoxLayout
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 
 
 interface PreferencesWindow : ClosableWindow {
@@ -201,12 +189,12 @@ class PreferencesSwingWindow @Inject constructor(
     }
 
     override fun start() {
-        if (yetCreated == false) {
+        if (!yetCreated) {
             yetCreated = true
             pack()
             setLocationRelativeTo(mainFrame.asJFrame())
         }
-        if (isVisible != true) {
+        if (!isVisible) {
             log.trace("Setting preferencies window visible.")
             isVisible = true
         } else {

@@ -41,6 +41,8 @@ data class ImportAppointment(
         val allClients: List<Client> // order is specific to this appointment
 ) {
 
+    companion object
+
     fun toAppointment(created: DateTime): Appointment {
         return Appointment(
                 id = null, // gadsu appointment.ID is not known yet

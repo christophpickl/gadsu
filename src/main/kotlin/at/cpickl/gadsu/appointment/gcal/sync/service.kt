@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
-import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
@@ -10,10 +9,10 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.mail.AppointmentConfirmationException
 import at.cpickl.gadsu.mail.AppointmentConfirmationer
-import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.toClosestQuarter
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import org.joda.time.DateTime
@@ -22,7 +21,7 @@ import javax.inject.Inject
 interface SyncService {
 
     fun syncAndSuggest(): SyncReport
-    fun import(appointmentsToImport: List<Appointment>)
+    fun import(appointmentsToImport: List<ImportAppointment>)
 
 }
 
@@ -44,8 +43,7 @@ class GCalSyncService @Inject constructor(
         private val appointmentService: AppointmentService,
         private val clock: Clock,
         private val appointmentConfirmationer: AppointmentConfirmationer,
-        private val dialogs: Dialogs,
-        private val prefs: Prefs
+        private val dialogs: Dialogs
 ) : SyncService {
 
     companion object {
@@ -92,31 +90,40 @@ class GCalSyncService @Inject constructor(
         )
     }
 
-    override fun import(appointmentsToImport: List<Appointment>) {
+    // .map { it.toAppointment(now).withCleanedTimes() }
+    override fun import(appointmentsToImport: List<ImportAppointment>) {
         log.debug("import(appointmentsToImport.size={})", appointmentsToImport.size)
 
-        val subjectTemplate = prefs.preferencesData.templateConfirmSubject ?: throw GadsuException("confirm subject not set!")
-        val bodyTemplate = prefs.preferencesData.templateConfirmBody?: throw GadsuException("confirm body not set!")
 
-        appointmentsToImport.forEach { appointment ->
+        val now = clock.now()
+
+        appointmentsToImport.forEach { importAppointment ->
             // no check for duplicates, you have to delete them manually ;)
+            val appointment = importAppointment.toAppointment(now).withCleanedTimes()
             appointmentService.insertOrUpdate(appointment)
 
-            val client = clientService.findById(appointment.clientId)
-
-            // FIXME #87 @confirm - only send confirmation if selected in UI as such
-            try {
-                appointmentConfirmationer.confirm(subjectTemplate, bodyTemplate, client, appointment)
-            } catch(e: AppointmentConfirmationException) {
-                log.error("Could not send appointment confirmation mail to: $client for appointment $appointment", e)
-                dialogs.show(
-                        title = "Bestätigungsmail Fehler",
-                        message = "Das Senden der Bestätigungsmail ist leider fehlgeschlagen für ${client.fullName}. (siehe Log)",
-                        type = DialogType.ERROR
-                )
+            if (importAppointment.sendConfirmation) {
+                sendConfirmationMail(appointment)
             }
         }
     }
+
+    private fun sendConfirmationMail(appointment: Appointment) {
+        val client = clientService.findById(appointment.clientId)
+        try {
+            appointmentConfirmationer.sendConfirmation(client, appointment)
+        } catch(e: AppointmentConfirmationException) {
+            log.error("Could not send appointment confirmation mail to: $client for appointment $appointment", e)
+            dialogs.show(
+                    title = "Bestätigungsmail Fehler",
+                    message = "Das Senden der Bestätigungsmail ist leider fehlgeschlagen für ${client.fullName}. (siehe Log)",
+                    type = DialogType.ERROR
+            )
+        }
+    }
+
+    private fun Appointment.withCleanedTimes() =
+            copy(start = this.start.toClosestQuarter(), end = this.end.toClosestQuarter())
 
     private fun dateRangeForSyncer(): Pair<DateTime, DateTime> {
         val now = clock.now().clearTime()

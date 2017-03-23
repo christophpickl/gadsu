@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.appointment.gcal
 
+import at.cpickl.gadsu.appointment.gcal.sync.ImportAppointment
 import at.cpickl.gadsu.appointment.gcal.sync.SyncReport
+import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.testinfra.TEST_DATETIME1
 import org.joda.time.DateTime
 
@@ -17,6 +19,25 @@ fun SyncReport.Companion.dummyInstance() = SyncReport(
                 ) to listOf()),
         deleteAppointments = emptyList(),
         updateAppointments = emptyMap()
+)
+
+fun GCalEvent.Companion.testInstance(clientId: String, start: DateTime) = GCalEvent(
+        id = "gcalTestId",
+        gadsuId = null,
+        clientId = clientId,
+        summary = "test summary",
+        description = "test description",
+        start = start,
+        end = start.plusHours(1),
+        url = null
+)
+
+fun ImportAppointment.Companion.testInstance(client: Client, start: DateTime, sendConfirmation: Boolean = true) = ImportAppointment(
+        event = GCalEvent.testInstance(client.id!!, start),
+        enabled = true,
+        sendConfirmation = sendConfirmation,
+        selectedClient = client,
+        allClients = listOf(client)
 )
 
 object TestableGCalService : GCalService {
