@@ -35,7 +35,7 @@ open class VersionUpdaterImpl @Inject constructor(
 
     private fun checkForUpdates(settings: AsyncDialogSettings?) {
         log.debug("validateVersion(settings)")
-        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it, suppressUpToDateDialog = settings == null) }, { e ->
+        asyncWorker.doInBackground(settings, { checker.check() }, { onResult(result = it!!, suppressUpToDateDialog = settings == null) }, { e ->
             if (e is NoInternetConnectionException) {
                 bus.post(InternetConnectionLostEvent())
             } else {
@@ -64,7 +64,7 @@ open class VersionUpdaterImpl @Inject constructor(
         when (result) {
 
             is VersionCheckResult.UpToDate -> {
-                if (suppressUpToDateDialog == false) {
+                if (!suppressUpToDateDialog) {
                     dialogs.show(dialogTitle, "Juchu, du hast die aktuellste Version installiert!",
                             arrayOf("Ok"), null, DialogType.INFO, currentActiveJFrame())
                 }

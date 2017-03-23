@@ -48,7 +48,7 @@ open class GCalControllerImpl @Inject constructor(
         async.doInBackground<SyncReport?>(
                 settings = AsyncDialogSettings("GCal Sync", "Verbindung zu Google Server wird aufgebaut ..."),
                 backgroundTask = { doTheSync() },
-                doneTask = { report ->
+                doneTask = { report: SyncReport? ->
                     if (report == null) {
                         // prematurely aborted, do nothing
                     } else if (report.isEmpty()) {
