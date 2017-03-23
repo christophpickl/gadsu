@@ -43,6 +43,7 @@ class MyCheckboxTableCellRenderer : TableCellRenderer {
 }
 
 data class MyEnableValue(val enabled: Boolean, val selected: Boolean)
+
 class MyEnableCheckboxTableCellRenderer : TableCellRenderer {
 
     private val box = JCheckBox()

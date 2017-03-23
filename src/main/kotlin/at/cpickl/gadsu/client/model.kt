@@ -37,6 +37,7 @@ interface IClient : HasId, Persistable {
     val state: ClientState
     val contact: Contact
     val hasMail: Boolean // inferred
+    val hasMailAndWantsMail: Boolean
     val wantReceiveMails: Boolean
     val birthday: DateTime?
     val gender: Gender
@@ -123,6 +124,7 @@ data class Client(
     }
 
     override val hasMail: Boolean = this.contact.mail.isNotEmpty()
+    override val hasMailAndWantsMail: Boolean = hasMail && this.wantReceiveMails
 
     override val yetPersisted: Boolean get() = id != null
 

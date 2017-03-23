@@ -67,9 +67,9 @@ class SyncReportSwingWindow @Inject constructor(
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", 30, { it.enabled }),
             TableColumn("Titel", 250, { it.event.summary }),
-            TableColumn("Client", 300, { it.selectedClient.preferredName }),
+            TableColumn("Klient", 300, { it.selectedClient.preferredName }),
             TableColumn("Zeit", 500, { Pair(it.event.start, it.event.end) }),
-            TableColumn("ConfMail", 30, { MyEnableValue(enabled = it.selectedClient.hasMail, selected = it.sendConfirmation) })
+            TableColumn("Mail", 30, { MyEnableValue(enabled = it.selectedClient.hasMailAndWantsMail, selected = it.sendConfirmation) })
     ))
     private val table = SyncTable(model)
     private val btnImport = JButton("Synchronisieren").apply {
@@ -127,7 +127,7 @@ class SyncReportSwingWindow @Inject constructor(
         val defaultSelected = clients.first()
         model.resetData(report.importEvents.map {
             val selectedClient = it.value.firstOrNull() ?: defaultSelected
-            ImportAppointment(it.key, true, selectedClient.hasMail, selectedClient, clientsOrdered(it.value, clients))
+            ImportAppointment(it.key, true, selectedClient.hasMailAndWantsMail, selectedClient, clientsOrdered(it.value, clients))
         })
 
         deleteAppointments = report.deleteAppointments
