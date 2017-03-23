@@ -49,7 +49,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     fun `given taste xprop exists, when migrate, should be translated to hungry`() {
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(XpropsDboV6(clientId, "Hungry", "Hungry_TasteSweet,Hungry_TasteHot", null))
     }
@@ -58,7 +58,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         insertXProp_V5(SpropDboV5(clientId, "Hungry", "Hungry_BigHunger"))
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(XpropsDboV6(clientId, "Hungry", "Hungry_BigHunger,Hungry_TasteSweet,Hungry_TasteHot", null))
     }
@@ -69,7 +69,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     fun `given hungry exists, when migrate, move new digestion parts`() {
         insertXProp_V5(SpropDboV5(clientId, "Hungry", hungryAllParts.map { "Hungry_$it" }.joinToString(",")))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(
                 XpropsDboV6(clientId, "Digestion", hungryDigestParts.map { "Digestion_$it" }.joinToString(","), null),
@@ -82,7 +82,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         assertThat(jdbcx.query("SELECT * FROM xprops", XpropsDboV6Mapper), equalTo(expected.toList()))
     }
 
-    private fun migrate() {
+    private fun migrateToDbVersion6() {
         _migrate("6.1", 2)
     }
 
@@ -109,7 +109,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         INSERT INTO ${ClientJdbcRepository.TABLE} (
             id, created, firstName, lastName, nickName,
             mail, phone, street, zipCode, city,
-            wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
+            wantReceiveDoodleMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
             textImpression, textMedical, textComplaints, textPersonal, textObjective,
             tcmNote
