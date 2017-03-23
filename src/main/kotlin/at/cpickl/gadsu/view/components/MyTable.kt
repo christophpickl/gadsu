@@ -4,7 +4,7 @@ import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.logic.IndexableModel
 import at.cpickl.gadsu.view.logic.findIndexByComparator
 import java.awt.Point
-import java.util.ArrayList
+import java.util.*
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.AbstractTableModel
@@ -16,22 +16,44 @@ import javax.swing.table.AbstractTableModel
 //    ))
 //    private val table = MyTable<Treatment>(model, ViewNames.Treatment.TableInClientView)
 
-class TableColumn<in E>(val name: String, val width: Int, val transform: (value: E) -> Any)
+class TableColumn<in E>(
+        val name: String,
+        val transform: (value: E) -> Any,
+        val width: Int,
+        val minWidth: Int? = null,
+        val maxWidth: Int? = null
+)
 
-open class MyTable<out E>(private val _model: MyTableModel<E>, viewName: String) : JTable(_model) {
+open class MyTable<out E>(
+        private val _model: MyTableModel<E>,
+        viewName: String,
+        columnResizeMode: Int = JTable.AUTO_RESIZE_LAST_COLUMN
+) : JTable(_model) {
 
     val log = LOG(javaClass)
 
     init {
         name = viewName
-        setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN)
+        setAutoResizeMode(columnResizeMode)
         for (i in 0.rangeTo(_model.columns.size - 1)) {
-            if (i === _model.columns.size - 1) {
-                columnModel.getColumn(i).maxWidth = Int.MAX_VALUE
-            } else {
-                columnModel.getColumn(i).maxWidth = _model.columns[i].width
+            val modelCol = _model.columns[i]
+            val tableCol = columnModel.getColumn(i)
+
+            tableCol.preferredWidth = modelCol.width
+            if (modelCol.minWidth != null) {
+                tableCol.minWidth = modelCol.minWidth
+            }
+            if (modelCol.maxWidth != null) {
+                tableCol.maxWidth = modelCol.maxWidth
             }
         }
+//        for (i in 0.rangeTo(_model.columns.size - 1)) {
+//            if (i === _model.columns.size - 1) {
+//                columnModel.getColumn(i).maxWidth = Int.MAX_VALUE
+//            } else {
+//                columnModel.getColumn(i).maxWidth = _model.columns[i].width
+//            }
+//        }
 
         // http://docs.oracle.com/javase/tutorial/uiswing/components/table.html#selection
         selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION

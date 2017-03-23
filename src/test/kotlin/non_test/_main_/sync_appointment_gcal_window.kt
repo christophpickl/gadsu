@@ -27,9 +27,9 @@ fun main(args: Array<String>) {
     window.initReport(
             SyncReport(
                     mapOf(
-                            entry(gcal("g1"), client3, client1),
-                            entry(gcal("g2"), client2),
-                            entry(gcal("unknown"))),
+                            entry(gcal(summary = "with client 3 or 1"), client3, client1),
+                            entry(gcal(summary = "with client 2"), client2),
+                            entry(gcal(summary = "unknown"))), // got no suggested clients, will just pick the very first one
                     emptyList(), // no delete appointments
                     emptyMap()
             ),
