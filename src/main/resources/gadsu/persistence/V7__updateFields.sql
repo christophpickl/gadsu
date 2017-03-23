@@ -4,4 +4,4 @@
 -- #87 Send confirmation mail when importing appointment #87
 -- ========================================================================= --
 
-ALTER TABLE client RENAME COLUMN wantReceiveDoodleMails to wantReceiveMails;
+ALTER TABLE client ALTER COLUMN wantReceiveDoodleMails RENAME TO wantReceiveMails;
