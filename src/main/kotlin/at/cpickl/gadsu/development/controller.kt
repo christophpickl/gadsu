@@ -101,7 +101,7 @@ open class DevelopmentController @Inject constructor(
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
-                        wantReceiveDoodleMails = true,
+                        wantReceiveMails = true,
                         countryOfOrigin = "\u00d6sterreich",
                         origin = "Eisenstadt, Bgld",
                         relationship = Relationship.MARRIED,

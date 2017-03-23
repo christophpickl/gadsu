@@ -17,7 +17,7 @@ import org.joda.time.DateTime
 
 fun main(args: Array<String>) {
     val client1 = Client.savedValidInstance().copy(firstName = "client1", contact = Contact.INSERT_PROTOTYPE.copy(mail = "client1@home.at"))
-    val client2 = Client.savedValidInstance2().copy(firstName = "client2")
+    val client2 = Client.savedValidInstance2().copy(firstName = "client2", contact = Contact.INSERT_PROTOTYPE.copy(mail = "client2@home.at"), wantReceiveMails = false)
     val client3 = Client.savedValidInstance2().copy(firstName = "client3")
     val client4 = Client.savedValidInstance2().copy(firstName = "client4")
 
@@ -43,10 +43,10 @@ fun main(args: Array<String>) {
 private class RequestImportSyncEventListener(private val window: SyncReportSwingWindow) {
     @Suppress("UNUSED_PARAMETER")
     @Subscribe fun onRequestImportSyncEvent(event: RequestImportSyncEvent) {
-        val foo = window.readImportAppointments().filter { it.enabled }.map {
-            "- " + it.event.summary + " => " + it.selectedClient.fullName + (if(it.sendConfirmation) " (confirmation mail enabled)" else "")
+        val importDump = window.readImportAppointments().filter { it.enabled }.map {
+            "- ${it.event.summary} => ${it.selectedClient.fullName} (confirmation mail: ${it.sendConfirmation})"
         }.joinToString("\n")
-        println("import:\n$foo")
+        println("import:\n$importDump")
     }
 }
 
