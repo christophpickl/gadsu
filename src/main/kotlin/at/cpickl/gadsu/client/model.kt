@@ -1,12 +1,8 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.Ordered
-import at.cpickl.gadsu.SqlEnum
+import at.cpickl.gadsu.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.orderedValuesOf
-import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -41,7 +37,8 @@ interface IClient : HasId, Persistable {
     val state: ClientState
     val contact: Contact
     val hasMail: Boolean // inferred
-    val wantReceiveDoodleMails: Boolean
+    val hasMailAndWantsMail: Boolean
+    val wantReceiveMails: Boolean
     val birthday: DateTime?
     val gender: Gender
     /** birth location */
@@ -77,7 +74,7 @@ data class Client(
         override val lastName: String,
         override val nickName: String,
         override val contact: Contact,
-        override val wantReceiveDoodleMails: Boolean, // MINOR rename to "wantReceiveMails", do also for SQL column
+        override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
         override val gender: Gender,
         /** Geburtsort */
@@ -127,6 +124,7 @@ data class Client(
     }
 
     override val hasMail: Boolean = this.contact.mail.isNotEmpty()
+    override val hasMailAndWantsMail: Boolean = hasMail && this.wantReceiveMails
 
     override val yetPersisted: Boolean get() = id != null
 

@@ -8,8 +8,7 @@ import org.joda.time.Days
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
@@ -18,7 +17,7 @@ class DateFormats {
         val TIME_WITHOUT_SECONDS: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val DATE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
         val DATE_NO_YEAR: DateTimeFormatter = DateTimeFormat.forPattern("d.M.")
-        val DATE_WITH_DAY_NO_YEAR: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, d.M").withLocale(Languages.locale)
+        val DATE_WITH_DAY_NO_YEAR: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, d.M.").withLocale(Languages.locale)
         val DATE_LONG: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, dd.MM.yyyy").withLocale(Languages.locale)
         val DATE_TIME: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val DATE_TIME_TALKATIVE: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM. 'um' HH:mm 'Uhr'")

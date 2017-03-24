@@ -131,7 +131,7 @@ open class MailController @Inject constructor(
     }
 
     private fun ClientService.findAllForMail(): List<Client> {
-        return findAll(ClientState.ACTIVE).filter { it.wantReceiveDoodleMails && it.contact.mail.isNotBlank() }
+        return findAll(ClientState.ACTIVE).filter { it.wantReceiveMails && it.contact.mail.isNotBlank() }
     }
 
 }

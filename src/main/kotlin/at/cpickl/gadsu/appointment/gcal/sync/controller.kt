@@ -6,10 +6,8 @@ import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.toClosestQuarter
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.MainFrame
@@ -33,7 +31,6 @@ open class GCalControllerImpl @Inject constructor(
         private val mainFrame: MainFrame,
         private val async: AsyncWorker,
         private val appointmentService: AppointmentService,
-        private val clock: Clock,
         bus: EventBus
 ) : GCalController {
 
@@ -48,7 +45,7 @@ open class GCalControllerImpl @Inject constructor(
         async.doInBackground<SyncReport?>(
                 settings = AsyncDialogSettings("GCal Sync", "Verbindung zu Google Server wird aufgebaut ..."),
                 backgroundTask = { doTheSync() },
-                doneTask = { report ->
+                doneTask = { report: SyncReport? ->
                     if (report == null) {
                         // prematurely aborted, do nothing
                     } else if (report.isEmpty()) {
@@ -125,14 +122,10 @@ open class GCalControllerImpl @Inject constructor(
             appointmentService.delete(it)
         }
 
-        val now = clock.now()
-        syncService.import(appointmentsToImport.map { it.toAppointment(now).withCleanedTimes() })
+        syncService.import(appointmentsToImport)
 
         log.debug("IMPORT ================================ END")
     }
-
-    private fun Appointment.withCleanedTimes() =
-            copy(start = this.start.toClosestQuarter(), end = this.end.toClosestQuarter())
 
 }
 

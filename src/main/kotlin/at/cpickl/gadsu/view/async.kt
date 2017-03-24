@@ -6,13 +6,7 @@ import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
 import at.cpickl.gadsu.view.swing.enableSmallWindowStyle
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
-import javax.swing.JDialog
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
-import javax.swing.SwingWorker
-import javax.swing.WindowConstants
+import javax.swing.*
 
 
 fun main(args: Array<String>) {
@@ -20,7 +14,7 @@ fun main(args: Array<String>) {
 }
 
 interface AsyncWorker {
-    fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit)
+    fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T?) -> Unit, exceptionTask: (Exception) -> Unit)
 
 }
 
@@ -33,7 +27,7 @@ data class AsyncDialogSettings(
 
 class AsyncSwingWorker : AsyncWorker {
 
-    override fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit) {
+    override fun <T> doInBackground(settings: AsyncDialogSettings?, backgroundTask: () -> T, doneTask: (T?) -> Unit, exceptionTask: (Exception) -> Unit) {
         val dialog = if (settings == null) {
             null
         } else {
@@ -87,9 +81,11 @@ class AsyncDialog(settings: AsyncDialogSettings, owner: JFrame?) : JDialog(owner
 }
 
 object KotlinSwingWorker {
-    fun <T> executeAsync(backgroundTask: () -> T, doneTask: (T) -> Unit, exceptionTask: (Exception) -> Unit) {
+    fun <T> executeAsync(backgroundTask: () -> T, doneTask: (T?) -> Unit, exceptionTask: (Exception) -> Unit) {
         val worker = object : SwingWorker<T?, Void>() {
+
             private var thrownException: Exception? = null
+
             override fun doInBackground(): T? {
                 try {
                     return backgroundTask()
@@ -98,9 +94,10 @@ object KotlinSwingWorker {
                     return null
                 }
             }
+
             override fun done() {
                 if (thrownException == null) {
-                    doneTask(get()!!)
+                    doneTask(get())
                 } else {
                     exceptionTask(thrownException!!)
                 }

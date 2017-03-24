@@ -1,11 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -28,11 +24,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.JButton
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
+import javax.swing.*
 
 interface ClientDetailView {
 
@@ -160,7 +152,7 @@ open class SwingClientDetailView @Inject constructor(
                         zipCode = tabMain.inpZipCode.text,
                         city = tabMain.inpCity.text
                 ),
-                tabMain.inpWantReceiveDoodleMails.delegate.isSelected,
+                tabMain.inpWantReceiveMails.delegate.isSelected,
                 tabMain.inpBirthday.selectedDate,
                 tabMain.inpGender.selectedItemTyped,
                 tabMain.inpCountryOfOrigin.text,

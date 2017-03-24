@@ -3,25 +3,30 @@ package at.cpickl.gadsu.mail
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.TemplatingEngine
 import com.google.common.annotations.VisibleForTesting
 import javax.inject.Inject
 
 interface AppointmentConfirmationer {
 
-    fun confirm(subjectTemplate: String, bodyTemplate: String, client: Client, appointment: Appointment)
+    fun sendConfirmation(client: Client, appointment: Appointment)
 
 }
 
 class AppointmentConfirmationerImpl @Inject constructor(
         private val templating: TemplatingEngine,
-        private val mailSender: MailSender
+        private val mailSender: MailSender,
+        private val prefs: Prefs
 ) : AppointmentConfirmationer {
 
 
     // see: GCalSyncService
-    override fun confirm(subjectTemplate: String, bodyTemplate: String, client: Client, appointment: Appointment) {
+    override fun sendConfirmation(client: Client, appointment: Appointment) {
         client.validateTemplateData()
+
+        val subjectTemplate = prefs.preferencesData.templateConfirmSubject ?: throw GadsuException("confirm subject not set!")
+        val bodyTemplate = prefs.preferencesData.templateConfirmBody?: throw GadsuException("confirm body not set!")
 
         mailSender.send(buildMail(subjectTemplate, bodyTemplate, client, appointment))
     }

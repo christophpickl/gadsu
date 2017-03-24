@@ -49,7 +49,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     fun `given taste xprop exists, when migrate, should be translated to hungry`() {
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(XpropsDboV6(clientId, "Hungry", "Hungry_TasteSweet,Hungry_TasteHot", null))
     }
@@ -58,7 +58,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         insertXProp_V5(SpropDboV5(clientId, "Hungry", "Hungry_BigHunger"))
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(XpropsDboV6(clientId, "Hungry", "Hungry_BigHunger,Hungry_TasteSweet,Hungry_TasteHot", null))
     }
@@ -69,7 +69,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     fun `given hungry exists, when migrate, move new digestion parts`() {
         insertXProp_V5(SpropDboV5(clientId, "Hungry", hungryAllParts.map { "Hungry_$it" }.joinToString(",")))
 
-        migrate()
+        migrateToDbVersion6()
 
         assertXPropsTableContent_V6(
                 XpropsDboV6(clientId, "Digestion", hungryDigestParts.map { "Digestion_$it" }.joinToString(","), null),
@@ -82,7 +82,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         assertThat(jdbcx.query("SELECT * FROM xprops", XpropsDboV6Mapper), equalTo(expected.toList()))
     }
 
-    private fun migrate() {
+    private fun migrateToDbVersion6() {
         _migrate("6.1", 2)
     }
 
@@ -124,7 +124,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         jdbcx.update(sqlInsert,
                 client.id, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
-                client.wantReceiveDoodleMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.tcmNote

@@ -3,39 +3,39 @@ package at.cpickl.gadsu.mail
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.FreemarkerTemplatingEngine
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 @Test class AppointmentConfirmationerImplTest {
 
-    companion object {
-        private val ANY_SUBJECT = "anySubject"
-        private val ANY_BODY = "anyBody"
-    }
-
     private lateinit var confirmer: AppointmentConfirmationerImpl
     private lateinit var mockSender: MailSender
+    private lateinit var mockPrefs: Prefs
     private val templating = FreemarkerTemplatingEngine()
 
     @BeforeMethod fun setup() {
         mockSender = mock(MailSender::class.java)
-        confirmer = AppointmentConfirmationerImpl(templating, mockSender)
+        mockPrefs = mock(Prefs::class.java)
+        confirmer = AppointmentConfirmationerImpl(templating, mockSender, mockPrefs)
     }
 
     fun `confirm sends via mail sender`() {
-        val subjectTemplate = "subject for \${name}"
-        val bodyTemplate = "body for \${date?datetime}"
+        `when`(mockPrefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
+                templateConfirmSubject = "subject for \${name}",
+                templateConfirmBody = "body for \${date?datetime}"
+        ))
 
         val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = "client@mail.at"))
         val appointment = Appointment.savedValidInstance(client.id!!).copy(start = "1.2.2001 14:30:59".parseDateTime())
 
-        confirmer.confirm(subjectTemplate, bodyTemplate, client, appointment)
+        confirmer.sendConfirmation(client, appointment)
 
         verify(mockSender).send(Mail(
                 recipient = client.contact.mail,
@@ -50,6 +50,6 @@ import org.testng.annotations.Test
         val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = ""))
         val appointment = Appointment.savedValidInstance(client.id!!)
 
-        confirmer.confirm(ANY_SUBJECT, ANY_BODY, client, appointment)
+        confirmer.sendConfirmation(client, appointment)
     }
 }

@@ -86,14 +86,14 @@ open class InternetConnectionControllerImpl @Inject constructor(
             throw IllegalStateException("Already connected!")
         }
 
-        asyncWorker.doInBackground(AsyncDialogSettings(
+        asyncWorker.doInBackground(settings = AsyncDialogSettings(
                 title = "Bitte Warten",
                 message = "Pr\u00fcfe die Internet Verbindung"
-        ), {
+        ), backgroundTask =  {
             checkIsConnected()
-        }, { connectedResult ->
-            onIsConnected(connectedResult)
-        }, { e -> throw e })
+        }, doneTask = { connectedResult ->
+            onIsConnected(connectedResult!!)
+        }, exceptionTask = { e -> throw e })
     }
 
     private fun onIsConnected(connectedResult: Boolean) {

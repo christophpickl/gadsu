@@ -10,26 +10,12 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.treatment.TreatmentJdbcRepository
-import at.cpickl.gadsu.treatment.TreatmentMeridiansJdbcRepository
-import at.cpickl.gadsu.treatment.TreatmentMeridiansRepository
-import at.cpickl.gadsu.treatment.TreatmentMeridiansService
-import at.cpickl.gadsu.treatment.TreatmentMeridiansServiceImpl
-import at.cpickl.gadsu.treatment.TreatmentRepository
-import at.cpickl.gadsu.treatment.TreatmentService
-import at.cpickl.gadsu.treatment.TreatmentServiceImpl
+import at.cpickl.gadsu.treatment.*
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
 import at.cpickl.gadsu.treatment.dyn.RepositoryFacade
 import at.cpickl.gadsu.treatment.dyn.RepositoryFacadeImpl
-import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureRepository
-import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.treats.HaraDiagnosisRepository
-import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosisRepository
-import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisJdbcRepository
-import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRepository
+import at.cpickl.gadsu.treatment.dyn.treats.*
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.testing.fieldbinder.Bind
@@ -58,9 +44,9 @@ abstract class GuiceIntegrationTest {
     @Bind private var _idGenerator: IdGenerator = SimpleTestableIdGenerator()
     protected var idGenerator = _idGenerator as SimpleTestableIdGenerator
 
-    @Inject protected var bus: EventBus = EventBus()
+    @Inject protected lateinit var bus: EventBus
 
-    protected var busListener: TestBusListener = TestBusListener()
+    protected lateinit var busListener: TestBusListener
 
     @BeforeMethod
     fun init() {
@@ -70,15 +56,19 @@ abstract class GuiceIntegrationTest {
         mockAppointmentRepository = mock(AppointmentRepository::class.java)
         mockXPropsRepository = mock(XPropsSqlRepository::class.java)
 
-        Guice.createInjector(
-                Modules.override(
-                        GadsuModule(Args(null, "jdbc:hsqldb:mem:notUsed", false, null))
-                ).with(BoundFieldModule.of(this))
-        ).injectMembers(this)
+        initTestGuice(this)
 
         bus.register(busListener)
     }
 
+}
+
+fun initTestGuice(testClass: Any) {
+    Guice.createInjector(
+            Modules.override(
+                    GadsuModule(Args(null, "jdbc:hsqldb:mem:${testClass.javaClass.simpleName}", false, null))
+            ).with(BoundFieldModule.of(testClass))
+    ).injectMembers(testClass)
 }
 
 object IntegrationServiceLookuper {

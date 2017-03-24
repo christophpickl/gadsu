@@ -41,6 +41,8 @@ data class ImportAppointment(
         val allClients: List<Client> // order is specific to this appointment
 ) {
 
+    companion object
+
     fun toAppointment(created: DateTime): Appointment {
         return Appointment(
                 id = null, // gadsu appointment.ID is not known yet
@@ -61,17 +63,23 @@ class SyncReportSwingWindow @Inject constructor(
 )
     : MyFrame("Sync Bericht"), SyncReportWindow {
 
+    companion object {
+        private val COL_LIL = 30
+    }
+
     private var deleteAppointments = emptyList<Appointment>()
     private var updateAppointments = emptyList<Appointment>()
 
     private val model = MyTableModel<ImportAppointment>(listOf(
-            TableColumn("", 30, { it.enabled }),
-            TableColumn("Titel", 250, { it.event.summary }),
-            TableColumn("Client", 300, { it.selectedClient.preferredName }),
-            TableColumn("Zeit", 500, { Pair(it.event.start, it.event.end) }),
-            TableColumn("ConfMail", 30, { MyEnableValue(enabled = it.selectedClient.hasMail, selected = it.sendConfirmation) })
+            TableColumn("", { it.enabled }, COL_LIL, COL_LIL, COL_LIL),
+            TableColumn("Titel", { it.event.summary }, 100, 100),
+            TableColumn("Klient", { it.selectedClient.preferredName }, 150, 120),
+            TableColumn("Zeit", { Pair(it.event.start, it.event.end) }, 130, 130, 130),
+            TableColumn("Mail", { MyEnableValue(enabled = it.selectedClient.hasMailAndWantsMail, selected = it.sendConfirmation) }, COL_LIL, COL_LIL, COL_LIL)
     ))
+
     private val table = SyncTable(model)
+
     private val btnImport = JButton("Synchronisieren").apply {
         addActionListener {
             table.cellEditor?.stopCellEditing() // as we are communicating via editor stop events, rather the component's own change event
@@ -127,7 +135,7 @@ class SyncReportSwingWindow @Inject constructor(
         val defaultSelected = clients.first()
         model.resetData(report.importEvents.map {
             val selectedClient = it.value.firstOrNull() ?: defaultSelected
-            ImportAppointment(it.key, true, selectedClient.hasMail, selectedClient, clientsOrdered(it.value, clients))
+            ImportAppointment(it.key, true, selectedClient.hasMailAndWantsMail, selectedClient, clientsOrdered(it.value, clients))
         })
 
         deleteAppointments = report.deleteAppointments

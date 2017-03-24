@@ -6,11 +6,7 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.Jdbcx
-import at.cpickl.gadsu.persistence.ensureNotPersisted
-import at.cpickl.gadsu.persistence.ensurePersisted
-import at.cpickl.gadsu.persistence.toBufferedImage
-import at.cpickl.gadsu.persistence.toSqlTimestamp
+import at.cpickl.gadsu.persistence.*
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.nullOrWith
 import com.google.inject.Inject
@@ -86,7 +82,7 @@ class ClientJdbcRepository @Inject constructor(
         INSERT INTO $TABLE (
             id, created, firstName, lastName, nickName,
             mail, phone, street, zipCode, city,
-            wantReceiveDoodleMails, birthday, gender_enum, countryOfOrigin, origin,
+            wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
             textImpression, textMedical, textComplaints, textPersonal, textObjective,
             mainObjective, symptoms, elements, syndrom, tcmNote
@@ -101,7 +97,7 @@ class ClientJdbcRepository @Inject constructor(
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
-                client.wantReceiveDoodleMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote
@@ -119,14 +115,14 @@ class ClientJdbcRepository @Inject constructor(
                 UPDATE $TABLE SET
                     state = ?, firstName = ?, lastName = ?, nickName = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
-                    wantReceiveDoodleMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
+                    wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
                     textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
                     mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickName,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
-                client.wantReceiveDoodleMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
@@ -168,7 +164,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("zipCode"),
                         rs.getString("city")
                 ),
-                rs.getBoolean("wantReceiveDoodleMails"),
+                rs.getBoolean("wantReceiveMails"),
                 rs.getTimestamp("birthday").nullOrWith<Timestamp?, DateTime?>(::DateTime),
                 gender,
                 rs.getString("countryOfOrigin"),

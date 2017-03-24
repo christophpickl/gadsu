@@ -4,13 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.ClientRenderer
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewConstants
-import at.cpickl.gadsu.view.components.DateRangeTableCellRenderer
-import at.cpickl.gadsu.view.components.MyCheckboxTableCellEditor
-import at.cpickl.gadsu.view.components.MyCheckboxTableCellRenderer
-import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellEditor
-import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellRenderer
-import at.cpickl.gadsu.view.components.MyTable
-import at.cpickl.gadsu.view.components.MyTableModel
+import at.cpickl.gadsu.view.components.*
 import at.cpickl.gadsu.view.registerOnStopped
 import java.awt.Component
 import javax.swing.AbstractCellEditor
@@ -19,11 +13,11 @@ import javax.swing.JComboBox
 import javax.swing.JTable
 import javax.swing.table.TableCellEditor
 
-// TODO #80 @syncUI - more gap to borders; Zeit column width fix; (bg color of column confirmation, is white)
+// MINOR bg color of column confirmation is white
 class SyncTable(
         private val model: MyTableModel<ImportAppointment>
 ) :
-        MyTable<ImportAppointment>(model, "SyncTable"), ImportClientsProvider {
+        MyTable<ImportAppointment>(model, "SyncTable", columnResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS), ImportClientsProvider {
 
     companion object {
         private val COL_CHECKBOX = 0
