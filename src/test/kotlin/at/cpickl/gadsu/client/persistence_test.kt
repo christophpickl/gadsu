@@ -125,7 +125,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private fun assertPictureBlob(client: Client, expected: ByteArray?) {
         val blobBytes: ByteArray? = jdbcx.jdbc.queryForObject("SELECT picture FROM client WHERE id = '${client.id!!}'")
-            { rs, rowNum -> rs.getBlob("picture").toByteArray() }
+            { rs, _ -> rs.getBlob("picture").toByteArray() }
 
         assertThat(blobBytes, equalTo(expected))
     }

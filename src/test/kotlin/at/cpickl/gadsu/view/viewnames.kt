@@ -7,7 +7,7 @@ import org.testng.annotations.Test
 import java.util.HashMap
 import java.util.LinkedHashMap
 import java.util.LinkedList
-import kotlin.reflect.memberProperties
+import kotlin.reflect.full.memberProperties
 
 @Test class ViewNamesTest {
 

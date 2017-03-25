@@ -24,7 +24,7 @@ import javax.swing.JPanel
 fun main(args: Array<String>) {
 
 
-    Framed.showWithContext({ context ->
+    Framed.showWithContext({ _ ->
 //        ClientTabMain(
 //                Client.INSERT_PROTOTYPE,
 //                ModificationChecker(object : ModificationAware {

@@ -130,7 +130,7 @@ object GithubApi {
     }
 
     private fun <T> request(method: Method, url: String, returnType: Class<T>, parameters: List<Pair<String, Any?>>? = null, requestEntity: Any? = null): T {
-        val (request, response, result) = FuelManager.instance.request(method = method, path = url, param = parameters).apply {
+        val (_, _, result) = FuelManager.instance.request(method = method, path = url, param = parameters).apply {
             if (requestEntity != null) {
                 body(mapper.writeValueAsString(requestEntity))
             }
