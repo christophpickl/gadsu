@@ -37,6 +37,7 @@ import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
  * @author unascribed
  * @version 1.0
  */
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class ImageDialog extends JDialog implements WindowListener {
     JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     JLabel header = new JLabel();

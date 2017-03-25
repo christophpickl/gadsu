@@ -29,7 +29,7 @@ import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
  * @author unascribed
  * @version 1.0
  */
-
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class ReplaceOptionsDialog extends JDialog {
 
     public static final int YES_OPTION = 0;

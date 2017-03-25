@@ -30,7 +30,7 @@ import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
  * @author unascribed
  * @version 1.0
  */
-
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class LinkDialog extends JDialog {
     JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     public JLabel header = new JLabel();

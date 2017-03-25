@@ -15,6 +15,7 @@ import org.openmechanics.htmleditor.util.Local;
 
 import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
 
+@SuppressWarnings({ "WeakerAccess", "unchecked", "deprecation" })
 public class ContinueSearchDialog extends JPanel {
   JPanel panel1 = new JPanel();
   BorderLayout borderLayout1 = new BorderLayout();

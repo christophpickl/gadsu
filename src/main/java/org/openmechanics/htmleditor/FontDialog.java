@@ -38,7 +38,7 @@ import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
  * @author unascribed
  * @version 1.0
  */
-
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class FontDialog extends JDialog {
     JPanel areaPanel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc;

@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
  * @author unascribed
  * @version 1.0
  */
-
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class SrcDialog extends JDialog {
 	JPanel panel1 = new JPanel();
 	BorderLayout borderLayout1 = new BorderLayout();

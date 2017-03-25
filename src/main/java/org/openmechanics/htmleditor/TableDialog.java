@@ -36,6 +36,7 @@ import static org.openmechanics.htmleditor.Constants.RESOURCE_FOLDER;
  * @version 1.0
  */
 
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class TableDialog extends JDialog {
 	JPanel areaPanel = new JPanel(new GridBagLayout());
 	GridBagConstraints gbc;

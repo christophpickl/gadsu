@@ -10,9 +10,10 @@ import java.util.Hashtable;
  * @version 1.0
  */
 
+
 class Context {
 
-  static java.util.Hashtable hash = new Hashtable();
+  private static Hashtable<Object, Object> hash = new Hashtable<>();
 
   public static Object get(Object key) {
     return hash.get(key);

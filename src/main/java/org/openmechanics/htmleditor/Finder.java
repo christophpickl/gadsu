@@ -15,9 +15,8 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 import org.openmechanics.htmleditor.util.Local;
-/**
- *
- */
+
+@SuppressWarnings({ "WeakerAccess", "unchecked", "deprecation" })
 public class Finder extends Thread {
 
     Pattern pattern;
@@ -123,7 +122,7 @@ public class Finder extends Thread {
                     editor.showToolsPanel();
                     editor.toolsPanel.addTab(Local.getString("Find"), cdlg);
                     showCdlg = true;
-                }                
+                }
                 this.suspend();
 
                 if (cdlg.cancel) {

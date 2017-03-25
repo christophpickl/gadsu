@@ -407,6 +407,11 @@ if (!new File("/home/travis").exists()) {
 // MISC
 // =====================================================================================================================
 
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
 todo {
     todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
     failIfFound = true

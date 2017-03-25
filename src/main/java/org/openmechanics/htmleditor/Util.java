@@ -10,15 +10,16 @@ import javax.swing.JTextField;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: </p>
+ *
  * @author unascribed
  * @version 1.0
  */
 
-public class Util {
-    
-    public static Hashtable HTMLColors;
+class Util {
+
+    private static Hashtable<String, Color> HTMLColors = new Hashtable<>();
+
     static {
-        HTMLColors = new Hashtable();
         HTMLColors.put("red", Color.red);
         HTMLColors.put("green", Color.green);
         HTMLColors.put("blue", Color.blue);
@@ -33,48 +34,45 @@ public class Util {
         HTMLColors.put("orange", Color.orange);
         HTMLColors.put("pink", Color.pink);
     }
-        
-        
-        
-    public static Color getColorForName(String name, Color defaultColor) {
+
+
+    static Color getColorForName(String name, Color defaultColor) {
         if (HTMLColors.contains(name.toLowerCase()))
-            return (Color)HTMLColors.get(name.toLowerCase());
+            return (Color) HTMLColors.get(name.toLowerCase());
         return defaultColor;
     }
 
-    public static Color decodeColor(String color, Color defaultColor) {
+    static Color decodeColor(String color, Color defaultColor) {
         String colorVal = "";
         if (color.length() > 0) {
             colorVal = color.trim();
             if (colorVal.startsWith("#"))
-                colorVal = colorVal.substring(1);            
+                colorVal = colorVal.substring(1);
             try {
-                colorVal = new Integer(Integer.parseInt(colorVal, 16)).toString();
+                colorVal = Integer.toString(Integer.parseInt(colorVal, 16));
                 return Color.decode(colorVal.toLowerCase());
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            catch (Exception ex) {
-		    ex.printStackTrace();
-	    }
-        }
-        else return defaultColor;
+        } else return defaultColor;
         return getColorForName(color, defaultColor);
     }
-    
-    public static String encodeColor(Color color) {        
-        return "#"+Integer.toHexString(color.getRGB()-0xFF000000).toUpperCase();  
+
+    static String encodeColor(Color color) {
+        return "#" + Integer.toHexString(color.getRGB() - 0xFF000000).toUpperCase();
     }
 
-    public static Color decodeColor(String color) {
+    static Color decodeColor(String color) {
         return decodeColor(color, Color.white);
     }
 
-    public static void setBgcolorField(JTextField field) {
+    static void setBgcolorField(JTextField field) {
         Color c = Util.decodeColor(field.getText());
         field.setBackground(c);
         field.setForeground(new Color(~c.getRGB()));
     }
 
-    public static void setColorField(JTextField field) {
+    static void setColorField(JTextField field) {
         Color c = Util.decodeColor(field.getText(), Color.black);
         field.setForeground(c);
         //field.setForeground(new Color(~c.getRGB()));
