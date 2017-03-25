@@ -21,8 +21,10 @@ import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.isTransparent
 import at.cpickl.gadsu.view.swing.leftAligned
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.selectAllOnFocus
 import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.viewName
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -37,6 +39,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTabbedPane
+import javax.swing.JTextArea
 import javax.swing.JTextField
 
 private val HGAP_FROM_WINDOW = 15
@@ -69,7 +72,7 @@ private abstract class PrefsTab(val tabTitle: String) {
 
 private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
-    val inpUsername = JTextField()
+    val inpUsername = JTextField().viewName { Preferences.InputUsername }
     val inpProxy = JTextField()
     val inpGcalName = JTextField()
     val inpGmailAddress = JTextField()
@@ -123,7 +126,8 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
 private class PrefsTabGoogle : PrefsTab("Google") {
 
-    private val inpConfirmMailSubject = JTextField()
+    val inpConfirmMailSubject = JTextField()
+    val inpConfirmMailBody = JTextArea()
 
     override fun asComponent() = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
@@ -131,6 +135,7 @@ private class PrefsTabGoogle : PrefsTab("Google") {
 
         // FIXME confirm - implement view
         addDescriptiveFormInput("ConfMail Subject", inpConfirmMailSubject, "Foobar.")
+        addDescriptiveFormInput("ConfMail Body", inpConfirmMailBody.scrolled(), "Bar.")
     }
 
 }
@@ -209,22 +214,21 @@ class PreferencesSwingWindow @Inject constructor(
         tabGeneral.inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
         tabGeneral.inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
         tabGeneral.inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
-        // FIXME #87 confirm
-        // "confirm subject"
-        // "confirm body"
+        tabGoogle.inpConfirmMailSubject.text = preferencesData.templateConfirmSubject ?: ""
+        tabGoogle.inpConfirmMailBody.text = preferencesData.templateConfirmBody ?: ""
     }
 
     override fun readData(): PreferencesData {
         return PreferencesData(
-                tabGeneral.inpUsername.text,
-                tabGeneral.inpCheckUpdates.isSelected,
-                tabGeneral.inpProxy.text.nullIfEmpty(),
-                tabGeneral.inpGcalName.text.nullIfEmpty(),
-                tabGeneral.inpGmailAddress.text.nullIfEmpty(),
-                GapiCredentials.buildNullSafe(tabGeneral.inpGapiClientId.text.nullIfEmpty(), tabGeneral.inpGapiClientSecret.text.nullIfEmpty()),
-                if (tabGeneral.inpTreatmentGoal.numberValue <= 0) null else tabGeneral.inpTreatmentGoal.numberValue,
-                "confirm subject", // FIXME #87 @confirm - implement prefs UI
-                "confirm body"
+                username = tabGeneral.inpUsername.text,
+                checkUpdates = tabGeneral.inpCheckUpdates.isSelected,
+                proxy = tabGeneral.inpProxy.text.nullIfEmpty(),
+                gcalName = tabGeneral.inpGcalName.text.nullIfEmpty(),
+                gmailAddress = tabGeneral.inpGmailAddress.text.nullIfEmpty(),
+                gapiCredentials = GapiCredentials.buildNullSafe(tabGeneral.inpGapiClientId.text.nullIfEmpty(), tabGeneral.inpGapiClientSecret.text.nullIfEmpty()),
+                treatmentGoal = if (tabGeneral.inpTreatmentGoal.numberValue <= 0) null else tabGeneral.inpTreatmentGoal.numberValue,
+                templateConfirmSubject = tabGoogle.inpConfirmMailSubject.text.nullIfEmpty(),
+                templateConfirmBody = tabGoogle.inpConfirmMailBody.text.nullIfEmpty()
         )
     }
 

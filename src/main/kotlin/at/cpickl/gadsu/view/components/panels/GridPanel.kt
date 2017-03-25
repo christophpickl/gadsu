@@ -22,8 +22,8 @@ open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPa
 
     init {
         transparent()
-        if (viewName !== null) name = viewName
-        if (_debugColor !== null) debugColor = _debugColor
+        if (viewName != null) name = viewName
+        if (_debugColor != null) debugColor = _debugColor
 
         val gridBagLayout = GridBagLayout()
         layout = gridBagLayout

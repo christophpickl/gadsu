@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.view
+package non_test._main_
 
 import java.util.Comparator
 import javax.swing.UIManager
@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
 private fun printDefaults() {
     println("Defaults for: ${UIManager.getLookAndFeel().name}")
     val defaults = UIManager.getDefaults()
-    val defaultsOrdered = defaults.toSortedMap(Comparator<kotlin.Any> { o1, o2 -> (o1.toString()).compareTo(o2.toString()) })
+    val defaultsOrdered = defaults.toSortedMap(Comparator<Any> { o1, o2 -> (o1.toString()).compareTo(o2.toString()) })
     defaultsOrdered.forEach() {
         println("    ${it.key} = ${it.value}")
     }

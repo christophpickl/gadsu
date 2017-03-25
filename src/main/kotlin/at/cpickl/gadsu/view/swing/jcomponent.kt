@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.view.swing
 
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.view.ViewNames
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
@@ -31,7 +32,7 @@ class MyKeyListener(
         fun onEscape(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) = MyKeyListener(actionCommand, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), onTriggered)
     }
 
-    override fun toString(): String{
+    override fun toString(): String {
         return "MyKeyListener(actionCommand='$actionCommand', keyStroke=$keyStroke)"
     }
 
@@ -65,8 +66,8 @@ class RegisteredKeyListenerImpl(
 
 fun JComponent.registerMyKeyListener(listener: MyKeyListener): RegisteredKeyListener =
         RegisteredKeyListenerImpl(listener, getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), actionMap).apply {
-    registerYourself()
-}
+            registerYourself()
+        }
 
 /**
  * @param hPolicy e.g.: ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS
@@ -111,6 +112,7 @@ fun <T : JComponent> T.enforceWidth(myWidth: Int): T {
     preferredSize = Dimension(myWidth, preferredSize.height)
     return this
 }
+
 fun <T : JComponent> T.enforceHeight(myHeight: Int): T {
     size = Dimension(size.width, myHeight)
     maximumSize = Dimension(maximumSize.width, myHeight)
@@ -118,6 +120,7 @@ fun <T : JComponent> T.enforceHeight(myHeight: Int): T {
     preferredSize = Dimension(preferredSize.width, myHeight)
     return this
 }
+
 fun <T : JComponent> T.enforceSize(myWidth: Int, myHeight: Int): T {
     size = Dimension(myWidth, size.height)
     maximumSize = Dimension(myWidth, myHeight)
@@ -139,8 +142,12 @@ fun Component.addSingleLeftClickListener(function: (Point) -> Unit) {
 }
 
 var JComponent.isTransparent: Boolean
-    get() { return !isOpaque }
-    set(value) { isOpaque = !value }
+    get() {
+        return !isOpaque
+    }
+    set(value) {
+        isOpaque = !value
+    }
 
 
 fun <T : JComponent> T.transparent(): T {
@@ -160,4 +167,8 @@ fun JComponent.emptyBorderForDialogs() {
 fun <J : JComponent> J.focusTraversalWithTabs() = apply {
     setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null)
     setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null)
+}
+
+fun <J : JComponent> J.viewName(withNames: ViewNames.() -> String) = apply {
+    name = withNames(ViewNames)
 }

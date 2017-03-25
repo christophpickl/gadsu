@@ -28,6 +28,7 @@ High
 
 Med
 ---
+* investigate/use https://github.com/kotlin-projects/kotlin-swing
 * nachdem test sammelprotokoll gedruckt, bleibt dialog hinterm mainframe picken :-/
 * wenn enter druecken in textarea, dann gleich ein "* " hinzufuegen (auto-list feature)
 * client.wohnort weg, wenn eh unter contact.city gibt

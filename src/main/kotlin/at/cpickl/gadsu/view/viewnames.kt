@@ -106,6 +106,7 @@ object AcupunctViewNames {
 
 object PreferencesViewNames {
     val Window = "Preferences.Window"
+    val InputUsername = "Preferences.InputUsername"
 }
 
 object MultiProtocolViewNames {

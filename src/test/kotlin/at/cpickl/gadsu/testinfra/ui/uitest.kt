@@ -4,10 +4,10 @@ import at.cpickl.gadsu.Gadsu
 import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.preferences.PreferencesDriver
 import at.cpickl.gadsu.testinfra.TestLogger
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
-import at.cpickl.gadsu.view.preferences.PreferencesDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
@@ -94,13 +94,12 @@ abstract class UiTest : SimpleUiTest() {
     protected val treatmentDriver: TreatmentDriver get() = _treatmentDriver!!
 
 
-
     override final fun newMainClassAdapter(): MainClassAdapter {
         return MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb")
     }
 
     override final fun postInit(window: Window) {
-        println("postInit() this: ${javaClass.simpleName}")
+//        println("postInit() this: ${javaClass.simpleName}")
 
         _menuBarDriver = MenuBarDriver(this, window)
         _clientDriver = ClientDriver(this, window)
@@ -123,7 +122,6 @@ abstract class UiTest : SimpleUiTest() {
     protected fun saveClient(client: Client) {
         clientDriver.saveBasicClient(client)
     }
-
 
 }
 
