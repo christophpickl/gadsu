@@ -99,9 +99,9 @@ changeLatestVersion ${VERSION_RELEASE}
 
 
 echo
-myEcho "Running test build."
+myEcho "Verifying process (TODOs, test)."
 myEcho "------------------------------------"
-./gradlew test testUi check
+./gradlew check checkTodo test testUi
 checkLastCommand
 
 
