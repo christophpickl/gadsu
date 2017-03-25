@@ -1,6 +1,5 @@
 package non_test.fotostrecken_generator
 
-
 val IokaiProject = Project(
         id = "iokai",
         title = "Iokai",
@@ -10,9 +9,9 @@ val IokaiProject = Project(
                 Section(
                         title = "Dickdarm",
                         images = listOf(
-                                Image("Di1", "Das ist der Anfang"),
-                                Image("Di2", "rechts"),
-                                Image("Di4", "Der letzte.")
+                                Image("Di1", "Anfang", "Das ist der Anfang."),
+                                Image("Di2", "Di2", "rechts"),
+                                Image("Di4", "Di4", "Der letzte.")
                         )
                 )
         )

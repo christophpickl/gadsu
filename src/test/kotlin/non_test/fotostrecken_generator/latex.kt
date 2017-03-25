@@ -1,6 +1,7 @@
 package non_test.fotostrecken_generator
 
 
+// FIXME change document margin left/right
 
 fun generateLatex(project: Project): String {
     return with(project) {
@@ -73,14 +74,23 @@ fun generateImagesTex(project: Project, images: List<Image>): String {
         val image2 = evenImages[zeroI * 2 + 1]
 
         val isEmpty2 = image2 === EMPTY_IMAGE
-        val imageTex2 = if (isEmpty2) "" else "\\includegraphics{../images/${project.id}/${image2.file}}"
+        val imageTex1 = includeGraphics(project, image1)
+        val imageTex2 = if (isEmpty2) "" else includeGraphics(project, image2)
+        val titleTex1 = title(image1)
+        val titleTex2 = if (isEmpty2) "" else title(image2)
+        val captionTex1 = image1.caption
         val captionTex2 = if (isEmpty2) "" else image2.caption
 
-        string.append("\t\t\\includegraphics{../images/${project.id}/${image1.file}} & $imageTex2 \\\\\n")
-        string.append("\t\t${image1.caption} & $captionTex2 \\\\\n")
+        string.append("\t\t$titleTex1 & $titleTex2 \\\\\n")
+        string.append("\t\t$captionTex1 & $captionTex2 \\\\\n")
+        string.append("\t\t$imageTex1 & $imageTex2 \\\\\n")
     }
     return string.toString()
 }
+
+private fun title(image: Image) = "\\textbf{${image.title}}"
+private fun includeGraphics(project: Project, image: Image) =
+        "\\includegraphics{../images/${project.id}/${image.file}}"
 
 private val Int.isOdd: Boolean
     get()  = this % 2 == 1

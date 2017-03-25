@@ -14,9 +14,10 @@ data class Section(
 )
 
 
-val EMPTY_IMAGE = Image("", "")
+val EMPTY_IMAGE = Image("", "", "")
 
 data class Image(
         val file: String,
+        val title: String,
         val caption: String
 )
