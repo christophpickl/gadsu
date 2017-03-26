@@ -9,6 +9,7 @@ import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
+import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
@@ -18,7 +19,6 @@ import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.enforceWidth
-import at.cpickl.gadsu.view.swing.isTransparent
 import at.cpickl.gadsu.view.swing.leftAligned
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.scrolled
@@ -39,11 +39,13 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTabbedPane
-import javax.swing.JTextArea
 import javax.swing.JTextField
 
-private val HGAP_FROM_WINDOW = 15
+// TODO pref window
+// - weisse BG color
+// - move stuff from main tab to google tab
 
+private val HGAP_FROM_WINDOW = 15
 
 interface WritablePreferencesWindow {
     var txtApplicationDirectory: String set
@@ -110,16 +112,15 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
         c.gridwidth = 2
         add(HtmlEditorPane("<b>*</b> ... <i>Neustart erforderlich</i>").disableFocusable())
+        addLastColumnsFilled()
     }
 
-    private fun initPanelCheckUpdates(): Component {
-        val panel = JPanel()
-        panel.layout = BoxLayout(panel, BoxLayout.X_AXIS)
-        panel.isTransparent = true
+    private fun initPanelCheckUpdates() = JPanel().apply {
+        layout = BoxLayout(this, BoxLayout.X_AXIS)
+        transparent()
 
-        panel.add(inpCheckUpdates)
-        panel.add(btnCheckUpdate)
-        return panel
+        add(inpCheckUpdates)
+        add(btnCheckUpdate)
     }
 
 }
@@ -127,15 +128,18 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 private class PrefsTabGoogle : PrefsTab("Google") {
 
     val inpConfirmMailSubject = JTextField()
-    val inpConfirmMailBody = JTextArea()
+    val inpConfirmMailBody = MyTextArea("", visibleRows = 6)
 
-    override fun asComponent() = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
+    override fun asComponent() = FormPanel(
+            labelAnchor = GridBagConstraints.NORTHWEST,
+            inputAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
         transparent()
 
         // FIXME confirm - implement view
         addDescriptiveFormInput("ConfMail Subject", inpConfirmMailSubject, "Foobar.")
         addDescriptiveFormInput("ConfMail Body", inpConfirmMailBody.scrolled(), "Bar.")
+        addLastColumnsFilled()
     }
 
 }
@@ -179,7 +183,7 @@ class PreferencesSwingWindow @Inject constructor(
         val panelSouth = JPanel().apply {
             layout = BorderLayout()
             border = BorderFactory.createEmptyBorder(15, HGAP_FROM_WINDOW, 15, HGAP_FROM_WINDOW)
-            isTransparent = true
+            transparent()
             add(btnClose, BorderLayout.EAST)
         }
 

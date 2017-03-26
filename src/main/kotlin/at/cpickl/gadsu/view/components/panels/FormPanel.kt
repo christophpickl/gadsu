@@ -16,7 +16,10 @@ import javax.swing.ImageIcon
 import javax.swing.JLabel
 
 
-open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST) : GridPanel() {
+open class FormPanel(
+        private val labelAnchor: Int = GridBagConstraints.NORTHEAST,
+        private val inputAnchor: Int = GridBagConstraints.SOUTHWEST
+) : GridPanel() {
     private val insetsCol1 = Insets(5, 0, 0, 4) // add a bit to the top, and 4 on the right to create a h-gap
     private val insetsCol2 = Insets(0, 0, 0, 0)
     private val insetsCol2leftIncreased = insetsCol2.addLeft(5)
@@ -38,7 +41,7 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
                 .changeLabelFontSize(11.0F)
                 .disableFocusable()
         txtDescription.border = BorderFactory.createEmptyBorder(0, 5, 0, 0)
-        addFormInput("", txtDescription, GridBagFill.Both, null)
+        addFormInput("", txtDescription, GridBagFill.Both)
     }
 
 
@@ -62,9 +65,9 @@ open class FormPanel(private val labelAnchor: Int = GridBagConstraints.NORTHEAST
 
         c.gridx++
         c.weightx = 1.0
-        c.weighty = 1.0
+        c.weighty = 0.0
         c.fill = fillType.swingId
-        c.anchor = GridBagConstraints.SOUTHWEST
+        c.anchor = inputAnchor
         if (input is JLabel) {
             c.insets = insetsCol2leftIncreased
         } else {
