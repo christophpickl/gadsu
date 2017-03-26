@@ -20,6 +20,7 @@ import at.cpickl.gadsu.view.swing.disableFocusable
 import at.cpickl.gadsu.view.swing.disabled
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.leftAligned
+import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.selectAllOnFocus
@@ -35,15 +36,12 @@ import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JCheckBox
+import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTabbedPane
 import javax.swing.JTextField
-
-// TODO pref window
-// - weisse BG color
-// - move stuff from main tab to google tab
 
 private val HGAP_FROM_WINDOW = 15
 
@@ -51,12 +49,6 @@ interface WritablePreferencesWindow {
     var txtApplicationDirectory: String set
     var txtLatestBackup: String set
     val btnCheckUpdate: EventButton get
-
-//    var txtProxy: String
-//    var txtGcalName: String
-//    var txtGmailAddress: String
-//    var txtGapiClientId: String
-//    var txtGapiClientSecret: String
 }
 
 interface PreferencesWindow : ClosableWindow, WritablePreferencesWindow {
@@ -69,17 +61,12 @@ private abstract class PrefsTab(val tabTitle: String) {
 
     protected val VGAP_BETWEEN_COMPONENTS = 10
 
-    abstract fun asComponent(): Component
+    abstract fun asComponent(): JComponent
 }
 
 private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
     val inpUsername = JTextField().viewName { Preferences.InputUsername }
-    val inpProxy = JTextField()
-    val inpGcalName = JTextField()
-    val inpGmailAddress = JTextField()
-    val inpGapiClientId = JTextField()
-    val inpGapiClientSecret = JTextField()
     val inpCheckUpdates = JCheckBox("Beim Start prüfen")
     val inpTreatmentGoal = NumberField(4).selectAllOnFocus().leftAligned()
 
@@ -90,19 +77,10 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
     override fun asComponent() = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
-        transparent()
 
         addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
         addDescriptiveFormInput("Auto Update", initPanelCheckUpdates(), "Um immer am aktuellsten Stand zu bleiben,<br/>empfiehlt es sich diese Option zu aktivieren.",
                 GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
-        addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
-        addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
-        addDescriptiveFormInput("GMail Addresse", inpGmailAddress, "Trage hier deine GMail Adresse ein für das Versenden von E-Mails.")
-        addDescriptiveFormInput("Google API ID", inpGapiClientId, "Um die Google API nutzen zu können, brauchst du eine Zugangs-ID.<br/>" +
-                "Credentials sind erstellbar in der Google API Console.<br/>" +
-                "Bsp.: <tt>123456789012-aaaabbbbccccddddeeeefffffaaaabb.apps.googleusercontent.com</tt>")
-        addDescriptiveFormInput("Google API Secret", inpGapiClientSecret, "Das zugehörige Passwort.<br/>" +
-                "Bsp.: <tt>AABBCCDDDaabbccdd12345678</tt>")
         addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
 
         addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
@@ -125,8 +103,13 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
 }
 
-private class PrefsTabGoogle : PrefsTab("Google") {
+private class PrefsTabConnectivity : PrefsTab("Connectivity") {
 
+    val inpProxy = JTextField()
+    val inpGcalName = JTextField()
+    val inpGmailAddress = JTextField()
+    val inpGapiClientId = JTextField()
+    val inpGapiClientSecret = JTextField()
     val inpConfirmMailSubject = JTextField()
     val inpConfirmMailBody = MyTextArea("", visibleRows = 6)
 
@@ -134,11 +117,18 @@ private class PrefsTabGoogle : PrefsTab("Google") {
             labelAnchor = GridBagConstraints.NORTHWEST,
             inputAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
-        transparent()
 
-        // FIXME confirm - implement view
-        addDescriptiveFormInput("ConfMail Subject", inpConfirmMailSubject, "Foobar.")
-        addDescriptiveFormInput("ConfMail Body", inpConfirmMailBody.scrolled(), "Bar.")
+        addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
+        addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
+        addDescriptiveFormInput("GMail Addresse", inpGmailAddress, "Trage hier deine GMail Adresse ein für das Versenden von E-Mails.")
+        addDescriptiveFormInput("Google API ID", inpGapiClientId, "Um die Google API nutzen zu können, brauchst du eine Zugangs-ID.<br/>" +
+                "Credentials sind erstellbar in der Google API Console.<br/>" +
+                "Bsp.: <tt>123456789012-aaaabbbbccccddddeeeefffffaaaabb.apps.googleusercontent.com</tt>")
+        addDescriptiveFormInput("Google API Secret", inpGapiClientSecret, "Das zugehörige Passwort.<br/>" +
+                "Bsp.: <tt>AABBCCDDDaabbccdd12345678</tt>")
+        addDescriptiveFormInput("Mail Subject", inpConfirmMailSubject, "Bestätigungsmail Vorlage welche die selben Variablen nutzen kann wie der Mail Body.")
+        // for available variables see: AppointmentConfirmationerImpl
+        addDescriptiveFormInput("Mail Body", inpConfirmMailBody.scrolled(), "Bestätigungsmail Vorlage. Mögliche Variablen: \${name}, \${date?datetime}.")
         addLastColumnsFilled()
     }
 
@@ -152,8 +142,8 @@ class PreferencesSwingWindow @Inject constructor(
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val tabGeneral = PrefsTabGeneral(swing)
-    private val tabGoogle = PrefsTabGoogle()
-    private val allTabs: Array<PrefsTab> = arrayOf(tabGeneral, tabGoogle)
+    private val tabConnectivity = PrefsTabConnectivity()
+    private val allTabs: Array<PrefsTab> = arrayOf(tabGeneral, tabConnectivity)
 
     private val log = LoggerFactory.getLogger(javaClass)
     private var yetCreated: Boolean = false
@@ -194,10 +184,11 @@ class PreferencesSwingWindow @Inject constructor(
 
     private fun initTabbedPane() {
         tabbedPane.transparent()
-        // TODO UI reuse logic from client detail tab
+        // MINOR UI reuse logic from client detail tab
+
         var i: Int = 0
         allTabs.forEach { tab ->
-            val tabContent: Component = JScrollPane(tab.asComponent()).transparent()
+            val tabContent: Component = JScrollPane(tab.asComponent().opaque()).transparent()
             tabbedPane.addTab("<html><body><table width='100'><span style='align:center'>${tab.tabTitle}</span></table></body></html>", tabContent)
             tabbedPane.setTabComponentAt(i++, JLabel(tab.tabTitle, JLabel.CENTER).enforceWidth(100))
         }
@@ -212,27 +203,29 @@ class PreferencesSwingWindow @Inject constructor(
         log.trace("initData(preferencesData={})", preferencesData)
         tabGeneral.inpUsername.text = preferencesData.username
         tabGeneral.inpCheckUpdates.isSelected = preferencesData.checkUpdates
-        tabGeneral.inpProxy.text = preferencesData.proxy ?: ""
-        tabGeneral.inpGcalName.text = preferencesData.gcalName ?: ""
-        tabGeneral.inpGmailAddress.text = preferencesData.gmailAddress ?: ""
-        tabGeneral.inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
-        tabGeneral.inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
         tabGeneral.inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
-        tabGoogle.inpConfirmMailSubject.text = preferencesData.templateConfirmSubject ?: ""
-        tabGoogle.inpConfirmMailBody.text = preferencesData.templateConfirmBody ?: ""
+
+        tabConnectivity.inpProxy.text = preferencesData.proxy ?: ""
+        tabConnectivity.inpGcalName.text = preferencesData.gcalName ?: ""
+        tabConnectivity.inpGmailAddress.text = preferencesData.gmailAddress ?: ""
+        tabConnectivity.inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
+        tabConnectivity.inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
+        tabConnectivity.inpConfirmMailSubject.text = preferencesData.templateConfirmSubject ?: ""
+        tabConnectivity.inpConfirmMailBody.text = preferencesData.templateConfirmBody ?: ""
     }
 
     override fun readData(): PreferencesData {
         return PreferencesData(
                 username = tabGeneral.inpUsername.text,
                 checkUpdates = tabGeneral.inpCheckUpdates.isSelected,
-                proxy = tabGeneral.inpProxy.text.nullIfEmpty(),
-                gcalName = tabGeneral.inpGcalName.text.nullIfEmpty(),
-                gmailAddress = tabGeneral.inpGmailAddress.text.nullIfEmpty(),
-                gapiCredentials = GapiCredentials.buildNullSafe(tabGeneral.inpGapiClientId.text.nullIfEmpty(), tabGeneral.inpGapiClientSecret.text.nullIfEmpty()),
                 treatmentGoal = if (tabGeneral.inpTreatmentGoal.numberValue <= 0) null else tabGeneral.inpTreatmentGoal.numberValue,
-                templateConfirmSubject = tabGoogle.inpConfirmMailSubject.text.nullIfEmpty(),
-                templateConfirmBody = tabGoogle.inpConfirmMailBody.text.nullIfEmpty()
+
+                proxy = tabConnectivity.inpProxy.text.nullIfEmpty(),
+                gcalName = tabConnectivity.inpGcalName.text.nullIfEmpty(),
+                gmailAddress = tabConnectivity.inpGmailAddress.text.nullIfEmpty(),
+                gapiCredentials = GapiCredentials.buildNullSafe(tabConnectivity.inpGapiClientId.text.nullIfEmpty(), tabConnectivity.inpGapiClientSecret.text.nullIfEmpty()),
+                templateConfirmSubject = tabConnectivity.inpConfirmMailSubject.text.nullIfEmpty(),
+                templateConfirmBody = tabConnectivity.inpConfirmMailBody.text.nullIfEmpty()
         )
     }
 

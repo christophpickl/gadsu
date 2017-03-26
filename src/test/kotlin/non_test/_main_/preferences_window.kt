@@ -1,6 +1,8 @@
 package non_test._main_
 
+import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.PreferencesSwingWindow
+import at.cpickl.gadsu.preferences.testInstance
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -14,6 +16,9 @@ fun main(args: Array<String>) {
     val swingFactory = SwingFactory(bus, clock)
     val window = PreferencesSwingWindow(mainFrame, bus, swingFactory)
 
-//    window.initData()
+    window.initData(PreferencesData.testInstance())
+    window.txtApplicationDirectory = "/test/app/dir"
+    window.txtLatestBackup = "Letztes Backup: Gestern"
+
     window.start()
 }
