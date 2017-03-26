@@ -1,8 +1,7 @@
 package non_test.fotostrecken_generator
 
 
-// FIXME change document margin left/right
-
+private val docMargin = "15mm"
 fun generateLatex(project: Project): String {
     return with(project) {
         """
@@ -10,6 +9,11 @@ fun generateLatex(project: Project): String {
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{tocloft}
+\usepackage{geometry}
+\geometry{
+  lmargin=$docMargin,
+  rmargin=$docMargin
+}
 
 \title{$title}
 \author{Christoph Pickl}
@@ -22,6 +26,7 @@ fun generateLatex(project: Project): String {
 	\vspace{8cm}
 
 	\Huge{\textbf{$title}} \\
+    \Large{\textbf{Fotostrecke}} \\
 	\vspace{0.4cm}
 	\Large{$date}
 
@@ -93,5 +98,5 @@ private fun includeGraphics(project: Project, image: Image) =
         "\\includegraphics{../images/${project.id}/${image.file}}"
 
 private val Int.isOdd: Boolean
-    get()  = this % 2 == 1
+    get() = this % 2 == 1
 

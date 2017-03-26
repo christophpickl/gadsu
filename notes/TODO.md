@@ -25,9 +25,11 @@ High
 * client mastercell, wiedersehen in tagen (anstatt absolutes datum)
 * speichern shortcut funktioniert nicht gscheit
 * reorder clients on name change
+* wenn behandlungsbar rot ist, es aber einen zukuenftigen termin gibt, dann ihn grau oder so machen
 
 Med
 ---
+* new field "nickname internal" (for display in gadsu) and "nickname external" (for use in templates/mails)
 * investigate/use https://github.com/kotlin-projects/kotlin-swing
 * nachdem test sammelprotokoll gedruckt, bleibt dialog hinterm mainframe picken :-/
 * wenn enter druecken in textarea, dann gleich ein "* " hinzufuegen (auto-list feature)
