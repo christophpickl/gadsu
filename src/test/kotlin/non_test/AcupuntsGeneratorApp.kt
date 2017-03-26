@@ -148,7 +148,7 @@ private object FlagMapper {
                 mapFlagWithMeridian(singleFlagText, "bo")
             } else if (singleFlagText.startsWith("yu")) {
                 mapFlagWithMeridian(singleFlagText, "yu")
-            } else if (singleFlagText.startsWith("ein")) {
+            } else if (singleFlagText.startsWith("ein")) { // TODO #12 "ein" point hat nix mit Herz/meridian zu tun.. heisst nur auf chinesisch "He" ;)
                 mapFlagWithMeridian(singleFlagText, "ein")
             } else {
                 before + flagFor(singleFlagText)

@@ -188,7 +188,6 @@ private fun Treatment.toReportData() = TreatmentReportData(
         aboutHomework.removeAllTags().nullIfEmpty(),
         aboutUpcoming.removeAllTags().nullIfEmpty(),
         note.removeAllTags().nullIfEmpty(),
-        // FIXME #101 proper transformation of dynTreatments (type specific!)
         dynTreatments = dynTreatments.map { it.toReportString() }.joinToString("\n").nullIfEmpty(),
         treatedMeridians = treatedMeridians.map { it.labelShort }.joinToString(", ").nullIfEmpty()
 )

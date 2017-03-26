@@ -128,7 +128,7 @@ private class PrefsTabConnectivity : PrefsTab("Connectivity") {
                 "Bsp.: <tt>AABBCCDDDaabbccdd12345678</tt>")
         addDescriptiveFormInput("Mail Subject", inpConfirmMailSubject, "Bestätigungsmail Vorlage welche die selben Variablen nutzen kann wie der Mail Body.")
         // for available variables see: AppointmentConfirmationerImpl
-        addDescriptiveFormInput("Mail Body", inpConfirmMailBody.scrolled(), "Bestätigungsmail Vorlage. Mögliche Variablen: \${name}, \${date?datetime}.")
+        addDescriptiveFormInput("Mail Body", inpConfirmMailBody.scrolled(), "Bestätigungsmail Vorlage. Mögliche Variablen: \${name}, \${dateStart?datetime}, \${dateEnd?datetime}.")
         addLastColumnsFilled()
     }
 
