@@ -6,6 +6,7 @@ import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.AsyncDialogSettings
@@ -15,6 +16,7 @@ import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import com.google.inject.Provider
 import javax.inject.Inject
 
 
@@ -31,6 +33,7 @@ open class GCalControllerImpl @Inject constructor(
         private val mainFrame: MainFrame,
         private val async: AsyncWorker,
         private val appointmentService: AppointmentService,
+        private val preferences: Provider<PreferencesData>,
         bus: EventBus
 ) : GCalController {
 
@@ -42,6 +45,7 @@ open class GCalControllerImpl @Inject constructor(
     private val window: SyncReportWindow by lazy { SyncReportSwingWindow(mainFrame, bus) }
 
     @Subscribe open fun onRequestGCalSyncEvent(event: RequestGCalSyncEvent) {
+        // MINOR add possibility to interrupt background process by clicking on window close button
         async.doInBackground<SyncReport?>(
                 settings = AsyncDialogSettings("GCal Sync", "Verbindung zu Google Server wird aufgebaut ..."),
                 backgroundTask = { doTheSync() },
@@ -54,7 +58,7 @@ open class GCalControllerImpl @Inject constructor(
                                 message = "Es wurden keinerlei beachtenswerte Termine gefunden."
                         )
                     } else {
-                        window.initReport(report, clientService.findAll(ClientState.ACTIVE))
+                        window.initReport(report, clientService.findAll(ClientState.ACTIVE), preferences.get().isGmailAndGapiConfigured)
                         window.start()
                     }
                 },

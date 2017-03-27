@@ -31,6 +31,7 @@ data class GapiCredentials(
         fun buildNullSafe(id: String? , secret: String?) =
                 if (id == null || secret == null) null else GapiCredentials(id, secret)
     }
+    val isNotEmpty: Boolean get() = clientId.isNotEmpty() && clientSecret.isNotEmpty()
 }
 
 // https://developers.google.com/gmail/api/quickstart/java

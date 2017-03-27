@@ -149,6 +149,7 @@ open class DevelopmentController @Inject constructor(
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Alien",
                         contact = Contact.EMPTY.copy(mail = "alien@discard.email"),
+                        wantReceiveMails = false,
                         gender = Gender.UNKNOWN,
 //                        picture = MyImage.DEFAULT_PROFILE_ALIEN,
                         cprops = CProps.empty

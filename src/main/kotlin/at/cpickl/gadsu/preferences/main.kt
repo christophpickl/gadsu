@@ -42,5 +42,8 @@ christoph
 """
         )
     }
+
+    val isGmailAndGapiConfigured: Boolean get() = (gmailAddress?.isNotEmpty() ?: false) && (gapiCredentials?.isNotEmpty ?: false)
+
 }
 

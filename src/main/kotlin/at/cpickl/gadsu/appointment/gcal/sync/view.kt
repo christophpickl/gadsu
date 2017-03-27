@@ -3,6 +3,7 @@ package at.cpickl.gadsu.appointment.gcal.sync
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.components.MyEnableValue
 import at.cpickl.gadsu.view.components.MyFrame
@@ -26,7 +27,7 @@ import javax.swing.JPanel
 interface SyncReportWindow : ClosableWindow {
     fun start()
     fun destroy()
-    fun initReport(report: SyncReport, clients: List<Client>)
+    fun initReport(report: SyncReport, clients: List<Client>, gmailConfigured: Boolean)
     fun readImportAppointments(): List<ImportAppointment>
     fun readDeleteAppointments(): List<Appointment>
     fun readUpdateAppointments(): List<Appointment>
@@ -38,7 +39,8 @@ data class ImportAppointment(
         var enabled: Boolean,
         var sendConfirmation: Boolean,
         var selectedClient: Client,
-        val allClients: List<Client> // order is specific to this appointment
+        val allClients: List<Client>, // order is specific to this appointment
+        val isGmailGloballyConfigured: Boolean // kind of a hack
 ) {
 
     companion object
@@ -63,6 +65,8 @@ class SyncReportSwingWindow @Inject constructor(
 )
     : MyFrame("Sync Bericht"), SyncReportWindow {
 
+    private val log = LOG(javaClass)
+
     companion object {
         private val COL_LIL = 30
     }
@@ -75,7 +79,10 @@ class SyncReportSwingWindow @Inject constructor(
             TableColumn("Titel", { it.event.summary }, 100, 100),
             TableColumn("Klient", { it.selectedClient.preferredName }, 150, 120),
             TableColumn("Zeit", { Pair(it.event.start, it.event.end) }, 130, 130, 130),
-            TableColumn("Mail", { MyEnableValue(enabled = it.selectedClient.hasMailAndWantsMail, selected = it.sendConfirmation) }, COL_LIL, COL_LIL, COL_LIL)
+            TableColumn("Mail", { MyEnableValue(
+                    enabled = it.selectedClient.hasMailAndWantsMail && it.isGmailGloballyConfigured,
+                    selected = it.sendConfirmation && it.isGmailGloballyConfigured
+            ) }, COL_LIL, COL_LIL, COL_LIL)
     ))
 
     private val table = SyncTable(model)
@@ -131,11 +138,22 @@ class SyncReportSwingWindow @Inject constructor(
         isVisible = true
     }
 
-    override fun initReport(report: SyncReport, clients: List<Client>) {
+    override fun initReport(
+            report: SyncReport,
+            clients: List<Client>,
+            gmailConfigured: Boolean
+    ) {
+        log.debug("initReport(report={}, clients={}, gmailConfigured={})", report, clients, gmailConfigured)
         val defaultSelected = clients.first()
-        model.resetData(report.importEvents.map {
-            val selectedClient = it.value.firstOrNull() ?: defaultSelected
-            ImportAppointment(it.key, true, selectedClient.hasMailAndWantsMail, selectedClient, clientsOrdered(it.value, clients))
+        model.resetData(report.importEvents.map { (gcalEvent, suggestedClients) ->
+            val selectedClient = suggestedClients.firstOrNull() ?: defaultSelected
+            ImportAppointment(
+                    event = gcalEvent,
+                    enabled = true,
+                    sendConfirmation = selectedClient.hasMailAndWantsMail,
+                    selectedClient = selectedClient,
+                    allClients = clientsOrdered(suggestedClients, clients),
+                    isGmailGloballyConfigured = gmailConfigured)
         })
 
         deleteAppointments = report.deleteAppointments
