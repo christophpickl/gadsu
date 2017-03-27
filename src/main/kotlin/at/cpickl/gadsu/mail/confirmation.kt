@@ -35,7 +35,8 @@ class AppointmentConfirmationerImpl @Inject constructor(
         val data = mapOf(
                 "name" to client.firstName,
                 "dateStart" to appointment.start.toDate(),
-                "dateEnd" to appointment.end.toDate()
+                "dateEnd" to appointment.end.toDate(),
+                "gender" to client.gender.sqlCode
         )
         val subject = templating.process(subjectTemplate, data)
         val body = templating.process(bodyTemplate, data)

@@ -5,6 +5,7 @@ import freemarker.core.InvalidReferenceException
 import freemarker.core.UnknownDateTypeFormattingUnsupportedException
 import freemarker.template.Configuration
 import freemarker.template.Template
+import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
 import java.util.Locale
@@ -36,7 +37,7 @@ class FreemarkerTemplatingEngine : TemplatingEngine {
 
     override fun process(templateText: String, data: Map<String, Any>): String {
         log.debug("process(..)")
-        val reader = StringReader(templateText)
+        val reader: Reader = StringReader(templateText)
         val template = Template("myTemplate", reader, configuration)
         val writer = StringWriter()
         try {

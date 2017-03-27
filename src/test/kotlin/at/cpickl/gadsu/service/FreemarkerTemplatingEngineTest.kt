@@ -30,6 +30,7 @@ import org.testng.annotations.Test
 
 
     private val someDate = "1.2.2001 14:30:59".parseDateTime()
+
     @DataProvider fun provideFormats(): Array<Array<Any>> = arrayOf<Array<Any>>(
             arrayOf<Any>("\${date?string[\"d.M.\"]}", "1.2."),
             arrayOf<Any>("\${date?string[\"EEEE 'der' d. MMMMM\"]}", "Donnerstag der 1. Februar"),
