@@ -15,7 +15,7 @@ class ClientTabTexts(
         modificationChecker: ModificationChecker,
         bus: EventBus
 ) : DefaultClientTab(
-        title = Labels.Tabs.ClientTexts,
+        tabTitle = Labels.Tabs.ClientTexts,
         type = ClientTabType.TEXTS
 //        scrolled = false
 ) {

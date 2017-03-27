@@ -253,14 +253,14 @@ open class GadsuMenuBar @Inject constructor(
 
     private fun buildCheckBoxItem(label: String, funCreateEvent: (Boolean) -> Event, shortcut: KeyStroke? = null): JCheckBoxMenuItem {
         val item = JCheckBoxMenuItem(label)
-        item.addActionListener { e -> bus.post(funCreateEvent(item.isSelected)) }
+        item.addActionListener { _ -> bus.post(funCreateEvent(item.isSelected)) }
         if (shortcut != null) item.accelerator = shortcut
         return item
     }
 
     private fun buildItem(label: String, eventBuilder: () -> Event, shortcut: KeyStroke? = null): JMenuItem {
         val item = JMenuItem(label)
-        item.addActionListener { e -> bus.post(eventBuilder()) }
+        item.addActionListener { _ -> bus.post(eventBuilder()) }
         if (shortcut != null) item.accelerator = shortcut
         return item
     }

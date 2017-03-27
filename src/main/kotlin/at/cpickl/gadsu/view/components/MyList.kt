@@ -4,16 +4,8 @@ import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
-import at.cpickl.gadsu.view.logic.IndexableModel
-import at.cpickl.gadsu.view.logic.calculateInsertIndex
-import at.cpickl.gadsu.view.logic.enablePopup
-import at.cpickl.gadsu.view.logic.findIndexByComparator
-import at.cpickl.gadsu.view.logic.registerDoubleClicked
-import at.cpickl.gadsu.view.swing.enableHoverListener
-import at.cpickl.gadsu.view.swing.enforceWidth
-import at.cpickl.gadsu.view.swing.registerEnterPressed
-import at.cpickl.gadsu.view.swing.scrolled
-import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.logic.*
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import javax.swing.DefaultListModel
@@ -107,11 +99,11 @@ open class MyList<T : Comparable<T>>(
     }
 
     protected fun initDoubleClicked(eventFunction: (T) -> UserEvent) {
-        registerDoubleClicked { row, element -> bus.post(eventFunction(element)) }
+        registerDoubleClicked { _, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initEnterPressed(eventFunction: (T) -> UserEvent) {
-        registerEnterPressed { row, element -> bus.post(eventFunction(element)) }
+        registerEnterPressed { _, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initSinglePopup(label: String, eventFunction: (T) -> UserEvent) {

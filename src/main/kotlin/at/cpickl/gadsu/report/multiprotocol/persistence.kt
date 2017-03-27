@@ -50,7 +50,7 @@ class MultiProtocolJdbcRepository @Inject constructor(
     override fun hasBeenProtocolizedYet(treatment: Treatment): Boolean {
         log.trace("hasBeenProtocolizedYet(treatment={})", treatment)
         treatment.ensurePersisted()
-        return jdbcx.queryForObject<Int>("SELECT COUNT(*) FROM $TABLE_KEYS WHERE id_treatment = ?", arrayOf(treatment.id!!), RowMapper { rs, i -> rs.getInt(1)}) > 0
+        return jdbcx.queryForObject<Int>("SELECT COUNT(*) FROM $TABLE_KEYS WHERE id_treatment = ?", arrayOf(treatment.id!!), RowMapper { rs, _ -> rs.getInt(1)}) > 0
     }
 
 //    fun deleteAllTreatmentRefsFor(client: Client) {

@@ -38,7 +38,7 @@ class ClientTabMain(
         treatmentsSubview: TreatmentsInClientView,
         bus: EventBus
 ) : DefaultClientTab(
-        title = Labels.Tabs.ClientMain,
+        tabTitle = Labels.Tabs.ClientMain,
         type = ClientTabType.MAIN
 ) {
 

@@ -4,9 +4,7 @@ import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
-import at.cpickl.gadsu.view.MainFrame
-import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.*
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.components.MyTextArea
@@ -14,34 +12,13 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.ClosableWindow
-import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.disableFocusable
-import at.cpickl.gadsu.view.swing.disabled
-import at.cpickl.gadsu.view.swing.enforceWidth
-import at.cpickl.gadsu.view.swing.leftAligned
-import at.cpickl.gadsu.view.swing.opaque
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
-import at.cpickl.gadsu.view.swing.scrolled
-import at.cpickl.gadsu.view.swing.selectAllOnFocus
-import at.cpickl.gadsu.view.swing.transparent
-import at.cpickl.gadsu.view.swing.viewName
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
-import java.awt.Component
 import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.BorderFactory
-import javax.swing.BoxLayout
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
-import javax.swing.JTextField
+import javax.swing.*
 
 private val HGAP_FROM_WINDOW = 15
 
@@ -57,11 +34,9 @@ interface PreferencesWindow : ClosableWindow, WritablePreferencesWindow {
     fun readData(): PreferencesData
 }
 
-private abstract class PrefsTab(val tabTitle: String) {
-
+private abstract class PrefsTab(override val tabTitle: String) : KTab {
     protected val VGAP_BETWEEN_COMPONENTS = 10
-
-    abstract fun asComponent(): JComponent
+    override val scrolled = true
 }
 
 private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
@@ -140,10 +115,10 @@ class PreferencesSwingWindow @Inject constructor(
         swing: SwingFactory
 ) : MyFrame("Einstellungen"), PreferencesWindow {
 
-    private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
+    private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT).transparent()
     private val tabGeneral = PrefsTabGeneral(swing)
     private val tabConnectivity = PrefsTabConnectivity()
-    private val allTabs: Array<PrefsTab> = arrayOf(tabGeneral, tabConnectivity)
+    private val allTabs: List<PrefsTab> = listOf(tabGeneral, tabConnectivity)
 
     private val log = LoggerFactory.getLogger(javaClass)
     private var yetCreated: Boolean = false
@@ -164,7 +139,7 @@ class PreferencesSwingWindow @Inject constructor(
         name = ViewNames.Preferences.Window
         addCloseListener { doClose(false) }
 
-        initTabbedPane()
+        tabbedPane.addKTabs(allTabs)
 
         val btnClose = JButton("Speichern und schlie\u00dfen")
         btnClose.addActionListener { doClose(true) }
@@ -180,18 +155,6 @@ class PreferencesSwingWindow @Inject constructor(
         contentPane.layout = BorderLayout()
         contentPane.add(tabbedPane, BorderLayout.CENTER)
         contentPane.add(panelSouth, BorderLayout.SOUTH)
-    }
-
-    private fun initTabbedPane() {
-        tabbedPane.transparent()
-        // MINOR UI reuse logic from client detail tab
-
-        var i: Int = 0
-        allTabs.forEach { tab ->
-            val tabContent: Component = JScrollPane(tab.asComponent().opaque()).transparent()
-            tabbedPane.addTab("<html><body><table width='100'><span style='align:center'>${tab.tabTitle}</span></table></body></html>", tabContent)
-            tabbedPane.setTabComponentAt(i++, JLabel(tab.tabTitle, JLabel.CENTER).enforceWidth(100))
-        }
     }
 
     private fun doClose(persistData: Boolean) {
