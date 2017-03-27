@@ -99,7 +99,7 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
     }
 
     override fun count(table: String, args: Array<in Any>, optionalWhereClause: String): Int =
-            jdbc.queryForObject("SELECT COUNT(*) FROM $table $optionalWhereClause", args) { rs, rowNum -> rs.getInt(1) }
+            jdbc.queryForObject("SELECT COUNT(*) FROM $table $optionalWhereClause", args) { rs, _ -> rs.getInt(1) }
 
     override fun execute(sql: String) {
         log.trace("execute(sql='{}')", sql)
@@ -126,7 +126,7 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
                 committed = true
                 return result
             } finally {
-                if (committed === false) {
+                if (!committed) {
                     log.warn("Rolling back transaction!")
                     dataSource.connection.rollback()
                 }

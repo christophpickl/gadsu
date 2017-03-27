@@ -40,7 +40,7 @@ class CPropsRenderer(
     }
 
     fun updateFields(client: Client) {
-        xpropToCPropView.forEach { xprop, ui ->
+        xpropToCPropView.forEach { _, ui ->
             ui.updateValue(client)
         }
     }

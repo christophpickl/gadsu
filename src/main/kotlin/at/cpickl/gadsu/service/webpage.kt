@@ -33,7 +33,7 @@ open class SwingWebPageOpener : WebPageOpener {
         }
 
     @Subscribe open fun onOpenWebpageEvent(event: OpenWebpageEvent) {
-        if (isSupported === false) {
+        if (isSupported == false) {
             Dialogs(null).show(
                     title = "Ups",
                     message = "Dein System unterst\u00fctzt nicht das \u00d6ffnen von Links!",
@@ -47,7 +47,7 @@ open class SwingWebPageOpener : WebPageOpener {
 
     override fun open(url: URL) {
         log.info("open(url='{}')", url)
-        if (isSupported === false) {
+        if (isSupported == false) {
             throw GadsuException("Opening links is not supported on your machine!")
         }
         desktop!!.browse(url.toURI())

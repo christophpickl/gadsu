@@ -39,7 +39,7 @@ class Dialogs @Inject constructor(
         // could enable html (<br>) in Dialogs, but would need to rewrite dialog from scratch...
         val selected = JOptionPane.showOptionDialog(overrideOwner ?: frame?.asJFrame(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])
-        if (selected === JOptionPane.CLOSED_OPTION) {
+        if (selected == JOptionPane.CLOSED_OPTION) {
             return null
         }
         return buttonLabels[selected]
@@ -54,7 +54,7 @@ class Dialogs @Inject constructor(
                 type = DialogType.QUESTION,
                 buttonLabels = arrayOf("L\u00f6schen", "Abbrechen")
         )
-        if (selected === null || selected.equals("Abbrechen")) {
+        if (selected === null || selected == "Abbrechen") {
             log.trace("Abort")
             return
         }

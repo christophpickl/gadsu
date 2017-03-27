@@ -6,7 +6,11 @@ import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
 import at.cpickl.gadsu.image.toSqlBlob
-import at.cpickl.gadsu.persistence.*
+import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.ensureNotPersisted
+import at.cpickl.gadsu.persistence.ensurePersisted
+import at.cpickl.gadsu.persistence.toBufferedImage
+import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
 import at.cpickl.gadsu.service.nullOrWith
 import com.google.inject.Inject
@@ -147,7 +151,7 @@ class ClientJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val Client.Companion.ROW_MAPPER: RowMapper<Client>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         log.trace("Transforming database row for client with first name: '{}'", rs.getString("firstName"))
         val gender = Gender.parseSqlCode(rs.getString("gender_enum"))
         Client(

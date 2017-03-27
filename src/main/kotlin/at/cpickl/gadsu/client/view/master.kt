@@ -113,7 +113,7 @@ class SwingClientMasterView @Inject constructor(
     private fun initList() {
         list.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
-                if (list.selectedIndex === -1) {
+                if (list.selectedIndex == -1) {
                     // ??? what to do if selection changes to none? what actually triggers this? deletion of client?!
                     // might also happen because of future search, but this should then lead to NO event publishing (client should stay displayed in detail view)
                 } else {

@@ -101,7 +101,7 @@ class BloodPressureJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val BloodPressure.Companion.ROW_MAPPER: RowMapper<BloodPressure>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         BloodPressure(mapMeasurement(rs, "before"), mapMeasurement(rs, "after"))
     }
 

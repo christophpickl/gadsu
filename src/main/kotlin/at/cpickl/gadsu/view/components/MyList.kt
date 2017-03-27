@@ -107,11 +107,11 @@ open class MyList<T : Comparable<T>>(
     }
 
     protected fun initDoubleClicked(eventFunction: (T) -> UserEvent) {
-        registerDoubleClicked { row, element -> bus.post(eventFunction(element)) }
+        registerDoubleClicked { _, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initEnterPressed(eventFunction: (T) -> UserEvent) {
-        registerEnterPressed { row, element -> bus.post(eventFunction(element)) }
+        registerEnterPressed { _, element -> bus.post(eventFunction(element)) }
     }
 
     protected fun initSinglePopup(label: String, eventFunction: (T) -> UserEvent) {

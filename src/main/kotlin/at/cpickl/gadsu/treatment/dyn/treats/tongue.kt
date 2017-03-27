@@ -238,7 +238,7 @@ class TongueDiagnosisJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val TongueDiagnosis.Companion.ROW_MAPPER: RowMapper<TongueDiagnosis>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         TongueDiagnosis(emptyList(), emptyList(), emptyList(), emptyList(), rs.getString("note"))
     }
 
@@ -248,7 +248,7 @@ data class RawTonguePropertable(val sqlCode: String) {
 
 @Suppress("UNUSED")
 private val RawTonguePropertable.Companion.ROW_MAPPER: RowMapper<RawTonguePropertable>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         RawTonguePropertable(rs.getString("sql_code"))
     }
 

@@ -34,7 +34,7 @@ class ModificationChecker(
 
     fun <T : JTextComponent> enableChangeListener(delegate: T): T {
         // MINOR check if adding without removing listener does not lead to memory leak
-        delegate.addChangeListener { event ->
+        delegate.addChangeListener {
 //            log.trace("JTextComponent fired change event. (Event: {}, Source: {})", event, delegate)
             checkModificationsAndUpdateIsEnabledField()
         }

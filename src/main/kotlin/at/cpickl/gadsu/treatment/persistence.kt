@@ -126,7 +126,7 @@ class TreatmentJdbcRepository @Inject constructor(
 //        return total - protocolized
 
         return jdbcx.queryForObject<Int>("SELECT COUNT(*) FROM $TABLE WHERE id NOT IN (SELECT DISTINCT(id_treatment) FROM ${MultiProtocolJdbcRepository.TABLE_KEYS})",
-                emptyArray(), RowMapper { rs, i -> rs.getInt(1) })
+                emptyArray(), RowMapper { rs, _ -> rs.getInt(1) })
     }
 
     override fun calculateMaxNumberUsed(client: Client): Int? {
@@ -143,7 +143,7 @@ class TreatmentJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val Treatment.Companion.ROW_MAPPER: RowMapper<Treatment>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         Treatment(
                 rs.getString("id"),
                 rs.getString("id_client"),

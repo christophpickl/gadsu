@@ -46,13 +46,13 @@ class ReflectiveMacHandler : MacHandler {
 
     override fun registerAbout(onAbout: () -> Unit) {
         log.debug("registerAbout()")
-        val aboutHandler = proxyFor(aboutHandlerClass, "handleAbout", { args -> onAbout.invoke() })
+        val aboutHandler = proxyFor(aboutHandlerClass, "handleAbout", { onAbout.invoke() })
         macAppMethod("setAboutHandler", aboutHandlerClass, aboutHandler)
     }
 
     override fun registerPreferences(onPreferences: () -> Unit) {
         log.debug("registerPreferences()")
-        val preferencesHandler = proxyFor(preferencesHandlerClass, "handlePreferences", { args -> onPreferences.invoke() })
+        val preferencesHandler = proxyFor(preferencesHandlerClass, "handlePreferences", { onPreferences.invoke() })
         macAppMethod("setPreferencesHandler", preferencesHandlerClass, preferencesHandler)
     }
 
@@ -69,7 +69,7 @@ class ReflectiveMacHandler : MacHandler {
     }
 
     private fun proxyFor(proxyType: Class<*>, methodName: String, callback: (Array<out Any>) -> Unit): Any {
-        return Proxy.newProxyInstance(javaClass.classLoader, arrayOf(proxyType), InvocationHandler { proxy, method, args ->
+        return Proxy.newProxyInstance(javaClass.classLoader, arrayOf(proxyType), InvocationHandler { _, method, args ->
             if (method.name.equals(methodName)) {
                 log.info("{}#{}() invoked on proxy.", proxyType.name, methodName)
                 callback.invoke(args)
