@@ -29,7 +29,7 @@ import org.testng.annotations.Test
     fun `confirm sends via mail sender`() {
         `when`(mockPrefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
                 templateConfirmSubject = "subject for \${name}",
-                templateConfirmBody = "body for \${date?datetime}"
+                templateConfirmBody = "body for \${dateStart?datetime}"
         ))
 
         val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = "client@mail.at"))
