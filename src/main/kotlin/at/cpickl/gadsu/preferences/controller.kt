@@ -3,6 +3,7 @@ package at.cpickl.gadsu.preferences
 import at.cpickl.gadsu.GADSU_DIRECTORY
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.persistence.BackupController
+import at.cpickl.gadsu.preferences.view.PreferencesWindow
 import at.cpickl.gadsu.service.*
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject

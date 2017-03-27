@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
 
     Framed.showWithContext({ _ ->
 //        ClientTabMain(
-//                Client.INSERT_PROTOTYPE,
+//                Client.EMPTY,
 //                ModificationChecker(object : ModificationAware {
 //                    override fun isModified() = true
 //                }),

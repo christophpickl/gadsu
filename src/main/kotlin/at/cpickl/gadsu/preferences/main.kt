@@ -28,8 +28,18 @@ data class PreferencesData(
                 gmailAddress = null,
                 gapiCredentials = null,
                 treatmentGoal = null,
-                templateConfirmSubject = null,
-                templateConfirmBody = null
+                templateConfirmSubject = "[shiatsu] terminbestaetigung \${dateStart?string[\"d.M.\"]}",
+                templateConfirmBody = """hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>$\{name?lower_case},
+meine software ist so nett und moechte dich in meinem namen daran erinnern,
+dass wir einen shiatsu termin haben, naemlich am:
+
+  $\{dateStart?string[\"EEEE 'der' d. MMMMM\"]?lower_case}, von $\{dateStart?string[\"HH:mm\"]} bis $\{dateEnd?string[\"HH:mm\"]} uhr
+
+ich freu mich schon tierisch drauf,
+auf bald,
+
+christoph
+"""
         )
     }
 }

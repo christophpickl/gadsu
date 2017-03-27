@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.preferences.view.PreferencesSwingWindow
+import at.cpickl.gadsu.preferences.view.PreferencesWindow
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Scopes

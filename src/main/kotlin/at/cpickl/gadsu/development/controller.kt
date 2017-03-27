@@ -95,7 +95,7 @@ open class DevelopmentController @Inject constructor(
                         birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
                         gender = Gender.MALE,
                         contact = Contact(
-                                mail = "gadsu1@discard.email",
+                                mail = "maxmustermann@discard.email",
                                 phone = "0699 11 22 33 432",
                                 street = "Hauptstrasse 22/11/A",
                                 zipCode = "1010",
@@ -141,9 +141,16 @@ open class DevelopmentController @Inject constructor(
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Xnna",
                         lastName = "Xym",
-                        countryOfOrigin = "Austria",
+                        contact = Contact.EMPTY.copy(mail = "xnna@discard.email"),
                         gender = Gender.FEMALE,
                         picture = MyImage.DEFAULT_PROFILE_WOMAN,
+                        cprops = CProps.empty
+                ),
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Alien",
+                        contact = Contact.EMPTY.copy(mail = "alien@discard.email"),
+                        gender = Gender.UNKNOWN,
+//                        picture = MyImage.DEFAULT_PROFILE_ALIEN,
                         cprops = CProps.empty
                 )
         ).forEach {

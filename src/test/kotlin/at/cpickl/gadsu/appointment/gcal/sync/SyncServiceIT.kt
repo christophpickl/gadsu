@@ -52,7 +52,7 @@ class SyncServiceIT {
 
         appointmentDate = clock.now().plusDays(1)
         client = clientService.insertOrUpdate(Client.unsavedValidInstance().copy(
-                contact = Contact.INSERT_PROTOTYPE.copy(mail = "test@gadsu.org")
+                contact = Contact.EMPTY.copy(mail = "test@gadsu.org")
         ))
         prefs.preferencesData = prefs.preferencesData.copy(
                 templateConfirmSubject = templateSubject,

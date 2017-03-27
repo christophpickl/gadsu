@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.preferences
 
+import at.cpickl.gadsu.preferences.view.PreferencesSwingWindow
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.view.MainFrame

@@ -34,9 +34,10 @@ open class FormPanel(
             description: String,
             fillType: GridBagFill = GridBagFill.Horizontal,
             icon: ImageIcon? = null,
-            addTopInset: Int = 0
+            addTopInset: Int = 0,
+            inputWeighty: Double = 0.0
     ) {
-        addFormInput(label, input, fillType, icon, addTopInset)
+        addFormInput(label, input, fillType, icon, addTopInset, inputWeighty)
         val txtDescription = HtmlEditorPane(description)
                 .changeLabelFontSize(11.0F)
                 .disableFocusable()
@@ -50,12 +51,13 @@ open class FormPanel(
             input: Component,
             fillType: GridBagFill = GridBagFill.Horizontal,
             icon: ImageIcon? = null,
-            addTopInset: Int = 0
+            addTopInset: Int = 0,
+            inputWeighty: Double = 0.0
     ) {
         c.gridheight = 1
 
         c.weightx = 0.0
-        c.weighty = 0.0
+        c.weighty = inputWeighty
         c.fill = GridBagConstraints.NONE
         c.anchor = labelAnchor
         c.insets = insetsCol1.addPaddingForWindows().addTop(addTopInset)
@@ -124,7 +126,14 @@ class VFillFormPanel : FormPanel() {
     /**
      * @param addTopInset not used in this subclass :-p
      */
-    override fun addFormInput(label: String, input: Component, fillType: GridBagFill, icon: ImageIcon?, addTopInset: Int) {
+    override fun addFormInput(
+            label: String,
+            input: Component,
+            fillType: GridBagFill,
+            icon: ImageIcon?,
+            addTopInset: Int,
+            inputWeighty: Double // not used
+    ) {
         c.weightx = 0.0
         c.weighty = 0.0
         c.fill = GridBagConstraints.NONE

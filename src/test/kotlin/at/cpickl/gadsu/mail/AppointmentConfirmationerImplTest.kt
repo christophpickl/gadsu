@@ -30,7 +30,7 @@ import org.testng.annotations.Test
         val client = Client.savedValidInstance().copy(
                 firstName = "Florian",
                 gender = Gender.MALE,
-                contact = Contact.INSERT_PROTOTYPE.copy(mail = "client@mail.at"))
+                contact = Contact.EMPTY.copy(mail = "client@mail.at"))
         val appointmentStart = "1.2.2001 14:30:00".parseDateTime()
         val appointmentEnd = appointmentStart.plusHours(1)
         val appointment = Appointment.savedValidInstance(client.id!!).copy(start = appointmentStart, end = appointmentEnd)
@@ -53,7 +53,7 @@ import org.testng.annotations.Test
 
     @Test(expectedExceptions = arrayOf(AppointmentConfirmationException::class))
     fun `no mail configured throws exception`() {
-        val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = ""))
+        val client = Client.savedValidInstance().copy(contact = Contact.EMPTY.copy(mail = ""))
         val appointment = Appointment.savedValidInstance(client.id!!)
 
         confirmer.sendConfirmation(client, appointment)
