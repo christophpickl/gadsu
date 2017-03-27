@@ -5,18 +5,17 @@ import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
-import java.awt.Color
-import java.awt.Component
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
-import java.awt.Insets
+import java.awt.*
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
 
 
-open class GridPanel(viewName: String? = null, _debugColor: Color? = null) : JPanel() {
+open class GridPanel(
+        viewName: String? = null,
+        _debugColor: Color? = null
+) : JPanel() {
 
     val c = GridBagConstraints()
 

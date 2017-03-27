@@ -2,11 +2,7 @@ package at.cpickl.gadsu.client.xprops.view
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.CProp
-import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.client.xprops.model.XProp
-import at.cpickl.gadsu.client.xprops.model.XPropEnum
-import at.cpickl.gadsu.client.xprops.model.XPropTypeCallback
+import at.cpickl.gadsu.client.xprops.model.*
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.components.EditorRendererSwitchable
@@ -14,7 +10,7 @@ import at.cpickl.gadsu.view.components.panels.FormPanel
 import com.google.common.eventbus.EventBus
 import java.awt.Component
 import java.awt.GridBagConstraints
-import java.util.HashMap
+import java.util.*
 import javax.swing.ImageIcon
 
 
@@ -40,7 +36,7 @@ class CPropsRenderer(
     }
 
     fun updateFields(client: Client) {
-        xpropToCPropView.forEach { xprop, ui ->
+        xpropToCPropView.forEach { _, ui ->
             ui.updateValue(client)
         }
     }

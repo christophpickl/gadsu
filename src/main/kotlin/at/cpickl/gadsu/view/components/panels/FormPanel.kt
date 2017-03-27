@@ -3,11 +3,7 @@ package at.cpickl.gadsu.view.components.panels
 import at.cpickl.gadsu.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
-import at.cpickl.gadsu.view.swing.Pad
-import at.cpickl.gadsu.view.swing.addLeft
-import at.cpickl.gadsu.view.swing.addTop
-import at.cpickl.gadsu.view.swing.bold
-import at.cpickl.gadsu.view.swing.disableFocusable
+import at.cpickl.gadsu.view.swing.*
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
@@ -17,6 +13,7 @@ import javax.swing.JLabel
 
 
 open class FormPanel(
+        private val fillCellsGridy: Boolean = true,
         private val labelAnchor: Int = GridBagConstraints.NORTHEAST,
         private val inputAnchor: Int = GridBagConstraints.SOUTHWEST
 ) : GridPanel() {
@@ -65,7 +62,7 @@ open class FormPanel(
 
         c.gridx++
         c.weightx = 1.0
-        c.weighty = 0.0
+        c.weighty = if (fillCellsGridy) 1.0 else 0.0
         c.fill = fillType.swingId
         c.anchor = inputAnchor
         if (input is JLabel) {

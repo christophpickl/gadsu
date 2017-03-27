@@ -112,7 +112,7 @@ class AppointmentJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val Appointment.Companion.ROW_MAPPER: RowMapper<Appointment>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         Appointment(
                 rs.getString("id"),
                 rs.getString("id_client"),

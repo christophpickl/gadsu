@@ -162,7 +162,7 @@ class PulseDiagnosisJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val PulseDiagnosis.Companion.ROW_MAPPER: RowMapper<PulseDiagnosis>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         PulseDiagnosis(emptyList(), rs.getString("note"))
     }
 
@@ -172,7 +172,7 @@ data class RawPulseProperty(val sqlCode: String) {
 
 @Suppress("UNUSED")
 private val RawPulseProperty.Companion.ROW_MAPPER: RowMapper<RawPulseProperty>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         RawPulseProperty(rs.getString("sql_code"))
     }
 

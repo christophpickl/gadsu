@@ -147,7 +147,7 @@ class ClientJdbcRepository @Inject constructor(
 
 @Suppress("UNUSED")
 val Client.Companion.ROW_MAPPER: RowMapper<Client>
-    get() = RowMapper { rs, rowNum ->
+    get() = RowMapper { rs, _ ->
         log.trace("Transforming database row for client with first name: '{}'", rs.getString("firstName"))
         val gender = Gender.parseSqlCode(rs.getString("gender_enum"))
         Client(

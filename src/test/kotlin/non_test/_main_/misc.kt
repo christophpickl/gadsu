@@ -1,16 +1,24 @@
 package non_test._main_
 
+import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
+import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.view.detail.ClientTabMain
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
+import at.cpickl.gadsu.treatment.inclient.TreatmentList
+import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.components.Framed
+import at.cpickl.gadsu.view.components.FramedContext
 import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
+import at.cpickl.gadsu.view.logic.ModificationAware
+import at.cpickl.gadsu.view.logic.ModificationChecker
 import com.google.common.eventbus.EventBus
 import org.mockito.Mockito
 import java.awt.BorderLayout
@@ -22,25 +30,23 @@ import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
-
-
-    Framed.showWithContext({ _ ->
-//        ClientTabMain(
-//                Client.INSERT_PROTOTYPE,
-//                ModificationChecker(object : ModificationAware {
-//                    override fun isModified() = true
-//                }),
-//                AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
-//                TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
-//                SuggesterControllerImpl(SuggesterImpl(mockClientRepo()))
-//        )
+    Framed.showWithContext(::clientTabMain, Dimension(600, 600))
 //        treatmentGoal()
 //        triState()
 //        meridianSelector()
+//        richWordTextArea()
+}
 
-        richWordTextArea()
-
-    }, Dimension(600, 600))
+fun clientTabMain(context: FramedContext): JComponent {
+    return ClientTabMain(
+            Client.INSERT_PROTOTYPE,
+            ModificationChecker(object : ModificationAware {
+                override fun isModified() = true
+            }),
+            AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
+            TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
+            context.bus
+    ).asComponent()
 }
 
 fun richWordTextArea(): JComponent {

@@ -50,7 +50,7 @@ private class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
     val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 
-    override fun asComponent() = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
+    override fun asComponent() = FormPanel(fillCellsGridy = false, labelAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
 
         addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
@@ -89,6 +89,7 @@ private class PrefsTabConnectivity : PrefsTab("Connectivity") {
     val inpConfirmMailBody = MyTextArea("", visibleRows = 6)
 
     override fun asComponent() = FormPanel(
+            fillCellsGridy = false,
             labelAnchor = GridBagConstraints.NORTHWEST,
             inputAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)

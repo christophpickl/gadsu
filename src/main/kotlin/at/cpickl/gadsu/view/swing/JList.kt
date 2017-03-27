@@ -3,11 +3,7 @@ package at.cpickl.gadsu.view.swing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Point
-import java.awt.event.KeyAdapter
-import java.awt.event.KeyEvent
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
+import java.awt.event.*
 import javax.swing.JList
 
 @Suppress("UNUSED")
@@ -50,7 +46,7 @@ fun <T> JList<T>.myLocationToIndex(point: Point): Int {
 fun <T> JList<T>.elementAtPoint(point: Point): Pair<Int, T>? {
     log.trace("elementAtIndex(point={})", point)
     val index = myLocationToIndex(point)
-    if (index === -1) {
+    if (index == -1) {
         log.warn("Could not determine index for point: {}", point)
         return null
     }
