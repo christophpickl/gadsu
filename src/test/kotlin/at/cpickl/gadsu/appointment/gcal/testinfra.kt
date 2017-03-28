@@ -37,7 +37,8 @@ fun ImportAppointment.Companion.testInstance(client: Client, start: DateTime, se
         enabled = true,
         sendConfirmation = sendConfirmation,
         selectedClient = client,
-        allClients = listOf(client)
+        allClients = listOf(client),
+        isGmailGloballyConfigured = true
 )
 
 object TestableGCalService : GCalService {
