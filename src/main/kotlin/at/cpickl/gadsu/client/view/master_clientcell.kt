@@ -1,18 +1,38 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.IClient
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.differenceDaysWithinYear
+import at.cpickl.gadsu.service.formatDateNoYear
+import at.cpickl.gadsu.service.formatTimeWithoutSeconds
+import at.cpickl.gadsu.service.isBetweenInclusive
+import at.cpickl.gadsu.service.wrapParenthesisIf
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceSize
+import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.withFont
+import at.cpickl.gadsu.view.swing.withFontSize
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import org.joda.time.Days
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Font
+import java.awt.Graphics
+import java.awt.GridBagConstraints
+import java.awt.Insets
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -66,6 +86,7 @@ class ExtendedClient(
     override val textSymptoms: String get() = client.textSymptoms
     override val textFiveElements: String get() = client.textFiveElements
     override val textSyndrom: String get() = client.textSyndrom
+    override val category: ClientCategory get() = client.category
 
     override val tcmNote: String get() = client.tcmNote
     override val picture: MyImage get() = client.picture

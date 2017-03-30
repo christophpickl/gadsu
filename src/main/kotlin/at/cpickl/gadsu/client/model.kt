@@ -63,6 +63,7 @@ interface IClient : HasId, Persistable {
     val textSymptoms: String
     val textFiveElements: String
     val textSyndrom: String
+    val category: ClientCategory
 
     val tcmNote: String
     val picture: MyImage
@@ -110,6 +111,7 @@ data class Client(
         override val textFiveElements: String,
         /** "Allgemein" tab, textfield: Syndrom */
         override val textSyndrom: String,
+        override val category: ClientCategory,
 
         override val tcmNote: String,
         override val picture: MyImage,
@@ -124,7 +126,7 @@ data class Client(
                 "", "", "",
                 Contact.EMPTY, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "", "", "", "", "",
-                "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
+                ClientCategory.B, "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
 
     override val hasMail: Boolean = this.contact.mail.isNotEmpty()
@@ -256,5 +258,17 @@ enum class Relationship(override val order: Int, override val sqlCode: String, o
     companion object {
         val orderedValues: List<Relationship> = orderedValuesOf(Relationship.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
+    }
+}
+
+enum class ClientCategory(override val order: Int, override val sqlCode: String, override val label: String) :
+        Ordered, SqlEnum, Labeled {
+    A(1, "A", "A"),
+    B(2, "B", "B"),
+    C(3, "C", "C");
+
+    companion object {
+        val orderedValues: List<ClientCategory> = orderedValuesOf(ClientCategory.values())
+        fun parseSqlCode(search: String) = parseSqlCodeFor(ClientCategory.values(), search)
     }
 }

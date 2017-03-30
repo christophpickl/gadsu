@@ -53,6 +53,7 @@ object ClientViewNames {
     val InputReceiveMails = "Client.InputReceiveMails"
     val InputGender = "Client.InputGender"
     val InputRelationship = "Client.InputRelationship"
+    val InputCategory = "Client.InputCategory"
     val InputNote = "Client.InputNote"
     val InputActive = "Client.InputActive"
 

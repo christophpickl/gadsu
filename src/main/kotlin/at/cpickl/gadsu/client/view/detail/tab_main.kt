@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
@@ -57,6 +58,7 @@ class ClientTabMain(
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Wohnort", { it.origin }, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.orderedValues, initialClient.relationship, "Beziehungsstatus", { it.relationship }, ViewNames.Client.InputRelationship)
+    val inpCategory = fields.newComboBox(ClientCategory.orderedValues, initialClient.category, "Kategorie", { it.category }, ViewNames.Client.InputCategory)
     val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", { it.children }, ViewNames.Client.InputChildren)
     val inpHobbies = fields.newTextField("Hobbies", { it.hobbies }, ViewNames.Client.InputHobbies)
@@ -98,6 +100,7 @@ class ClientTabMain(
             addFormInput(inpCountryOfOrigin)
             addFormInput(inpOrigin)
             addFormInput(inpRelationship)
+            addFormInput(inpCategory)
             addFormInput(inpJob)
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
