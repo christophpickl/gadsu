@@ -19,7 +19,8 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
-* alter berechnen und anzeigen
+* SQL skript schreiben um zu schauen welche klienten gender = UNKNOWN (evtl mit startAction, wo man SQL skript uebergibt)
+* in client.appointments auch vergangene termine anzeigen (farblich hervorheben), damit man daraus einfach neue treatments erstellen kann
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!
 * BUG: wenn mit CMD+rauf/runter klient wechseln waehrend unsaved changes sind => dialog kommt immer wieder (endless) trotz "Abbrechen" klicken
 * client mastercell, wiedersehen in tagen (anstatt absolutes datum)
