@@ -71,6 +71,7 @@ private class CommonsCliArgsParser : ArgsParser {
     override fun parse(cliArgs: Array<String>): Args {
 
         val options = Options()
+        // -databaseUrl="jdbc:hsqldb:file:/Users/wu/.gadsu_dev/database/database"
         options.addOption(DATABASE_URL_SHORT, DATABASE_URL_LONG, true, "Override JDBC URL to e.g.: 'jdbc:hsqldb:mem:mymemdb' (default is: '${PersistenceModule.DEFAULT_DB_URL}').")
         options.addOption(DEBUG_SHORT, DEBUG_LONG, false, "Increase log level and register additional console appender.")
         options.addOption(ACTION_SHORT, ACTION_LONG, true, "Add a custom action and quit (for debugging purpose).")

@@ -59,10 +59,16 @@ object GlobalExceptionHandler {
 
 
     fun startThread(action: () -> Unit) {
-        Thread(Runnable {
+        startThread(name = null, action = action)
+    }
+
+    fun startThread(name: String?, action: () -> Unit) {
+        val runnable = Runnable {
             log.trace("Started new thread.")
             exceptionSafe(action)
-        }).start()
+        }
+        val thread = if (name == null) Thread(runnable) else Thread(runnable, name)
+        thread.start()
     }
 
 }
