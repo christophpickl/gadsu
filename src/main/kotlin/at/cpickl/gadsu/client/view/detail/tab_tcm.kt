@@ -24,7 +24,7 @@ class ClientTabTcm(
         modificationChecker: ModificationChecker,
         bus: EventBus
 ) : DefaultClientTab(
-        title = Labels.Tabs.ClientTcm,
+        tabTitle = Labels.Tabs.ClientTcm,
         type = ClientTabType.TCM,
         scrolled = false
 ) {

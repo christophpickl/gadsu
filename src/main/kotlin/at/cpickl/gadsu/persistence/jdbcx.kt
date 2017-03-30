@@ -106,7 +106,7 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
         encapsulateException { jdbc.execute(sql) }
     }
 
-    // MINOR what about nested transactions?
+    // ... what about nested transactions?
     override fun transactionSafe(function: () -> Unit) {
         transactionSafeAndReturn { function() }
     }

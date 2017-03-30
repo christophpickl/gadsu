@@ -3,11 +3,7 @@ package at.cpickl.gadsu.view.swing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Point
-import java.awt.event.KeyAdapter
-import java.awt.event.KeyEvent
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
+import java.awt.event.*
 import javax.swing.JList
 
 @Suppress("UNUSED")

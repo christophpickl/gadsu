@@ -6,17 +6,7 @@ import at.cpickl.gadsu.QuitAskEvent
 import at.cpickl.gadsu.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.acupuncture.ShowAcupunctureViewEvent
 import at.cpickl.gadsu.appointment.gcal.sync.RequestGCalSyncEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientChangeStateEvent
-import at.cpickl.gadsu.client.ClientNavigateDownEvent
-import at.cpickl.gadsu.client.ClientNavigateUpEvent
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.ClientUpdatedEvent
-import at.cpickl.gadsu.client.CurrentClient
-import at.cpickl.gadsu.client.DeleteCurrentClientEvent
-import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.ShowInClientsListEvent
-import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
@@ -25,14 +15,7 @@ import at.cpickl.gadsu.mail.RequestPrepareMailEvent
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
 import at.cpickl.gadsu.report.multiprotocol.RequestCreateMultiProtocolEvent
-import at.cpickl.gadsu.service.CurrentChangedEvent
-import at.cpickl.gadsu.service.FormSaveEvent
-import at.cpickl.gadsu.service.FormType
-import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
-import at.cpickl.gadsu.service.LOG
-import at.cpickl.gadsu.service.Logged
-import at.cpickl.gadsu.service.PrintFormEvent
-import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
+import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.tcm.ShowElementsTableViewEvent
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
@@ -41,13 +24,7 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
 import javax.inject.Inject
-import javax.swing.JCheckBoxMenuItem
-import javax.swing.JComponent
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import javax.swing.JMenuItem
-import javax.swing.JPopupMenu
-import javax.swing.KeyStroke
+import javax.swing.*
 
 
 @Logged

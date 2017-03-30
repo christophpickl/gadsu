@@ -10,6 +10,7 @@ import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.GadsuMenuBar
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addKTabs
 import at.cpickl.gadsu.view.components.gadsuWidth
 import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -65,7 +66,7 @@ open class SwingClientDetailView @Inject constructor(
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-    private val allTabs = arrayOf(tabMain, tabTexts, tabTcm)
+    private val allTabs = listOf(tabMain, tabTexts, tabTcm)
 
     init {
         modificationChecker.disableAll()
@@ -115,14 +116,16 @@ open class SwingClientDetailView @Inject constructor(
     }
 
     private fun initTabbedPane(): JTabbedPane {
-        tabbedPane.isOpaque = false
+        tabbedPane.transparent()
         tabbedPane.name = ViewNames.Client.TabbedPane
-        var i: Int = 0
-        allTabs.forEach {
-            val tabContent: Component = if (it.scrolled) JScrollPane(it.asComponent()).transparent() else it.asComponent()
-            tabbedPane.addTab("<html><body><table width='100'><span style='align:center'>${it.title}</span></table></body></html>", tabContent)
-            tabbedPane.setTabComponentAt(i++, JLabel(it.title, JLabel.CENTER).enforceWidth(100))
-        }
+        tabbedPane.addKTabs(allTabs)
+//        var i: Int = 0
+//        allTabs.forEach {
+//            val tabContent: Component = if (it.scrolled) JScrollPane(it.asComponent()).transparent() else it.asComponent()
+//            tabbedPane.addTab("<html><body><table width='100'><span style='align:center'>${it.tabTitle}</span></table></body></html>", tabContent)
+//            tabbedPane.setTabComponentAt(i++, JLabel(it.tabTitle, JLabel.CENTER).enforceWidth(100))
+//        }
+
         return tabbedPane
     }
 

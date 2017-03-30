@@ -70,7 +70,7 @@ class ReflectiveMacHandler : MacHandler {
 
     private fun proxyFor(proxyType: Class<*>, methodName: String, callback: (Array<out Any>) -> Unit): Any {
         return Proxy.newProxyInstance(javaClass.classLoader, arrayOf(proxyType), InvocationHandler { _, method, args ->
-            if (method.name.equals(methodName)) {
+            if (method.name == methodName) {
                 log.info("{}#{}() invoked on proxy.", proxyType.name, methodName)
                 callback.invoke(args)
                 return@InvocationHandler 1
