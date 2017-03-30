@@ -115,7 +115,7 @@ class FileSystemImpl : FileSystem {
         if (filterSuffix == null) {
             return directory.listFiles().toList()
         }
-        return directory.listFiles { _, name -> name.endsWith(filterSuffix) }.toList()
+        return directory.listFiles { _, fileName -> fileName.endsWith(filterSuffix) }.toList()
     }
 
     override fun zip(directoryToZip: File, targetZipFile: File) {

@@ -4,7 +4,13 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.ClientRenderer
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewConstants
-import at.cpickl.gadsu.view.components.*
+import at.cpickl.gadsu.view.components.DateRangeTableCellRenderer
+import at.cpickl.gadsu.view.components.MyCheckboxTableCellEditor
+import at.cpickl.gadsu.view.components.MyCheckboxTableCellRenderer
+import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellEditor
+import at.cpickl.gadsu.view.components.MyEnableCheckboxTableCellRenderer
+import at.cpickl.gadsu.view.components.MyTable
+import at.cpickl.gadsu.view.components.MyTableModel
 import at.cpickl.gadsu.view.registerOnStopped
 import java.awt.Component
 import javax.swing.AbstractCellEditor
@@ -36,6 +42,7 @@ class SyncTable(
         }
         val confirmationEditor = MyEnableCheckboxTableCellEditor().apply {
             registerOnStopped {
+                // MINOR UI glitch: when deselecting, selectedRow could be -1
                 model.entityAt(selectedRow).sendConfirmation = currentState
             }
         }

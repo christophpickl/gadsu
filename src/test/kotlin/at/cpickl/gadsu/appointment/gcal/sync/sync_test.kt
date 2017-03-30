@@ -5,7 +5,14 @@ import at.cpickl.gadsu.GadsuModule
 import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentRepository
-import at.cpickl.gadsu.appointment.gcal.*
+import at.cpickl.gadsu.appointment.gcal.GCalEvent
+import at.cpickl.gadsu.appointment.gcal.GCalEventMeta
+import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
+import at.cpickl.gadsu.appointment.gcal.blankDummy
+import at.cpickl.gadsu.appointment.gcal.deleteAllEvents
+import at.cpickl.gadsu.appointment.gcal.getEvent
+import at.cpickl.gadsu.appointment.gcal.toGCalEvent
+import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.preferences.PreferencesData
@@ -25,8 +32,6 @@ import org.testng.annotations.Test
 
 @Test(groups = arrayOf("mTest"))
 class SyncManualTest {
-
-    private val now = DateTime.now()
 
     fun `WHEN insert client, create gcal DO sync and import ASSERT appointment in DB and gcal updated with gadsu metadata`() {
         GadsuSystemProperty.development.enable()
@@ -61,7 +66,7 @@ class SyncManualTest {
         assertThat(gcalEvent.id, equalTo(event.id))
         assertThat(gcalEvent.gadsuId, nullValue())
 
-        syncer.import(listOf(ImportAppointment(gcalEvent, true, false, client, clients)))
+        syncer.import(listOf(ImportAppointment(gcalEvent, true, false, client, clients, true)))
 
         return gcalEvent
     }

@@ -130,7 +130,7 @@ private object FlagMapper {
             "orig" to "AcupunctFlag.OriginalPoint",
             "nex" to "AcupunctFlag.NexusPoint",
             "master" to "AcupunctFlag.MasterPoint",
-            // TODO #12 @acupuncts - "key" to "AcupunctFlag.KeyPoint",
+            // MINOR #12 @acupuncts - "key" to "AcupunctFlag.KeyPoint",
             "ton" to "AcupunctFlag.TonePoint",
             "sed" to "AcupunctFlag.SedatePoint",
             "jing" to "AcupunctFlag.JingPoint",
@@ -148,7 +148,7 @@ private object FlagMapper {
                 mapFlagWithMeridian(singleFlagText, "bo")
             } else if (singleFlagText.startsWith("yu")) {
                 mapFlagWithMeridian(singleFlagText, "yu")
-            } else if (singleFlagText.startsWith("ein")) { // TODO #12 "ein" point hat nix mit Herz/meridian zu tun.. heisst nur auf chinesisch "He" ;)
+            } else if (singleFlagText.startsWith("ein")) { // MINOR #12 "ein" point hat nix mit Herz/meridian zu tun.. heisst nur auf chinesisch "He" ;)
                 mapFlagWithMeridian(singleFlagText, "ein")
             } else {
                 before + flagFor(singleFlagText)

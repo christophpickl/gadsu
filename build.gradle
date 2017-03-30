@@ -38,6 +38,9 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
+        url "http://dl.bintray.com/christophpickl/cpickl"
+    }
+    maven {
         url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
     }
 }
@@ -97,6 +100,9 @@ dependencies {
     compile 'com.google.guava:guava:21.0' // guice comes with 16.0.1
     compile 'net.ricecode:string-similarity:1.0.0'
     compile 'org.freemarker:freemarker:2.3.25-incubating'
+
+    compile 'com.github.christophpickl.kpotpourri:common:1.0'
+    compile 'com.github.christophpickl.kpotpourri:swing:1.0'
 
     // DB
     // -------------------------------------------------------------------------

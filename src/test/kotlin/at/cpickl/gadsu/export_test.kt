@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
                             Client.unsavedValidInstance().copy(
                                     created = TEST_DATETIME1.minusDays(1),
                                     picture = MyImage.TEST_CLIENT_PIC1,
-                                    contact = Contact.INSERT_PROTOTYPE.copy(mail = "mail@home.at")
+                                    contact = Contact.EMPTY.copy(mail = "mail@home.at")
                             )),
                     _treatments = listOf(Treatment.savedValidInstance("clientId"))
             )

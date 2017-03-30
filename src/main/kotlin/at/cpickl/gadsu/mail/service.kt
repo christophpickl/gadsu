@@ -12,7 +12,8 @@ interface MailSender {
 class MockMailSender : MailSender {
     private val log = LOG(javaClass)
     override fun send(mail: Mail) {
-        log.warn("send(mail) ... mock is NOT! sending mail: $mail")
+        log.warn("!MOCK MAIL!")
+        log.warn("send(mail) ... mock is NOT sending this mail: $mail")
     }
 }
 

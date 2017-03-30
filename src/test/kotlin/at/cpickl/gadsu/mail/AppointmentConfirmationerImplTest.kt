@@ -3,12 +3,12 @@ package at.cpickl.gadsu.mail
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.FreemarkerTemplatingEngine
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.testinfra.savedValidInstance
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -27,27 +27,33 @@ import org.testng.annotations.Test
     }
 
     fun `confirm sends via mail sender`() {
-        `when`(mockPrefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
-                templateConfirmSubject = "subject for \${name}",
-                templateConfirmBody = "body for \${date?datetime}"
-        ))
+        val client = Client.savedValidInstance().copy(
+                firstName = "Florian",
+                gender = Gender.MALE,
+                contact = Contact.EMPTY.copy(mail = "client@mail.at"))
+        val appointmentStart = "1.2.2001 14:30:00".parseDateTime()
+        val appointmentEnd = appointmentStart.plusHours(1)
+        val appointment = Appointment.savedValidInstance(client.id!!).copy(start = appointmentStart, end = appointmentEnd)
 
-        val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = "client@mail.at"))
-        val appointment = Appointment.savedValidInstance(client.id!!).copy(start = "1.2.2001 14:30:59".parseDateTime())
+        `when`(mockPrefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
+                templateConfirmSubject = "termin am \${dateStart?string[\"d.M.\"]}",
+                // gender = M, F, ?
+                templateConfirmBody = "hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>\${name?lower_case}, termin am \${dateStart?string[\"EEEE 'der' d. MMMMM\"]?lower_case} von \${dateStart?string[\"HH:mm\"]} bis \${dateEnd?string[\"HH:mm\"]} uhr, christoph."
+        ))
 
         confirmer.sendConfirmation(client, appointment)
 
         verify(mockSender).send(Mail(
                 recipient = client.contact.mail,
-                subject = "subject for ${client.firstName}",
-                body = "body for 01.02.2001 14:30:59"
+                subject = "termin am 1.2.",
+                body = "hallo lieber florian, termin am donnerstag der 1. februar von 14:30 bis 15:30 uhr, christoph."
         ))
-        Mockito.verifyNoMoreInteractions(mockSender)
+        verifyNoMoreInteractions(mockSender)
     }
 
     @Test(expectedExceptions = arrayOf(AppointmentConfirmationException::class))
     fun `no mail configured throws exception`() {
-        val client = Client.savedValidInstance().copy(contact = Contact.INSERT_PROTOTYPE.copy(mail = ""))
+        val client = Client.savedValidInstance().copy(contact = Contact.EMPTY.copy(mail = ""))
         val appointment = Appointment.savedValidInstance(client.id!!)
 
         confirmer.sendConfirmation(client, appointment)

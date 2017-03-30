@@ -20,7 +20,7 @@ import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.*
 
-private val HGAP_FROM_WINDOW = 15
+val HGAP_FROM_WINDOW = 15
 
 interface WritablePreferencesWindow {
     var txtApplicationDirectory: String set

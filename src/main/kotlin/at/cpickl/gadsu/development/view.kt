@@ -76,13 +76,13 @@ class DevelopmentFrame(
 
     fun updateClient(client: Client?) {
         update(txtClient, client, {
-            """<html>${if (!it.yetPersisted) "INSERT_PROTOTYPE<br/>" else ""}Note: ${it.note}</html>"""
+            """<html>${if (!it.yetPersisted) "EMPTY<br/>" else ""}Note: ${it.note}</html>"""
         })
     }
 
     fun updateTreatment(treatment: Treatment?) {
         update(txtTreatment, treatment, {
-            """<html>${if (!it.yetPersisted) "INSERT_PROTOTYPE<br/>" else ""}Nr: ${it.number}<br/>Datum: ${it.date.formatDateTime()}</html>"""
+            """<html>${if (!it.yetPersisted) "EMPTY<br/>" else ""}Nr: ${it.number}<br/>Datum: ${it.date.formatDateTime()}</html>"""
         })
     }
 

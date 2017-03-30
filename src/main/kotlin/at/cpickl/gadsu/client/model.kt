@@ -1,8 +1,12 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.*
+import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.Ordered
+import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.orderedValuesOf
+import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -118,7 +122,7 @@ data class Client(
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
         val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
                 "", "", "",
-                Contact.INSERT_PROTOTYPE, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
+                Contact.EMPTY, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
                 "", "", "", "", "", "", "", "", "",
                 "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
     }
@@ -210,7 +214,7 @@ data class Contact(
         val city: String
 ) {
     companion object {
-        val INSERT_PROTOTYPE = Contact("", "", "", "", "")
+        val EMPTY = Contact("", "", "", "", "")
     }
 }
 

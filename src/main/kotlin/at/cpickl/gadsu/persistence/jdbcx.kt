@@ -126,7 +126,7 @@ class SpringJdbcx(private val dataSource: DataSource) : Jdbcx {
                 committed = true
                 return result
             } finally {
-                if (committed == false) {
+                if (!committed) {
                     log.warn("Rolling back transaction!")
                     dataSource.connection.rollback()
                 }

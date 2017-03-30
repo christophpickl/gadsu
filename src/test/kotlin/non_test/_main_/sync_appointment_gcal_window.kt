@@ -16,8 +16,8 @@ import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
 
 fun main(args: Array<String>) {
-    val client1 = Client.savedValidInstance().copy(firstName = "client1", contact = Contact.INSERT_PROTOTYPE.copy(mail = "client1@home.at"))
-    val client2 = Client.savedValidInstance2().copy(firstName = "client2", contact = Contact.INSERT_PROTOTYPE.copy(mail = "client2@home.at"), wantReceiveMails = false)
+    val client1 = Client.savedValidInstance().copy(firstName = "client1", contact = Contact.EMPTY.copy(mail = "client1@home.at"))
+    val client2 = Client.savedValidInstance2().copy(firstName = "client2", contact = Contact.EMPTY.copy(mail = "client2@home.at"), wantReceiveMails = false)
     val client3 = Client.savedValidInstance2().copy(firstName = "client3")
     val client4 = Client.savedValidInstance2().copy(firstName = "client4")
 
@@ -33,7 +33,8 @@ fun main(args: Array<String>) {
                     emptyList(), // no delete appointments
                     emptyMap()
             ),
-            listOf(client1, client2, client3, client4)
+            listOf(client1, client2, client3, client4),
+            true
             )
     window.start()
 
