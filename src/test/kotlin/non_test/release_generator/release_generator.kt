@@ -1,9 +1,9 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
+import com.github.christophpickl.kpotpourri.common.move
 import com.github.christophpickl.kpotpourri.common.toPrettyString
 import java.io.File
-import java.nio.file.Files
 
 private val GITHUB_CONFIG = GithubConfig(
         repositoryOwner = "christophpickl",
@@ -197,9 +197,4 @@ enum class ArtifactTypes(val contentType: String) {
 
     abstract fun toFilename(milestone: Milestone): String
 
-}
-
-@Deprecated("use kpotpourri's implementation instead", ReplaceWith("file.move(target)", "com.github.christophpickl.kpotpourri.common.move"))
-fun File.move(target: File) {
-    Files.move(this.toPath(), target.toPath())
 }
