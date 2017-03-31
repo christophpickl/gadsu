@@ -24,7 +24,6 @@ val GADSU_BACKUPS_DIRECTORY = File(GADSU_DIRECTORY, "backups")
 
 class BackupModule : AbstractModule() {
     override fun configure() {
-        // TODO BackupAssist(GADSU_DATABASE_DIRECTORY) ... GADSU_DATABASE_DIRECTORY is WRONG! see PersistenceModule, as it could be different (set via CLI args)
         bind(BackupAssist::class.java).toInstance(BackupAssist(GADSU_DATABASE_DIRECTORY, GADSU_BACKUPS_DIRECTORY))
         bind(BackupController::class.java).to(BackupControllerImpl::class.java).asEagerSingleton()
     }

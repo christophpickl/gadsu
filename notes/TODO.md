@@ -67,7 +67,8 @@ Med
 * client master list soll nicht horizontal scrollable sein => "Mail: max@mu ..." mit dots hinten dran abschneiden wenn zu lang
    - auch so beim namen?
 * @backup: store backups in greater interval (weekly, last 10, ... lets see how big such a file can get) => @TEST create load test infra!
-* when sammelprotokoll print => busy indicator/progress dialog
+* @sammelprotokoll print => busy indicator/progress dialog
+* @sammelprotokoll generator wizard: remove "beschreibung" field
 * treatment 30min statt 15min schritte
 * wenn exception geworfen, dann im error dialog nicht nur URL anklickbar zu github issue, sondern auch log file direkt aufmachen (zb unter macos "open xxx")
 * BUG: wenn aenderung verwerfen, treatment list ist leer!
@@ -76,10 +77,11 @@ Med
 * cancel button for async dialog
 * WebLatestVersionFetcher return withTimeout(CONNECTION_TIMEOUT) {
 * @TEST with guice enabled tests: build testinfra/guice.kt
-* ModificationChecker.checkModificationsAndUpdateIsEnabledField this gets called way too often; rethink whole architecture!
+* @BackupModule: BackupAssist(GADSU_DATABASE_DIRECTORY) ... GADSU_DATABASE_DIRECTORY is WRONG! see PersistenceModule, as it could be different (set via CLI args)
 
 Low
 ---
+* ModificationChecker.checkModificationsAndUpdateIsEnabledField this gets called way too often; rethink whole architecture!
 * @auto updater: if on windows, suggest to download EXE not JAR (check for mac as well)
 * @acupuncture
     - cancel search with ESC, else hide window on ESC
