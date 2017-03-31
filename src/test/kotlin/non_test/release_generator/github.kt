@@ -1,6 +1,7 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.KotlinNoArg
 import at.cpickl.gadsu.service.LOG
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -9,15 +10,19 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Method
 
 
+data class GithubConfig(
+        val repositoryOwner: String,
+        val repositoryName: String,
+        val username: String,
+        val password: String
+)
+
+
 /**
  * https://developer.github.com/v3/
  */
-class GithubApi(
-        // /repos/REPO_OWNER/REPO_NAME
-        private val baseGithubUrl: String,
-        // or could load creds from ~/.gadsu/github.properties
-        private val githubUser: String,
-        private val githubPass: String
+class GithubApi (
+        private val config: GithubConfig
 ) {
 
     companion object {
@@ -25,9 +30,10 @@ class GithubApi(
     }
 
     private val log = LOG(javaClass)
-
     private val mapper = ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+    private val baseGithubUrl = "/repos/${config.repositoryOwner}/${config.repositoryName}"
 
     init {
         FuelManager.instance.basePath = "https://api.github.com"
@@ -38,18 +44,14 @@ class GithubApi(
      *
      * https://developer.github.com/v3/repos/releases/#create-a-release
      */
-    fun createNewRelease(versionString: String, releaseText: String) {
-        val foo = request(
+    fun createNewRelease(createRequest: CreateReleaseRequest) {
+        val response = request(
                 method = Method.POST,
                 url = "$baseGithubUrl/releases",
-                requestEntity = CreateRelease(
-                        tag_name = "v$versionString",
-                        name = "Release $versionString",
-                        body = releaseText
-                ),
+                requestEntity = createRequest,
                 returnType = CreateReleaseResponse::class.java
         )
-        println("foo: $foo")
+        println("createNewRelease: $response") // TODO finish
     }
 
     /**
@@ -98,6 +100,7 @@ class GithubApi(
                 // state defaults to open
                 returnType = Array<MilestoneJson>::class.java)
                 .map { it.toMilestone() }
+                .sortedBy { it.version }
     }
 
     fun listIssues(milestone: Milestone): List<Issue> {
@@ -112,6 +115,7 @@ class GithubApi(
                 ),
                 returnType = Array<IssueJson>::class.java)
                 .map { it.toIssue() }
+                .sortedBy { it.number }
     }
 
     /**
@@ -130,7 +134,7 @@ class GithubApi(
                 body(mapper.writeValueAsString(requestEntity))
             }
         }
-                .authenticate(githubUser, githubPass)
+                .authenticate(config.username, config.password)
                 .header("Accept" to GITHUB_MIMETYPE)
                 .apply { if (headers !=null ) { httpHeaders.putAll(headers)} }
                 .responseString()
@@ -145,3 +149,47 @@ class GithubApi(
     }
 
 }
+
+@KotlinNoArg
+annotation class JsonData
+
+private @JsonData data class MilestoneJson(
+        val title: String,
+        val number: Int,
+        val state: String,
+        val url: String
+) {
+    fun toMilestone() = Milestone(
+            version = title,
+            number = number,
+            state = State.byJsonValue(state),
+            url = url
+    )
+}
+
+private @JsonData data class IssueJson(
+        val title: String,
+        val number: Int,
+        val state: String, // "open", "closed"
+        val milestone: MilestoneJson? = null
+) {
+    fun toIssue() = Issue(
+            title = title,
+            number = number,
+            state = State.byJsonValue(state),
+            milestone = milestone?.toMilestone()
+    )
+}
+
+
+private @JsonData data class UpdateMilestone(
+        val state: String
+)
+
+private @JsonData data class UpdateMilestoneResponseJson(
+        val state: String
+)
+
+private @JsonData data class CreateReleaseResponse(
+        val url: String
+)
