@@ -189,6 +189,7 @@ data class Client(
                 Objects.equal(this.textSymptoms, that.textSymptoms) &&
                 Objects.equal(this.textFiveElements, that.textFiveElements) &&
                 Objects.equal(this.textSyndrom, that.textSyndrom) &&
+                Objects.equal(this.category, that.category) &&
                 Objects.equal(this.tcmNote, that.tcmNote) &&
                 Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
                 Objects.equal(this.cprops, that.cprops)
