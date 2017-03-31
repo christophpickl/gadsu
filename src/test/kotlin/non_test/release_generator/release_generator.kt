@@ -84,6 +84,7 @@ private class ReleaseGenerator(
         ))
         println()
 
+        println("Going to upload the release artifacts, this can take some time ...")
         config.sourceArtifactFiles(milestone).forEach { (type, file) ->
             println("Uploading release artifact: ${file.name}")
             githubApi.uploadReleaseAsset(AssetUpload(

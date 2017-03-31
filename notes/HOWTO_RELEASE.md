@@ -1,21 +1,25 @@
 
+Used variables:
 * RELEASE_SCRIPT = `/scripts/release.sh`
 * BUILD_DIR = `../gadsu_release_build`
 
 # Preconditions
 
-* Check everything has been pushed to GIT!!!
-* Check all GitHub issues are closed
-* Check [TravisCI Build](https://travis-ci.org/christophpickl/gadsu) is green
-* Check [Dependecy Report](https://www.versioneye.com/user/projects/572880644a0faa000b782062) to be up2date
-* Execute manual smoke tests (app starts, create client, treatment, protocol)
+* Check everything has been **pushed** to GIT!
+* Check all GitHub **issues** are **closed**
+* Check if the [build is green](https://travis-ci.org/christophpickl/gadsu)
+* Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
+* Verify fundamental functionality via manual **smoke tests** (start app, create/update client, create treatment)
 
 # Release Script
 
-* Start the RELEASE SCRIPT: `$ ./scripts/release.sh` (better to invoke from project directory rather inside the `scripts` folder)
-* Specify release and next dev version; e.g.: `1.4.0` and `1.5.0-SNAPSHOT`
-* Wait until the build is done (takes about 5 minutes) and find artifacts in the BUILD DIR
+The actual doing consists of:
 
+1. Start the RELEASE_SCRIPT: `$ ./scripts/release.sh` (invoke the script from project directory rather inside the `scripts` folder)
+1. Specify release and next dev version; e.g.: `1.4.0` and `1.5.0-SNAPSHOT`
+1. Wait until the build is done (takes about 5 minutes) and find artifacts in the BUILD_DIR
+
+**Sample output:**
 ```
 $ ./scripts/release.sh 
 
@@ -62,34 +66,16 @@ $
 
 # Postdoings
 
-* Make a backup of local `~/.gadsu` folder
-* Start the APP and JAR (and EXE if possible), and verify functionality via smoke tests
-    * If there was an error, fix it, and create new x.x.1 bugfix version
-* Pull changes from remote git repo to local
-* Copy the 3 released artifacts in $BUILD_DIR/release_artifacts to the local __Gadsu/Releases/v1.x.0 directory
-
-## GitHub Release
-
-* Draft a new release on github: https://github.com/christophpickl/gadsu/releases
-    * Select existing tag, e.g. `v1.99.0`
-    * Set release title to: `Release 1.99.0`
-    * Attach all three binary artifacts (exe, dmg, jar); this can take a moment as of 3x50 MB to upload
-    * List all resolved issues for this milestone and enter the following description and publish afterwards:
----
-Windows users please use the EXE, Apple users the DMG and for all other nixes the platform independent JAR file.
-
-New stuff:
-
-* #11 We did this
-* #22 And that
-* #33 And finally this
----
-
-* Close the current milestone in GitHub
+* _Optional_: Make a backup of local `~/.gadsu` folder
+* Start the APP and JAR (and EXE if possible), and verify functionality via **smoke tests**
+    * If there was an **error**, fix it, and create new x.x.1 bugfix version
+* **Pull** changes from remote GIT repository to local
+* Start the **Post Release Generator** Kotlin script in `release_generator.kt`
+    * This will verify issues are closed, closes the milestone, drafts a new release and locally moves + uploads the artifacts to GitHub.
 
 # Optional
 
-* Create a new milestone, so we always have 3 ahead of us
-    * Think about what could be included in next version(s)
 * Clean up the [taskboard](https://github.com/christophpickl/gadsu/projects/1)
-* Update screenshot on website (use the development action to prepare database accordingly)
+* Go through `TODO.md`
+* Maybe create a new **milestone**
+* Update **screenshot** on website (use the development action to prepare database accordingly)
