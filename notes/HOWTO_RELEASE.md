@@ -8,8 +8,12 @@ Used variables:
 * Check everything has been **pushed** to GIT!
 * Check all GitHub **issues** are **closed**
 * Check if the [build is green](https://travis-ci.org/christophpickl/gadsu)
-* Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 * Verify fundamental functionality via manual **smoke tests** (start app, create/update client, create treatment)
+
+## Optional
+
+* Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
+* Check there are no TODO or FIXME
 
 # Release Script
 

@@ -95,7 +95,7 @@ class ReleaseValidator(
                     fail("Target milestone folder already exists at: ${config.targetMilestoneFolder(milestone)}")
                 }
             }
-    ).plus(config.sourceArtifactFiles(milestone).map { artifactFile ->
+    ).plus(config.sourceArtifactFiles(milestone).map { (_, artifactFile) ->
         {
             if (!artifactFile.exists()) {
                 fail("Artifact file does not exist at: ${artifactFile.absolutePath}")
