@@ -111,6 +111,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
+
         @VisibleForTesting fun upcomingAppointmentLabel(now: DateTime, date: DateTime): String {
             if (date.isBefore(now)) {
                 return "N/A"
@@ -139,7 +140,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
-    private val recentPanel = if(client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!)
+    private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category)
     private val countPanel = TreatmentCountPanel(client.countTreatments)
 
     override fun onChangeForeground(foreground: Color) {
@@ -228,7 +229,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
-private class RecentTreatmentPanel(days: Int) : JPanel() {
+private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -242,36 +243,43 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
             }
         }
 
-        private val LIMIT_OK = 10
-        private val LIMIT_ATTENTION = 20
-        private val LIMIT_WARN = 30
-        private val LIMIT_CRITICAL = 100
+        private val LIMIT_MODIFIER_A = 0.6
+        private val LIMIT_MODIFIER_B = 1.0
+        private val LIMIT_MODIFIER_C = 1.4
 
-        private fun calculateColor(days: Int): Color {
-            return if (days < LIMIT_OK) Colors.byHex("02bb1c")
-            else if (days < LIMIT_ATTENTION) Colors.byHex("acbb02")
-            else if (days < LIMIT_WARN) Colors.byHex("e0b520")
-            else if (days < LIMIT_CRITICAL) Colors.byHex("cb3412")
-            else Colors.byHex("9512cb")
-        }
-        private fun calculateColor2(days: Int): Color {
-            return if (days < LIMIT_OK) Colors.byHex("015d0e")
-            else if (days < LIMIT_ATTENTION) Colors.byHex("565d01")
-            else if (days < LIMIT_WARN) Colors.byHex("705a10")
-            else if (days < LIMIT_CRITICAL) Colors.byHex("651a09")
-            else Colors.byHex("4a0965")
-        }
+        private val COLOR1_OK = Colors.byHex("02bb1c")
+        private val COLOR1_ATTENTION = Colors.byHex("acbb02")
+        private val COLOR1_WARN = Colors.byHex("e0b520")
+        private val COLOR1_CRITICAL = Colors.byHex("cb3412")
+        private val COLOR1_FATAL = Colors.byHex("9512cb")
 
+        private val COLOR2_OK = Colors.byHex("015d0e")
+        private val COLOR2_ATTENTION = Colors.byHex("565d01")
+        private val COLOR2_WARN = Colors.byHex("705a10")
+        private val COLOR2_CRITICAL = Colors.byHex("651a09")
+        private val COLOR2_FATAL = Colors.byHex("4a0965")
+
+        private val BASE_LIMIT_OK = 14
+        private val BASE_LIMIT_ATTENTION = 28
+        private val BASE_LIMIT_WARN = 42
+        private val BASE_LIMIT_CRITICAL = 60
     }
 
-    private val labelText = labelTextForRecentTreatment(days)
-    private val color = calculateColor(days)
-    private val color2 = calculateColor2(days)
+    private val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
+    private val limitOk = (BASE_LIMIT_OK * limitModifier).toInt()
+    private val limitAttention = (BASE_LIMIT_ATTENTION * limitModifier).toInt()
+    private val limitWarn = (BASE_LIMIT_WARN * limitModifier).toInt()
+    private val limitCritical = (BASE_LIMIT_CRITICAL * limitModifier).toInt()
+
     var labelColor = Color.BLACK!!
 
     init {
         enforceSize(138, 12)
     }
+
+    private val labelText = labelTextForRecentTreatment(days)
+    private val color = calculateColor(days)
+    private val color2 = calculateColor2(days)
 
     override fun paint(g: Graphics) {
         super.paint(g)
@@ -285,6 +293,22 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
         g.color = labelColor
         g.font = g.font.deriveFont(9.0F)
         g.drawString(labelText, 4, 9)
+    }
+
+    private fun calculateColor(days: Int): Color {
+        return if (days < limitOk) COLOR1_OK
+        else if (days < limitAttention) COLOR1_ATTENTION
+        else if (days < limitWarn) COLOR1_WARN
+        else if (days < limitCritical) COLOR1_CRITICAL
+        else COLOR1_FATAL
+    }
+
+    private fun calculateColor2(days: Int): Color {
+        return if (days < limitOk) COLOR2_OK
+        else if (days < limitAttention) COLOR2_ATTENTION
+        else if (days < limitWarn) COLOR2_WARN
+        else if (days < limitCritical) COLOR2_CRITICAL
+        else COLOR2_FATAL
     }
 
 }
