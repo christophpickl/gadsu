@@ -9,9 +9,20 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.disableFocusable
+import at.cpickl.gadsu.view.swing.disabled
+import at.cpickl.gadsu.view.swing.leftAligned
+import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.selectAllOnFocus
+import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.viewName
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.BoxLayout
+import javax.swing.JCheckBox
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 
 abstract class PrefsTab(

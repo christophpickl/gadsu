@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.imageio.ImageIO
-import javax.swing.Icon
 import javax.swing.ImageIcon
 
 
@@ -36,9 +35,9 @@ interface MyImage {
      */
     val isUnsavedDefaultPicture: Boolean
 
-    fun toViewBigRepresentation(): Icon
-    fun toViewMedRepresentation(): Icon
-    fun toViewLilRepresentation(): Icon
+    fun toViewBigRepresentation(): ImageIcon
+    fun toViewMedRepresentation(): ImageIcon
+    fun toViewLilRepresentation(): ImageIcon
 
 
 }
@@ -46,17 +45,18 @@ interface MyImage {
 
 // extension methods
 fun ImageIcon.toMyImage(): MyImage = ImageIconImage(this)
+
 fun BufferedImage.toMyImage(): MyImage = ImageIconImage(ImageIcon(this))
 fun File.toMyImage(): MyImage = FileImage(this)
 fun String.toMyImage(): MyImage = ClasspathImage(this)
 fun ByteArray.toMyImage(): MyImage = this.readBufferedImage().toMyImage()
 
 val Gender.defaultImage: MyImage get() =
-    when(this) {
-        Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
-        Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
-        Gender.UNKNOWN -> MyImage.DEFAULT_PROFILE_ALIEN
-    }
+when (this) {
+    Gender.MALE -> MyImage.DEFAULT_PROFILE_MAN
+    Gender.FEMALE -> MyImage.DEFAULT_PROFILE_WOMAN
+    Gender.UNKNOWN -> MyImage.DEFAULT_PROFILE_ALIEN
+}
 
 enum class ImageSize(private val _dimension: Dimension) {
     /** In picture tab when changing picture.*/
@@ -73,7 +73,6 @@ enum class ImageSize(private val _dimension: Dimension) {
 
     fun toDimension(): Dimension = _dimension
 }
-
 
 
 /**
@@ -110,17 +109,10 @@ private class FileImage(file: File) : IconifiedImage(file.readImageIcon())
 
 private abstract class IconifiedImage(original: ImageIcon) : MyImage {
 
-    private val bytes: ByteArray
-    private val big: ImageIcon
-    private val med: ImageIcon
-    private val lil: ImageIcon
-    init {
-        big = original.scale(ImageSize.BIG)
-        med = original.scale(ImageSize.MEDIUM)
-        lil = original.scale(ImageSize.LITTLE)
-
-        bytes = big.toByteArray()
-    }
+    private val big: ImageIcon = original.scale(ImageSize.BIG)
+    private val med: ImageIcon = original.scale(ImageSize.MEDIUM)
+    private val lil: ImageIcon = original.scale(ImageSize.LITTLE)
+    private val bytes: ByteArray = big.toByteArray()
 
     override fun toSaveRepresentation() = bytes
     override val isUnsavedDefaultPicture = false

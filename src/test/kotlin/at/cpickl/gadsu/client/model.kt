@@ -16,7 +16,7 @@ class ClientTest {
     private val contact1 = Contact("1", "1", "1", "1", "1")
     private val cprops1 = CProps.builder().build()
     private val client1 = Client("1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", contact1, true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
-            "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
+            "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, "1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
     fun changingClientProvider(): Array<Array<Any>> = arrayOf(
@@ -40,6 +40,7 @@ class ClientTest {
             arrayOf<Any>("textComplaints",  { it: Client -> it.copy(textComplaints = "2") }),
             arrayOf<Any>("textPersonal",    { it: Client -> it.copy(textPersonal = "2") }),
             arrayOf<Any>("textObjective",   { it: Client -> it.copy(textObjective = "2") }),
+            arrayOf<Any>("category",         { it: Client -> it.copy(category = ClientCategory.C) }),
             arrayOf<Any>("tcmNote",         { it: Client -> it.copy(tcmNote = "2") }),
             arrayOf<Any>("cprops",          { it: Client -> it.copy(cprops = CProps.builder().add(XProps.Hungry, XProps.HungryOpts.BigHunger).build()) })
     )

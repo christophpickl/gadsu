@@ -89,14 +89,16 @@ class ClientJdbcRepository @Inject constructor(
             wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
             textImpression, textMedical, textComplaints, textPersonal, textObjective,
-            mainObjective, symptoms, elements, syndrom, tcmNote
+            mainObjective, symptoms, elements, syndrom, tcmNote,
+            category
         ) VALUES (
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?,
+            ?
         )"""
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
@@ -104,7 +106,8 @@ class ClientJdbcRepository @Inject constructor(
                 client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
-                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote
+                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                client.category.sqlCode
         )
         return client.copy(
                 id = newId,
@@ -122,7 +125,8 @@ class ClientJdbcRepository @Inject constructor(
                     wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
                     textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
-                    mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?
+                    mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
+                    category = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickName,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
@@ -130,6 +134,7 @@ class ClientJdbcRepository @Inject constructor(
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                client.category.sqlCode,
                 // no picture or cprops
                 client.id!!)
     }
@@ -189,6 +194,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("symptoms"),
                 rs.getString("elements"),
                 rs.getString("syndrom"),
+                ClientCategory.parseSqlCode(rs.getString("category")),
 
                 rs.getString("tcmNote"),
                 readFromBlob(rs.getBlob("picture"), gender),

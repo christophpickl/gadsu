@@ -9,6 +9,7 @@ val GADSU_DIRECTORY = File(System.getProperty("user.home"),
         if (GadsuSystemProperty.testRun.isEnabledOrFalse()) ".gadsu_testRun"
         else if (GadsuSystemProperty.development.isEnabledOrFalse()) ".gadsu_dev"
         else ".gadsu")
+
 val DUMMY_CREATED = DateFormats.DATE_TIME.parseDateTime("01.01.2000 00:00:00")!!
 
 val GADSU_LATEST_VERSION_URL = URL("https://raw.githubusercontent.com/christophpickl/gadsu/master/version_latest.txt")

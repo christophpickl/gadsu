@@ -1,7 +1,11 @@
 package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.LOG
@@ -16,7 +20,6 @@ import at.cpickl.gadsu.view.components.newPersistableEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -25,7 +28,9 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JPanel
+import javax.swing.JTabbedPane
 
 interface ClientDetailView {
 
@@ -176,6 +181,7 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpSymptoms.text,
                 tabMain.inpFiveElements.text,
                 tabMain.inpSyndrom.text,
+                tabMain.inpCategory.selectedItemTyped,
 
                 tabTcm.inpTcmNote.toEnrichedText(),
                 currentClient.data.picture,

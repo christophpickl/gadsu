@@ -5,3 +5,9 @@
 -- ========================================================================= --
 
 ALTER TABLE client ALTER COLUMN wantReceiveDoodleMails RENAME TO wantReceiveMails;
+
+
+-- #106 ABC clients
+-- ========================================================================= --
+
+ALTER TABLE client ADD COLUMN category CHAR(1) DEFAULT 'B' NOT NULL;

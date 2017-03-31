@@ -1,18 +1,42 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.*
+import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.client.IClient
+import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.clearTime
+import at.cpickl.gadsu.service.differenceDaysWithinYear
+import at.cpickl.gadsu.service.formatDateNoYear
+import at.cpickl.gadsu.service.formatTimeWithoutSeconds
+import at.cpickl.gadsu.service.isBetweenInclusive
+import at.cpickl.gadsu.service.wrapParenthesisIf
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.enforceSize
+import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.withFont
+import at.cpickl.gadsu.view.swing.withFontSize
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import org.joda.time.Days
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Font
+import java.awt.Graphics
+import java.awt.GridBagConstraints
+import java.awt.Insets
+import java.awt.image.BufferedImage
+import javax.swing.Icon
+import javax.swing.ImageIcon
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -66,6 +90,7 @@ class ExtendedClient(
     override val textSymptoms: String get() = client.textSymptoms
     override val textFiveElements: String get() = client.textFiveElements
     override val textSyndrom: String get() = client.textSyndrom
+    override val category: ClientCategory get() = client.category
 
     override val tcmNote: String get() = client.tcmNote
     override val picture: MyImage get() = client.picture
@@ -86,6 +111,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
+
         @VisibleForTesting fun upcomingAppointmentLabel(now: DateTime, date: DateTime): String {
             if (date.isBefore(now)) {
                 return "N/A"
@@ -100,6 +126,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
                 }
             }
         }
+
+        private val CATEGORY_A_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_up.png")
+        private val CATEGORY_C_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_down.png")
+        private val CATEGORY_IMAGE_SIZE = 15
     }
 
     private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
@@ -110,7 +140,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
-    private val recentPanel = if(client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!)
+    private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category)
     private val countPanel = TreatmentCountPanel(client.countTreatments)
 
     override fun onChangeForeground(foreground: Color) {
@@ -132,7 +162,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.RIGHT
         c.gridheight = calculatedRows
-        add(JLabel(client.picture.toViewLilRepresentation()))
+        add(JLabel(drawClientPictureWithCategoryIndicator()))
 
         c.gridheight = 1
         c.insets = Pad.ZERO
@@ -181,9 +211,55 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         add(JPanel().transparent())
     }
 
+    private fun drawClientPictureWithCategoryIndicator(): Icon {
+        val clientImage = client.picture.toViewLilRepresentation()
+        if (client.category == ClientCategory.B) {
+            return clientImage
+        }
+        val finalImage = BufferedImage(ImageSize.LITTLE.width, ImageSize.LITTLE.height, BufferedImage.TYPE_INT_ARGB)
+        val g = finalImage.createGraphics()
+        g.drawImage(clientImage.image, 0, 0, null)
+        val categoryX = ImageSize.LITTLE.width - CATEGORY_IMAGE_SIZE - 2
+        val categoryY = ImageSize.LITTLE.height - CATEGORY_IMAGE_SIZE - 2
+        g.drawImage((if (client.category == ClientCategory.A) CATEGORY_A_IMAGE else CATEGORY_C_IMAGE).image, categoryX, categoryY, null)
+        g.dispose()
+
+        return ImageIcon(finalImage)
+    }
+
 }
 
-private class RecentTreatmentPanel(days: Int) : JPanel() {
+enum class RecentState(val baseLimit: Int, val color1: Color, val color2: Color) {
+    Ok(14, Colors.byHex("02bb1c"), Colors.byHex("015d0e")),
+    Attention(28, Colors.byHex("acbb02"), Colors.byHex("565d01")),
+    Warn(42, Colors.byHex("e0b520"), Colors.byHex("705a10")),
+    Critical(60, Colors.byHex("cb3412"), Colors.byHex("651a09")),
+    Fatal(Integer.MAX_VALUE, Colors.byHex("9512cb"), Colors.byHex("4a0965"));
+}
+
+object RecentStateCalculator {
+
+    private val LIMIT_MODIFIER_A = 0.6
+    private val LIMIT_MODIFIER_B = 1.0
+    private val LIMIT_MODIFIER_C = 1.4
+
+    fun calc(days: Int, category: ClientCategory): RecentState {
+        val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
+
+        val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
+        val limitAttention = (RecentState.Attention.baseLimit * limitModifier).toInt()
+        val limitWarn = (RecentState.Warn.baseLimit * limitModifier).toInt()
+        val limitCritical = (RecentState.Critical.baseLimit * limitModifier).toInt()
+
+        return if (days < limitOk) RecentState.Ok
+        else if (days < limitAttention) RecentState.Attention
+        else if (days < limitWarn) RecentState.Warn
+        else if (days < limitCritical) RecentState.Critical
+        else RecentState.Fatal
+    }
+}
+
+private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -197,36 +273,21 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
             }
         }
 
-        private val LIMIT_OK = 10
-        private val LIMIT_ATTENTION = 20
-        private val LIMIT_WARN = 30
-        private val LIMIT_CRITICAL = 100
-
-        private fun calculateColor(days: Int): Color {
-            return if (days < LIMIT_OK) Colors.byHex("02bb1c")
-            else if (days < LIMIT_ATTENTION) Colors.byHex("acbb02")
-            else if (days < LIMIT_WARN) Colors.byHex("e0b520")
-            else if (days < LIMIT_CRITICAL) Colors.byHex("cb3412")
-            else Colors.byHex("9512cb")
-        }
-        private fun calculateColor2(days: Int): Color {
-            return if (days < LIMIT_OK) Colors.byHex("015d0e")
-            else if (days < LIMIT_ATTENTION) Colors.byHex("565d01")
-            else if (days < LIMIT_WARN) Colors.byHex("705a10")
-            else if (days < LIMIT_CRITICAL) Colors.byHex("651a09")
-            else Colors.byHex("4a0965")
-        }
-
     }
 
-    private val labelText = labelTextForRecentTreatment(days)
-    private val color = calculateColor(days)
-    private val color2 = calculateColor2(days)
     var labelColor = Color.BLACK!!
+    private val labelText = labelTextForRecentTreatment(days)
+    private val color: Color
+    private val color2: Color
 
     init {
         enforceSize(138, 12)
+
+        val state = RecentStateCalculator.calc(days, category)
+        color = state.color1
+        color2 = state.color2
     }
+
 
     override fun paint(g: Graphics) {
         super.paint(g)
@@ -241,6 +302,7 @@ private class RecentTreatmentPanel(days: Int) : JPanel() {
         g.font = g.font.deriveFont(9.0F)
         g.drawString(labelText, 4, 9)
     }
+
 
 }
 

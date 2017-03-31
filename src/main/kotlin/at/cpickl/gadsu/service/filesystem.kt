@@ -3,6 +3,7 @@ package at.cpickl.gadsu.service
 import at.cpickl.gadsu.GadsuException
 import com.google.common.io.Files
 import net.lingala.zip4j.core.ZipFile
+import net.lingala.zip4j.exception.ZipException
 import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.util.Zip4jConstants
 import org.slf4j.LoggerFactory
@@ -124,7 +125,11 @@ class FileSystemImpl : FileSystem {
         val params = ZipParameters()
         params.compressionLevel = Zip4jConstants.DEFLATE_LEVEL_MAXIMUM
         params.compressionMethod = Zip4jConstants.COMP_DEFLATE
-        zipFile.addFolder(directoryToZip, params)
+        try {
+            zipFile.addFolder(directoryToZip, params)
+        } catch (e: ZipException) {
+            throw GadsuException("Unable to add zip folder: '${directoryToZip.absolutePath}'", e)
+        }
     }
 
     override fun delete(toDelete: File) {

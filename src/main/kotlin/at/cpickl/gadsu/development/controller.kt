@@ -7,6 +7,7 @@ import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
@@ -122,6 +123,7 @@ open class DevelopmentController @Inject constructor(
                         textSyndrom = "Le-Qi-Stau",
 
                         tcmNote = "zyklus 24T-6T; drahtiger puls",
+                        category = ClientCategory.A,
 
                         cprops = CProps.builder()
                                 .add(XProps.Impression, "* war irgendwie anders", XProps.ImpressionOpts.BehaveCalm, XProps.ImpressionOpts.EyesClear)
@@ -151,6 +153,7 @@ open class DevelopmentController @Inject constructor(
                         contact = Contact.EMPTY.copy(mail = "alien@discard.email"),
                         wantReceiveMails = false,
                         gender = Gender.UNKNOWN,
+                        category = ClientCategory.C,
 //                        picture = MyImage.DEFAULT_PROFILE_ALIEN,
                         cprops = CProps.empty
                 )
