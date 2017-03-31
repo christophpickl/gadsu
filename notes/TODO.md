@@ -31,7 +31,6 @@ High
 Med
 ---
 * @gcal sync: nicht nur anzeigen wieviele termin imported, sondern auch wieviele mails verschickt
-* @build: DMG with Applications alias
 * new field "nickname internal" (for display in gadsu) and "nickname external" (for use in templates/mails)
 * investigate/use https://github.com/kotlin-projects/kotlin-swing
 * nachdem test sammelprotokoll gedruckt, bleibt dialog hinterm mainframe picken :-/
@@ -162,13 +161,8 @@ Luxury Ideas
 * encrypt DB with password
 * gcal sync: resync local appointments if there was no internet connection
 
-INVOICING
-------------------------------------------------------------
-* https://www.fastbill.com
-
 BUILD
 ------------------------------------------------------------
-* @RELEASE: copy artifacts from release_build to local wu path (if existing)
 * upgrade to gradle 3
 * maybe when splitting up into gradle modules, things will speed up?!
 
@@ -177,3 +171,7 @@ PROTOCOL
 * page number
 ! BUG: bold formatting gets lost after pdf page merging
 * @protocol: wenn kein username in preferences eingestellt, dann warning ausgeben (evtl gleich mit moeglichkeit den namen zu setzen direkt!)
+
+INVOICING
+------------------------------------------------------------
+* https://www.fastbill.com
