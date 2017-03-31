@@ -46,7 +46,8 @@ import org.testng.annotations.Test
         verify(mockSender).send(Mail(
                 recipient = client.contact.mail,
                 subject = "termin am 1.2.",
-                body = "hallo lieber florian, termin am donnerstag der 1. februar von 14:30 bis 15:30 uhr, christoph."
+                body = "hallo lieber florian, termin am donnerstag der 1. februar von 14:30 bis 15:30 uhr, christoph.",
+                recipientsAsBcc = false
         ))
         verifyNoMoreInteractions(mockSender)
     }

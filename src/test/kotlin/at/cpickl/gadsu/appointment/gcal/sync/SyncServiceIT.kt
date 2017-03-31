@@ -69,7 +69,8 @@ class SyncServiceIT {
         verify(mockMailSender).send(Mail(
                 recipient = client.contact.mail,
                 subject = templateSubject,
-                body = templateBody))
+                body = templateBody,
+                recipientsAsBcc = false))
         verifyNoMoreInteractions(mockMailSender)
     }
 
