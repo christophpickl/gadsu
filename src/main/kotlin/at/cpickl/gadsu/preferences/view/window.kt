@@ -1,24 +1,27 @@
-package at.cpickl.gadsu.preferences
+package at.cpickl.gadsu.preferences.view
 
-import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.preferences.PreferencesWindowClosedEvent
 import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.nullIfEmpty
-import at.cpickl.gadsu.version.CheckForUpdatesEvent
-import at.cpickl.gadsu.view.*
+import at.cpickl.gadsu.view.MainFrame
+import at.cpickl.gadsu.view.SwingFactory
+import at.cpickl.gadsu.view.ViewNames
+import at.cpickl.gadsu.view.addKTabs
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
-import at.cpickl.gadsu.view.components.MyTextArea
-import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
-import at.cpickl.gadsu.view.components.inputs.NumberField
-import at.cpickl.gadsu.view.components.newEventButton
-import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.ClosableWindow
+import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
-import java.awt.GridBagConstraints
 import javax.inject.Inject
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.JButton
+import javax.swing.JPanel
+import javax.swing.JTabbedPane
 
 val HGAP_FROM_WINDOW = 15
 
