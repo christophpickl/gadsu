@@ -70,12 +70,16 @@ else
     VERSION_DEVELOPMENT=${DEFAULT_DEVELOPMENT_VERSION}
 fi
 
+
 echo
 myEcho "Release Summary:"
 myEcho "------------------------------------"
 myEcho "  Release Version: $VERSION_RELEASE"
 myEcho "  Development Version: $VERSION_DEVELOPMENT"
 myEcho "  Build Directory: $BUILD_DIR"
+myEcho ""
+./gradlew -version
+git --version
 
 echo
 
@@ -93,7 +97,7 @@ echo
 if [ -d "$BUILD_DIR" ]; then
     echo
     myEcho "Removing old build directory at: $BUILD_DIR"
-    rm -rf ${BUILD_DIR}
+    rm -rv ${BUILD_DIR}
 fi
 mkdir ${BUILD_DIR}
 mkdir ${ARTIFACTS_DIR}
