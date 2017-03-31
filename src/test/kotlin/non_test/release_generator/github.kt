@@ -9,14 +9,15 @@ import com.github.kittinunf.fuel.core.Method
 
 
 /** https://developer.github.com/v3/ */
-object GithubApi {
+class GithubApi(
+        private val baseGithubUrl: String,
+        // or could load creds from ~/.gadsu/github.properties
+        private val githubUser: String,
+        private val githubPass: String
+) {
 
     private val log = LOG(javaClass)
-    private val baseGithubUrl = "/repos/christophpickl/gadsu"
 
-    // load creds from ~/.gadsu/github.properties
-    private val githubUser = "christoph.pickl@gmail.com"
-    private val githubPass = System.getProperty("github.pass", null) ?: throw RuntimeException("Expected to have set -Dgithub.pass")
     private val mapper = ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
