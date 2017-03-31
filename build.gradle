@@ -256,7 +256,8 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
         // https://github.com/crotwell/gradle-macappbundle/blob/master/src/main/groovy/edu/sc/seis/macAppBundle/MacAppBundlePluginExtension.groovy
     }
 
-    task copySplashscreenForMacApp(type: com.sun.org.apache.xalan.internal.xsltc.compiler.Copy) {
+    // !!!!!!!! THIS MUST NOT BE EQUAL TO: com.sun.org.apache.xalan.internal.xsltc.compiler.Copy !!!!!!!!! exclude from auto-import in intellij
+    task copySplashscreenForMacApp(type: Copy) {
         //    println "Copying splash screen for mac app ..."
         from 'src/main/resources/gadsu/splashscreen.jpg'
         into "build/macApp/${myAppName}.app/Contents/Resources"
@@ -411,7 +412,6 @@ if (!new File("/home/travis").exists()) {
 
 }
 
-
 // =====================================================================================================================
 // MISC
 // =====================================================================================================================
@@ -425,5 +425,5 @@ todo {
     todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
     failIfFound = true
 //    sourceFolder = "src/main/kotlin"
-    fileExtensions = [ "kt" ]
+    fileExtensions = ["kt"]
 }
