@@ -89,8 +89,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile 'joda-time:joda-time:2.9.7'
-    compile 'commons-cli:commons-cli:1.3.1' // parse CLI args
+    compile 'joda-time:joda-time:2.9.9'
+    compile 'commons-cli:commons-cli:1.4' // parse CLI args
     compile 'com.thoughtworks.xstream:xstream:1.4.9'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
 
@@ -107,31 +107,31 @@ dependencies {
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3' // hsqldb 2.3.4 leads to the application to hang :-/
-    compile 'org.springframework:spring-jdbc:4.3.5.RELEASE'
-    compile 'org.springframework:spring-context-support:4.3.5.RELEASE'
-    compile 'org.flywaydb:flyway-core:4.0.3'
+    compile 'org.springframework:spring-jdbc:4.3.7.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.7.RELEASE'
+    compile 'org.flywaydb:flyway-core:4.1.2'
 
     // REPORTING
     compile 'net.sf.jasperreports:jasperreports:6.4.0'
     compile 'com.lowagie:itext:2.1.7'
     // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
-    compile 'com.itextpdf:itextpdf:5.5.10' // jasper comes with outdated itext (fortunately got different package name)
+    compile 'com.itextpdf:itextpdf:5.5.11' // jasper comes with outdated itext (fortunately got different package name)
 
     // LOGGING
     // -------------------------------------------------------------------------
-    compile 'org.slf4j:slf4j-api:1.7.22'
-    compile 'org.slf4j:jcl-over-slf4j:1.7.22' // everyone who uses apaches common logging should use this instead
-    compile 'ch.qos.logback:logback-core:1.1.8'
-    compile 'ch.qos.logback:logback-classic:1.1.8'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.slf4j:jcl-over-slf4j:1.7.25' // everyone who uses apaches common logging should use this instead
+    compile 'ch.qos.logback:logback-core:1.2.2'
+    compile 'ch.qos.logback:logback-classic:1.2.2'
 
     // GOOGLE
     // -------------------------------------------------------------------------
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
-    compile 'com.google.apis:google-api-services-calendar:v3-rev228-1.22.0'
-    compile 'com.google.apis:google-api-services-gmail:v1-rev55-1.22.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev239-1.22.0'
+    compile 'com.google.apis:google-api-services-gmail:v1-rev62-1.22.0'
     compile 'javax.mail:mail:1.4.7'
-    compile 'org.apache.pdfbox:pdfbox:2.0.4'
+    compile 'org.apache.pdfbox:pdfbox:2.0.5'
 
     // TEST
     // -------------------------------------------------------------------------
@@ -140,8 +140,8 @@ dependencies {
     testCompile 'org.exparity:hamcrest-bean:1.0.11'
     testCompile 'org.exparity:hamcrest-date:2.0.4'
 //    testCompile 'com.natpryce:hamkrest:1.2.3.0'
-    testCompile('org.testng:testng:6.10')
-    testCompile 'org.mockito:mockito-core:2.6.2'
+    testCompile('org.testng:testng:6.11')
+    testCompile 'org.mockito:mockito-core:2.7.19'
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
     testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'
@@ -256,7 +256,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
         // https://github.com/crotwell/gradle-macappbundle/blob/master/src/main/groovy/edu/sc/seis/macAppBundle/MacAppBundlePluginExtension.groovy
     }
 
-    task copySplashscreenForMacApp(type: Copy) {
+    task copySplashscreenForMacApp(type: com.sun.org.apache.xalan.internal.xsltc.compiler.Copy) {
         //    println "Copying splash screen for mac app ..."
         from 'src/main/resources/gadsu/splashscreen.jpg'
         into "build/macApp/${myAppName}.app/Contents/Resources"
@@ -272,7 +272,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // >> gradle test testIt testUi
 
 jacoco {
-    toolVersion = "0.7.8"
+    toolVersion = "0.7.9"
 }
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
