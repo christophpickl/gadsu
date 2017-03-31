@@ -1,5 +1,7 @@
 package non_test.release_generator
 
+import java.io.File
+
 
 data class Issue(
         val title: String,
@@ -39,4 +41,14 @@ enum class State(
         fun byJsonValue(seek: String) = State.values().first { it.jsonValue == seek }
     }
 }
+@JsonData data class CreateReleaseResponse(
+        val id: Int,
+        val url: String
+)
 
+data class AssetUpload(
+        val releaseId: Int,
+        val fileName: String,
+        val contentType: String,
+        val file: File
+)

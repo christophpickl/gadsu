@@ -33,10 +33,8 @@ class GithubApi (
     private val mapper = ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-    private val baseGithubUrl = "/repos/${config.repositoryOwner}/${config.repositoryName}"
-
     init {
-        FuelManager.instance.basePath = "https://api.github.com"
+        FuelManager.instance.basePath = "https://api.github.com/repos/${config.repositoryOwner}/${config.repositoryName}"
     }
 
     /**
@@ -44,15 +42,12 @@ class GithubApi (
      *
      * https://developer.github.com/v3/repos/releases/#create-a-release
      */
-    fun createNewRelease(createRequest: CreateReleaseRequest) {
-        val response = request(
+    fun createNewRelease(createRequest: CreateReleaseRequest) = request(
                 method = Method.POST,
-                url = "$baseGithubUrl/releases",
+                url = "/releases",
                 requestEntity = createRequest,
                 returnType = CreateReleaseResponse::class.java
         )
-        println("createNewRelease: $response") // TODO finish
-    }
 
     /**
      * GET /repos/:owner/:repo/tags
@@ -61,13 +56,30 @@ class GithubApi (
      */
     fun listTags() = request(
                 method = Method.GET,
-                url = "$baseGithubUrl/tags",
+                url = "/tags",
                 returnType = Array<TagResponse>::class.java
         ).toList().sortedBy { it.name }
 
-    private fun uploadReleaseAsset() {
-        // POST https://<upload_url>/repos/:owner/:repo/releases/:id/assets?name=foo.zip
-
+    /**
+     * POST https://<upload_url>/repos/:owner/:repo/releases/:id/assets?name=foo.zip
+     *
+     * https://developer.github.com/v3/repos/releases/#upload-a-release-asset
+     *
+     * @param contentType see: https://www.iana.org/assignments/media-types/media-types.xhtml
+     */
+    fun uploadReleaseAsset(upload: AssetUpload) {
+        val response = request(
+                method = Method.POST,
+                url = "/releases/${upload.releaseId}/assets",
+                returnType = AssetUploadResponse::class.java,
+                queryParameters = listOf("name" to upload.fileName),
+                headers = listOf("Content-Type" to upload.contentType),
+                requestBytes = upload.file.readBytes()
+        )
+        log.debug("Uploaded asset: {}", response)
+        if (response.state != "uploaded") {
+            System.err.println("Upload failed for ${upload.fileName}!!! ($upload, $response)")
+        }
     }
 
     /**
@@ -81,7 +93,7 @@ class GithubApi (
         }
         val response = request(
                 method = Method.POST,
-                url = "$baseGithubUrl/milestones/${milestone.number}",
+                url = "/milestones/${milestone.number}",
                 requestEntity = UpdateMilestone(
                         state = State.Closed.jsonValue
                 ),
@@ -96,8 +108,8 @@ class GithubApi (
 
         return request(
                 method = Method.GET,
-                url = "$baseGithubUrl/milestones",
-                // state defaults to open
+                url = "/milestones",
+                // state defaults to "open"
                 returnType = Array<MilestoneJson>::class.java)
                 .map { it.toMilestone() }
                 .sortedBy { it.version }
@@ -108,8 +120,8 @@ class GithubApi (
 
         return request(
                 method = Method.GET,
-                url = "$baseGithubUrl/issues",
-                parameters = listOf(
+                url = "/issues",
+                queryParameters = listOf(
                         "state" to "all",
                         "milestone" to milestone.number
                 ),
@@ -125,13 +137,17 @@ class GithubApi (
             method: Method,
             url: String,
             returnType: Class<T>,
-            parameters: List<Pair<String, Any?>>? = null,
+            queryParameters: List<Pair<String, Any?>>? = null,
             headers: List<Pair<String, String>>? = null,
-            requestEntity: Any? = null
+            requestEntity: Any? = null,
+            requestBytes: ByteArray? = null
     ): T {
-        val (_, response, result) = FuelManager.instance.request(method = method, path = url, param = parameters).apply {
+        val (_, response, result) = FuelManager.instance.request(method = method, path = url, param = queryParameters).apply {
             if (requestEntity != null) {
                 body(mapper.writeValueAsString(requestEntity))
+            }
+            if (requestBytes != null) {
+                body(requestBytes)
             }
         }
                 .authenticate(config.username, config.password)
@@ -144,7 +160,7 @@ class GithubApi (
         result.fold({ success: String ->
             return mapper.readValue(success, returnType)
         }, { fail: FuelError ->
-            throw GadsuException("GitHub call failed for URL: $url with parameters: $parameters! (fuel says: $fail)", fail.exception)
+            throw GadsuException("GitHub call failed for URL: $url with parameters: $queryParameters! (fuel says: $fail)", fail.exception)
         })
     }
 
@@ -190,6 +206,9 @@ private @JsonData data class UpdateMilestoneResponseJson(
         val state: String
 )
 
-private @JsonData data class CreateReleaseResponse(
-        val url: String
+
+private @JsonData data class AssetUploadResponse(
+        val name: String,
+        val state: String,
+        val size: Int
 )

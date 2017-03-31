@@ -55,11 +55,69 @@ private class ReleaseGenerator(
      */
     fun executeRelease(milestone: Milestone) {
         val issues = githubApi.listIssues(milestone)
-
         ReleaseValidator(githubApi, milestone, issues, config).validate()
         val releaseText = generateReleaseText(issues)
 
-        // TODO display confirmation message with all prepared data
+        printSummary(milestone, issues, releaseText)
+
+        println("**********> Confirm Release <**********")
+        println("Confirm [y/n]:")
+        val input = readLine()
+        println()
+        if (input != "y") {
+            println("Release process aborted by user.")
+            return
+        }
+
+        // do the actual release!
+        // ------------------------
+
+        println("Closing milestone ${milestone.version}.")
+        githubApi.close(milestone)
+        println()
+
+        println("Creating new GitHub release.")
+        val release = githubApi.createNewRelease(CreateReleaseRequest(
+                tag_name = milestone.version,
+                name = "Release ${milestone.version}",
+                body = releaseText
+        ))
+        println()
+
+        config.sourceArtifactFiles(milestone).forEach { (type, file) ->
+            println("Uploading release artifact: ${file.name}")
+            githubApi.uploadReleaseAsset(AssetUpload(
+                    releaseId = release.id,
+                    file = file,
+                    fileName = file.name,
+                    contentType = type.contentType
+            ))
+        }
+        println()
+
+        val targetMilestoneFolder = config.targetMilestoneFolder(milestone)
+        println("Create local folder: ${targetMilestoneFolder.absolutePath}")
+        targetMilestoneFolder.mkdir()
+        config.sourceArtifactFiles(milestone).forEach { (_, file) ->
+            val target = File(targetMilestoneFolder, file.name)
+            println("Moving file from: ${file.absolutePath}\n  to: ${target.absolutePath}")
+            file.move(target)
+        }
+    }
+
+
+    private fun generateReleaseText(issues: List<Issue>): String {
+        val issuesText = issues
+                .map { "- #${it.number} ${it.title}" }
+                .joinToString("\n")
+
+        return """Windows users please use the EXE, Apple users the DMG and for all other Linuxe/Unixe the platform independent JAR file.
+
+New stuff:
+$issuesText"""
+    }
+
+    private fun printSummary(milestone: Milestone, issues: List<Issue>, releaseText: String) {
         println("""Release Summary
 ================
 Version: ${milestone.version}
@@ -77,52 +135,6 @@ Milestone: $milestone
 Issues:
 ${issues.toPrettyString()}
 """)
-
-        println("**********> Confirm Release <**********")
-        println("Confirm [y/n]:")
-        val input = readLine()
-        if (input != "y") {
-            println("Release process aborted by user.")
-            return
-        }
-
-        // do the actual release!
-        // ------------------------
-
-        val targetMilestoneFolder = config.targetMilestoneFolder(milestone)
-        println("Create local folder: ${targetMilestoneFolder.absolutePath}")
-        targetMilestoneFolder.mkdir()
-        config.sourceArtifactFiles(milestone).forEach { file ->
-            val target = File(targetMilestoneFolder, file.name)
-            println("Moving file from: ${file.absolutePath}\n  to: ${target.absolutePath}")
-            file.move(target)
-        }
-        println()
-
-        println("Closing milestone ${milestone.version}.")
-        githubApi.close(milestone)
-
-        println("Creating new GitHub release.")
-        githubApi.createNewRelease(CreateReleaseRequest(
-                tag_name = milestone.version,
-                name = "Release ${milestone.version}",
-                body = releaseText
-        ))
-
-        println("Uploading release artifacts.")
-        // TODO upload artifacts to github
-    }
-
-
-    private fun generateReleaseText(issues: List<Issue>): String {
-        val issuesText = issues
-                .map { "- #${it.number} ${it.title}" }
-                .joinToString("\n")
-
-        return """Windows users please use the EXE, Apple users the DMG and for all other Linuxe/Unixe the platform independent JAR file.
-
-New stuff:
-$issuesText"""
     }
 
 }
@@ -134,21 +146,22 @@ data class ReleaseConfig(
         val targetReleaseArtifactsFolder: File
 ) {
     fun targetMilestoneFolder(milestone: Milestone) = File(targetReleaseArtifactsFolder, "v${milestone.version}")
-    fun sourceArtifactFiles(milestone: Milestone) = ArtifactTypes.values().map { File(sourceReleaseBuildFolder, it.toFilename(milestone)) }
+    fun sourceArtifactFiles(milestone: Milestone) = ArtifactTypes.values().map { Pair(it, File(sourceReleaseBuildFolder, it.toFilename(milestone))) }
 }
 
-private enum class ArtifactTypes {
-    Jar {
+enum class ArtifactTypes(val contentType: String) {
+    Jar("application/java-archive") {
         override fun toFilename(milestone: Milestone) = "Gadsu-${milestone.version}.jar"
     },
-    Exe {
+    Exe("application/x-msdownload") {
         override fun toFilename(milestone: Milestone) = "Gadsu.exe"
     },
-    Dmg {
+    Dmg("application/x-apple-diskimage") {
         override fun toFilename(milestone: Milestone) = "Gadsu-${milestone.version}.dmg"
     };
 
     abstract fun toFilename(milestone: Milestone): String
+
 }
 
 @Deprecated("use kpotpourri's implementation instead", ReplaceWith("file.move(target)", "com.github.christophpickl.kpotpourri.common.move"))
