@@ -8,6 +8,7 @@ import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.IClient
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.differenceDaysWithinYear
@@ -33,6 +34,9 @@ import java.awt.Font
 import java.awt.Graphics
 import java.awt.GridBagConstraints
 import java.awt.Insets
+import java.awt.image.BufferedImage
+import javax.swing.Icon
+import javax.swing.ImageIcon
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -121,6 +125,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
                 }
             }
         }
+
+        private val CATEGORY_A_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_up.png")
+        private val CATEGORY_C_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_down.png")
+        private val CATEGORY_IMAGE_SIZE = 15
     }
 
     private val nameLbl = JLabel(client.preferredName.wrapParenthesisIf(client.state == ClientState.INACTIVE)).withFont(Font.BOLD, 16)
@@ -153,7 +161,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.anchor = GridBagConstraints.NORTHWEST
         c.insets = Pad.RIGHT
         c.gridheight = calculatedRows
-        add(JLabel(client.picture.toViewLilRepresentation()))
+        add(JLabel(drawClientPictureWithCategoryIndicator()))
 
         c.gridheight = 1
         c.insets = Pad.ZERO
@@ -200,6 +208,22 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
         add(JPanel().transparent())
+    }
+
+    private fun drawClientPictureWithCategoryIndicator(): Icon {
+        val clientImage = client.picture.toViewLilRepresentation()
+        if (client.category == ClientCategory.B) {
+            return clientImage
+        }
+        val finalImage = BufferedImage(ImageSize.LITTLE.width, ImageSize.LITTLE.height, BufferedImage.TYPE_INT_ARGB)
+        val g = finalImage.createGraphics()
+        g.drawImage(clientImage.image, 0, 0, null)
+        val categoryX = ImageSize.LITTLE.width - CATEGORY_IMAGE_SIZE - 2
+        val categoryY = ImageSize.LITTLE.height - CATEGORY_IMAGE_SIZE - 2
+        g.drawImage((if (client.category == ClientCategory.A) CATEGORY_A_IMAGE else CATEGORY_C_IMAGE).image, categoryX, categoryY, null)
+        g.dispose()
+
+        return ImageIcon(finalImage)
     }
 
 }
