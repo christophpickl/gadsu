@@ -20,8 +20,13 @@ private class ValidationCollector {
 
     private val validationSteps: MutableList<() -> Unit> = LinkedList()
 
-    fun add(validationStep: () -> Unit): ValidationCollector {
-        validationSteps.add(validationStep)
+    fun add(stepToAdd: () -> Unit): ValidationCollector {
+        validationSteps.add(stepToAdd)
+        return this
+    }
+
+    fun addAll(stepsToAdd: List<() -> Unit>): ValidationCollector {
+        validationSteps.addAll(stepsToAdd)
         return this
     }
 
@@ -44,7 +49,8 @@ private class ValidationCollector {
 class ReleaseValidator(
         private val githubApi: GithubApi,
         private val milestone: Milestone,
-        private val issues: List<Issue>
+        private val issues: List<Issue>,
+        private val config: ReleaseConfig
 ) {
     private val log = LOG(javaClass)
 
@@ -52,7 +58,11 @@ class ReleaseValidator(
      * @throws ReleaseValidationException
      */
     fun validate() {
-        val validationResult = ValidationCollector().add({
+        val validationResult = ValidationCollector().addAll(
+                filesystemOk()
+        ).add({
+            milestoneOpen()
+        }).add({
             tagExists()
         }).add({
             allIssuesClosed()
@@ -69,7 +79,30 @@ class ReleaseValidator(
         }
     }
 
-    // TODO verify local folders exist, release artifacts (jar/dmg/exe) exists
+    private fun filesystemOk() = mutableListOf(
+            {
+                if (!config.sourceReleaseBuildFolder.exists()) {
+                    fail("Source release folder does not exist at: ${config.sourceReleaseBuildFolder.absolutePath}")
+                }
+            },
+            {
+                if (!config.targetReleaseArtifactsFolder.exists()) {
+                    fail("Target release folder does not exist at: ${config.sourceReleaseBuildFolder.absolutePath}")
+                }
+            },
+            {
+                if (config.targetMilestoneFolder(milestone).exists()) {
+                    fail("Target milestone folder already exists at: ${config.targetMilestoneFolder(milestone)}")
+                }
+            }
+    ).plus(config.sourceArtifactFiles(milestone).map { artifactFile ->
+        {
+            if (!artifactFile.exists()) {
+                fail("Artifact file does not exist at: ${artifactFile.absolutePath}")
+            }
+        }
+    })
+
 
     private fun milestoneOpen() {
         if (milestone.state != State.Open) {

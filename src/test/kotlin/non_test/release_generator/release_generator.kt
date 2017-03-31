@@ -2,6 +2,8 @@ package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
 import com.github.christophpickl.kpotpourri.common.toPrettyString
+import java.io.File
+import java.nio.file.Files
 
 private val GITHUB_CONFIG = GithubConfig(
         repositoryOwner = "christophpickl",
@@ -10,15 +12,17 @@ private val GITHUB_CONFIG = GithubConfig(
         username = "christoph.pickl@gmail.com", // or could load creds from ~/.gadsu/github.properties
         password = System.getProperty("github.pass", null) ?: throw RuntimeException("Expected to have set -Dgithub.pass")
 )
-// release folder: /Users/wu/Dev/shiatsu/gadsu_release_build/release_artifacts
-// target folder: /Users/wu/Kampfkunst/Shiatsu/___GADSU/Releases/vX.X.X
+private val RELEASE_CONFIG = ReleaseConfig(
+        sourceReleaseBuildFolder = File("/Users/wu/Dev/shiatsu/gadsu_release_build/release_artifacts"),
+        targetReleaseArtifactsFolder = File("/Users/wu/Kampfkunst/Shiatsu/___GADSU/Releases") // add "vX.X.X" folder
+)
 
 fun main(args: Array<String>) {
     println("Gadsu Release Generator - START")
     println()
 
     val githubApi = GithubApi(GITHUB_CONFIG)
-    val generator = ReleaseGenerator(githubApi)
+    val generator = ReleaseGenerator(githubApi, RELEASE_CONFIG)
 
     val milestone = generator.selectMilestone()
     generator.executeRelease(milestone)
@@ -27,8 +31,9 @@ fun main(args: Array<String>) {
     println("Gadsu Release Generator - END")
 }
 
-class ReleaseGenerator(
-        private val githubApi: GithubApi
+private class ReleaseGenerator(
+        private val githubApi: GithubApi,
+        private val config: ReleaseConfig
 ) {
 
 
@@ -51,7 +56,7 @@ class ReleaseGenerator(
     fun executeRelease(milestone: Milestone) {
         val issues = githubApi.listIssues(milestone)
 
-        ReleaseValidator(githubApi, milestone, issues).validate()
+        ReleaseValidator(githubApi, milestone, issues, config).validate()
         val releaseText = generateReleaseText(issues)
 
         // TODO display confirmation message with all prepared data
@@ -59,6 +64,9 @@ class ReleaseGenerator(
 ================
 Version: ${milestone.version}
 Issues: ${issues.size}
+
+LOCAL Artifacts source folder: ${config.sourceReleaseBuildFolder.absolutePath}
+LOCAL Release target folder: ${config.targetReleaseArtifactsFolder}
 
 Release Text:
 ----------------
@@ -81,10 +89,17 @@ ${issues.toPrettyString()}
         // do the actual release!
         // ------------------------
 
-        // TODO create new release folder locally and move built artifacts there
-        println("Preparing filesystem.")
+        val targetMilestoneFolder = config.targetMilestoneFolder(milestone)
+        println("Create local folder: ${targetMilestoneFolder.absolutePath}")
+        targetMilestoneFolder.mkdir()
+        config.sourceArtifactFiles(milestone).forEach { file ->
+            val target = File(targetMilestoneFolder, file.name)
+            println("Moving file from: ${file.absolutePath}\n  to: ${target.absolutePath}")
+            file.move(target)
+        }
+        println()
 
-        println("Closing milestone.")
+        println("Closing milestone ${milestone.version}.")
         githubApi.close(milestone)
 
         println("Creating new GitHub release.")
@@ -94,9 +109,10 @@ ${issues.toPrettyString()}
                 body = releaseText
         ))
 
-        // TODO upload artifacts to github
         println("Uploading release artifacts.")
+        // TODO upload artifacts to github
     }
+
 
     private fun generateReleaseText(issues: List<Issue>): String {
         val issuesText = issues
@@ -113,3 +129,29 @@ $issuesText"""
 
 open class ReleaseException(message: String, cause: Throwable? = null) : GadsuException(message, cause)
 
+data class ReleaseConfig(
+        val sourceReleaseBuildFolder: File,
+        val targetReleaseArtifactsFolder: File
+) {
+    fun targetMilestoneFolder(milestone: Milestone) = File(targetReleaseArtifactsFolder, "v${milestone.version}")
+    fun sourceArtifactFiles(milestone: Milestone) = ArtifactTypes.values().map { File(sourceReleaseBuildFolder, it.toFilename(milestone)) }
+}
+
+private enum class ArtifactTypes {
+    Jar {
+        override fun toFilename(milestone: Milestone) = "Gadsu-${milestone.version}.jar"
+    },
+    Exe {
+        override fun toFilename(milestone: Milestone) = "Gadsu.exe"
+    },
+    Dmg {
+        override fun toFilename(milestone: Milestone) = "Gadsu-${milestone.version}.dmg"
+    };
+
+    abstract fun toFilename(milestone: Milestone): String
+}
+
+@Deprecated("use kpotpourri's implementation instead", ReplaceWith("file.move(target)", "com.github.christophpickl.kpotpourri.common.move"))
+fun File.move(target: File) {
+    Files.move(this.toPath(), target.toPath())
+}
