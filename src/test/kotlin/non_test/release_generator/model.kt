@@ -44,6 +44,15 @@ data class Issue(
         val url: String
 )
 
+@JsonData data class UpdateMilestone(
+        val state: String
+)
+
+@JsonData data class UpdateMilestoneResponseJson(
+        val state: String
+)
+
+
 data class Milestone(
         val version: String,
         val number: Int,

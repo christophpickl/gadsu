@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     println("release generator START")
 
     val generator = ReleaseGenerator(
-            //            repositoryName = "gadsu"
+            // repositoryName = "gadsu"
             repositoryName = "gadsu_release_playground"
     )
     val milestone = generator.selectMilestone()
@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
     val releaseText = generator.generateReleaseText(issues)
     println(releaseText)
 
+    generator.confirmRelease(milestone, issues)
 
     // * check for release artifacts
     // * display confirmation message with all prepared data
@@ -23,7 +24,6 @@ fun main(args: Array<String>) {
     // * create new release
     //   - Select existing GIT tag
     //   - upload artifacts (check for existence)
-    // * close milestone
 
 
 }
@@ -80,6 +80,14 @@ class ReleaseGenerator(
 New stuff:
 $issuesText
 """
+    }
+
+    /**
+     * Finally the method which has some permanent effects.
+     */
+    fun confirmRelease(milestone: Milestone, issues: List<Issue>) {
+        println("Confirming release...")
+        github.close(milestone)
     }
 }
 
