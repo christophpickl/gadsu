@@ -229,6 +229,36 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
 }
 
+enum class RecentState(val baseLimit: Int, val color1: Color, val color2: Color) {
+    Ok(14, Colors.byHex("02bb1c"), Colors.byHex("015d0e")),
+    Attention(28, Colors.byHex("acbb02"), Colors.byHex("565d01")),
+    Warn(42, Colors.byHex("e0b520"), Colors.byHex("705a10")),
+    Critical(60, Colors.byHex("cb3412"), Colors.byHex("651a09")),
+    Fatal(Integer.MAX_VALUE, Colors.byHex("9512cb"), Colors.byHex("4a0965"));
+}
+
+object RecentStateCalculator {
+
+    private val LIMIT_MODIFIER_A = 0.6
+    private val LIMIT_MODIFIER_B = 1.0
+    private val LIMIT_MODIFIER_C = 1.4
+
+    fun calc(days: Int, category: ClientCategory): RecentState {
+        val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
+
+        val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
+        val limitAttention = (RecentState.Attention.baseLimit * limitModifier).toInt()
+        val limitWarn = (RecentState.Warn.baseLimit * limitModifier).toInt()
+        val limitCritical = (RecentState.Critical.baseLimit * limitModifier).toInt()
+
+        return if (days < limitOk) RecentState.Ok
+        else if (days < limitAttention) RecentState.Attention
+        else if (days < limitWarn) RecentState.Warn
+        else if (days < limitCritical) RecentState.Critical
+        else RecentState.Fatal
+    }
+}
+
 private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
@@ -243,43 +273,21 @@ private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel
             }
         }
 
-        private val LIMIT_MODIFIER_A = 0.6
-        private val LIMIT_MODIFIER_B = 1.0
-        private val LIMIT_MODIFIER_C = 1.4
-
-        private val COLOR1_OK = Colors.byHex("02bb1c")
-        private val COLOR1_ATTENTION = Colors.byHex("acbb02")
-        private val COLOR1_WARN = Colors.byHex("e0b520")
-        private val COLOR1_CRITICAL = Colors.byHex("cb3412")
-        private val COLOR1_FATAL = Colors.byHex("9512cb")
-
-        private val COLOR2_OK = Colors.byHex("015d0e")
-        private val COLOR2_ATTENTION = Colors.byHex("565d01")
-        private val COLOR2_WARN = Colors.byHex("705a10")
-        private val COLOR2_CRITICAL = Colors.byHex("651a09")
-        private val COLOR2_FATAL = Colors.byHex("4a0965")
-
-        private val BASE_LIMIT_OK = 14
-        private val BASE_LIMIT_ATTENTION = 28
-        private val BASE_LIMIT_WARN = 42
-        private val BASE_LIMIT_CRITICAL = 60
     }
 
-    private val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
-    private val limitOk = (BASE_LIMIT_OK * limitModifier).toInt()
-    private val limitAttention = (BASE_LIMIT_ATTENTION * limitModifier).toInt()
-    private val limitWarn = (BASE_LIMIT_WARN * limitModifier).toInt()
-    private val limitCritical = (BASE_LIMIT_CRITICAL * limitModifier).toInt()
-
     var labelColor = Color.BLACK!!
+    private val labelText = labelTextForRecentTreatment(days)
+    private val color: Color
+    private val color2: Color
 
     init {
         enforceSize(138, 12)
+
+        val state = RecentStateCalculator.calc(days, category)
+        color = state.color1
+        color2 = state.color2
     }
 
-    private val labelText = labelTextForRecentTreatment(days)
-    private val color = calculateColor(days)
-    private val color2 = calculateColor2(days)
 
     override fun paint(g: Graphics) {
         super.paint(g)
@@ -295,21 +303,6 @@ private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel
         g.drawString(labelText, 4, 9)
     }
 
-    private fun calculateColor(days: Int): Color {
-        return if (days < limitOk) COLOR1_OK
-        else if (days < limitAttention) COLOR1_ATTENTION
-        else if (days < limitWarn) COLOR1_WARN
-        else if (days < limitCritical) COLOR1_CRITICAL
-        else COLOR1_FATAL
-    }
-
-    private fun calculateColor2(days: Int): Color {
-        return if (days < limitOk) COLOR2_OK
-        else if (days < limitAttention) COLOR2_ATTENTION
-        else if (days < limitWarn) COLOR2_WARN
-        else if (days < limitCritical) COLOR2_CRITICAL
-        else COLOR2_FATAL
-    }
 
 }
 
