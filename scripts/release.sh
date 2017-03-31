@@ -47,10 +47,28 @@ myEcho "Preparing new GADSU release"
 myEcho "===================================="
 myEcho "Current version is: $version"
 
+DEFAULT_RELEASE_VERSION=$(echo ${version}| cut -d "-" -f 1)
+
+CURRENT_MINOR_VERSION=$(echo ${DEFAULT_RELEASE_VERSION}| cut -d "." -f 2)
+NEXT_MINOR_VERSION=$(($CURRENT_MINOR_VERSION + 1))
+DEFAULT_DEVELOPMENT_VERSION="1.$NEXT_MINOR_VERSION.0-SNAPSHOT"
+
 echo
-read -p "Enter RELEASE Version: " VERSION_RELEASE
-read -p "Enter next DEVELOPMENT Version: " VERSION_DEVELOPMENT
+read -p "Enter RELEASE Version [$DEFAULT_RELEASE_VERSION]: " ENTERED_VERSION_RELEASE
+read -p "Enter next DEVELOPMENT Version [$DEFAULT_DEVELOPMENT_VERSION]: " ENTERED_VERSION_DEVELOPMENT
 # maybe also prompt for git credentials?!?
+
+
+if [ ! -z "$ENTERED_VERSION_RELEASE" ]; then
+    VERSION_RELEASE=${ENTERED_VERSION_RELEASE}
+else
+    VERSION_RELEASE=${DEFAULT_RELEASE_VERSION}
+fi
+if [ ! -z "$ENTERED_VERSION_DEVELOPMENT" ]; then
+    VERSION_DEVELOPMENT=${ENTERED_VERSION_DEVELOPMENT}
+else
+    VERSION_DEVELOPMENT=${DEFAULT_DEVELOPMENT_VERSION}
+fi
 
 echo
 myEcho "Release Summary:"
@@ -158,7 +176,7 @@ myEcho "Release $VERSION_RELEASE SUCCESSFULL"
 myEcho "===================================="
 echo
 myEcho "Time needed: $ELAPSED seconds"
-myEcho "Copy the contents of the artifacts directory: $ARTIFACTS_DIR"
+myEcho "Contents of: $ARTIFACTS_DIR"
 ls -l ${ARTIFACTS_DIR}
 echo
 
