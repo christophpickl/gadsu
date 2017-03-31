@@ -30,6 +30,8 @@ High
 
 Med
 ---
+* @gcal sync: nicht nur anzeigen wieviele termin imported, sondern auch wieviele mails verschickt
+* @build: DMG with Applications alias
 * new field "nickname internal" (for display in gadsu) and "nickname external" (for use in templates/mails)
 * investigate/use https://github.com/kotlin-projects/kotlin-swing
 * nachdem test sammelprotokoll gedruckt, bleibt dialog hinterm mainframe picken :-/

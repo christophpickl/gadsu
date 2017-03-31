@@ -40,7 +40,7 @@ class AppointmentConfirmationerImpl @Inject constructor(
         )
         val subject = templating.process(subjectTemplate, data)
         val body = templating.process(bodyTemplate, data)
-        return Mail(client.contact.mail, subject, body)
+        return Mail(client.contact.mail, subject, body, recipientsAsBcc = false)
     }
 
     private fun Client.validateTemplateData() {

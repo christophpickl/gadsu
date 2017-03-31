@@ -70,8 +70,9 @@ $
 
 # Postdoings
 
-* _Optional_: Make a backup of local `~/.gadsu` folder
+* _Optional_: Make a backup of local `~/.gadsu` folder (or just a DB backup)
 * Start the APP and JAR (and EXE if possible), and verify functionality via **smoke tests**
+    * Find them in: `/Users/John/Dev/gadsu/../gadsu_release_build/release_artifacts`
     * If there was an **error**, fix it, and create new x.x.1 bugfix version
 * **Pull** changes from remote GIT repository to local
 * Start the **Post Release Generator** Kotlin script in `release_generator.kt`

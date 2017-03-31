@@ -42,8 +42,13 @@ class GMailApiImpl @Inject constructor(
         val email = MimeMessage(session)
 
         email.setFrom(InternetAddress(myAddress))
-        email.addRecipient(javax.mail.Message.RecipientType.TO, InternetAddress(myAddress))
-        email.addRecipients(javax.mail.Message.RecipientType.BCC, this.recipients.map(::InternetAddress).toTypedArray())
+        if (this.recipientsAsBcc) {
+            email.addRecipient(javax.mail.Message.RecipientType.TO, InternetAddress(myAddress))
+            email.addRecipients(javax.mail.Message.RecipientType.BCC, this.recipients.map(::InternetAddress).toTypedArray())
+        } else {
+            email.addRecipients(javax.mail.Message.RecipientType.TO, this.recipients.map(::InternetAddress).toTypedArray())
+        }
+
         email.subject = this.subject
         email.setText(this.body)
 

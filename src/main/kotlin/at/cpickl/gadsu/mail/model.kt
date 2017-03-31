@@ -6,10 +6,11 @@ import java.util.regex.Pattern
 data class Mail(
         val recipients: List<String>,
         val subject: String,
-        val body: String
+        val body: String,
+        val recipientsAsBcc: Boolean = true
 ) {
 
-    constructor(recipient: String, subject: String, body: String): this(listOf(recipient), subject, body)
+    constructor(recipient: String, subject: String, body: String, recipientsAsBcc: Boolean = true): this(listOf(recipient), subject, body, recipientsAsBcc)
 
     init {
         if (recipients.isEmpty()) {
