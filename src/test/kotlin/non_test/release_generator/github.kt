@@ -33,6 +33,11 @@ class GithubApi(
         FuelManager.instance.basePath = "https://api.github.com"
     }
 
+    /**
+     * POST /repos/:owner/:repo/releases
+     *
+     * https://developer.github.com/v3/repos/releases/#create-a-release
+     */
     fun createNewRelease(versionString: String, releaseText: String) {
         val foo = request(
                 method = Method.POST,
@@ -47,6 +52,17 @@ class GithubApi(
         println("foo: $foo")
     }
 
+    /**
+     * GET /repos/:owner/:repo/tags
+     *
+     * https://developer.github.com/v3/repos/#list-tags
+     */
+    fun listTags() = request(
+                method = Method.GET,
+                url = "$baseGithubUrl/tags",
+                returnType = Array<TagResponse>::class.java
+        ).toList().sortedBy { it.name }
+
     private fun uploadReleaseAsset() {
         // POST https://<upload_url>/repos/:owner/:repo/releases/:id/assets?name=foo.zip
 
@@ -54,6 +70,8 @@ class GithubApi(
 
     /**
      * PATCH /repos/:owner/:repo/milestones/:number
+     *
+     * https://developer.github.com/v3/issues/milestones/#update-a-milestone
      */
     fun close(milestone: Milestone) {
         if (milestone.state == State.Closed) {

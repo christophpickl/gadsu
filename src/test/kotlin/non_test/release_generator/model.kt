@@ -30,14 +30,6 @@ data class Issue(
         val body: String,
         val draft: Boolean = true,
         val prerelease: Boolean = false
-        /*
-          "tag_name": "v1.0.0",
-  "target_commitish": "master",
-  "name": "v1.0.0",
-  "body": "Description of the release",
-  "draft": false,
-  "prerelease": false
-         */
 )
 
 @JsonData data class CreateReleaseResponse(
@@ -79,6 +71,10 @@ data class Milestone(
             issuesCountClosed = closed_issues
     )
 }
+
+@JsonData data class TagResponse(
+        val name: String
+)
 
 @KotlinNoArg
 annotation class JsonData

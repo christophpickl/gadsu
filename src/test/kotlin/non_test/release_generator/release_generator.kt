@@ -10,20 +10,23 @@ fun main(args: Array<String>) {
             // repositoryName = "gadsu"
             repositoryName = "gadsu_release_playground"
     )
+
+    if (false) {
+        generator.foobarStuff()
+        return
+    }
+
     val milestone = generator.selectMilestone()
     val issues = generator.issuesFor(milestone)
     val releaseText = generator.generateReleaseText(issues)
     println(releaseText)
 
-    generator.confirmRelease(milestone, issues)
-
-    // * check for release artifacts
-    // * display confirmation message with all prepared data
+    // * check for released artifacts (DMG/JAR/EXE created before)
+    // * print summary of what is going to be done (do the validation first, then print summary, then execute)
+    //   == display confirmation message with all prepared data
+    generator.executeRelease(milestone, issues, releaseText)
 
     // * create new release folder locally and move built artifacts there
-    // * create new release
-    //   - Select existing GIT tag
-    //   - upload artifacts (check for existence)
 
 
 }
@@ -41,6 +44,7 @@ class ReleaseGenerator(
     private val milestones by lazy { github.listOpenMilestones().filterNot { it.version == "ongoing" } }
 
     fun foobarStuff() {
+        github.listTags()
 //    GithubApi.createNewRelease("1.9.0", releaseText)
 //    val issues = GithubApi.listIssues()
 //    println("Got ${issues.size} issues back.")
@@ -58,6 +62,9 @@ class ReleaseGenerator(
         return milestones[selectedIndex - 1]
     }
 
+    /**
+     * Also does the "all issues closed"-validation.
+     */
     fun issuesFor(milestone: Milestone): List<Issue> {
         val issues = github
                 .listIssues(milestone)
@@ -85,10 +92,26 @@ $issuesText
     /**
      * Finally the method which has some permanent effects.
      */
-    fun confirmRelease(milestone: Milestone, issues: List<Issue>) {
+    fun executeRelease(milestone: Milestone, issues: List<Issue>, releaseText: String) {
+        validateTagExists(milestone)
+
         println("Confirming release...")
         github.close(milestone)
+
+        // TODO * create new release
+        //   - Select existing GIT tag: milestone.tagLike
+        //   - upload artifacts (check for existence before)
     }
+
+    private fun validateTagExists(milestone: Milestone) {
+        // milestone version is like "1.5"
+        // tags are like "v1.5.0"
+        val tags = github.listTags()
+        tags.find { it.name == milestone.tagLike } ?:
+                throw ReleaseException("The required tag '${milestone.tagLike}' does not exist! Available tags: ${tags.map { it.name }.joinToString(", ")}")
+    }
+
+    private val Milestone.tagLike: String get() = "v$version.0"
 }
 
 class ReleaseException(message: String, cause: Throwable? = null) : GadsuException(message, cause)
