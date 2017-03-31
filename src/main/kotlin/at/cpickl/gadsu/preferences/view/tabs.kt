@@ -2,33 +2,25 @@ package at.cpickl.gadsu.preferences.view
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
+import at.cpickl.gadsu.view.KTab
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.FormPanel
-import at.cpickl.gadsu.view.swing.disableFocusable
-import at.cpickl.gadsu.view.swing.disabled
-import at.cpickl.gadsu.view.swing.leftAligned
-import at.cpickl.gadsu.view.swing.scrolled
-import at.cpickl.gadsu.view.swing.selectAllOnFocus
-import at.cpickl.gadsu.view.swing.transparent
-import at.cpickl.gadsu.view.swing.viewName
+import at.cpickl.gadsu.view.swing.*
 import java.awt.GridBagConstraints
-import javax.swing.BorderFactory
-import javax.swing.BoxLayout
-import javax.swing.JCheckBox
-import javax.swing.JComponent
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 
 
-abstract class PrefsTab(val tabTitle: String) {
+abstract class PrefsTab(
+        override val tabTitle: String,
+        override val scrolled: Boolean = true
+) : KTab {
 
     protected val VGAP_BETWEEN_COMPONENTS = 10
 
-    abstract fun asComponent(): JComponent
 }
 
 class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
@@ -42,7 +34,7 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
     val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 
-    override fun asComponent() = FormPanel(labelAnchor = GridBagConstraints.NORTHWEST).apply {
+    override fun asComponent() = FormPanel(fillCellsGridy = false, labelAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
 
         addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
@@ -81,6 +73,7 @@ class PrefsTabConnectivity : PrefsTab("Connectivity") {
     val inpConfirmMailBody = MyTextArea("", visibleRows = 6)
 
     override fun asComponent() = FormPanel(
+            fillCellsGridy = false,
             labelAnchor = GridBagConstraints.NORTHWEST,
             inputAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
