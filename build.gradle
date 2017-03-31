@@ -30,7 +30,7 @@ plugins {
     // solution: jacoco { toolVersion = "0.7.6.201602180812" ...
 
     // see: https://github.com/kt3k/coveralls-gradle-plugin
-    id 'com.github.kt3k.coveralls' version '2.7.1'
+    id 'com.github.kt3k.coveralls' version '2.8.1'
     id "org.standardout.versioneye" version "1.4.0"
 }
 
