@@ -97,7 +97,7 @@ echo
 if [ -d "$BUILD_DIR" ]; then
     echo
     myEcho "Removing old build directory at: $BUILD_DIR"
-    rm -rv ${BUILD_DIR}
+    rm -rfv ${BUILD_DIR}
 fi
 mkdir ${BUILD_DIR}
 mkdir ${ARTIFACTS_DIR}
@@ -121,14 +121,14 @@ changeLatestVersion ${VERSION_RELEASE}
 
 
 echo
-myEcho "Verifying process (TODOs, test)."
+myEcho "Verifying release build (TODOs, test)"
 myEcho "------------------------------------"
 ./gradlew check checkTodo test testUi
 checkLastCommand
 
 
 echo
-myEcho "Creating assemblies."
+myEcho "Creating assemblies"
 myEcho "------------------------------------"
 ./gradlew createDmg fatJar buildExe -Dgadsu.enableMacBundle=true
 checkLastCommand
@@ -182,6 +182,9 @@ echo
 myEcho "Time needed: $ELAPSED seconds"
 myEcho "Contents of: $ARTIFACTS_DIR"
 ls -l ${ARTIFACTS_DIR}
+myEcho
+myEcho "Now start the Post Release Kotlin script."
+myEcho
 echo
 
 exit 0
