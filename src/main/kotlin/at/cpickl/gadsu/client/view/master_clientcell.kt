@@ -1,45 +1,21 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCategory
-import at.cpickl.gadsu.client.ClientState
-import at.cpickl.gadsu.client.Contact
-import at.cpickl.gadsu.client.Gender
-import at.cpickl.gadsu.client.IClient
-import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.*
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.service.clearTime
-import at.cpickl.gadsu.service.differenceDaysWithinYear
-import at.cpickl.gadsu.service.formatDateNoYear
-import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.isBetweenInclusive
-import at.cpickl.gadsu.service.wrapParenthesisIf
+import at.cpickl.gadsu.service.*
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.swing.Pad
-import at.cpickl.gadsu.view.swing.enforceSize
-import at.cpickl.gadsu.view.swing.transparent
-import at.cpickl.gadsu.view.swing.withFont
-import at.cpickl.gadsu.view.swing.withFontSize
+import at.cpickl.gadsu.view.swing.*
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import org.joda.time.Days
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Font
-import java.awt.Graphics
-import java.awt.GridBagConstraints
-import java.awt.Insets
+import java.awt.*
 import java.awt.image.BufferedImage
-import javax.swing.Icon
-import javax.swing.ImageIcon
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
+import javax.swing.*
 
 class ExtendedClient(
         var client: Client,
@@ -140,7 +116,8 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
-    private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category)
+    private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else
+        RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category, client.upcomingAppointment)
     private val countPanel = TreatmentCountPanel(client.countTreatments)
 
     override fun onChangeForeground(foreground: Color) {
@@ -230,6 +207,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 }
 
 enum class RecentState(val baseLimit: Int, val color1: Color, val color2: Color) {
+    GotNextAppointment(-1, Color.GRAY, Color.BLACK),
     Ok(14, Colors.byHex("02bb1c"), Colors.byHex("015d0e")),
     Attention(28, Colors.byHex("acbb02"), Colors.byHex("565d01")),
     Warn(42, Colors.byHex("e0b520"), Colors.byHex("705a10")),
@@ -243,7 +221,10 @@ object RecentStateCalculator {
     private val LIMIT_MODIFIER_B = 1.0
     private val LIMIT_MODIFIER_C = 1.4
 
-    fun calc(days: Int, category: ClientCategory): RecentState {
+    fun calc(days: Int, category: ClientCategory, nextAppointment: DateTime?): RecentState {
+        if (nextAppointment != null) {
+            return RecentState.GotNextAppointment
+        }
         val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
 
         val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
@@ -259,7 +240,7 @@ object RecentStateCalculator {
     }
 }
 
-private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel() {
+private class RecentTreatmentPanel(days: Int, category: ClientCategory, nextAppointment: DateTime?) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -277,25 +258,25 @@ private class RecentTreatmentPanel(days: Int, category: ClientCategory) : JPanel
 
     var labelColor = Color.BLACK!!
     private val labelText = labelTextForRecentTreatment(days)
-    private val color: Color
-    private val color2: Color
+    private val colorFilling: Color
+    private val colorBorder: Color
 
     init {
         enforceSize(138, 12)
 
-        val state = RecentStateCalculator.calc(days, category)
-        color = state.color1
-        color2 = state.color2
+        val state = RecentStateCalculator.calc(days, category, nextAppointment)
+        colorFilling = state.color1
+        colorBorder = state.color2
     }
 
 
     override fun paint(g: Graphics) {
         super.paint(g)
 
-        g.color = color
+        g.color = colorFilling
         g.fillRect(0, 0, width, height)
 
-        g.color = color2
+        g.color = colorBorder
         g.drawRect(0, 0, width - 1, height - 1)
 
         g.color = labelColor

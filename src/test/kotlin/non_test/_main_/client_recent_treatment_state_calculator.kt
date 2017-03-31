@@ -7,9 +7,9 @@ fun main(args: Array<String>) {
     println(String.format("days | %10s | %10s | %10s", "A", "B", "C"))
     println("===========================================")
     for (days in 0.rangeTo(100)) {
-        val stateA = RecentStateCalculator.calc(days, ClientCategory.A)
-        val stateB = RecentStateCalculator.calc(days, ClientCategory.B)
-        val stateC = RecentStateCalculator.calc(days, ClientCategory.C)
+        val stateA = RecentStateCalculator.calc(days, ClientCategory.A, null)
+        val stateB = RecentStateCalculator.calc(days, ClientCategory.B, null)
+        val stateC = RecentStateCalculator.calc(days, ClientCategory.C, null)
         println(String.format("%4d | %10s | %10s | %10s", days, stateA.name, stateB.name, stateC.name))
     }
 }
