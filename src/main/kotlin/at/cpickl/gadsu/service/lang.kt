@@ -13,7 +13,8 @@ fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
     this.keys.forEach { if (that.containsKey(it)) throw GadsuException("Expected no intersections! This: $this. That: $that.") }
 }
 
-fun String.nullIfEmpty() = if (this.isEmpty()) null else this
+@Deprecated("Outsourced to kpotpourri.", ReplaceWith("this.nullIfEmpty()"))
+fun String.nullIfEmpty() = if (isEmpty()) null else this
 
 
 fun String.wrapIf(condition: Boolean, wrappingLeft: String, wrappingRight: String) = if (condition) wrappingLeft + this + wrappingRight else this
