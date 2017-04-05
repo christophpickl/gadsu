@@ -432,8 +432,10 @@ todo {
 }
 
 task verifyKpotNoSnapshotVersion {
-    if (kpot_version.equals("SNAPSHOT")) {
-        throw new GradleException("KPotpourri must not be a SNAPSHOT version!")
+    doFirst {
+        if (kpot_version.equals("SNAPSHOT")) {
+            throw new GradleException("KPotpourri must not be a SNAPSHOT version!")
+        }
     }
 }
 
