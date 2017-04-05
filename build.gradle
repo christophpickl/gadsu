@@ -2,11 +2,20 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.text.SimpleDateFormat
 
-buildscript {
 
+
+buildscript {
+    ext.IS_TRAVIS = new File("/home/travis").exists()
+
+    println "[GADSU] IS_TRAVIS=" + IS_TRAVIS
     ext.kotlin_version = '1.1.1'
-    ext.kpot_version = 'SNAPSHOT'
-//    ext.kpot_version = '1.1'
+
+    ext.kpotDefaultVersion = '1.1'
+    if (!IS_TRAVIS) {
+        // override the kpot version locally :)
+        kpotDefaultVersion = 'SNAPSHOT'
+    }
+    ext.kpot_version = kpotDefaultVersion
 
     repositories {
         mavenCentral()
@@ -37,8 +46,9 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenLocal()
     mavenCentral()
+    jcenter()
     maven {
         url "http://dl.bintray.com/christophpickl/cpickl"
     }
@@ -374,7 +384,7 @@ site.dependsOn dependencyUpdates
 // =====================================================================================================================
 
 // disable for travis
-if (!new File("/home/travis").exists()) {
+if (!IS_TRAVIS) {
 
     task launch4jConfig {
         String config = new File('src/main/buildWin/launch4j.template.xml').getText('UTF-8')
