@@ -1,7 +1,7 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.service.LOG
-import com.github.christophpickl.kpotpourri.common.toPrettyString
+import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
 import non_test.release_generator.ValidationResult.ValidationError
 import non_test.release_generator.ValidationResult.ValidationSuccess
 import java.util.LinkedList
