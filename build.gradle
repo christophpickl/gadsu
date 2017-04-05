@@ -69,6 +69,7 @@ apply plugin: "kotlin-noarg"
 noArg {
     annotation("at.cpickl.gadsu.KotlinNoArg")
 }
+apply plugin: 'idea'
 apply plugin: 'com.autoscout24.gradle.todo'
 
 //defaultTasks 'run'
@@ -90,6 +91,7 @@ dependencies {
     // -------------------------------------------------------------------------
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     compile "com.github.christophpickl.kpotpourri:common:$kpot_version"
     compile "com.github.christophpickl.kpotpourri:swing:$kpot_version"
 
