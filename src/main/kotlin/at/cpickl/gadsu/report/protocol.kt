@@ -5,7 +5,7 @@ import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.report.multiprotocol.ReportMetaData
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.nullIfEmpty
+import com.github.christophpickl.kpotpourri.common.string.nullIfEmpty
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import java.io.ByteArrayInputStream

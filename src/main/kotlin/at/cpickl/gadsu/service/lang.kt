@@ -1,20 +1,12 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GadsuException
 import com.google.common.io.Files
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.File
 import java.util.HashMap
 
-@Deprecated("Outsourced to kpotpourri.", ReplaceWith("use different import statement"))
-fun <K, V> Map<K, V>.verifyNoIntersection(that: Map<K, V>) {
-//    if (this.keys.any { that.containsKey(it) }) throw GadsuException("Expected no intersections! This: $this. That: $that.")
-    this.keys.forEach { if (that.containsKey(it)) throw GadsuException("Expected no intersections! This: $this. That: $that.") }
-}
-
-@Deprecated("Outsourced to kpotpourri.", ReplaceWith("use different import statement"))
-fun String.nullIfEmpty() = if (isEmpty()) null else this
+// TODO delete those and replace with KPot
 
 @Deprecated("Outsourced to kpotpourri.", ReplaceWith("use different import statement"))
 fun String.wrapIf(condition: Boolean, wrappingLeft: String, wrappingRight: String) = if (condition) wrappingLeft + this + wrappingRight else this
