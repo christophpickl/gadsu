@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 buildscript {
 
     ext.kotlin_version = '1.1.1'
+    ext.kpot_version = '1.2'
 
     repositories {
         mavenCentral()
@@ -89,6 +90,9 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+    compile "com.github.christophpickl.kpotpourri:common:$kpot_version"
+    compile "com.github.christophpickl.kpotpourri:swing:$kpot_version"
+
     compile 'joda-time:joda-time:2.9.9'
     compile 'commons-cli:commons-cli:1.4' // parse CLI args
     compile 'com.thoughtworks.xstream:xstream:1.4.9'
@@ -100,9 +104,6 @@ dependencies {
     compile 'com.google.guava:guava:21.0' // guice comes with 16.0.1
     compile 'net.ricecode:string-similarity:1.0.0'
     compile 'org.freemarker:freemarker:2.3.25-incubating'
-
-    compile 'com.github.christophpickl.kpotpourri:common:1.1'
-    compile 'com.github.christophpickl.kpotpourri:swing:1.1'
 
     // DB
     // -------------------------------------------------------------------------
