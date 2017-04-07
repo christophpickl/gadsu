@@ -12,13 +12,11 @@ import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.persistence.toBufferedImage
 import at.cpickl.gadsu.persistence.toSqlTimestamp
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.service.nullOrWith
 import com.google.inject.Inject
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.sql.Blob
-import java.sql.Timestamp
 
 private val log = LoggerFactory.getLogger("at.cpickl.gadsu.client.persistence")
 
@@ -174,7 +172,8 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("city")
                 ),
                 rs.getBoolean("wantReceiveMails"),
-                rs.getTimestamp("birthday").nullOrWith<Timestamp?, DateTime?>(::DateTime),
+                rs.getTimestamp("birthday")?.run { DateTime(this) },
+//                rs.getTimestamp("birthday").nullOrWith(::DateTime),
                 gender,
                 rs.getString("countryOfOrigin"),
                 rs.getString("origin"),

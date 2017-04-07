@@ -3,7 +3,6 @@ package at.cpickl.gadsu.preferences.view
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.PreferencesWindowClosedEvent
 import at.cpickl.gadsu.service.GapiCredentials
-import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
@@ -14,6 +13,7 @@ import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
 import at.cpickl.gadsu.view.swing.transparent
+import com.github.christophpickl.kpotpourri.common.string.nullIfEmpty
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout

@@ -18,7 +18,6 @@ import at.cpickl.gadsu.service.ChooseFile
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.service.nullIfEmpty
 import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentRepository
@@ -34,6 +33,7 @@ import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.components.removeAllTags
+import com.github.christophpickl.kpotpourri.common.string.nullIfEmpty
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Provider

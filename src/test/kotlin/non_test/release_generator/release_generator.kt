@@ -1,8 +1,8 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
-import com.github.christophpickl.kpotpourri.common.move
-import com.github.christophpickl.kpotpourri.common.toPrettyString
+import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
+import com.github.christophpickl.kpotpourri.common.file.move
 import java.io.File
 
 private val GITHUB_CONFIG = GithubConfig(

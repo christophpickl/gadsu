@@ -4,11 +4,11 @@
 [![Coverage](https://img.shields.io/codecov/c/github/christophpickl/gadsu/master.svg)](https://codecov.io/github/christophpickl/gadsu?branch=master)
 -->
 
+[![Kotlin](https://img.shields.io/badge/kotlin-1.1.1-blue.svg)](http://kotlinlang.org)
 [![Travis](https://img.shields.io/travis/christophpickl/gadsu.svg)](https://travis-ci.org/christophpickl/gadsu)
 [![codecov.io](https://codecov.io/github/christophpickl/gadsu/coverage.svg?branch=master)](https://codecov.io/github/christophpickl/gadsu?branch=master)
+[![Dependency Versions](https://www.versioneye.com/user/projects/572880644a0faa000b782062/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 [![Issues](https://img.shields.io/github/issues/christophpickl/gadsu.svg)](https://github.com/christophpickl/gadsu/issues?q=is%3Aopen) 
-[![Master dependency status](https://www.versioneye.com/user/projects/572880644a0faa000b782062/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](http://kotlinlang.org)
 
 
 [**Download**](https://github.com/christophpickl/gadsu/releases/latest) the latest release of Gadsu!
