@@ -1,3 +1,4 @@
+* ad gcal sync: im gcal event auch eintragen welche behandlungs nummer das ist
 * BUG: internet connection check at startup false negatives!
 * sort client list (auto-sort by some defined criteria; or sort manually by drag'n'drop)
 * bigger client pic in main tab
@@ -13,6 +14,8 @@
 - breitere textfelder: mail, strasse
 * @ list hoehe: die haben ja defaultmaessig immer 8 rows visible :> runterstellen, dann sollte das layout auch weiter runter resizable gehn
 - warum ist im database.log ganz viel disconnects?! logged der tatsaechlich jeden app startup mit? kann man das sauberer/besser machen?!
+- new client field: "nicht beruehrt werden wollen"
+- schummler erstellen: vorbereitung und durchfuehrung (fenster lueften, wohnung zeigen, aufklaeren)
 
 T-O-D-O
 ============================================================
