@@ -1,3 +1,16 @@
+* BUG: wenn "Bl1 " eingeben, dann den "1" wegloeschen, sollte formatierung killed werden
+* !!! sortieren der clients (v.a. nach recent bar! fuer terminfindung)
+* ! gcal sync: crash beim namen dropdown!
+  - kein confirm mail default enabled wenn date in past
+  - gesamten namen rendern, inkl nickname, da im kalender eher damit arbeiten + bild rendern!
+* TCM opt: koerperhaare (siehe myshiatsu)
+* tag zeiten fuer farb indicator in prefs konfigurierbar machen
+* BARBARA: Dann noch eine Kleinigkeit, ich würde den Punkt Inhalt nach dem Punkt Diagnosen: Hara
+           setzen, da sich die Behandlung ja unter anderem aus der Haradiagnose ableitet.
+* LG und KG auswaehlbar als meridiane in treatment view (evtl sogar andere sondermeridiane auch noch; evtl iokai unterscheidbar; evtl meridian sektionen sogar)
+* je nachdem ob mann/frau andere TCM props verfuegbar
+* ad sammelprotokoll: am anfang auflistung mit datums wann wieviele behandlungen in vergangenheit waren (+wieviele auf diesem sammelprotokoll drauf sind)
+* wenn "(Bl1 " eingeben, dann erkennen und das "(" abziehen
 * ad gcal sync: im gcal event auch eintragen welche behandlungs nummer das ist
 * BUG: internet connection check at startup false negatives!
 * sort client list (auto-sort by some defined criteria; or sort manually by drag'n'drop)
@@ -22,6 +35,7 @@ T-O-D-O
 
 High
 ------------------------------------------------------------
+* LOG should be a rolling file appender! (with max items)
 * SQL skript schreiben um zu schauen welche klienten gender = UNKNOWN (evtl mit startAction, wo man SQL skript uebergibt)
 * in client.appointments auch vergangene termine anzeigen (farblich hervorheben), damit man daraus einfach neue treatments erstellen kann
 * BUG: wenn client bearbeiten (unsaved changes), dann bild hinzufuegen/aendern => gehn die changes verloren!

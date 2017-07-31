@@ -35,7 +35,7 @@ dass wir einen shiatsu termin haben, naemlich am:
 
   $\{dateStart?string[\"EEEE 'der' d. MMMMM\"]?lower_case}, von $\{dateStart?string[\"HH:mm\"]} bis $\{dateEnd?string[\"HH:mm\"]} uhr
 
-ich freu mich schon tierisch drauf,
+ich freu mich schon sehr drauf,
 auf bald,
 
 christoph

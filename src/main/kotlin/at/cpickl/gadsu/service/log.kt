@@ -35,12 +35,8 @@ private val Class<Any>.nameAopCleaned: String get() = if (name.contains("$$")) n
 abstract class BaseLogConfigurator {
 
     protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
-    protected val context: LoggerContext
+    protected val context: LoggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
     private var yetConfigured = false
-
-    init {
-        context = LoggerFactory.getILoggerFactory() as LoggerContext
-    }
 
     protected fun consoleAppender(name: String,
                                   pattern: String = defaultPattern,
@@ -98,8 +94,7 @@ abstract class BaseLogConfigurator {
         }
         yetConfigured = true
 
-        val status = context.statusManager
-        status.add(InfoStatus("Setting up log configuration.", context))
+        context.statusManager.add(InfoStatus("Setting up log configuration.", context))
 
         val logger = context.getLogger(Logger.ROOT_LOGGER_NAME)
         logger.detachAndStopAllAppenders()
