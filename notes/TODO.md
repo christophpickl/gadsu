@@ -1,4 +1,6 @@
 * GCal sync erkennt scheinbar keine roulierende termine? (flo)
+  - ausserdem sollte kein mail geschickt werden fuer vergangene!
+  - ausserdem vorsicht beim namen, zb "001 okc diane" (sowieso nicknames trennen in external und internal, daneben vorname und nachname)
 * BUG: wenn "Bl1 " eingeben, dann den "1" wegloeschen, sollte formatierung killed werden
 * !!! sortieren der clients (v.a. nach recent bar! fuer terminfindung)
 * ! gcal sync: crash beim namen dropdown!
