@@ -103,8 +103,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "com.github.christophpickl.kpotpourri:common:$kpot_version"
-    compile "com.github.christophpickl.kpotpourri:swing:$kpot_version"
+    compile "com.github.christophpickl.kpotpourri:common4k:$kpot_version"
+    compile "com.github.christophpickl.kpotpourri:swing4k:$kpot_version"
 
     compile 'joda-time:joda-time:2.9.9'
     compile 'commons-cli:commons-cli:1.4' // parse CLI args
@@ -114,7 +114,7 @@ dependencies {
     compile 'com.google.inject:guice:4.1.0'
     testCompile 'com.google.inject.extensions:guice-grapher:4.1.0'
     compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
-    compile 'com.google.guava:guava:21.0' // guice comes with 16.0.1
+    compile 'com.google.guava:guava:21.0' // guice introduces some older version
     compile 'net.ricecode:string-similarity:1.0.0'
     compile 'org.freemarker:freemarker:2.3.25-incubating'
 
@@ -154,7 +154,7 @@ dependencies {
     testCompile 'org.exparity:hamcrest-bean:1.0.11'
     testCompile 'org.exparity:hamcrest-date:2.0.4'
 //    testCompile 'com.natpryce:hamkrest:1.2.3.0'
-    testCompile('org.testng:testng:6.11')
+    testCompile 'org.testng:testng:6.11'
     testCompile 'org.mockito:mockito-core:2.7.19'
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
