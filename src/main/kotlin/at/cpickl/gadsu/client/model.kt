@@ -271,10 +271,7 @@ enum class Gender(override val order: Int, override val sqlCode: String, overrid
     FEMALE(2, "F", "Weiblich"),
     UNKNOWN(99, "?", "Unbekannt");
 
-    companion object {
-        val orderedValues: List<Gender> = orderedValuesOf(Gender.values())
-        fun parseSqlCode(search: String) = parseSqlCodeFor(Gender.values(), search)
-    }
+    object Enum : EnumBase<Gender>(Gender.values())
 }
 
 enum class Relationship(override val order: Int, override val sqlCode: String, override val label: String) :
@@ -287,11 +284,7 @@ enum class Relationship(override val order: Int, override val sqlCode: String, o
     COMPLICATED(6, "COMPLICATED", "es ist kompliziert"),
     UNKNOWN(99, "UNKNOWN", "unbekannt");
 
-
-    companion object {
-        val orderedValues: List<Relationship> = orderedValuesOf(Relationship.values())
-        fun parseSqlCode(search: String) = parseSqlCodeFor(Relationship.values(), search)
-    }
+    object Enum : EnumBase<Relationship>(Relationship.values())
 }
 
 enum class ClientCategory(override val order: Int, override val sqlCode: String, override val label: String) :
@@ -300,10 +293,7 @@ enum class ClientCategory(override val order: Int, override val sqlCode: String,
     B(2, "B", "B"),
     C(3, "C", "C");
 
-    companion object {
-        val orderedValues: List<ClientCategory> = orderedValuesOf(ClientCategory.values())
-        fun parseSqlCode(search: String) = parseSqlCodeFor(ClientCategory.values(), search)
-    }
+    object Enum : EnumBase<ClientCategory>(ClientCategory.values())
 }
 
 enum class ClientDonation(

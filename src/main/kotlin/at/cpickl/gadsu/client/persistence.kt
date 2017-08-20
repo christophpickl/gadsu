@@ -88,7 +88,7 @@ class ClientJdbcRepository @Inject constructor(
             relationship_enum, job, children, hobbies, note,
             textImpression, textMedical, textComplaints, textPersonal, textObjective,
             mainObjective, symptoms, elements, syndrom, tcmNote,
-            category
+            category, donation
         ) VALUES (
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
@@ -96,7 +96,7 @@ class ClientJdbcRepository @Inject constructor(
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
-            ?
+            ?, ?
         )"""
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
@@ -105,7 +105,7 @@ class ClientJdbcRepository @Inject constructor(
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
-                client.category.sqlCode
+                client.category.sqlCode, client.donation.sqlCode
         )
         return client.copy(
                 id = newId,
@@ -124,7 +124,7 @@ class ClientJdbcRepository @Inject constructor(
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
                     textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
                     mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
-                    category = ?
+                    category = ?, donation = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickName,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
@@ -132,7 +132,7 @@ class ClientJdbcRepository @Inject constructor(
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
-                client.category.sqlCode,
+                client.category.sqlCode, client.donation.sqlCode,
                 // no picture or cprops
                 client.id!!)
     }
@@ -156,7 +156,7 @@ class ClientJdbcRepository @Inject constructor(
 val Client.Companion.ROW_MAPPER: RowMapper<Client>
     get() = RowMapper { rs, _ ->
         log.trace("Transforming database row for client with first name: '{}'", rs.getString("firstName"))
-        val gender = Gender.parseSqlCode(rs.getString("gender_enum"))
+        val gender = Gender.Enum.parseSqlCode(rs.getString("gender_enum"))
         Client(
                 rs.getString("id"),
                 DateTime(rs.getTimestamp("created")),
@@ -177,7 +177,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 gender,
                 rs.getString("countryOfOrigin"),
                 rs.getString("origin"),
-                Relationship.parseSqlCode(rs.getString("relationship_enum")),
+                Relationship.Enum.parseSqlCode(rs.getString("relationship_enum")),
                 rs.getString("job"),
                 rs.getString("children"),
                 rs.getString("hobbies"),
@@ -193,7 +193,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("symptoms"),
                 rs.getString("elements"),
                 rs.getString("syndrom"),
-                ClientCategory.parseSqlCode(rs.getString("category")),
+                ClientCategory.Enum.parseSqlCode(rs.getString("category")),
                 ClientDonation.Enum.parseSqlCode(rs.getString("donation")),
 
                 rs.getString("tcmNote"),
