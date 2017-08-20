@@ -148,6 +148,7 @@ open class DevelopmentController @Inject constructor(
                         contact = Contact.EMPTY.copy(mail = "xnna@discard.email"),
                         gender = Gender.FEMALE,
                         picture = MyImage.DEFAULT_PROFILE_WOMAN,
+                        donation = ClientDonation.MONEY,
                         cprops = CProps.empty
                 ),
                 Client.INSERT_PROTOTYPE.copy(

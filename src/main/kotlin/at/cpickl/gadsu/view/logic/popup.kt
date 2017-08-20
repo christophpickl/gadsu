@@ -52,17 +52,24 @@ fun SwingFactory.createAndShowPopup(invoker: Component, point: Point, vararg ent
     createAndShowPopup(bus, invoker, point, entries.toList())
 }
 
+val POPUP_LINE_ENTRY = "----"
+object NoopUserEvent : UserEvent()
+fun popupLineSeparator() = Pair(POPUP_LINE_ENTRY, { NoopUserEvent })
+
 // label: String, eventFunction: () -> UserEvent
 fun createAndShowPopup(bus: EventBus, invoker: Component, point: Point, entries: List<Pair<String, () -> UserEvent>>) {
     SWING_log.trace("createAndShowPopup(bus, invoker, point={}, entries={})", point, entries)
     val popup = JPopupMenu()
 
     for (entry in entries) {
-        val label = entry.first
-        val eventFunction = entry.second
-        val item = JMenuItem(label)
-        item.addActionListener { bus.post(eventFunction()) }
-        popup.add(item)
+        val (label, eventFunction) = entry
+        if (label == POPUP_LINE_ENTRY) {
+            popup.addSeparator()
+        } else {
+            val item = JMenuItem(label)
+            item.addActionListener { bus.post(eventFunction()) }
+            popup.add(item)
+        }
     }
 
     popup.show(invoker, point.x, point.y)

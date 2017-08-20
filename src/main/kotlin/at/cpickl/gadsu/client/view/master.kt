@@ -3,6 +3,8 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientChangeDonation
+import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.development.debugColor
@@ -17,6 +19,7 @@ import at.cpickl.gadsu.view.components.containsById
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.enableSmartPopup
+import at.cpickl.gadsu.view.logic.popupLineSeparator
 import at.cpickl.gadsu.view.swing.enableHoverListener
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
@@ -28,6 +31,7 @@ import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
 import java.util.HashMap
+import java.util.LinkedList
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -129,21 +133,26 @@ class SwingClientMasterView @Inject constructor(
         }
 
         list.enableSmartPopup(bus, { selectedClient ->
-            val list: List<Pair<String, () -> UserEvent>>
+            val list = LinkedList<Pair<String, () -> UserEvent>>()
 
             if (selectedClient.picture.isUnsavedDefaultPicture) {
-                list = listOf(
-                        Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() })
-                )
+                list += Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() })
             } else {
-                list = listOf(
-                        Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() }),
-                        Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
-                )
+                list += Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() })
+                list += Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
             }
+            list += popupLineSeparator()
+            ClientDonation.Enum.orderedValues.forEach { donation ->
+                list.addDonation(selectedClient, donation)
+            }
+
             list
 
         })
+    }
+
+    private fun MutableList<Pair<String, () -> UserEvent>>.addDonation(client: ExtendedClient, donation: ClientDonation) {
+        if (client.donation != donation) this += Pair<String, () -> UserEvent>("Spende: ${donation.label}", { ClientChangeDonation(client.client, donation) })
     }
 
     override fun asComponent() = this

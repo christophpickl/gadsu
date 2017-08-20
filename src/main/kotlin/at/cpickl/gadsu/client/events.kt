@@ -114,3 +114,8 @@ class ShowInClientsListEvent(val showInactives: Boolean) : UserEvent()
 class ClientNavigateUpEvent() : UserEvent()
 // naechster klient
 class ClientNavigateDownEvent() : UserEvent()
+
+class ClientChangeDonation(
+        val client: Client,
+        val newDonation: ClientDonation
+) : UserEvent()
