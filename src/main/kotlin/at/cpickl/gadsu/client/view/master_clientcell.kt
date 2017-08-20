@@ -11,6 +11,7 @@ import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.differenceDaysWithinYear
 import at.cpickl.gadsu.service.formatDate
@@ -34,6 +35,7 @@ import java.awt.Font
 import java.awt.GridBagConstraints
 import java.awt.Insets
 import java.awt.image.BufferedImage
+import javax.inject.Inject
 import javax.swing.Icon
 import javax.swing.ImageIcon
 import javax.swing.JComponent
@@ -109,7 +111,41 @@ enum class TreatCount(number: Int) {
     val icon = Images.loadFromClasspath("/gadsu/images/treatment_count_$number.png")
 }
 
-class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(client) {
+
+class ThresholdColorCalculator @Inject constructor(private val prefs: Prefs) {
+
+    private val LIMIT_MODIFIER_A = 0.6
+    private val LIMIT_MODIFIER_B = 1.0
+    private val LIMIT_MODIFIER_C = 1.4
+
+    fun calc(client: ExtendedClient): ThresholdColor {
+        val days = client.differenceDaysToRecentTreatment!!
+        val category = client.category
+        val nextAppointment = client.upcomingAppointment
+
+        // FIXME #112 implement me
+//        if (nextAppointment != null) {
+//            return ThresholdColor.GotNextAppointment
+//        }
+//        val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
+//
+//        val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
+//        val limitAttention = (RecentState.Attention.baseLimit * limitModifier).toInt()
+//        val limitWarn = (RecentState.Warn.baseLimit * limitModifier).toInt()
+//        val limitCritical = (RecentState.Critical.baseLimit * limitModifier).toInt()
+//
+//        return if (days < limitOk) RecentState.Ok
+//        else if (days < limitAttention) RecentState.Attention
+//        else if (days < limitWarn) RecentState.Warn
+//        else if (days < limitCritical) RecentState.Critical
+//        else RecentState.Fatal
+
+        return ThresholdColor.Attention
+    }
+}
+
+
+class ClientCell(val client: ExtendedClient, colorCalc: ThresholdColorCalculator) : DefaultCellView<ExtendedClient>(client) {
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
@@ -148,7 +184,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else
-        RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category, client.upcomingAppointment)
+        RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, colorCalc.calc(client))
 
     private val createdPanel = if (client.differenceDaysToRecentTreatment != null) null else
         ClientCreatedPanel(client.created)
@@ -158,7 +194,7 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
     override fun onChangeForeground(foreground: Color) {
         countPanel.countLabel.foreground = foreground
         recentPanel?.apply { labelColor = foreground }
-        createdPanel?.apply { labelColor = foreground }
+        createdPanel?.apply { lbl.foreground = foreground }
     }
 
     init {
@@ -254,12 +290,11 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 }
 
 private class ClientCreatedPanel(created: DateTime) : JPanel() {
-    var labelColor = Color.BLACK!!
-
+    val lbl = JLabel("Erstellt am: ${created.formatDate()}").apply { font = clientDetailFont }
     init {
         transparent()
 //        // MINOR could colorize the client created background (if clients.treatmentCnt == 0 ==> calc diff of days)
-        add(JLabel("Erstellt am: ${created.formatDate()}").apply { font = clientDetailFont })
+        add(lbl)
     }
 }
 
