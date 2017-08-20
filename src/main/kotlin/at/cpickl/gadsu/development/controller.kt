@@ -45,6 +45,7 @@ import at.cpickl.gadsu.treatment.forTreatment
 import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import org.joda.time.DateTime
 import java.io.File
 import javax.inject.Inject
 
@@ -159,16 +160,31 @@ open class DevelopmentController @Inject constructor(
                         category = ClientCategory.C,
 //                        picture = MyImage.DEFAULT_PROFILE_ALIEN,
                         cprops = CProps.empty
+                ),
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Later"
+                ),
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Latest"
                 )
         ).forEach {
             val saved = clientService.insertOrUpdate(it)
 
             if (saved.firstName == "Xnna") {
-                val xnnasTreatment = Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = "13.2.2017 21:15:00".parseDateTime())
-                bus.post(TreatmentCreatedEvent(treatmentService.insert(xnnasTreatment)))
-
+                bus.post(TreatmentCreatedEvent(treatmentService.insert(
+                        Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = DateTime.now().minusDays(20))
+                )))
+            } else if (saved.firstName == "Soon") {
+                bus.post(AppointmentSavedEvent(appointmentService.insertOrUpdate(Appointment.insertPrototype(saved.id!!, DateTime.now().plusDays(7)))))
+            } else if (saved.firstName == "Later") {
+                bus.post(TreatmentCreatedEvent(treatmentService.insert(
+                        Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = DateTime.now().minusDays(42))
+                )))
+            } else if (saved.firstName == "Latest") {
+                bus.post(TreatmentCreatedEvent(treatmentService.insert(
+                        Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = DateTime.now().minusDays(99))
+                )))
             } else if (saved.firstName == "Max") {
-                val firstDate = "31.12.2001 14:15:00".parseDateTime()
                 val clientId = saved.id!!
                 val clientWithPic = saved.copy(picture = it.picture)
                 clientService.savePicture(clientWithPic)
@@ -178,7 +194,7 @@ open class DevelopmentController @Inject constructor(
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 1,
-                                date = firstDate,
+                                date = DateTime.now().minusDays(2),
                                 duration = minutes(20),
                                 aboutDiagnosis = "Ihm gings ganz ganz schlecht.",
                                 aboutContent = "Den Herzmeridian hab ich behandelt.",
@@ -211,20 +227,20 @@ open class DevelopmentController @Inject constructor(
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 2,
-                                date = firstDate.plusWeeks(1),
+                                date = DateTime.now().minusDays(2),
                                 dynTreatments = emptyList()
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 3,
-                                date = firstDate.plusWeeks(2),
+                                date = DateTime.now().minusDays(3),
                                 note = "A my note for treatment 3 for maxiiii. my note for treatment 3 for maxiiii. \nB my note for treatment 3 for maxiiii.\n\n\nXXX nmy note for treatment 3 for maxiiii. ",
                                 dynTreatments = emptyList()
                         ),
                         Treatment.insertPrototype(
                                 clientId = clientId,
                                 number = 4,
-                                date = firstDate.plusWeeks(3),
+                                date = DateTime.now().minusDays(4),
                                 duration = minutes(30),
                                 note = "Was a quick one",
                                 dynTreatments = DynTreatments.values().map { it.call(object : DynTreatmentsCallback<DynTreatment> {
@@ -254,15 +270,6 @@ open class DevelopmentController @Inject constructor(
                 ).forEach {
                     treatmentService.insert(it)
                     bus.post(TreatmentCreatedEvent(it))
-                }
-
-                val appDate = "15.01.2020 14:30:00".parseDateTime()
-                arrayOf(
-                    Appointment.insertPrototype(clientId, appDate),
-                    Appointment.insertPrototype(clientId, appDate.plusDays(1))
-                ).forEach {
-                    val savedApp = appointmentService.insertOrUpdate(it)
-                    bus.post(AppointmentSavedEvent(savedApp))
                 }
             }
         }
