@@ -14,7 +14,7 @@ buildscript {
 //    ext.kpotDefaultVersion = '1.6'
 //    if (!IS_TRAVIS) {
 //        kpotDefaultVersion = 'SNAPSHOT' // override the kpot version locally (or not)
-    }
+//    }
 //    ext.kpot_version = kpotDefaultVersion
 
     repositories {
