@@ -13,6 +13,7 @@ import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.differenceDaysWithinYear
+import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.formatDateNoYear
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
 import at.cpickl.gadsu.service.isBetweenInclusive
@@ -148,6 +149,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else
         RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, client.category, client.upcomingAppointment)
+
+    private val createdPanel = if (client.differenceDaysToRecentTreatment != null) null else
+        ClientCreatedPanel(client.created)
+
     private val countPanel = TreatmentCountPanel(client.countTreatments)
 
     override fun onChangeForeground(foreground: Color) {
@@ -198,11 +203,14 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
         c.insets = Pad.ZERO
         add(countPanel)
 
-        if (client.differenceDaysToRecentTreatment != null) {
-            c.gridy++
-            c.insets = Insets(2, 0, 2, 0)
-            add(JPanel(BorderLayout()).apply { transparent(); add(recentPanel!!, BorderLayout.WEST) })
+        c.gridy++
+        c.insets = Insets(2, 0, 2, 0)
+        val recentOrCreatedPanel = if (client.differenceDaysToRecentTreatment == null) {
+            createdPanel!!
+        } else {
+            recentPanel!!
         }
+        add(JPanel(BorderLayout()).apply { transparent(); add(recentOrCreatedPanel, BorderLayout.WEST) })
 
         if (client.upcomingAppointment != null) {
             c.insets = Pad.ZERO
@@ -279,11 +287,20 @@ object RecentStateCalculator {
     }
 }
 
+private class ClientCreatedPanel(created: DateTime) : JPanel(){
+    init {
+        transparent()
+
+        // MINOR could colorize the client created background (clients.treatmentCnt == 0)
+        add(JLabel("Erstellt am: ${created.formatDate()}").withFontSize(11))
+    }
+}
+
 private class RecentTreatmentPanel(days: Int, category: ClientCategory, nextAppointment: DateTime?) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
-                return "Funny?!"
+                return "Negativ?!"
             }
             return when (days) {
                 0 -> "Heute"
