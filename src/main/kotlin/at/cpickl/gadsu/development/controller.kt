@@ -23,7 +23,6 @@ import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
-import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.CurrentTreatment
@@ -160,6 +159,9 @@ open class DevelopmentController @Inject constructor(
                         category = ClientCategory.C,
 //                        picture = MyImage.DEFAULT_PROFILE_ALIEN,
                         cprops = CProps.empty
+                ),
+                Client.INSERT_PROTOTYPE.copy(
+                        firstName = "Soon"
                 ),
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Later"
