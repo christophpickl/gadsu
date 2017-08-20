@@ -131,6 +131,10 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
         private val CATEGORY_A_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_up.png")
         private val CATEGORY_C_IMAGE = Images.loadFromClasspath("/gadsu/images/clientcategory_indicator_down.png")
+        private val DONATION_UNKNOWN_IMAGE = Images.loadFromClasspath("/gadsu/images/client_donation_unknown.png")
+        private val DONATION_NONE_IMAGE = Images.loadFromClasspath("/gadsu/images/client_donation_none.png")
+        private val DONATION_PRESENT_IMAGE = Images.loadFromClasspath("/gadsu/images/client_donation_present.png")
+        private val DONATION_MONEY_IMAGE = Images.loadFromClasspath("/gadsu/images/client_donation_money.png")
         private val CATEGORY_IMAGE_SIZE = 15
     }
 
@@ -216,17 +220,26 @@ class ClientCell(val client: ExtendedClient) : DefaultCellView<ExtendedClient>(c
 
     private fun drawClientPictureWithCategoryIndicator(): Icon {
         val clientImage = client.picture.toViewLilRepresentation()
-        if (client.category == ClientCategory.B) {
-            return clientImage
-        }
         val finalImage = BufferedImage(ImageSize.LITTLE.width, ImageSize.LITTLE.height, BufferedImage.TYPE_INT_ARGB)
         val g = finalImage.createGraphics()
         g.drawImage(clientImage.image, 0, 0, null)
-        val categoryX = ImageSize.LITTLE.width - CATEGORY_IMAGE_SIZE - 2
-        val categoryY = ImageSize.LITTLE.height - CATEGORY_IMAGE_SIZE - 2
-        g.drawImage((if (client.category == ClientCategory.A) CATEGORY_A_IMAGE else CATEGORY_C_IMAGE).image, categoryX, categoryY, null)
-        g.dispose()
 
+        if (client.category != ClientCategory.B) {
+            g.drawImage((if (client.category == ClientCategory.A) CATEGORY_A_IMAGE else CATEGORY_C_IMAGE).image,
+                    ImageSize.LITTLE.width - CATEGORY_IMAGE_SIZE - 2,
+                    ImageSize.LITTLE.height - CATEGORY_IMAGE_SIZE - 2, null)
+        }
+        val donationImage = when (client.donation) {
+            ClientDonation.MONEY -> DONATION_MONEY_IMAGE
+            ClientDonation.UNKNOWN -> DONATION_UNKNOWN_IMAGE
+            ClientDonation.NONE -> DONATION_NONE_IMAGE
+            ClientDonation.PRESENT -> DONATION_PRESENT_IMAGE
+        }
+        g.drawImage(donationImage.image,
+                0,
+                0, null)
+
+        g.dispose()
         return ImageIcon(finalImage)
     }
 
