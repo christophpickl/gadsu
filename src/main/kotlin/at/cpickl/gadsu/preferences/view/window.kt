@@ -2,6 +2,7 @@ package at.cpickl.gadsu.preferences.view
 
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.PreferencesWindowClosedEvent
+import at.cpickl.gadsu.preferences.ThresholdPrefData
 import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
@@ -92,17 +93,8 @@ class PreferencesSwingWindow @Inject constructor(
 
     override fun initData(preferencesData: PreferencesData) {
         log.trace("initData(preferencesData={})", preferencesData)
-        tabGeneral.inpUsername.text = preferencesData.username
-        tabGeneral.inpCheckUpdates.isSelected = preferencesData.checkUpdates
-        tabGeneral.inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
-
-        tabConnectivity.inpProxy.text = preferencesData.proxy ?: ""
-        tabConnectivity.inpGcalName.text = preferencesData.gcalName ?: ""
-        tabConnectivity.inpGmailAddress.text = preferencesData.gmailAddress ?: ""
-        tabConnectivity.inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
-        tabConnectivity.inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
-        tabConnectivity.inpConfirmMailSubject.text = preferencesData.templateConfirmSubject ?: ""
-        tabConnectivity.inpConfirmMailBody.text = preferencesData.templateConfirmBody ?: ""
+        tabGeneral.initData(preferencesData)
+        tabConnectivity.initData(preferencesData)
     }
 
     override fun readData(): PreferencesData {
@@ -110,7 +102,11 @@ class PreferencesSwingWindow @Inject constructor(
                 username = tabGeneral.inpUsername.text,
                 checkUpdates = tabGeneral.inpCheckUpdates.isSelected,
                 treatmentGoal = if (tabGeneral.inpTreatmentGoal.numberValue <= 0) null else tabGeneral.inpTreatmentGoal.numberValue,
-
+                threshold = ThresholdPrefData(
+                        daysAttention = tabGeneral.inpThresholdAttention.numberValue,
+                        daysWarn = tabGeneral.inpThresholdWarn.numberValue,
+                        daysFatal = tabGeneral.inpThresholdFatal.numberValue
+                ),
                 proxy = tabConnectivity.inpProxy.text.nullIfEmpty(),
                 gcalName = tabConnectivity.inpGcalName.text.nullIfEmpty(),
                 gmailAddress = tabConnectivity.inpGmailAddress.text.nullIfEmpty(),

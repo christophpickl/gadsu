@@ -18,7 +18,8 @@ class JdbcPrefs @Inject constructor(
 
     companion object {
 
-        @VisibleForTesting val TABLE = "prefs"
+        @VisibleForTesting
+        val TABLE = "prefs"
 
         private val KEY_USERNAME = "USERNAME"
         private val KEY_CHECK_UPDATES = "CHECK_UPDATES"
@@ -28,6 +29,9 @@ class JdbcPrefs @Inject constructor(
         private val KEY_GAPI_ID = "KEY_GAPI_ID"
         private val KEY_GAPI_SECRET = "KEY_GAPI_SECRET"
         private val KEY_TREATMENT_GOAL = "TREATMENT_GOAL"
+        private val KEY_THRESHOLD_ATTENTION = "THRESHOLD_ATTENTION"
+        private val KEY_THRESHOLD_WARN = "THRESHOLD_WARN"
+        private val KEY_THRESHOLD_FATAL = "THRESHOLD_FATAL"
         private val KEY_TEMPLATE_CONFIRM_SUBJECT = "KEY_TEMPLATE_CONFIRM_SUBJECT"
         private val KEY_TEMPLATE_CONFIRM_BODY = "KEY_TEMPLATE_CONFIRM_BODY"
 
@@ -62,8 +66,14 @@ class JdbcPrefs @Inject constructor(
             val gapiCredentials = GapiCredentials.buildNullSafe(gapiClientId, gapiClientSecret)
             val templateConfirmSubject = queryValue(KEY_TEMPLATE_CONFIRM_SUBJECT)?.nullIfEmpty()
             val templateConfirmBody = queryValue(KEY_TEMPLATE_CONFIRM_BODY)?.nullIfEmpty()
+            val threshold =
+                    if (queryValue(KEY_THRESHOLD_ATTENTION) == null) ThresholdPrefData.DEFAULT
+                    else ThresholdPrefData(
+                            daysAttention = queryValue(KEY_THRESHOLD_ATTENTION)!!.toInt(),
+                            daysWarn = queryValue(KEY_THRESHOLD_WARN)!!.toInt(),
+                            daysFatal = queryValue(KEY_THRESHOLD_FATAL)!!.toInt())
 
-            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, gapiCredentials, treatmentGoal,
+            return PreferencesData(username, checkUpdates, proxy, gcalName, gmailAddress, gapiCredentials, treatmentGoal, threshold,
                     templateConfirmSubject, templateConfirmBody)
         }
         set(value) {
@@ -78,7 +88,9 @@ class JdbcPrefs @Inject constructor(
             storeValue(KEY_TREATMENT_GOAL, value.treatmentGoal?.toString() ?: "")
             storeValue(KEY_TEMPLATE_CONFIRM_SUBJECT, value.templateConfirmSubject ?: "")
             storeValue(KEY_TEMPLATE_CONFIRM_BODY, value.templateConfirmBody ?: "")
-
+            storeValue(KEY_THRESHOLD_ATTENTION, value.threshold.daysAttention.toString())
+            storeValue(KEY_THRESHOLD_WARN, value.threshold.daysWarn.toString())
+            storeValue(KEY_THRESHOLD_FATAL, value.threshold.daysFatal.toString())
         }
 
     override var mailPreferencesData: MailPreferencesData

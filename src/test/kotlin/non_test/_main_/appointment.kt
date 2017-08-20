@@ -6,6 +6,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.preferences.ThresholdPrefData
 import at.cpickl.gadsu.service.InternetConnectionController
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.testinfra.savedValidInstance
@@ -20,7 +21,8 @@ fun main(args: Array<String>) {
     val internet = Mockito.mock(InternetConnectionController::class.java)
     val prefs = Mockito.mock(Prefs::class.java)
     Mockito.`when`(internet.isConnected).thenReturn(internetAvailable)
-    Mockito.`when`(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName, null, null, null, null, null))
+    Mockito.`when`(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName,
+            null, null, null, ThresholdPrefData.DEFAULT, null, null))
     Framed.showFrameWithContext({ context ->
         val currentClient = CurrentClient(context.bus)
         currentClient.data = Client.savedValidInstance()

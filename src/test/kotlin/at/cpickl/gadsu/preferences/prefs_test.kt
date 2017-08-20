@@ -68,7 +68,7 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
 
     private val testData = PreferencesData(
             "testUsername", true, "proxy:42", "gcal_calendar_name", "gmail@gmail.com",
-            GapiCredentials("gapiId", "gapiSecret"), 20, "subject", "body"
+            GapiCredentials("gapiId", "gapiSecret"), 20, ThresholdPrefData(1337, 1338, 1339), "subject", "body"
     )
 
     fun `preferencesData, default at startup`() {
@@ -128,6 +128,29 @@ fun WindowDescriptor.Companion.newWithSize(width: Int, height: Int) =
     fun `recentSaveMultiProtocolFolder, set and get sunshine`() {
         prefs.recentSaveMultiProtocolFolder = existingFolder
         assertThat(prefs.recentSaveMultiProtocolFolder.absolutePath, equalTo(existingFolder.absolutePath))
+    }
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="threshold">
+
+
+    fun `threshold, default value`() {
+        assertThat(prefs.preferencesData.threshold, equalTo(ThresholdPrefData.DEFAULT))
+    }
+
+    fun `threshold, sets values`() {
+        val oldPrefs = prefs.preferencesData
+        val newPrefs = oldPrefs.copy(
+                threshold = ThresholdPrefData(
+                        daysAttention = oldPrefs.threshold.daysAttention + 1,
+                        daysWarn = oldPrefs.threshold.daysWarn + 2,
+                        daysFatal = oldPrefs.threshold.daysFatal + 3
+                )
+        )
+        prefs.preferencesData = newPrefs
+        assertThat(prefs.preferencesData.threshold, equalTo(newPrefs.threshold))
     }
 
 

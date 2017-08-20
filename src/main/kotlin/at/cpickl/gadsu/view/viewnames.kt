@@ -108,6 +108,9 @@ object AcupunctViewNames {
 object PreferencesViewNames {
     val Window = "Preferences.Window"
     val InputUsername = "Preferences.InputUsername"
+    val InputThresholdAttention = "Preferences.InputThresholdAttention"
+    val InputThresholdWarn = "Preferences.InputThresholdWarn"
+    val InputThresholdFatal = "Preferences.InputThresholdFatal"
 }
 
 object MultiProtocolViewNames {

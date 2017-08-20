@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.preferences.view
 
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.KTab
 import at.cpickl.gadsu.view.SwingFactory
@@ -20,7 +21,7 @@ import java.awt.GridBagConstraints
 import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 import javax.swing.JCheckBox
-import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
@@ -42,6 +43,10 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
     val inpApplicationDirectory = JTextField().disabled().disableFocusable()
     val inpLatestBackup = JTextField().disabled().disableFocusable()
+    val inpThresholdAttention = NumberField(4).selectAllOnFocus().leftAligned().viewName { Preferences.InputThresholdAttention }
+    val inpThresholdWarn = NumberField(4).selectAllOnFocus().leftAligned().viewName { Preferences.InputThresholdWarn }
+    val inpThresholdFatal = NumberField(4).selectAllOnFocus().leftAligned().viewName { Preferences.InputThresholdFatal }
+
 
     val btnCheckUpdate = swing.newEventButton("Jetzt prüfen", "", { CheckForUpdatesEvent() })
 
@@ -49,12 +54,18 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
 
         addDescriptiveFormInput("Dein Name", inpUsername, "Dein vollständiger Name wird unter anderem<br/>auf Rechnungen und Berichte (Protokolle) angezeigt.")
+
         addDescriptiveFormInput("Auto Update", initPanelCheckUpdates(), "Um immer am aktuellsten Stand zu bleiben,<br/>empfiehlt es sich diese Option zu aktivieren.",
                 GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
+
         addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
+
+        addDescriptiveFormInput("Threshold", initPanelThreshold(), "Anzahl der Tage zur Einfärbung der Cooldown Leiste.",
+                GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
 
         addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
                 addTopInset = VGAP_BETWEEN_COMPONENTS)
+
         addDescriptiveFormInput("Letztes Backup", inpLatestBackup, "Gadsu erstellt für dich täglich ein Backup aller Informationen.",
                 addTopInset = VGAP_BETWEEN_COMPONENTS)
 
@@ -63,12 +74,33 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
         addLastColumnsFilled()
     }
 
+    private fun initPanelThreshold() = JPanel().apply {
+        layout = BoxLayout(this, BoxLayout.X_AXIS)
+        transparent()
+
+        add(JLabel("Achtung / Orange"))
+        add(inpThresholdAttention)
+        add(JLabel("Warnung / Rot"))
+        add(inpThresholdWarn)
+        add(JLabel("Fatal / Lila"))
+        add(inpThresholdFatal)
+    }
+
     private fun initPanelCheckUpdates() = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.X_AXIS)
         transparent()
 
         add(inpCheckUpdates)
         add(btnCheckUpdate)
+    }
+
+    fun initData(preferencesData: PreferencesData) {
+        inpUsername.text = preferencesData.username
+        inpCheckUpdates.isSelected = preferencesData.checkUpdates
+        inpTreatmentGoal.numberValue = preferencesData.treatmentGoal ?: 0
+        inpThresholdAttention.numberValue = preferencesData.threshold.daysAttention
+        inpThresholdWarn.numberValue = preferencesData.threshold.daysWarn
+        inpThresholdFatal.numberValue = preferencesData.threshold.daysFatal
     }
 
 }
@@ -106,6 +138,16 @@ class PrefsTabConnectivity : PrefsTab("Connectivity") {
                 fillType = GridBagFill.Both,
                 inputWeighty = 1.0
         )
+    }
+
+    fun initData(preferencesData: PreferencesData) {
+        inpProxy.text = preferencesData.proxy ?: ""
+        inpGcalName.text = preferencesData.gcalName ?: ""
+        inpGmailAddress.text = preferencesData.gmailAddress ?: ""
+        inpGapiClientId.text = preferencesData.gapiCredentials?.clientId
+        inpGapiClientSecret.text = preferencesData.gapiCredentials?.clientSecret
+        inpConfirmMailSubject.text = preferencesData.templateConfirmSubject ?: ""
+        inpConfirmMailBody.text = preferencesData.templateConfirmBody ?: ""
     }
 
 }

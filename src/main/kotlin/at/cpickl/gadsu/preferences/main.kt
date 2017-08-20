@@ -8,6 +8,21 @@ class ShowPreferencesEvent : UserEvent()
 
 class PreferencesWindowClosedEvent(val persistData: Boolean) : UserEvent()
 
+data class ThresholdPrefData(
+        val daysAttention: Int, // orange
+        val daysWarn: Int, // red
+        val daysFatal: Int // lila
+) {
+    companion object {
+        val DEFAULT = ThresholdPrefData(
+                // 0 to 6 ... green
+                daysAttention = 14,
+                daysWarn = 30,
+                daysFatal = 60
+        )
+    }
+}
+
 data class PreferencesData(
         val username: String,
         val checkUpdates: Boolean,
@@ -16,6 +31,7 @@ data class PreferencesData(
         var gmailAddress: String?,
         var gapiCredentials: GapiCredentials?,
         val treatmentGoal: Int?,
+        val threshold: ThresholdPrefData,
         val templateConfirmSubject: String?,
         val templateConfirmBody: String?
 ) {
@@ -28,6 +44,7 @@ data class PreferencesData(
                 gmailAddress = null,
                 gapiCredentials = null,
                 treatmentGoal = null,
+                threshold = ThresholdPrefData.DEFAULT,
                 templateConfirmSubject = "[shiatsu] terminbestaetigung \${dateStart?string[\"d.M.\"]}",
                 templateConfirmBody = """hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>$\{name?lower_case},
 meine software ist so nett und moechte dich in meinem namen daran erinnern,
