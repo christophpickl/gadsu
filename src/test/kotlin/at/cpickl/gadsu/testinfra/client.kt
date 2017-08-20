@@ -2,6 +2,7 @@ package at.cpickl.gadsu.testinfra
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
@@ -39,5 +40,5 @@ fun Client.Companion.fullInstance() = Client(
         Contact("mail", "phone", "street", "zip", "city"),
         true, "24.8.1984".parseDate(), Gender.MALE, "herkunft", "origin", Relationship.DIVORCED, "job", "children",
         "hobbies", "note", "impression", "medical", "complaints", "personal", "objectives",
-        "main objective", "symptoms", "5elements", "syndrom", ClientCategory.A, "tcm note", Gender.MALE.defaultImage, CProps.empty
+        "main objective", "symptoms", "5elements", "syndrom", ClientCategory.A, ClientDonation.PRESENT, "tcm note", Gender.MALE.defaultImage, CProps.empty
 )

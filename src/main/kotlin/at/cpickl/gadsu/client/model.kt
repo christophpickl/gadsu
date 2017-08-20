@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.client
 
 import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.EnumBase
+import at.cpickl.gadsu.Labeled
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
@@ -11,7 +13,6 @@ import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
-import at.cpickl.gadsu.view.components.inputs.Labeled
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -64,6 +65,7 @@ interface IClient : HasId, Persistable {
     val textFiveElements: String
     val textSyndrom: String
     val category: ClientCategory
+    val donation: ClientDonation
 
     val tcmNote: String
     val picture: MyImage
@@ -112,6 +114,7 @@ data class Client(
         /** "Allgemein" tab, textfield: Syndrom */
         override val textSyndrom: String,
         override val category: ClientCategory,
+        override val donation: ClientDonation,
 
         override val tcmNote: String,
         override val picture: MyImage,
@@ -122,11 +125,39 @@ data class Client(
     companion object { // needed for static extension methods
 
         // created date will be overridden anyway, so just set it to DUMMY_CREATED is ok :)
-        val INSERT_PROTOTYPE = Client(null, DUMMY_CREATED, ClientState.ACTIVE,
-                "", "", "",
-                Contact.EMPTY, true, null, Gender.UNKNOWN, "", "", Relationship.UNKNOWN, "", "", "", "",
-                "", "", "", "", "", "", "", "", "",
-                ClientCategory.B, "", MyImage.DEFAULT_PROFILE_MAN, CProps.empty)
+        val INSERT_PROTOTYPE = Client(
+                id = null,
+                created = DUMMY_CREATED,
+                state = ClientState.ACTIVE,
+                firstName = "",
+                lastName = "",
+                nickName = "",
+                contact = Contact.EMPTY,
+                wantReceiveMails = true,
+                birthday = null,
+                gender = Gender.UNKNOWN,
+                countryOfOrigin = "",
+                origin = "",
+                relationship = Relationship.UNKNOWN,
+                job = "",
+                children = "",
+                hobbies = "",
+                note = "",
+                textImpression = "",
+                textMedical = "",
+                textComplaints = "",
+                textPersonal = "",
+                textObjective = "",
+                textMainObjective = "",
+                textSymptoms = "",
+                textFiveElements = "",
+                textSyndrom = "",
+                category = ClientCategory.B,
+                donation = ClientDonation.UNKNOWN,
+                tcmNote = "",
+                picture = MyImage.DEFAULT_PROFILE_MAN,
+                cprops = CProps.empty
+        )
     }
 
     override val hasMail: Boolean = this.contact.mail.isNotEmpty()
@@ -190,6 +221,7 @@ data class Client(
                 Objects.equal(this.textFiveElements, that.textFiveElements) &&
                 Objects.equal(this.textSyndrom, that.textSyndrom) &&
                 Objects.equal(this.category, that.category) &&
+                Objects.equal(this.donation, that.donation) &&
                 Objects.equal(this.tcmNote, that.tcmNote) &&
                 Objects.equal(this.picture.toSaveRepresentation(), that.picture.toSaveRepresentation()) &&
                 Objects.equal(this.cprops, that.cprops)
@@ -272,4 +304,18 @@ enum class ClientCategory(override val order: Int, override val sqlCode: String,
         val orderedValues: List<ClientCategory> = orderedValuesOf(ClientCategory.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(ClientCategory.values(), search)
     }
+}
+
+enum class ClientDonation(
+        override val order: Int,
+        override val sqlCode: String,
+        override val label: String
+) : Ordered, SqlEnum, Labeled {
+    UNKNOWN(1, "UNKNOWN", "Unbekannt"),
+    NONE(2, "NONE", "Nichts"),
+    PRESENT(3, "PRESENT", "Geschenk"),
+    MONEY(4, "MONEY", "Geld");
+
+    object Enum : EnumBase<ClientDonation>(ClientDonation.values())
+
 }

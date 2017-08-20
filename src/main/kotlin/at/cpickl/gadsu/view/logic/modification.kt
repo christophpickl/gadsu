@@ -1,11 +1,11 @@
 package at.cpickl.gadsu.view.logic
 
+import at.cpickl.gadsu.Labeled
 import at.cpickl.gadsu.view.ElRichTextArea
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.ShortcutEvent
 import at.cpickl.gadsu.view.components.ShortcutListener
-import at.cpickl.gadsu.view.components.inputs.Labeled
 import at.cpickl.gadsu.view.components.inputs.MyCheckBox
 import at.cpickl.gadsu.view.components.inputs.MyComboBox
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker

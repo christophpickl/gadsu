@@ -182,6 +182,7 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpFiveElements.text,
                 tabMain.inpSyndrom.text,
                 tabMain.inpCategory.selectedItemTyped,
+                currentClient.data.donation, // not changeable via client detail view
 
                 tabTcm.inpTcmNote.toEnrichedText(),
                 currentClient.data.picture,

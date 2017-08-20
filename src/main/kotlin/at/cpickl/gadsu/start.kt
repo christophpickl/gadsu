@@ -79,9 +79,9 @@ class GadsuGuiceStarter @Inject constructor(
             val hostAndPort = HostAndPort.fromString(proxy).withDefaultPort(8080)
 
             log.info("Enabling proxy: '{}'", hostAndPort)
-            System.setProperty("http.proxyHost", hostAndPort.host)
+            System.setProperty("http.proxyHost", hostAndPort.hostText)
             System.setProperty("http.proxyPort", hostAndPort.port.toString())
-            System.setProperty("https.proxyHost", hostAndPort.host)
+            System.setProperty("https.proxyHost", hostAndPort.hostText)
             System.setProperty("https.proxyPort", hostAndPort.port.toString())
         }
     }

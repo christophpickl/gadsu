@@ -194,6 +194,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("elements"),
                 rs.getString("syndrom"),
                 ClientCategory.parseSqlCode(rs.getString("category")),
+                ClientDonation.Enum.parseSqlCode(rs.getString("donation")),
 
                 rs.getString("tcmNote"),
                 readFromBlob(rs.getBlob("picture"), gender),

@@ -3,6 +3,10 @@ package at.cpickl.gadsu
 import java.util.Collections
 
 
+interface Labeled {
+    val label: String
+}
+
 interface Ordered {
     val order: Int
 }
@@ -19,4 +23,11 @@ interface SqlEnum {
 fun <E : SqlEnum> parseSqlCodeFor(values: Array<E>, search: String): E {
     return values.firstOrNull { it.sqlCode == search } ?:
             throw GadsuException("Unhandled SQL code: '$search'!")
+}
+
+abstract class EnumBase<out T>(
+        private val values: Array<T>
+) where T : Ordered, T : SqlEnum {
+    val orderedValues: List<T> = orderedValuesOf(values)
+    fun parseSqlCode(search: String) = parseSqlCodeFor(values, search)
 }

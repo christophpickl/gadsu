@@ -6,6 +6,7 @@ import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
@@ -63,6 +64,7 @@ class ScreenshotDataInserter @Inject constructor(
                         "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
                         "Le-Qi-Stau",
                         ClientCategory.A,
+                        ClientDonation.PRESENT,
                         "",
                         pic("profile_pic-valid_man1.jpg"),
                         CProps.builder()

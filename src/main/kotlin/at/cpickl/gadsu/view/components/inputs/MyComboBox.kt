@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components.inputs
 
+import at.cpickl.gadsu.Labeled
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.transparent
@@ -13,10 +14,6 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.UIManager
 
-
-interface Labeled {
-    val label: String
-}
 
 
 open class MyComboBox<T : Labeled>(data: List<T>, initValue: T) : JComboBox<T>(Vector(data)) {

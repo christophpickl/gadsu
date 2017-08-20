@@ -7,7 +7,9 @@ import at.cpickl.gadsu.tcm.model.XProps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
+import org.testng.Assert
 import org.testng.annotations.DataProvider
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 @Test
@@ -16,7 +18,7 @@ class ClientTest {
     private val contact1 = Contact("1", "1", "1", "1", "1")
     private val cprops1 = CProps.builder().build()
     private val client1 = Client("1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", contact1, true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
-            "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, "1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
+            "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
     fun changingClientProvider(): Array<Array<Any>> = arrayOf(
@@ -41,6 +43,7 @@ class ClientTest {
             arrayOf<Any>("textPersonal",    { it: Client -> it.copy(textPersonal = "2") }),
             arrayOf<Any>("textObjective",   { it: Client -> it.copy(textObjective = "2") }),
             arrayOf<Any>("category",         { it: Client -> it.copy(category = ClientCategory.C) }),
+            arrayOf<Any>("donation",         { it: Client -> it.copy(donation = ClientDonation.NONE) }),
             arrayOf<Any>("tcmNote",         { it: Client -> it.copy(tcmNote = "2") }),
             arrayOf<Any>("cprops",          { it: Client -> it.copy(cprops = CProps.builder().add(XProps.Hungry, XProps.HungryOpts.BigHunger).build()) })
     )

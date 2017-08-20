@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.service
 
+import at.cpickl.gadsu.Labeled
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.orderedValuesOf
-import at.cpickl.gadsu.view.components.inputs.Labeled
 import org.joda.time.DateTime
 
 

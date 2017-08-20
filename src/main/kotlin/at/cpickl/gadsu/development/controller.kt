@@ -8,6 +8,7 @@ import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
@@ -124,6 +125,7 @@ open class DevelopmentController @Inject constructor(
 
                         tcmNote = "zyklus 24T-6T; drahtiger puls",
                         category = ClientCategory.A,
+                        donation = ClientDonation.PRESENT,
 
                         cprops = CProps.builder()
                                 .add(XProps.Impression, "* war irgendwie anders", XProps.ImpressionOpts.BehaveCalm, XProps.ImpressionOpts.EyesClear)
