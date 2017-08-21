@@ -1,10 +1,47 @@
 package at.cpickl.gadsu.client.view
 
+import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.swing.enforceSize
 import java.awt.Color
 import java.awt.Graphics
+import javax.inject.Inject
 import javax.swing.JPanel
+
+
+class ThresholdColorCalculator @Inject constructor(private val prefs: Prefs) {
+
+    private val LIMIT_MODIFIER_A = 0.6
+    private val LIMIT_MODIFIER_B = 1.0
+    private val LIMIT_MODIFIER_C = 1.4
+
+    fun calc(client: ExtendedClient): ThresholdColor {
+        val days = client.differenceDaysToRecentTreatment!!
+        val category = client.category
+        val nextAppointment = client.upcomingAppointment
+
+        // FIXME #112 implement me
+
+//        if (nextAppointment != null) {
+//            return ThresholdColor.GotNextAppointment
+//        }
+//        val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
+//
+//        val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
+//        val limitAttention = (RecentState.Attention.baseLimit * limitModifier).toInt()
+//        val limitWarn = (RecentState.Warn.baseLimit * limitModifier).toInt()
+//        val limitCritical = (RecentState.Critical.baseLimit * limitModifier).toInt()
+//
+//        return if (days < limitOk) RecentState.Ok
+//        else if (days < limitAttention) RecentState.Attention
+//        else if (days < limitWarn) RecentState.Warn
+//        else if (days < limitCritical) RecentState.Critical
+//        else RecentState.Fatal
+
+        return ThresholdColor.Attention
+    }
+}
+
 
 class RecentTreatmentPanel(daysSinceLastTreatment: Int, color: ThresholdColor) : JPanel() {
     companion object {
