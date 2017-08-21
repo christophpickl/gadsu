@@ -7,8 +7,15 @@ buildscript {
     ext.IS_TRAVIS = new File("/home/travis").exists()
 
     println "[GADSU] IS_TRAVIS=" + IS_TRAVIS
-    ext.kotlin_version = '1.1.4'
-    ext.kpot_version = '1.6'
+
+    ext {
+        kotlin_version = '1.1.4'
+        kpot_version = '1.6'
+
+        spring_version = '4.3.10.RELEASE'
+        logback_version = '1.2.3'
+        guice_version = '4.1.0'
+    }
 
 //    ext.kpotDefaultVersion = '1.6'
 //    if (!IS_TRAVIS) {
@@ -107,25 +114,25 @@ dependencies {
 
     compile 'joda-time:joda-time:2.9.9'
     compile 'commons-cli:commons-cli:1.4' // parse CLI args
-    compile 'com.thoughtworks.xstream:xstream:1.4.9'
+    compile 'com.thoughtworks.xstream:xstream:1.4.10'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
 
-    compile 'com.google.inject:guice:4.1.0'
-    testCompile 'com.google.inject.extensions:guice-grapher:4.1.0'
-    compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
-    compile 'com.google.guava:guava:21.0' // guice introduces some older version
+    compile "com.google.inject:guice:$guice_version"
+    testCompile "com.google.inject.extensions:guice-grapher:$guice_version"
+    compile "com.google.inject.extensions:guice-assistedinject:$guice_version"
+    compile 'com.google.guava:guava:23.0' // guice introduces some older version
     compile 'net.ricecode:string-similarity:1.0.0'
     compile 'org.freemarker:freemarker:2.3.25-incubating'
 
     // DB
     // -------------------------------------------------------------------------
     compile 'org.hsqldb:hsqldb:2.3.3' // hsqldb 2.3.4 leads to the application to hang :-/
-    compile 'org.springframework:spring-jdbc:4.3.7.RELEASE'
-    compile 'org.springframework:spring-context-support:4.3.7.RELEASE'
-    compile 'org.flywaydb:flyway-core:4.1.2'
+    compile "org.springframework:spring-jdbc:$spring_version"
+    compile "org.springframework:spring-context-support:$spring_version"
+    compile 'org.flywaydb:flyway-core:4.2.0'
 
     // REPORTING
-    compile 'net.sf.jasperreports:jasperreports:6.4.0'
+    compile 'net.sf.jasperreports:jasperreports:6.4.1'
     compile 'com.lowagie:itext:2.1.7'
     // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
     compile 'com.itextpdf:itextpdf:5.5.11' // jasper comes with outdated itext (fortunately got different package name)
@@ -134,17 +141,17 @@ dependencies {
     // -------------------------------------------------------------------------
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.slf4j:jcl-over-slf4j:1.7.25' // everyone who uses apaches common logging should use this instead
-    compile 'ch.qos.logback:logback-core:1.2.2'
-    compile 'ch.qos.logback:logback-classic:1.2.2'
+    compile "ch.qos.logback:logback-core:$logback_version"
+    compile "ch.qos.logback:logback-classic:$logback_version"
 
     // GOOGLE
     // -------------------------------------------------------------------------
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
-    compile 'com.google.apis:google-api-services-calendar:v3-rev239-1.22.0'
-    compile 'com.google.apis:google-api-services-gmail:v1-rev62-1.22.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev254-1.22.0'
+    compile 'com.google.apis:google-api-services-gmail:v1-rev70-1.22.0'
     compile 'javax.mail:mail:1.4.7'
-    compile 'org.apache.pdfbox:pdfbox:2.0.5'
+    compile 'org.apache.pdfbox:pdfbox:2.0.7'
 
     // TEST
     // -------------------------------------------------------------------------
@@ -160,7 +167,7 @@ dependencies {
     testCompile 'com.natpryce:hamkrest:1.4.2.0'
     testCompile(group: 'org.uispec4j', name: 'uispec4j', version: '2.5-RC1', classifier: 'jdk8')
     testCompile 'junit:junit:4.12' // required by spec4j during runtime because of inheritance tree
-    testCompile 'com.google.inject.extensions:guice-testlib:4.1.0'
+    testCompile "com.google.inject.extensions:guice-testlib:$guice_version"
     testCompile 'org.jopendocument:jOpenDocument:1.3'
     testCompile 'com.github.kittinunf.fuel:fuel:1.5.0'
 //    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version" // rest client for kotlin
