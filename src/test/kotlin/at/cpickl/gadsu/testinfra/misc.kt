@@ -22,6 +22,7 @@ val MyImage.Companion.TEST_CLIENT_PIC1: MyImage get() = PROFILE_PICTURE_CLASSPAT
 val MyImage.Companion.TEST_CLIENT_PIC2: MyImage get() = PROFILE_PICTURE_CLASSPATH_2.toMyImage()
 
 
+@Deprecated("use test4k instead")
 fun skip(reason: String) {
     throw SkipException(reason)
 }

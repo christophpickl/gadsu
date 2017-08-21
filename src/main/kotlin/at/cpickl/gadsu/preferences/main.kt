@@ -15,7 +15,7 @@ data class ThresholdPrefData(
 ) {
     companion object {
         val DEFAULT = ThresholdPrefData(
-                // 0 to 6 ... green
+                // 0 ... green
                 daysAttention = 14,
                 daysWarn = 30,
                 daysFatal = 60

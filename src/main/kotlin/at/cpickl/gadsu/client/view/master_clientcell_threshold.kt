@@ -1,6 +1,9 @@
 package at.cpickl.gadsu.client.view
 
+import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.preferences.ThresholdPrefData
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.swing.enforceSize
 import java.awt.Color
@@ -11,39 +14,54 @@ import javax.swing.JPanel
 
 class ThresholdCalculator @Inject constructor(private val prefs: Prefs) {
 
-    private val LIMIT_MODIFIER_A = 0.6
-    private val LIMIT_MODIFIER_B = 1.0
-    private val LIMIT_MODIFIER_C = 1.4
+    private val ClientCategory.threshold: Double
+        get() = when (this) {
+            ClientCategory.A -> 0.7
+            ClientCategory.B -> 1.0
+            ClientCategory.C -> 1.5
+        }
 
-    fun calc(client: ExtendedClient): ThresholdLevel {
+    private val ClientDonation.threshold: Double
+        get() = when (this) {
+            ClientDonation.UNKNOWN -> 1.0
+            ClientDonation.NONE -> 1.6
+            ClientDonation.PRESENT -> 0.9
+            ClientDonation.MONEY -> 0.7
+        }
+
+    fun calc(client: ExtendedClient): ThresholdResult {
+        if (client.upcomingAppointment != null) {
+            return ThresholdResult.GotNextAppointment
+        }
+
+        val configuredThreshold = prefs.preferencesData.threshold
         val days = client.differenceDaysToRecentTreatment!!
-        val category = client.category
-        val nextAppointment = client.upcomingAppointment
+        return ThresholdIntermedResult.values().firstOrNull { days < calcThresholdCount(it, client, configuredThreshold) }?.previous
+                ?: ThresholdResult.Fatal
+    }
 
-        // FIXME #112 implement me
+    private fun calcThresholdCount(result: ThresholdIntermedResult, client: ExtendedClient, configuredThreshold: ThresholdPrefData): Int {
+        val baseCount = result.fromConfig(configuredThreshold)
+        var calced = baseCount.toDouble()
+        calced *= client.category.threshold
+        calced *= client.donation.threshold
+        return calced.toInt()
+    }
 
-//        if (nextAppointment != null) {
-//            return ThresholdColor.GotNextAppointment
-//        }
-//        val limitModifier = if (category == ClientCategory.A) LIMIT_MODIFIER_A else if (category == ClientCategory.B) LIMIT_MODIFIER_B else LIMIT_MODIFIER_C
-//
-//        val limitOk = (RecentState.Ok.baseLimit * limitModifier).toInt()
-//        val limitAttention = (RecentState.Attention.baseLimit * limitModifier).toInt()
-//        val limitWarn = (RecentState.Warn.baseLimit * limitModifier).toInt()
-//        val limitCritical = (RecentState.Critical.baseLimit * limitModifier).toInt()
-//
-//        return if (days < limitOk) RecentState.Ok
-//        else if (days < limitAttention) RecentState.Attention
-//        else if (days < limitWarn) RecentState.Warn
-//        else if (days < limitCritical) RecentState.Critical
-//        else RecentState.Fatal
-
-        return ThresholdLevel.Attention
+    private fun ThresholdIntermedResult.fromConfig(config: ThresholdPrefData) = when (this) {
+        ThresholdIntermedResult.Attention -> config.daysAttention
+        ThresholdIntermedResult.Warn -> config.daysWarn
+        ThresholdIntermedResult.Fatal -> config.daysFatal
     }
 }
 
+private enum class ThresholdIntermedResult(val delegate: ThresholdResult, val previous: ThresholdResult) {
+    Attention(ThresholdResult.Attention, ThresholdResult.Ok),
+    Warn(ThresholdResult.Warn, ThresholdResult.Attention),
+    Fatal(ThresholdResult.Fatal, ThresholdResult.Warn)
+}
 
-class RecentTreatmentPanel(daysSinceLastTreatment: Int, level: ThresholdLevel) : JPanel() {
+class RecentTreatmentPanel(daysSinceLastTreatment: Int, result: ThresholdResult) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -61,8 +79,8 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, level: ThresholdLevel) :
 
     var labelColor = Color.BLACK!!
     private val labelText = labelTextForRecentTreatment(daysSinceLastTreatment)
-    private val colorFilling = level.color1
-    private val colorBorder = level.color2
+    private val colorFilling = result.color1
+    private val colorBorder = result.color2
 
     init {
         enforceSize(138, 12)
@@ -82,10 +100,9 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, level: ThresholdLevel) :
         g.drawString(labelText, 4, 9)
     }
 
-
 }
 
-enum class ThresholdLevel(val color1: Color, val color2: Color) {
+enum class ThresholdResult(val color1: Color, val color2: Color) {
     GotNextAppointment(Color.GRAY, Color.BLACK),
     Ok(Colors.byHex("02bb1c"), Colors.byHex("015d0e")), // green
     Attention(Colors.byHex("e0b520"), Colors.byHex("705a10")), // orange
