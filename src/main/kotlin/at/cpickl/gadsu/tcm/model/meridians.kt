@@ -5,17 +5,11 @@ import at.cpickl.gadsu.tcm.model.Element.*
 import at.cpickl.gadsu.tcm.model.Extremity.Foot
 import at.cpickl.gadsu.tcm.model.Extremity.Hand
 import at.cpickl.gadsu.tcm.model.Family.*
-import at.cpickl.gadsu.tcm.model.YinYang.Yang
-import at.cpickl.gadsu.tcm.model.YinYang.Yin
 import at.cpickl.gadsu.tcm.model.ZangFu.Fu
 import at.cpickl.gadsu.tcm.model.ZangFu.Zang
 
 // https://en.wikipedia.org/wiki/Meridian_%28Chinese_medicine%29#Twelve_standard_meridians
 
-enum class ZangFu(val yy: YinYang) {
-    Zang(Yin),
-    Fu(Yang)
-}
 
 // 12 hauptleitbahnen, 12 leitbahnzweige, 8 unpaarige, 15 netzleitbahne, netzbahnzweige, netzbahnen 3rd generation, 12 muskelleitbahne, hauptregionen
 
