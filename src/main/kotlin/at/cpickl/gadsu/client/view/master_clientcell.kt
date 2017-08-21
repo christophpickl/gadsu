@@ -44,7 +44,7 @@ enum class TreatCount(number: Int) {
 }
 
 
-class ClientCell(val client: ExtendedClient, colorCalc: ThresholdColorCalculator) : DefaultCellView<ExtendedClient>(client) {
+class ClientCell(val client: ExtendedClient, calc: ThresholdCalculator) : DefaultCellView<ExtendedClient>(client) {
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
@@ -83,7 +83,7 @@ class ClientCell(val client: ExtendedClient, colorCalc: ThresholdColorCalculator
     private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
 
     private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else
-        RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, colorCalc.calc(client))
+        RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, calc.calc(client))
 
     private val createdPanel = if (client.differenceDaysToRecentTreatment != null) null else
         ClientCreatedPanel(client.created)

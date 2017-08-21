@@ -5,7 +5,7 @@ import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.client.view.ClientViewController
 import at.cpickl.gadsu.client.view.SwingClientMasterView
 import at.cpickl.gadsu.client.view.SwingClientView
-import at.cpickl.gadsu.client.view.ThresholdColorCalculator
+import at.cpickl.gadsu.client.view.ThresholdCalculator
 import at.cpickl.gadsu.client.view.detail.ClientDetailView
 import at.cpickl.gadsu.client.view.detail.SwingClientDetailView
 import at.cpickl.gadsu.client.xprops.XPropsModule
@@ -24,7 +24,7 @@ class ClientModule : AbstractModule() {
         bind(ClientView::class.java).to(SwingClientView::class.java).`in`(Scopes.SINGLETON)
         bind(ClientMasterView::class.java).to(SwingClientMasterView::class.java).`in`(Scopes.SINGLETON)
         bind(ClientDetailView::class.java).to(SwingClientDetailView::class.java).`in`(Scopes.SINGLETON)
-        bind(ThresholdColorCalculator::class.java).`in`(Scopes.SINGLETON)
+        bind(ThresholdCalculator::class.java).`in`(Scopes.SINGLETON)
 
         bind(ClientService::class.java).to(ClientServiceImpl::class.java)
 

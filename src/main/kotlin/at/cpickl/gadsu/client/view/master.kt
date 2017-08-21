@@ -63,12 +63,12 @@ interface ClientMasterView {
 
 }
 
-class ClientList(model: MyListModel<ExtendedClient>, colorCalc: ThresholdColorCalculator) : JList<ExtendedClient>(model) {
+class ClientList(model: MyListModel<ExtendedClient>, calc: ThresholdCalculator) : JList<ExtendedClient>(model) {
     init {
         name = ViewNames.Client.List
 
         val myCellRenderer = object : MyListCellRenderer<ExtendedClient>() {
-            override fun newCell(value: ExtendedClient) = ClientCell(value, colorCalc)
+            override fun newCell(value: ExtendedClient) = ClientCell(value, calc)
         }
         cellRenderer = myCellRenderer
         enableHoverListener(myCellRenderer)
@@ -80,13 +80,13 @@ class ClientList(model: MyListModel<ExtendedClient>, colorCalc: ThresholdColorCa
 class SwingClientMasterView @Inject constructor(
         private val bus: EventBus,
         swing: SwingFactory,
-        colorCalc: ThresholdColorCalculator
+        calc: ThresholdCalculator
 ) : GridPanel(), ClientMasterView {
 
     override val model = MyListModel<ExtendedClient>()
 
     private val log = LOG(javaClass)
-    private val list = ClientList(model, colorCalc)
+    private val list = ClientList(model, calc)
     private var previousSelected: ExtendedClient? = null
     private val client2extended: MutableMap<String, ExtendedClient> = HashMap()
 

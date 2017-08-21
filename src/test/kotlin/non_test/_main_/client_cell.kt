@@ -4,10 +4,12 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.view.ClientList
 import at.cpickl.gadsu.client.view.ExtendedClient
+import at.cpickl.gadsu.client.view.ThresholdCalculator
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.MyListModel
+import com.nhaarman.mockito_kotlin.mock
 import org.joda.time.DateTime
 import javax.swing.JPanel
 
@@ -32,6 +34,6 @@ fun main(args: Array<String>) {
                             upcomingAppointment = DateTime.now().plusDays(1),
                             differenceDaysToRecentTreatment = 390)
             ))
-        }))
+        }, ThresholdCalculator(mock())))
     })
 }

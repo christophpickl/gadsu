@@ -12,7 +12,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import org.joda.time.DateTime
 
-class ExtendedClient(
+data class ExtendedClient(
         var client: Client,
         var countTreatments: Int,
         var upcomingAppointment: DateTime?,

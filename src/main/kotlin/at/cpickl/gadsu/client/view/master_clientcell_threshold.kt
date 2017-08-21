@@ -9,13 +9,13 @@ import javax.inject.Inject
 import javax.swing.JPanel
 
 
-class ThresholdColorCalculator @Inject constructor(private val prefs: Prefs) {
+class ThresholdCalculator @Inject constructor(private val prefs: Prefs) {
 
     private val LIMIT_MODIFIER_A = 0.6
     private val LIMIT_MODIFIER_B = 1.0
     private val LIMIT_MODIFIER_C = 1.4
 
-    fun calc(client: ExtendedClient): ThresholdColor {
+    fun calc(client: ExtendedClient): ThresholdLevel {
         val days = client.differenceDaysToRecentTreatment!!
         val category = client.category
         val nextAppointment = client.upcomingAppointment
@@ -38,12 +38,12 @@ class ThresholdColorCalculator @Inject constructor(private val prefs: Prefs) {
 //        else if (days < limitCritical) RecentState.Critical
 //        else RecentState.Fatal
 
-        return ThresholdColor.Attention
+        return ThresholdLevel.Attention
     }
 }
 
 
-class RecentTreatmentPanel(daysSinceLastTreatment: Int, color: ThresholdColor) : JPanel() {
+class RecentTreatmentPanel(daysSinceLastTreatment: Int, level: ThresholdLevel) : JPanel() {
     companion object {
         private fun labelTextForRecentTreatment(days: Int): String {
             if (days < 0) {
@@ -61,8 +61,8 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, color: ThresholdColor) :
 
     var labelColor = Color.BLACK!!
     private val labelText = labelTextForRecentTreatment(daysSinceLastTreatment)
-    private val colorFilling = color.color1
-    private val colorBorder = color.color2
+    private val colorFilling = level.color1
+    private val colorBorder = level.color2
 
     init {
         enforceSize(138, 12)
@@ -85,7 +85,7 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, color: ThresholdColor) :
 
 }
 
-enum class ThresholdColor(val color1: Color, val color2: Color) {
+enum class ThresholdLevel(val color1: Color, val color2: Color) {
     GotNextAppointment(Color.GRAY, Color.BLACK),
     Ok(Colors.byHex("02bb1c"), Colors.byHex("015d0e")), // green
     Attention(Colors.byHex("e0b520"), Colors.byHex("705a10")), // orange

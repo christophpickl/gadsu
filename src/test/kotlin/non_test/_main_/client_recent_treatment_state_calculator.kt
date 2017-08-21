@@ -1,16 +1,56 @@
 package non_test._main_
 
 import at.cpickl.gadsu.client.ClientCategory
-import at.cpickl.gadsu.client.view.RecentStateCalculator
+import at.cpickl.gadsu.client.ClientDonation
+import at.cpickl.gadsu.client.view.ExtendedClient
+import at.cpickl.gadsu.client.view.ThresholdCalculator
+import at.cpickl.gadsu.preferences.PreferencesData
+import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.preferences.ThresholdPrefData
+import at.cpickl.gadsu.testinfra.savedValidInstance
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 
 fun main(args: Array<String>) {
-    println(String.format("days | %10s | %10s | %10s", "A", "B", "C"))
-    println("===========================================")
+    val prefs = mock<Prefs>()
+    val threshold = ThresholdPrefData(
+            daysAttention = 10,
+            daysWarn = 20,
+            daysFatal = 30
+    )
+    println(threshold)
+    whenever(prefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
+            threshold = threshold
+    ))
+
+    val clientPrototype = ExtendedClient(
+            client = at.cpickl.gadsu.client.Client.savedValidInstance().copy(
+                    category = ClientCategory.A,
+                    donation = ClientDonation.MONEY
+            ),
+            countTreatments = 42,
+            upcomingAppointment = null,
+            differenceDaysToRecentTreatment = null)
+
+    val calcer = ThresholdCalculator(prefs)
+
+    fun ClientDonation.shortLabel() = this.sqlCode.substring(0, 3)
+    ClientDonation.values().forEach { donation ->
+        val dLabel = donation.shortLabel()
+        print(String.format("days | %10s | %10s | %10s /// ", "$dLabel A", "$dLabel B", "$dLabel C"))
+    }
+    println()
+    ClientDonation.values().forEach { print("=========================================== /// ") }
+    println()
+
     for (days in 0.rangeTo(100)) {
-        val stateA = RecentStateCalculator.calc(days, ClientCategory.A, null)
-        val stateB = RecentStateCalculator.calc(days, ClientCategory.B, null)
-        val stateC = RecentStateCalculator.calc(days, ClientCategory.C, null)
-        println(String.format("%4d | %10s | %10s | %10s", days, stateA.name, stateB.name, stateC.name))
+        ClientDonation.values().forEach { donation ->
+            val stateA = calcer.calc(clientPrototype.copy(differenceDaysToRecentTreatment = days, client = clientPrototype.client.copy(category = ClientCategory.A)))
+            val stateB = calcer.calc(clientPrototype.copy(differenceDaysToRecentTreatment = days, client = clientPrototype.client.copy(category = ClientCategory.B)))
+            val stateC = calcer.calc(clientPrototype.copy(differenceDaysToRecentTreatment = days, client = clientPrototype.client.copy(category = ClientCategory.C)))
+            print(String.format("%4d | %10s | %10s | %10s /// ", days, stateA.name, stateB.name, stateC.name))
+        }
+        println()
     }
 }
 
