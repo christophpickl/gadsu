@@ -7,6 +7,8 @@ import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.view.detail.ClientTabAssist
 import at.cpickl.gadsu.client.view.detail.ClientTabMain
 import at.cpickl.gadsu.tcm.model.Meridian
+import at.cpickl.gadsu.tcm.patho.SyndromeReport
+import at.cpickl.gadsu.testinfra.fullInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
@@ -39,7 +41,7 @@ fun main(args: Array<String>) {
 }
 
 fun clientTabAssist(context: FramedContext): JComponent {
-    return ClientTabAssist(context.bus).asComponent()
+    return ClientTabAssist(context.bus).apply { updateReport(Client.fullInstance(), SyndromeReport.dummy) }.asComponent()
 }
 
 fun clientTabMain(context: FramedContext): JComponent {

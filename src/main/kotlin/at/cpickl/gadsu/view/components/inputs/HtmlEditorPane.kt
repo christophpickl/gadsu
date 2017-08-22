@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components.inputs
 
+import at.cpickl.gadsu.view.swing.transparent
 import java.net.URL
 import javax.swing.JEditorPane
 import javax.swing.JLabel
@@ -12,7 +13,7 @@ class HtmlEditorPane(initText: String = "") : JEditorPane() {
         contentType = "text/html"
         putClientProperty(HONOR_DISPLAY_PROPERTIES, true)
         isEditable = false
-        isOpaque = false
+        transparent()
         // isEnabled = false // dont do this!
     }
 

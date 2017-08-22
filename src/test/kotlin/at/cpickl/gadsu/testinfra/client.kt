@@ -11,6 +11,7 @@ import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.service.parseDate
+import at.cpickl.gadsu.tcm.model.XProps
 import org.joda.time.DateTime
 
 
@@ -40,5 +41,8 @@ fun Client.Companion.fullInstance() = Client(
         Contact("mail", "phone", "street", "zip", "city"),
         true, "24.8.1984".parseDate(), Gender.MALE, "herkunft", "origin", Relationship.DIVORCED, "job", "children",
         "hobbies", "note", "impression", "medical", "complaints", "personal", "objectives",
-        "main objective", "symptoms", "5elements", "syndrom", ClientCategory.A, ClientDonation.PRESENT, "tcm note", Gender.MALE.defaultImage, CProps.empty
+        "main objective", "symptoms", "5elements", "syndrom", ClientCategory.A, ClientDonation.PRESENT, "tcm note", Gender.MALE.defaultImage,
+        CProps.builder()
+                .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.Dreams)
+                .build()
 )

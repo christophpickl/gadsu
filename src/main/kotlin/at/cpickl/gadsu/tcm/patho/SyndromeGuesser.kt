@@ -2,14 +2,15 @@ package at.cpickl.gadsu.tcm.patho
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProps
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 
-fun List<Symptom>.labelsJoined() = map { it.xprop.opt.label }.joinToString()
+fun Collection<Symptom>.labelsJoined() = map { it.xprop.opt.label }.joinToString()
 
 data class PossibleSyndrom(
         val syndrome: OrganSyndrome,
         /** from >0.0 to <=1.0 */
         val matchRation: Double,
-        val matchedSymptoms: List<Symptom>
+        val matchedSymptoms: Set<Symptom>
 ) : Comparable<PossibleSyndrom> {
 
     val matchPercentage = (matchRation * 100).toInt()
@@ -21,31 +22,46 @@ data class PossibleSyndrom(
 data class SyndromeReport(
         val possibleSyndromes: List<PossibleSyndrom>
 ) {
+
+    companion object {
+        val dummy = SyndromeReport(
+                possibleSyndromes = listOf(
+                        PossibleSyndrom(OrganSyndrome.LuQiMangel, 0.75, setOf(Symptom.FlacheAtmung, Symptom.LeichtesSchwitzen))
+                )
+        )
+    }
+
     val asHtml by lazy {
-        """
-        |<ul>
-        |${possibleSyndromes.sortedDescending().map {
-            """
+        if (possibleSyndromes.isEmpty()) "<i>Keine gefunden.</i>"
+        else
+        "<ul>" +
+                possibleSyndromes.sortedDescending().map {
+                    """
             |<li>
-            |    <b>${it.syndrome.label}</b> (${it.matchPercentage}%):
-            |    <span color="green">${it.matchedSymptoms.labelsJoined()}</span>
+            |  <span style="font-weight:bold;font-size:16">${it.syndrome.label}</span><br/>
+            |  <b>Trefferquote:</b> ${it.matchPercentage}%<br/>
+            |  <span color="green">${it.matchedSymptoms.labelsJoined()}</span>
             |    ${if (it.matchedSymptoms.isNotEmpty() && it.notMatchedSymptoms.isNotEmpty()) "," else ""}
             |    <span color="red">${it.notMatchedSymptoms.labelsJoined()}</span>
-            |</li>""".trimMargin()
-        }}
-        |</ul>
-        |""".trimMargin()
+            |  <br/><br/>
+            |</li>
+            |""".trimMargin()
+                }.joinToString(separator = "\n") +
+                "</ul>"
     }
 }
 
 class SyndromeGuesser {
 
+    private val log = LOG {}
+
     fun detect(client: Client): SyndromeReport {
+        log.debug { "detect(client=..)" }
         val foundSyndromes = mutableListOf<PossibleSyndrom>()
 
         OrganSyndrome.values().forEach { syndrome ->
             val clientSymptoms = extractSymptoms(client.cprops)
-            val matchingSymptoms = syndrome.symptoms.intersect(clientSymptoms).toList()
+            val matchingSymptoms = syndrome.symptoms.intersect(clientSymptoms)
             val match = calculateMatch(syndrome, matchingSymptoms)
             if (match != 0.0) {
                 foundSyndromes += PossibleSyndrom(syndrome, match, matchingSymptoms)

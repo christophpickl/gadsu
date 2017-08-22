@@ -22,6 +22,11 @@ interface XPropsFinder {
 @Suppress("UNUSED")
 object XProps : XPropsFinder by XPropsFactory {
 
+
+    enum class NOT(override val opt: XPropEnumOpt) : IsEnumOption {
+        IMPLEMENTED(opt("NOT_IMPLEMENTED", "NOT_IMPLEMENTED"))
+    }
+
     // IMPRESSION
     // ============================================================
 
