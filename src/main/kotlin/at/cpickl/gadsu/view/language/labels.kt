@@ -22,6 +22,7 @@ object Labels {
         override val ClientMain = "Allgemein"
         override val ClientTexts = "Texte"
         override val ClientTcm = "TCM"
+        override val ClientAssist = "Assistent"
     }
 
     val TestLabels_EN = object : TestLabels {}
@@ -30,6 +31,7 @@ object Labels {
         override val ClientMain = "Main"
         override val ClientTexts = "Texts"
         override val ClientTcm = "TCM"
+        override val ClientAssist = "Assist"
     }
 
 
@@ -60,6 +62,7 @@ interface Tabs {
     val ClientMain: String
     val ClientTexts: String
     val ClientTcm: String
+    val ClientAssist: String
 }
 
 interface TestLabels {

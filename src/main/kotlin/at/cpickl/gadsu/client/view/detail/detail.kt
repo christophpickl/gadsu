@@ -69,9 +69,10 @@ open class SwingClientDetailView @Inject constructor(
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, bus)
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
+    private val tabAssist = ClientTabAssist(bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-    private val allTabs = listOf(tabMain, tabTexts, tabTcm)
+    private val allTabs = listOf(tabMain, tabTexts, tabTcm, tabAssist)
 
     init {
         modificationChecker.disableAll()
@@ -95,6 +96,7 @@ open class SwingClientDetailView @Inject constructor(
             ClientTabType.MAIN -> tabMain
             ClientTabType.TEXTS -> tabTexts
             ClientTabType.TCM -> tabTcm
+            ClientTabType.ASSIST -> tabAssist
         }
         if (newTab != tabbedPane.selectedComponent) {
             log.trace("Switching to tab: {}", tab)

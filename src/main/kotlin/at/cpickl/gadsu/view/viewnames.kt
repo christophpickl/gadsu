@@ -12,6 +12,7 @@ object ViewNames {
     val Preferences = PreferencesViewNames
     val MultiProtocol = MultiProtocolViewNames
     val Components = ComponentsViewNames
+    val Assistent = AssistentViewNames
 }
 
 object MainViewNames {
@@ -121,6 +122,9 @@ object MultiProtocolViewNames {
 
 object ComponentsViewNames {
     val MultiProperties = MultiPropertiesViewNames
+}
+object AssistentViewNames {
+    val ButtonRecalculate = "Assistent.ButtonRecalculate"
 }
 
 object MultiPropertiesViewNames {

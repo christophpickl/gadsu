@@ -3,6 +3,8 @@ package at.cpickl.gadsu.tcm.patho
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProps
 
+fun List<Symptom>.labelsJoined() = map { it.xprop.opt.label }.joinToString()
+
 data class PossibleSyndrom(
         val syndrome: OrganSyndrome,
         /** from >0.0 to <=1.0 */
@@ -18,7 +20,23 @@ data class PossibleSyndrom(
 
 data class SyndromeReport(
         val possibleSyndromes: List<PossibleSyndrom>
-)
+) {
+    val asHtml by lazy {
+        """
+        |<ul>
+        |${possibleSyndromes.sortedDescending().map {
+            """
+            |<li>
+            |    <b>${it.syndrome.label}</b> (${it.matchPercentage}%):
+            |    <span color="green">${it.matchedSymptoms.labelsJoined()}</span>
+            |    ${if (it.matchedSymptoms.isNotEmpty() && it.notMatchedSymptoms.isNotEmpty()) "," else ""}
+            |    <span color="grey">${it.notMatchedSymptoms.labelsJoined()}</span>
+            |</li>""".trimMargin()
+        }}
+        |</ul>
+        |""".trimMargin()
+    }
+}
 
 class SyndromeGuesser {
 

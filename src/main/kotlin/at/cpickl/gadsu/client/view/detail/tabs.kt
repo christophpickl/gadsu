@@ -9,7 +9,8 @@ import at.cpickl.gadsu.view.swing.transparent
 enum class ClientTabType(val label: String) {
     MAIN(Labels.Tabs.ClientMain),
     TEXTS(Labels.Tabs.ClientTexts),
-    TCM(Labels.Tabs.ClientTcm);
+    TCM(Labels.Tabs.ClientTcm),
+    ASSIST(Labels.Tabs.ClientAssist);
 }
 
 interface ClientTab : KTab {

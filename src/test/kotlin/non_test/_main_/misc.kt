@@ -4,6 +4,7 @@ import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
+import at.cpickl.gadsu.client.view.detail.ClientTabAssist
 import at.cpickl.gadsu.client.view.detail.ClientTabMain
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.savedValidInstance
@@ -30,11 +31,15 @@ import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
-    Framed.showWithContext(::clientTabMain, Dimension(600, 600))
+    Framed.showWithContext(::clientTabAssist, Dimension(600, 600))
 //        treatmentGoal()
 //        triState()
 //        meridianSelector()
 //        richWordTextArea()
+}
+
+fun clientTabAssist(context: FramedContext): JComponent {
+    return ClientTabAssist(context.bus).asComponent()
 }
 
 fun clientTabMain(context: FramedContext): JComponent {

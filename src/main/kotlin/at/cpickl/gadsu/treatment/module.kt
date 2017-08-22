@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.treatment
 
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.view.detail.AssistentController
+import at.cpickl.gadsu.client.view.detail.ClientTabAssist
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentService
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentServiceImpl
 import at.cpickl.gadsu.treatment.dyn.RepositoryFacade
@@ -28,8 +30,10 @@ class TreatmentModule : AbstractModule() {
         bind(RepositoryFacade::class.java).to(RepositoryFacadeImpl::class.java).asEagerSingleton()
         bind(TreatmentMeridiansService::class.java).to(TreatmentMeridiansServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
-
         bind(TreatmentList::class.java).asEagerSingleton()
+
+        bind(ClientTabAssist::class.java).asEagerSingleton()
+        bind(AssistentController::class.java).asEagerSingleton()
 
         // the table which is located in the client view
         bind(TreatmentsInClientView::class.java).asEagerSingleton()
@@ -44,7 +48,6 @@ class TreatmentModule : AbstractModule() {
         bind(TreatmentService::class.java).to(TreatmentServiceImpl::class.java).asEagerSingleton()
 
         bind(TreatmentGoalController::class.java).asEagerSingleton()
-
     }
 }
 
