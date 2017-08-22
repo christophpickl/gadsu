@@ -94,7 +94,7 @@ open class AssistentController @Inject constructor(
     }
 
     private fun recalculateAndUpdateView() {
-        recentReport = guesser.detect(currentClient.data)
+        recentReport = guesser.guess(currentClient.data)
         view.updateReport(currentClient.data, recentReport!!)
     }
 }

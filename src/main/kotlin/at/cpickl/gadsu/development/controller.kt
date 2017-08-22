@@ -217,7 +217,7 @@ open class DevelopmentController @Inject constructor(
                                                 special = emptyList(),
                                                 note = "* zunge gruen"),
                                         PulseDiagnosis(
-                                                properties = listOf(PulseProperty.Ascending, PulseProperty.Deep),
+                                                properties = listOf(PulseProperty.Ascending, PulseProperty.Deep, PulseProperty.Soft),
                                                 note = "* war irgendwie \"zaeh\""
                                         ),
                                         BloodPressure(

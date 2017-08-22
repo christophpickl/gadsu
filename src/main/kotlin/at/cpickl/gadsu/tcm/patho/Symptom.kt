@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.tcm.patho
 
-import at.cpickl.gadsu.client.xprops.model.CProp
+import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.tcm.model.IsEnumOption
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.tcm.model.ZangOrgan
+import at.cpickl.gadsu.tcm.patho.Symptom.SymptomSource.NOT_IMPLEMENTED
+import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 
 
 enum class SymptomCategory {
@@ -35,18 +37,23 @@ enum class SymptomCategory {
 
 sealed class Symptom(
         val category: SymptomCategory,
-        val xprop: IsEnumOption,
+        val source: SymptomSource,
         val leitSymptomFor: ZangOrgan? = null
         // maybe add: weighting: Double ???
 ) {
     companion object {
+
         private val allMutable = ArrayList<Symptom>()
+
         val all: List<Symptom> = allMutable
-        val byXpropEnumOpt: Map<XPropEnumOpt, Symptom> by lazy { all.associateBy { it.xprop.opt } }
-        fun findByCProp(cprop: CProp): Symptom? {
-            cprop.clientValue
-            return null
+
+        // TODO change to List<Symptom>, as one XProp could map to multiple symptoms (???)
+        val byXpropEnumOpt: Map<XPropEnumOpt, Symptom> by lazy {
+            all
+                    .filter { it.source is SymptomSource.XPropSource }
+                    .associateBy { (it.source as SymptomSource.XPropSource).option.opt }
         }
+
     }
 
     init {
@@ -55,77 +62,98 @@ sealed class Symptom(
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    abstract class AtmungSymptom(xprop: IsEnumOption, leitSymptomFor: ZangOrgan? = null) : Symptom(SymptomCategory.Atmung, xprop, leitSymptomFor)
-    object Asthma : AtmungSymptom(XProps.NOT.IMPLEMENTED)
-    object FlacheAtmung : AtmungSymptom(XProps.NOT.IMPLEMENTED)
-    object Husten : AtmungSymptom(XProps.NOT.IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
-    object TrockenerHusten : AtmungSymptom(XProps.NOT.IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
-    object Kurzatmigkeit : AtmungSymptom(XProps.NOT.IMPLEMENTED)
-    object TrockenerHals : AtmungSymptom(XProps.NOT.IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
-    object Heiserkeit : AtmungSymptom(XProps.NOT.IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
-    object Stimmbaender : AtmungSymptom(XProps.NOT.IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
+    sealed class SymptomSource {
+        abstract val label: String
 
-    abstract class EmotionSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Emotion, xprop)
-    object TrauererloseDepression : EmotionSymptom(XProps.NOT.IMPLEMENTED)
+        class XPropSource(val xenum: XPropEnum, val option: IsEnumOption) : SymptomSource() {
+            override val label = option.opt.label
+        }
 
-    abstract class EnergieSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Energie, xprop)
-    object EnergieMangel : EnergieSymptom(XProps.NOT.IMPLEMENTED)
-    object Muedigkeit : EnergieSymptom(XProps.NOT.IMPLEMENTED)
+        class PulseSource(val property: PulseProperty) : SymptomSource() {
+            override val label = property.label
+        }
 
-    abstract class EssenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Essen, xprop)
+        object NOT_IMPLEMENTED : SymptomSource() {
+            override val label = "N/A"
+        }
+    }
 
-    abstract class FarbeSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Farbe, xprop)
-    object Blaesse : FarbeSymptom(XProps.NOT.IMPLEMENTED)
+    // -----------------------------------------------------------------------------------------------------------------
 
-    abstract class GesichtSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Gesicht, xprop)
+    abstract class AtmungSymptom(source: SymptomSource, leitSymptomFor: ZangOrgan? = null) : Symptom(SymptomCategory.Atmung, source, leitSymptomFor)
+    object Asthma : AtmungSymptom(NOT_IMPLEMENTED)
+    object FlacheAtmung : AtmungSymptom(NOT_IMPLEMENTED)
+    object Husten : AtmungSymptom(NOT_IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
+    object TrockenerHusten : AtmungSymptom(NOT_IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
+    object Kurzatmigkeit : AtmungSymptom(NOT_IMPLEMENTED)
+    object TrockenerHals : AtmungSymptom(NOT_IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
+    object Heiserkeit : AtmungSymptom(NOT_IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
+    object Stimmbaender : AtmungSymptom(NOT_IMPLEMENTED, leitSymptomFor = ZangOrgan.Lung)
 
-    abstract class HoerenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Hoeren, xprop)
 
-    abstract class MensSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Mens, xprop)
+    abstract class EmotionSymptom(source: SymptomSource) : Symptom(SymptomCategory.Emotion, source)
+    object TrauererloseDepression : EmotionSymptom(NOT_IMPLEMENTED)
 
-    abstract class MiscSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Misc, xprop)
+    abstract class EnergieSymptom(source: SymptomSource) : Symptom(SymptomCategory.Energie, source)
+    object EnergieMangel : EnergieSymptom(NOT_IMPLEMENTED)
+    object Muedigkeit : EnergieSymptom(NOT_IMPLEMENTED)
 
-    abstract class PsychoSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Psycho, xprop)
+    abstract class EssenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Essen, source)
 
-    // TODO #114 add pulse symptom, extracting its value from any treatment
-    abstract class PulsSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Puls, xprop)
-    object PulsLeer : PulsSymptom(XProps.NOT.IMPLEMENTED)
-    object PulsWeich : PulsSymptom(XProps.NOT.IMPLEMENTED)
-    object PulsSchwach : PulsSymptom(XProps.NOT.IMPLEMENTED)
-    object PulsBeschleunigt : PulsSymptom(XProps.NOT.IMPLEMENTED)
-    object PulsDuenn : PulsSymptom(XProps.NOT.IMPLEMENTED)
+    abstract class FarbeSymptom(source: SymptomSource) : Symptom(SymptomCategory.Farbe, source)
+    object Blaesse : FarbeSymptom(NOT_IMPLEMENTED)
 
-    abstract class SchmerzenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Schmerzen, xprop)
+    abstract class GesichtSymptom(source: SymptomSource) : Symptom(SymptomCategory.Gesicht, source)
 
-    abstract class SchlafSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Schlaf, xprop)
-    object Traeumen : SchlafSymptom(XProps.NOT.IMPLEMENTED)
-    object EinschlafStoerungen : SchlafSymptom(XProps.NOT.IMPLEMENTED)
+    abstract class HoerenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Hoeren, source)
 
-    abstract class SchweissSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Schweiss, xprop)
-    object LeichtesSchwitzen : SchlafSymptom(XProps.TemperatureOpts.SweatEasily)
+    abstract class MensSymptom(source: SymptomSource) : Symptom(SymptomCategory.Mens, source)
 
-    abstract class SehenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Sehen, xprop)
+    abstract class MiscSymptom(source: SymptomSource) : Symptom(SymptomCategory.Misc, source)
 
-    abstract class SprechenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Sprechen, xprop)
-    object WenigLeiseSprechen : SprechenSymptom(XProps.NOT.IMPLEMENTED)
+    abstract class PsychoSymptom(source: SymptomSource) : Symptom(SymptomCategory.Psycho, source)
 
-    abstract class StuhlSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Stuhl, xprop)
+    abstract class PulsSymptom(source: SymptomSource) : Symptom(SymptomCategory.Puls, source) {
+        constructor(pulse: PulseProperty) : this(SymptomSource.PulseSource(pulse))
+    }
 
-    abstract class TemperaturSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Temperatur, xprop)
-    object AversionKaelte : TemperaturSymptom(XProps.TemperatureOpts.AversionCold)
-    object Erkaeltungen : TemperaturSymptom(XProps.NOT.IMPLEMENTED)
-    object HitzeGefuehlAbends : TemperaturSymptom(XProps.NOT.IMPLEMENTED)
+    object PulsLeer : PulsSymptom(NOT_IMPLEMENTED)
+    object PulsWeich : PulsSymptom(PulseProperty.Soft)
+    object PulsSchwach : PulsSymptom(NOT_IMPLEMENTED)
+    object PulsBeschleunigt : PulsSymptom(NOT_IMPLEMENTED)
+    object PulsDuenn : PulsSymptom(NOT_IMPLEMENTED)
 
-    abstract class TrinkenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Trinken, xprop)
+    abstract class SchmerzenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Schmerzen, source)
 
-    abstract class UrinSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Urin, xprop)
+    abstract class SchlafSymptom(source: SymptomSource) : Symptom(SymptomCategory.Schlaf, source)
+    object Traeumen : SchlafSymptom(NOT_IMPLEMENTED)
+    object EinschlafStoerungen : SchlafSymptom(NOT_IMPLEMENTED)
 
-    abstract class VerdauungSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Verdauung, xprop)
+    abstract class SchweissSymptom(source: SymptomSource) : Symptom(SymptomCategory.Schweiss, source)
+    object LeichtesSchwitzen : SchlafSymptom(SymptomSource.XPropSource(XProps.Temperature, XProps.TemperatureOpts.SweatEasily))
 
-    abstract class ZungeSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Zunge, xprop)
-    object ZungeRot : ZungeSymptom(XProps.NOT.IMPLEMENTED)
-    object ZungeTrocken : ZungeSymptom(XProps.NOT.IMPLEMENTED)
-    object WenigBelag : ZungeSymptom(XProps.NOT.IMPLEMENTED)
+    abstract class SehenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Sehen, source)
+
+    abstract class SprechenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Sprechen, source)
+    object WenigLeiseSprechen : SprechenSymptom(NOT_IMPLEMENTED)
+
+    abstract class StuhlSymptom(source: SymptomSource) : Symptom(SymptomCategory.Stuhl, source)
+
+    abstract class TemperaturSymptom(source: SymptomSource) : Symptom(SymptomCategory.Temperatur, source)
+    object AversionKaelte : TemperaturSymptom(SymptomSource.XPropSource(XProps.Temperature, XProps.TemperatureOpts.AversionCold))
+    object Erkaeltungen : TemperaturSymptom(NOT_IMPLEMENTED)
+    object HitzeGefuehlAbends : TemperaturSymptom(NOT_IMPLEMENTED)
+
+    abstract class TrinkenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Trinken, source)
+
+    abstract class UrinSymptom(source: SymptomSource) : Symptom(SymptomCategory.Urin, source)
+
+    abstract class VerdauungSymptom(source: SymptomSource) : Symptom(SymptomCategory.Verdauung, source)
+
+    abstract class ZungeSymptom(source: SymptomSource) : Symptom(SymptomCategory.Zunge, source)
+    object ZungeRot : ZungeSymptom(NOT_IMPLEMENTED)
+    object ZungeTrocken : ZungeSymptom(NOT_IMPLEMENTED)
+    object WenigBelag : ZungeSymptom(NOT_IMPLEMENTED)
 
 }
 

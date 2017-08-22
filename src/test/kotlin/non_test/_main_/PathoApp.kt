@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     val client = Client.savedValidInstance().copy(
             cprops = CProps.builder()
                     .add(XProps.Hungry, XProps.HungryOpts.LittleHunger, XProps.HungryOpts.BigHunger)
-                    .add(XProps.Sleep, XProps.SleepOpts.Dreams)
+                    .add(XProps.Temperature, XProps.TemperatureOpts.SweatEasily)
                     .build()
     )
     println()
@@ -20,11 +20,11 @@ fun main(args: Array<String>) {
     println()
 
     println("Guessed syndroms:")
-    val report = SyndromeGuesser().detect(client)
+    val report = SyndromeGuesser().guess(client)
     report.possibleSyndromes.sortedDescending().map {
         String.format("[%3s%%] %s: %s (NOT: %s)", it.matchPercentage, it.syndrome.label,
-                it.matchedSymptoms.map { it.xprop.opt.label }.joinToString(),
-                it.notMatchedSymptoms.map { it.xprop.opt.label }.joinToString()
+                it.matchedSymptoms.map { it.source.label }.joinToString(),
+                it.notMatchedSymptoms.map { it.source.label }.joinToString()
         )
     }.prettyPrint()
 }

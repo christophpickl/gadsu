@@ -4,7 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProps
 import com.github.christophpickl.kpotpourri.common.logging.LOG
 
-fun Collection<Symptom>.labelsJoined() = map { it.xprop.opt.label }.joinToString()
+fun Collection<Symptom>.labelsJoined() = map { it.source.label }.joinToString()
 
 data class PossibleSyndrom(
         val syndrome: OrganSyndrome,
@@ -34,9 +34,9 @@ data class SyndromeReport(
     val asHtml by lazy {
         if (possibleSyndromes.isEmpty()) "<i>Keine gefunden.</i>"
         else
-        "<ul>" +
-                possibleSyndromes.sortedDescending().map {
-                    """
+            "<ul>" +
+                    possibleSyndromes.sortedDescending().map {
+                        """
             |<li>
             |  <span style="font-weight:bold;font-size:16">${it.syndrome.label}</span><br/>
             |  <b>Trefferquote:</b> ${it.matchPercentage}%<br/>
@@ -46,8 +46,8 @@ data class SyndromeReport(
             |  <br/><br/>
             |</li>
             |""".trimMargin()
-                }.joinToString(separator = "\n") +
-                "</ul>"
+                    }.joinToString(separator = "\n") +
+                    "</ul>"
     }
 }
 
@@ -55,12 +55,12 @@ class SyndromeGuesser {
 
     private val log = LOG {}
 
-    fun detect(client: Client): SyndromeReport {
-        log.debug { "detect(client=..)" }
+    fun guess(client: Client): SyndromeReport {
+        log.debug { "guess(client=..)" }
         val foundSyndromes = mutableListOf<PossibleSyndrom>()
 
         OrganSyndrome.values().forEach { syndrome ->
-            val clientSymptoms = extractSymptoms(client.cprops)
+            val clientSymptoms = extractSymptoms(client)
             val matchingSymptoms = syndrome.symptoms.intersect(clientSymptoms)
             val match = calculateMatch(syndrome, matchingSymptoms)
             if (match != 0.0) {
@@ -70,10 +70,19 @@ class SyndromeGuesser {
         return SyndromeReport(foundSyndromes)
     }
 
-    private fun extractSymptoms(cprops: CProps): List<Symptom> {
+    private fun extractSymptoms(client: Client): Set<Symptom> {
+        return extractSymptomsFromXProps(client.cprops).union(extractSymptomsFromTreatments())
+    }
+
+    private fun extractSymptomsFromTreatments(): Set<Symptom> {
+        // FIXME implement me
+        return emptySet()
+    }
+
+    private fun extractSymptomsFromXProps(cprops: CProps): Set<Symptom> {
         return cprops.map { it.clientValue }.flatten().map {
             Symptom.byXpropEnumOpt[it]
-        }.filterNotNull()
+        }.filterNotNull().toSet()
     }
 
     private fun calculateMatch(syndrome: OrganSyndrome, matchingSymptoms: Collection<Symptom>): Double {
