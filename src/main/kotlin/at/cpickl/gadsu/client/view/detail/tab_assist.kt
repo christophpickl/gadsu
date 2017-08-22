@@ -8,6 +8,7 @@ import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.tcm.patho.SyndromeGuesser
 import at.cpickl.gadsu.tcm.patho.SyndromeReport
+import at.cpickl.gadsu.treatment.TreatmentService
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
@@ -52,6 +53,9 @@ class ClientTabAssist @Inject constructor(
     }
 
     fun updateReport(client: Client, report: SyndromeReport) {
+
+
+        // TODO also include pulse/tongue results in this list
         textOutput.text = """
             |<h1>Assistenz-Bericht f&uuml;r ${client.preferredName}</h1>
             |<h2>Klienten Symptome</h2>
@@ -73,7 +77,8 @@ class ClientTabAssist @Inject constructor(
 @Logged
 open class AssistentController @Inject constructor(
         private val currentClient: CurrentClient,
-        private val view: ClientTabAssist
+        private val view: ClientTabAssist,
+        private val treatmentService: TreatmentService
 
 ) {
     private val guesser = SyndromeGuesser()
@@ -94,7 +99,15 @@ open class AssistentController @Inject constructor(
     }
 
     private fun recalculateAndUpdateView() {
-        recentReport = guesser.guess(currentClient.data)
-        view.updateReport(currentClient.data, recentReport!!)
+        val client = currentClient.data
+        if (!client.yetPersisted) {
+            view.updateReport(client, SyndromeReport.empty)
+            recentReport = null
+            return
+        }
+        val treatments = treatmentService.findAllFor(client)
+
+        recentReport = guesser.guess(client, treatments)
+        view.updateReport(client, recentReport!!)
     }
 }

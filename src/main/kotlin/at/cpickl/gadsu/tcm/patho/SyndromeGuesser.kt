@@ -2,6 +2,8 @@ package at.cpickl.gadsu.tcm.patho
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
 import com.github.christophpickl.kpotpourri.common.logging.LOG
 
 fun Collection<Symptom>.labelsJoined() = map { it.source.label }.joinToString()
@@ -29,6 +31,7 @@ data class SyndromeReport(
                         PossibleSyndrom(OrganSyndrome.LuQiMangel, 0.75, setOf(Symptom.FlacheAtmung, Symptom.LeichtesSchwitzen))
                 )
         )
+        val empty = SyndromeReport(emptyList())
     }
 
     val asHtml by lazy {
@@ -55,12 +58,12 @@ class SyndromeGuesser {
 
     private val log = LOG {}
 
-    fun guess(client: Client): SyndromeReport {
+    fun guess(client: Client, treatments: List<Treatment>): SyndromeReport {
         log.debug { "guess(client=..)" }
         val foundSyndromes = mutableListOf<PossibleSyndrom>()
 
         OrganSyndrome.values().forEach { syndrome ->
-            val clientSymptoms = extractSymptoms(client)
+            val clientSymptoms = extractSymptoms(client, treatments)
             val matchingSymptoms = syndrome.symptoms.intersect(clientSymptoms)
             val match = calculateMatch(syndrome, matchingSymptoms)
             if (match != 0.0) {
@@ -70,16 +73,23 @@ class SyndromeGuesser {
         return SyndromeReport(foundSyndromes)
     }
 
-    private fun extractSymptoms(client: Client): Set<Symptom> {
-        return extractSymptomsFromXProps(client.cprops).union(extractSymptomsFromTreatments())
+    private fun extractSymptoms(client: Client, treatments: List<Treatment>): Collection<Symptom> {
+        return extractSymptomsFromXProps(client.cprops).union(extractSymptomsFromTreatments(treatments))
     }
 
-    private fun extractSymptomsFromTreatments(): Set<Symptom> {
-        // FIXME implement me
-        return emptySet()
+    private fun extractSymptomsFromTreatments(treatments: List<Treatment>): Collection<Symptom> {
+        val allDiagnostedPulseProps = treatments.map { it.dynTreatments.filter { it is PulseDiagnosis } }.flatten().map {
+            val pulseDiagnosis = it as PulseDiagnosis
+            pulseDiagnosis.properties
+        }.flatten().distinct()
+        return allDiagnostedPulseProps.map {
+             Symptom.byPulseProperty[it]
+        }.filterNotNull()
+
+        // FIXME implement tongue props scan
     }
 
-    private fun extractSymptomsFromXProps(cprops: CProps): Set<Symptom> {
+    private fun extractSymptomsFromXProps(cprops: CProps): Collection<Symptom> {
         return cprops.map { it.clientValue }.flatten().map {
             Symptom.byXpropEnumOpt[it]
         }.filterNotNull().toSet()

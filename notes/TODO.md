@@ -1,3 +1,4 @@
+* java help system: missuse as TCM help system
 * GCal sync erkennt scheinbar keine roulierende termine? (flo)
   - ausserdem sollte kein mail geschickt werden fuer vergangene!
   - ausserdem vorsicht beim namen, zb "001 okc diane" (sowieso nicknames trennen in external und internal, daneben vorname und nachname)

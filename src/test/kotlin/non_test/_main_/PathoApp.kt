@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     println()
 
     println("Guessed syndroms:")
-    val report = SyndromeGuesser().guess(client)
+    val report = SyndromeGuesser().guess(client, emptyList())
     report.possibleSyndromes.sortedDescending().map {
         String.format("[%3s%%] %s: %s (NOT: %s)", it.matchPercentage, it.syndrome.label,
                 it.matchedSymptoms.map { it.source.label }.joinToString(),

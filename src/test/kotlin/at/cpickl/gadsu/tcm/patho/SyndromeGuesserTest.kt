@@ -7,6 +7,8 @@ import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.tcm.model.IsEnumOption
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.savedValidInstance
+import at.cpickl.gadsu.treatment.Treatment
+import at.cpickl.gadsu.treatment.dyn.treats.PulseDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 import com.github.christophpickl.kpotpourri.common.enforceAllBranchesCovered
 import com.natpryce.hamkrest.assertion.assertThat
@@ -19,11 +21,14 @@ import org.testng.annotations.Test
 class SyndromeGuesserTest {
 
     private val guesser = SyndromeGuesser()
+    private val anyClient = Client.INSERT_PROTOTYPE
+    private val clientWithEmptyCProps = anyClient.copy(cprops = CProps.empty)
+    private val noTreatments = emptyList<Treatment>()
 
     fun `When client has no cprop Then the report should be empty`() {
-        val client = Client.savedValidInstance().copy(cprops = CProps.empty)
+        val client = anyClient.copy(cprops = CProps.empty)
 
-        val report = SyndromeGuesser().guess(client)
+        val report = guesser.guess(client, noTreatments)
 
         assertThat(report.possibleSyndromes, isEmpty)
     }
@@ -33,11 +38,20 @@ class SyndromeGuesserTest {
             add(XProps.Temperature, XProps.TemperatureOpts.SweatEasily)
         }
 
-        val report = guesser.guess(client)
+        val report = guesser.guess(client, noTreatments)
 
-        assertThat(report.possibleSyndromes.map { it.syndrome },
-                hasElement(OrganSyndrome.LuQiMangel))
+        report.assertHas(OrganSyndrome.LuQiMangel)
     }
+
+    fun `When client has soft pulse property in a treatment, Then the report contains LuQiMangel syndrome`() {
+        val treatment = Treatment.savedValidInstance("").copy(
+                dynTreatments = listOf(PulseDiagnosis(listOf(PulseProperty.Soft), "")))
+
+        val report = guesser.guess(clientWithEmptyCProps, listOf(treatment))
+
+        report.assertHas(OrganSyndrome.LuQiMangel)
+    }
+
 
     fun `When client has all LuQiMangel symptoms Then the ratio is below 0 - TODO test for 100`() {
         val client = buildClient {
@@ -72,8 +86,9 @@ class SyndromeGuesserTest {
         }
         // TODO pulsePropertiesForSyndrom go through treatments
 
-        val report = guesser.guess(client)
+        val report = guesser.guess(client, noTreatments)
 
+        report.assertHas(OrganSyndrome.LuQiMangel)
         report.possibleSyndromes.first { it.syndrome == OrganSyndrome.LuQiMangel }.apply {
             assertThat(matchPercentage, greaterThan(0))
             assertThat(matchRation, greaterThan(0.0))
@@ -91,4 +106,8 @@ class SyndromeGuesserTest {
         )
     }
 
+    private fun SyndromeReport.assertHas(needle: OrganSyndrome) {
+        assertThat(possibleSyndromes.map { it.syndrome },
+                hasElement(needle))
+    }
 }

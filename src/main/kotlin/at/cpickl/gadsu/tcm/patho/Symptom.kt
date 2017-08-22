@@ -54,6 +54,12 @@ sealed class Symptom(
                     .associateBy { (it.source as SymptomSource.XPropSource).option.opt }
         }
 
+        val byPulseProperty: Map<PulseProperty, Symptom> by lazy {
+            all
+                    .filter { it.source is SymptomSource.PulseSource }
+                    .associateBy { (it.source as SymptomSource.PulseSource).property }
+        }
+
     }
 
     init {
@@ -70,7 +76,7 @@ sealed class Symptom(
         }
 
         class PulseSource(val property: PulseProperty) : SymptomSource() {
-            override val label = property.label
+            override val label = "Puls ${property.label}"
         }
 
         object NOT_IMPLEMENTED : SymptomSource() {
