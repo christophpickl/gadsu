@@ -102,7 +102,7 @@ sealed class Symptom(
     object EinschlafStoerungen : SchlafSymptom(XProps.NOT.IMPLEMENTED)
 
     abstract class SchweissSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Schweiss, xprop)
-    object LeichtesSchwitzen : SchlafSymptom(XProps.NOT.IMPLEMENTED)
+    object LeichtesSchwitzen : SchlafSymptom(XProps.TemperatureOpts.SweatEasily)
 
     abstract class SehenSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Sehen, xprop)
 
@@ -112,7 +112,7 @@ sealed class Symptom(
     abstract class StuhlSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Stuhl, xprop)
 
     abstract class TemperaturSymptom(xprop: IsEnumOption) : Symptom(SymptomCategory.Temperatur, xprop)
-    object AversionKaelte : TemperaturSymptom(XProps.NOT.IMPLEMENTED)
+    object AversionKaelte : TemperaturSymptom(XProps.TemperatureOpts.AversionCold)
     object Erkaeltungen : TemperaturSymptom(XProps.NOT.IMPLEMENTED)
     object HitzeGefuehlAbends : TemperaturSymptom(XProps.NOT.IMPLEMENTED)
 

@@ -132,7 +132,7 @@ open class DevelopmentController @Inject constructor(
                                 .add(XProps.BodyConception, XProps.BodyConceptionOpts.HeightTall)
                                 // XProps.ChiStatus not added
 
-                                .add(XProps.Temperature, XProps.TemperatureOpts.AversionCold)
+                                .add(XProps.Temperature, XProps.TemperatureOpts.AversionCold, XProps.TemperatureOpts.SweatEasily)
                                 .add(XProps.Hungry, XProps.HungryOpts.BigHunger, XProps.HungryOpts.ChewLess, XProps.HungryOpts.TasteSweet)
                                 .add(XProps.Liquid, XProps.LiquidOpts.DrinkCoffee)
 
