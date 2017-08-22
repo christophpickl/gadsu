@@ -10,7 +10,9 @@ import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.language.Labels
+import at.cpickl.gadsu.view.swing.noBorder
 import at.cpickl.gadsu.view.swing.scrolled
+import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
@@ -35,7 +37,7 @@ class ClientTabAssist @Inject constructor(
 //        scrolled = false
 ) {
 
-    private val textOutput = HtmlEditorPane()
+    private val textOutput = HtmlEditorPane().transparent().noBorder()
 
     init {
         c.fill = GridBagConstraints.BOTH
@@ -61,7 +63,6 @@ class ClientTabAssist @Inject constructor(
             |<h2>Vermutete Disharmoniemuster:</h2>
             |${report.asHtml}
             """.trimMargin()
-
     }
 
     override fun isModified(client: Client) = false

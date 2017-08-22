@@ -52,6 +52,7 @@ open class SwingClientDetailView @Inject constructor(
         private val currentClient: CurrentClient,
         appointmentsSubView: AppoinmentsInClientView, // passed through to TabMain
         treatmentSubview: TreatmentsInClientView, // passed through to TabMain
+        private val tabAssist: ClientTabAssist,
 //        imagePickerFactory: ImagePickerFactory,
 //        prefs: Prefs
         menuBar: GadsuMenuBar // this is kind a design hack, but it was quicker to do ;)
@@ -69,7 +70,6 @@ open class SwingClientDetailView @Inject constructor(
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, bus)
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
-    private val tabAssist = ClientTabAssist(bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
     private val allTabs = listOf(tabMain, tabTexts, tabTcm, tabAssist)

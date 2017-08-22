@@ -149,7 +149,10 @@ var JComponent.isTransparent: Boolean
         isOpaque = !value
     }
 
-
+fun <T : JComponent> T.noBorder(): T {
+    border = BorderFactory.createEmptyBorder()
+    return this
+}
 fun <T : JComponent> T.transparent(): T {
     isTransparent = true
     return this

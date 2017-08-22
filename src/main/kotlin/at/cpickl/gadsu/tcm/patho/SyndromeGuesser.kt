@@ -30,7 +30,7 @@ data class SyndromeReport(
             |    <b>${it.syndrome.label}</b> (${it.matchPercentage}%):
             |    <span color="green">${it.matchedSymptoms.labelsJoined()}</span>
             |    ${if (it.matchedSymptoms.isNotEmpty() && it.notMatchedSymptoms.isNotEmpty()) "," else ""}
-            |    <span color="grey">${it.notMatchedSymptoms.labelsJoined()}</span>
+            |    <span color="red">${it.notMatchedSymptoms.labelsJoined()}</span>
             |</li>""".trimMargin()
         }}
         |</ul>
