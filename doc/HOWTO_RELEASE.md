@@ -14,6 +14,7 @@ Used variables:
 
 * Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 * Check there are no TODO or FIXME
+    * This is **IMPORTANT!** as otherwise the release build will fail!
 
 # Release Script
 

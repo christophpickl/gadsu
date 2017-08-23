@@ -47,7 +47,6 @@ sealed class Symptom(
 
         val all: List<Symptom> = allMutable
 
-        // TODO change to List<Symptom>, as one XProp could map to multiple symptoms (???)
         val byXpropEnumOpt: Map<XPropEnumOpt, Symptom> by lazy {
             all
                     .filter { it.source is SymptomSource.XPropSource }

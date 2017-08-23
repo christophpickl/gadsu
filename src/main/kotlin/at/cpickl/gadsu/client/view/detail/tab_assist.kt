@@ -53,9 +53,6 @@ class ClientTabAssist @Inject constructor(
     }
 
     fun updateReport(client: Client, report: SyndromeReport) {
-
-
-        // TODO also include pulse/tongue results in this list
         textOutput.text = """
             |<h1>Assistenz-Bericht f&uuml;r ${client.preferredName}</h1>
             |<h2>Klienten Symptome</h2>

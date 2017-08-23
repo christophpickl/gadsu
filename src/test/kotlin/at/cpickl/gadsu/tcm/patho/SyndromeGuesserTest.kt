@@ -53,7 +53,7 @@ class SyndromeGuesserTest {
     }
 
 
-    fun `When client has all LuQiMangel symptoms Then the ratio is below 0 - TODO test for 100`() {
+    fun `When client has all LuQiMangel symptoms Then the ratio is high - TODO test for 100`() {
         val client = buildClient {
 
             val xpropsForSyndrom = mutableListOf<Pair<XPropEnum, IsEnumOption>>()
@@ -84,7 +84,7 @@ class SyndromeGuesserTest {
                 add(it.key, *it.value.toTypedArray())
             }
         }
-        // TODO pulsePropertiesForSyndrom go through treatments
+        // MINOR TEST pulsePropertiesForSyndrom go through treatments
 
         val report = guesser.guess(client, noTreatments)
 

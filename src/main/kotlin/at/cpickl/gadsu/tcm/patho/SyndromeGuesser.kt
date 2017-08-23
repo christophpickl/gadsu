@@ -86,7 +86,6 @@ class SyndromeGuesser {
              Symptom.byPulseProperty[it]
         }.filterNotNull()
 
-        // FIXME implement tongue props scan
     }
 
     private fun extractSymptomsFromXProps(cprops: CProps): Collection<Symptom> {
