@@ -1,23 +1,21 @@
-* java help system: missuse as TCM help system
+
+
+* BARBARA: Dann noch eine Kleinigkeit, ich würde den Punkt Inhalt nach dem Punkt Diagnosen: Hara
+           setzen, da sich die Behandlung ja unter anderem aus der Haradiagnose ableitet.
 * GCal sync erkennt scheinbar keine roulierende termine? (flo)
   - ausserdem sollte kein mail geschickt werden fuer vergangene!
   - ausserdem vorsicht beim namen, zb "001 okc diane" (sowieso nicknames trennen in external und internal, daneben vorname und nachname)
-* BUG: wenn "Bl1 " eingeben, dann den "1" wegloeschen, sollte formatierung killed werden
-* !!! sortieren der clients (v.a. nach recent bar! fuer terminfindung)
 * ! gcal sync: crash beim namen dropdown!
   - kein confirm mail default enabled wenn date in past
   - gesamten namen rendern, inkl nickname, da im kalender eher damit arbeiten + bild rendern!
 * TCM opt: koerperhaare (siehe myshiatsu)
-* tag zeiten fuer farb indicator in prefs konfigurierbar machen
-* BARBARA: Dann noch eine Kleinigkeit, ich würde den Punkt Inhalt nach dem Punkt Diagnosen: Hara
-           setzen, da sich die Behandlung ja unter anderem aus der Haradiagnose ableitet.
+
 * LG und KG auswaehlbar als meridiane in treatment view (evtl sogar andere sondermeridiane auch noch; evtl iokai unterscheidbar; evtl meridian sektionen sogar)
 * je nachdem ob mann/frau andere TCM props verfuegbar
 * ad sammelprotokoll: am anfang auflistung mit datums wann wieviele behandlungen in vergangenheit waren (+wieviele auf diesem sammelprotokoll drauf sind)
 * wenn "(Bl1 " eingeben, dann erkennen und das "(" abziehen
 * ad gcal sync: im gcal event auch eintragen welche behandlungs nummer das ist
 * BUG: internet connection check at startup false negatives!
-* sort client list (auto-sort by some defined criteria; or sort manually by drag'n'drop)
 * bigger client pic in main tab
 * icon idee
     - zb: jede behandlung hat drei "kuebeln"
@@ -25,7 +23,7 @@
     - zb steinchen inhalt (technik): Le, Bl, ... jedes kann man mit text versehen. oder auch steinchen bein/arm/...?
     - zb steinchen zustand: kopfweh, schlaf, ...
     - idea: wenn man auf steinchen doppelklickt, welches schon im kuebel ist, dann geht popup auf, zb um spezifische akupunkturpunkte auszuwaehlen => das verlinken mit akupunkturpunkt
-* @appointments: als tooltip when hovered, dann die notiz anzeigen (falls vorhanden)
+- @appointments: als tooltip when hovered, dann die notiz anzeigen (falls vorhanden)
 * minor BUG: wenn "inaktivieren von klienten", dann list rendering funkt nicht ganz
 * BUG: wenn klient deaktiverieren, respect view option (show/hide inactives) and hide client
 - breitere textfelder: mail, strasse
@@ -159,6 +157,7 @@ Test
 
 Luxury Ideas
 ------------------------------------------------------------
+* java help system: missuse as TCM help system
 * wenn treatment goal setzen, dann kein neustart erforderlich (gleich rendern)
 * WYSIWYG text editor!
 * doodle integration (a la steffi)
