@@ -97,7 +97,7 @@ echo
 if [ -d "$BUILD_DIR" ]; then
     echo
     myEcho "Removing old build directory at: $BUILD_DIR"
-    rm -rfv ${BUILD_DIR}
+    rm -rf ${BUILD_DIR}
 fi
 mkdir ${BUILD_DIR}
 mkdir ${ARTIFACTS_DIR}
