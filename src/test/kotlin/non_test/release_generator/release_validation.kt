@@ -2,13 +2,14 @@ package non_test.release_generator
 
 import at.cpickl.gadsu.service.LOG
 import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
+import com.github.christophpickl.kpotpourri.github.GithubApi
+import com.github.christophpickl.kpotpourri.github.Issue
+import com.github.christophpickl.kpotpourri.github.Milestone
+import com.github.christophpickl.kpotpourri.github.State
 import non_test.release_generator.ValidationResult.ValidationError
 import non_test.release_generator.ValidationResult.ValidationSuccess
 import java.util.LinkedList
 
-//private interface ValidationStep {
-//    fun execute()
-//}
 sealed class ValidationResult {
     object ValidationSuccess : ValidationResult()
     class ValidationError(

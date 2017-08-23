@@ -1,35 +1,52 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.humanReadableSize
+import ch.qos.logback.classic.Level
 import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
 import com.github.christophpickl.kpotpourri.common.file.move
 import com.github.christophpickl.kpotpourri.common.io.Keyboard
+import com.github.christophpickl.kpotpourri.github.AssetUpload
+import com.github.christophpickl.kpotpourri.github.CreateReleaseRequest
+import com.github.christophpickl.kpotpourri.github.GithubApi
+import com.github.christophpickl.kpotpourri.github.Issue
+import com.github.christophpickl.kpotpourri.github.Milestone
+import com.github.christophpickl.kpotpourri.github.RepositoryConfig
+import com.github.christophpickl.kpotpourri.github.buildGithub4k
+import com.github.christophpickl.kpotpourri.logback4k.Logback4k
 import java.io.File
 
-private val GITHUB_CONFIG = GithubConfig(
+private val REPO_CONFIG = RepositoryConfig(
         repositoryOwner = "christophpickl",
         repositoryName = "gadsu",
-        // repositoryName = "gadsu_release_playground",
         username = "christoph.pickl@gmail.com", // or could load creds from ~/.gadsu/github.properties
+        // MINOR use kpotpourri github4k version 1.7 new detectGithubPass()
         password = System.getProperty("github.pass", null) ?: throw RuntimeException("Expected to have set -Dgithub.pass")
 )
+private val TEST_REPO_CONFIG = REPO_CONFIG.copy(repositoryName = "gadsu_release_playground")
+
 private val RELEASE_CONFIG = ReleaseConfig(
         sourceReleaseBuildFolder = File("/Users/wu/Dev/shiatsu/gadsu_release_build/release_artifacts"),
         targetReleaseArtifactsFolder = File("/Users/wu/Kampfkunst/Shiatsu/___GADSU/Releases") // add "vX.X.X" folder
 )
 
 fun main(args: Array<String>) {
+    configureLogging()
     println("Gadsu Release Generator - START")
     println()
 
-    val githubApi = GithubApi(GITHUB_CONFIG)
-    val generator = ReleaseGenerator(githubApi, RELEASE_CONFIG)
-
-    val milestone = generator.selectMilestone()
-    generator.executeRelease(milestone)
+    ReleaseGenerator(buildGithub4k(REPO_CONFIG), RELEASE_CONFIG).executeRelease()
 
     println()
     println("Gadsu Release Generator - END")
+}
+
+private fun configureLogging() {
+    Logback4k.reconfigure {
+        rootLevel = Level.ALL
+        packageLevel(Level.INFO, "org.apache")
+        addConsoleAppender()
+    }
 }
 
 private class ReleaseGenerator(
@@ -37,24 +54,10 @@ private class ReleaseGenerator(
         private val config: ReleaseConfig
 ) {
 
-
     private val milestones by lazy { githubApi.listOpenMilestones().filterNot { it.version == "ongoing" } }
 
-    fun selectMilestone(): Milestone {
-        milestones.forEachIndexed { i, (version) ->
-            println("( ${i + 1} ) $version")
-        }
-        print(">> [1] ")
-        val input = readLine()!!
-
-        val selectedIndex = if (input.isEmpty()) 1 else input.toInt()
-        return milestones[selectedIndex - 1]
-    }
-
-    /**
-     * Finally the method which has some permanent effects.
-     */
-    fun executeRelease(milestone: Milestone) {
+    fun executeRelease() {
+        val milestone = selectMilestone()
         val issues = githubApi.listIssues(milestone)
         ReleaseValidator(githubApi, milestone, issues, config).validate()
         val releaseText = generateReleaseText(issues)
@@ -78,51 +81,17 @@ private class ReleaseGenerator(
         ))
         println()
 
-        /*
-TODO upload error!
-Uploading release artifact: Gadsu-1.11.0.jar
-Exception in thread "main" at.cpickl.gadsu.GadsuException: GitHub call failed for URL: /releases/5941162/assets with parameters: [(name, Gadsu-1.11.0.jar)]! (fuel says: Exception : Premature EOF)
-	at non_test.release_generator.GithubApi.request(github.kt:163)
-	at non_test.release_generator.GithubApi.request$default(github.kt:143)
-	at non_test.release_generator.GithubApi.uploadReleaseAsset(github.kt:71)
-	at non_test.release_generator.ReleaseGenerator.executeRelease(release_generator.kt:90)
-	at non_test.release_generator.Release_generatorKt.main(release_generator.kt:28)
-Caused by: java.io.IOException: Premature EOF
-	at sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:565)
-	at sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:609)
-	at sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:696)
-	at java.io.FilterInputStream.read(FilterInputStream.java:133)
-	at sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3375)
-	at java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:238)
-	at java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
-	at java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
-	at java.io.FilterInputStream.read(FilterInputStream.java:107)
-	at kotlin.io.ByteStreamsKt.copyTo(IOStreams.kt:101)
-	at kotlin.io.ByteStreamsKt.copyTo$default(IOStreams.kt:98)
-	at kotlin.io.ByteStreamsKt.readBytes(IOStreams.kt:117)
-	at kotlin.io.ByteStreamsKt.readBytes$default(IOStreams.kt:115)
-	at com.github.kittinunf.fuel.toolbox.HttpClient.executeRequest(HttpClient.kt:60)
-	at com.github.kittinunf.fuel.core.requests.TaskRequest.call(TaskRequest.kt:17)
-	at com.github.kittinunf.fuel.core.DeserializableKt.response(Deserializable.kt:80)
-	at com.github.kittinunf.fuel.core.Request.responseString(Request.kt:237)
-	at com.github.kittinunf.fuel.core.Request.responseString$default(Request.kt:237)
-	at non_test.release_generator.GithubApi.request(github.kt:156)
-	... 4 more
- */
-//        println("Going to upload the release artifacts, this can take some time ...")
-//        config.sourceArtifactFiles(milestone).forEach { (type, file) ->
-//            println("  ... uploading: ${file.name}") // could display size in MB
-//            githubApi.uploadReleaseAsset(AssetUpload(
-//                    releaseId = release.id,
-//                    file = file,
-//                    fileName = file.name,
-//                    contentType = type.contentType
-//            ))
-//
-//        }
-//        println()
-
-        // TODO publish release draft
+        println("Going to upload the release artifacts, this can take some time ...")
+        config.sourceArtifactFiles(milestone).forEach { (type, file) ->
+            println("  ... uploading: ${file.name} (${file.humanReadableSize})")
+            githubApi.uploadReleaseAsset(AssetUpload(
+                    releaseId = release.id,
+                    bytes = file.readBytes(),
+                    fileName = file.name,
+                    contentType = type.contentType
+            ))
+        }
+        println()
 
         println("Closing milestone ${milestone.version}.")
         githubApi.close(milestone)
@@ -138,6 +107,16 @@ Caused by: java.io.IOException: Premature EOF
         }
     }
 
+    private fun selectMilestone(): Milestone {
+        milestones.forEachIndexed { i, (version) ->
+            println("( ${i + 1} ) $version")
+        }
+        print(">> [1] ")
+        val input = readLine()!!
+
+        val selectedIndex = if (input.isEmpty()) 1 else input.toInt()
+        return milestones[selectedIndex - 1]
+    }
 
     private fun generateReleaseText(issues: List<Issue>): String {
         val issuesText = issues
