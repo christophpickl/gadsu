@@ -1,9 +1,9 @@
 package non_test.release_generator
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.humanReadableSize
 import ch.qos.logback.classic.Level
 import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
+import com.github.christophpickl.kpotpourri.common.file.humanReadableSize
 import com.github.christophpickl.kpotpourri.common.file.move
 import com.github.christophpickl.kpotpourri.common.io.Keyboard
 import com.github.christophpickl.kpotpourri.github.AssetUpload
@@ -35,6 +35,11 @@ fun main(args: Array<String>) {
     println("Gadsu Release Generator - START")
     println()
 
+//    if (true) {
+//        buildGithub4k(REPO_CONFIG).listReleases().prettyPrint()
+//        return
+//    }
+
     ReleaseGenerator(buildGithub4k(REPO_CONFIG), RELEASE_CONFIG).executeRelease()
 
     println()
@@ -44,7 +49,10 @@ fun main(args: Array<String>) {
 private fun configureLogging() {
     Logback4k.reconfigure {
         rootLevel = Level.ALL
-        packageLevel(Level.INFO, "org.apache")
+        packageLevel(Level.WARN,
+                "org.apache",
+                "com.github.christophpickl.kpotpourri"
+        )
         addConsoleAppender()
     }
 }
@@ -70,7 +78,7 @@ private class ReleaseGenerator(
             return
         }
 
-        // do the actual release!
+        // now do the actual release!
         // ------------------------
 
         println("Creating new GitHub release.")
