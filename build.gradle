@@ -239,7 +239,7 @@ if (System.properties.getProperty("gadsu.enableMacBundle") == "true") {
 // TEST
 // =====================================================================================================================
 
-// $ ./gradlew test testIt testUi
+// $ ./gradlew test testUi
 
 jacoco {
     toolVersion = "0.7.9"

@@ -27,7 +27,7 @@ fun <T> JList<T>.addKPopup(withMenu: JPopupMenu.(T) -> Unit) {
 
         private fun maybeShowPopup(e: MouseEvent) {
             if (e.isPopupTrigger) {
-                val (index, element) = elementAtPoint(e.point) ?: return
+                val (_, element) = elementAtPoint(e.point) ?: return
 
                 val menu = JPopupMenu()
                 withMenu(menu, element)
@@ -60,7 +60,7 @@ fun <T, E : EnumBase<T>> JPopupMenu.addEnumMenu(
     add(JMenu(topLabel).apply {
         enums.orderedValues.forEach { enum ->
             addKPopupItem(bus, enum.label, { fnCreateEvent(enum) }) {
-                isEnabled = enum != fnClientPropExtractor
+                isEnabled = enum != fnClientPropExtractor()
             }
         }
     })
