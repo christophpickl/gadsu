@@ -9,7 +9,7 @@ buildscript {
     println "[GADSU] IS_TRAVIS=" + IS_TRAVIS
 
     ext {
-        kotlin_version = '1.1.4'
+        kotlin_version = '1.1.4-2'
 
         spring_version = '4.3.10.RELEASE'
         logback_version = '1.2.3'
@@ -44,7 +44,7 @@ buildscript {
 plugins {
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.1'
-    id "org.standardout.versioneye" version "1.4.0"
+    id "org.standardout.versioneye" version "1.5.0"
 }
 
 repositories {
@@ -122,7 +122,7 @@ dependencies {
     compile 'net.sf.jasperreports:jasperreports:6.4.1'
     compile 'com.lowagie:itext:2.1.7'
     // overwrite jasperreports '2.1.7.js5-SNAPSHOT' version (most recent is 4.2.2 though)
-    compile 'com.itextpdf:itextpdf:5.5.11' // jasper comes with outdated itext (fortunately got different package name)
+    compile 'com.itextpdf:itextpdf:5.5.12' // jasper comes with outdated itext (fortunately got different package name)
 
     // LOGGING
     // -------------------------------------------------------------------------
@@ -145,7 +145,7 @@ dependencies {
     testCompile "com.github.christophpickl.kpotpourri:test4k:$kpot_version"
     testCompile 'org.testng:testng:6.10'
     // actually 6.11, but there was some JS lib bug which had been fixed by changing the version
-    testCompile 'org.mockito:mockito-core:2.7.19'
+    testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
     testCompile 'org.hamcrest:hamcrest-core:1.3'
     testCompile 'org.hamcrest:hamcrest-library:1.3'// testng comes with hamcrest-core 1.1 via junit; must be ABOVE
