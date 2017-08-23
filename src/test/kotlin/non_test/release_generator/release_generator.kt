@@ -3,6 +3,7 @@ package non_test.release_generator
 import at.cpickl.gadsu.GadsuException
 import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
 import com.github.christophpickl.kpotpourri.common.file.move
+import com.github.christophpickl.kpotpourri.common.io.Keyboard
 import java.io.File
 
 private val GITHUB_CONFIG = GithubConfig(
@@ -61,10 +62,7 @@ private class ReleaseGenerator(
         printSummary(milestone, issues, releaseText)
 
         println("**********> Confirm Release <**********")
-        print("Confirm [y/n]: ")
-        val input = readLine()
-        println()
-        if (input != "y") {
+        if (!Keyboard.readConfirmation("Really go on?", defaultConfirm = false)) {
             println("Release process aborted by user.")
             return
         }

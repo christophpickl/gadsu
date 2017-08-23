@@ -9,12 +9,9 @@ Used variables:
 * Check all GitHub **issues** are **closed**
 * Check if the [build is green](https://travis-ci.org/christophpickl/gadsu)
 * Verify fundamental functionality via manual **smoke tests** (start app, create/update client, create treatment)
-
-## Optional
-
-* Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 * Check there are no TODO or FIXME
     * This is **IMPORTANT!** as otherwise the release build will fail!
+* Optional: Check if [dependencies are up2date](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 
 # Release Script
 
@@ -79,7 +76,7 @@ $
 * Start the **Post Release Generator** Kotlin script in `release_generator.kt`
     * This will verify issues are closed, closes the milestone, drafts a new release and locally moves + uploads the artifacts to GitHub.
 
-# Optional
+## Optional
 
 * Clean up the [taskboard](https://github.com/christophpickl/gadsu/projects/1)
 * Go through `TODO.md`

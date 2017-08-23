@@ -143,6 +143,7 @@ dependencies {
     // TEST
     // -------------------------------------------------------------------------
     testCompile "com.github.christophpickl.kpotpourri:test4k:$kpot_version"
+    testCompile "com.github.christophpickl.kpotpourri:github4k:$kpot_version"
     testCompile 'org.testng:testng:6.10'
     // actually 6.11, but there was some JS lib bug which had been fixed by changing the version
     testCompile 'org.mockito:mockito-core:2.8.47'
