@@ -4,7 +4,6 @@ import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.DeleteAppointmentEvent
 import at.cpickl.gadsu.appointment.OpenAppointmentEvent
 import at.cpickl.gadsu.service.formatDateTimeSemiLong
-import at.cpickl.gadsu.service.htmlize
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.CellView
 import at.cpickl.gadsu.view.components.DefaultCellView
@@ -12,6 +11,7 @@ import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.MyListCellRenderer
 import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.swing.transparent
+import com.github.christophpickl.kpotpourri.common.string.htmlize
 import com.google.common.eventbus.EventBus
 import java.awt.GridBagConstraints
 import javax.inject.Inject

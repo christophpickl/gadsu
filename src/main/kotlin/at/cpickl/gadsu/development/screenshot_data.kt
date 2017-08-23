@@ -17,11 +17,11 @@ import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.DateFormats
-import at.cpickl.gadsu.service.forEach
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
 import at.cpickl.gadsu.treatment.TreatmentService
+import com.github.christophpickl.kpotpourri.common.numbers.forEach
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import java.io.File

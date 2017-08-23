@@ -3,9 +3,9 @@ package at.cpickl.gadsu.treatment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.testinfra.LogTestListener
 import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.testinfra.skip
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import com.github.christophpickl.kpotpourri.test4k.skip
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.BeforeMethod

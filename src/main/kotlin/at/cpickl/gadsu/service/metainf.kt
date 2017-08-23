@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.version.Version
+import com.github.christophpickl.kpotpourri.common.io.closeSilently
 import com.google.inject.Provider
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -35,7 +36,7 @@ class MetaInfLoader : Provider<MetaInf> {
         try {
             props.load(inStream)
         } finally {
-            inStream.closeQuietly()
+            inStream.closeSilently()
         }
 
         val version = Version.parse(props.getProperty(PROPKEY_VERSION))

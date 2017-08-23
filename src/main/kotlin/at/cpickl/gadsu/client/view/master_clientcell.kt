@@ -9,8 +9,6 @@ import at.cpickl.gadsu.service.differenceDaysWithinYear
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.formatDateNoYear
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.isBetweenInclusive
-import at.cpickl.gadsu.service.wrapParenthesisIf
 import at.cpickl.gadsu.view.Images
 import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -18,6 +16,8 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.swing.withFont
 import at.cpickl.gadsu.view.swing.withFontSize
+import com.github.christophpickl.kpotpourri.common.numbers.isBetweenInclusive
+import com.github.christophpickl.kpotpourri.common.string.wrapParenthesisIf
 import com.google.common.annotations.VisibleForTesting
 import org.joda.time.DateTime
 import org.joda.time.Days

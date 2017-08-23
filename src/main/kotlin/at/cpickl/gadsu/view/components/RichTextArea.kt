@@ -8,13 +8,13 @@ import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
 import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.service.LOG
-import at.cpickl.gadsu.service.removePreAndSuffix
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
+import com.github.christophpickl.kpotpourri.common.string.removePreAndSuffix
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import java.awt.event.KeyAdapter
@@ -145,17 +145,20 @@ open class RichTextArea(
             return aset.toMap()[StyleConstants.Foreground]?.equals(Colors.ACUPUNCT_LINK) ?: false // sufficient to check color ;)
         }
 
-        @VisibleForTesting fun extractAcupuncts(text: String): List<Acupunct> {
+        @VisibleForTesting
+        fun extractAcupuncts(text: String): List<Acupunct> {
             return text
                     .split("\n")
                     .flatMap { it.split(" ") }
                     .map(String::trim)
                     .filter(String::isNotEmpty)
-                    .map{ it.removePreAndSuffix(".")
-                            .removePreAndSuffix(",")
-                            .removePreAndSuffix("(")
-                            .removePreAndSuffix(")")
-                            .removePreAndSuffix("\n") }
+                    .map {
+                        it.removePreAndSuffix(".")
+                                .removePreAndSuffix(",")
+                                .removePreAndSuffix("(")
+                                .removePreAndSuffix(")")
+                                .removePreAndSuffix("\n")
+                    }
 //                    .map { println("word: [$it]"); it }
                     .filter { AcupunctCoordinate.isPotentialLabel(it) }
                     .map { Acupunct.byLabel(it) }
@@ -272,7 +275,8 @@ open class RichTextArea(
     }
 
 
-    @VisibleForTesting fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
+    @VisibleForTesting
+    fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
 
     fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
 

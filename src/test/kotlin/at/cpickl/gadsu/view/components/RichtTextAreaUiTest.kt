@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.view.components
 
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.service.times
 import at.cpickl.gadsu.testinfra.TestViewStarter
 import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
@@ -9,6 +8,7 @@ import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import com.github.christophpickl.kpotpourri.common.string.times
 import com.google.common.eventbus.EventBus
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -177,6 +177,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
                     textArea.isAcupunctFormatAt(it), Matchers.equalTo(true))
         }
     }
+
     private fun assertNotAcupunctFormat(from: Int, to: Int) {
         from.rangeTo(to).forEach {
             MatcherAssert.assertThat(textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))

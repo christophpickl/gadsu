@@ -1,16 +1,22 @@
 package at.cpickl.gadsu.tcm
 
 import at.cpickl.gadsu.Event
-import at.cpickl.gadsu.service.toMutableMap
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.view.brighterIfTrue
 import at.cpickl.gadsu.view.swing.addSingleLeftClickListener
+import com.github.christophpickl.kpotpourri.common.collection.toMutableMap
 import com.google.common.eventbus.EventBus
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BasicStroke
+import java.awt.Color
+import java.awt.Cursor
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.Point
+import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.util.*
+import java.util.LinkedHashMap
 import javax.swing.JPanel
 
 
@@ -18,9 +24,11 @@ abstract class ElementsEvent : Event()
 class ElementsOverEvent(val element: Element) : ElementsEvent() {
     override fun toString() = "ElementsOverEvent(element=$element)"
 }
+
 class ElementsOutEvent(val element: Element) : ElementsEvent() {
     override fun toString() = "ElementsOutEvent(element=$element)"
 }
+
 class ElementClickedEvent(val element: Element) : ElementsEvent() {
     override fun toString() = "ElementClickedEvent(element=$element)"
 }
@@ -39,7 +47,7 @@ class ElementsStarView(
     val CIRCLE_PADDING = FRAME_PADDING + CIRCLE_RADIUS
 
     private var coordinates = calcCoordinates()
-    private var overs: HashMap<Element, Boolean> = Element.values().map { Pair(it, false) }.toMutableMap()
+    private var overs: MutableMap<Element, Boolean> = Element.values().map { Pair(it, false) }.toMutableMap()
 
     init {
         isOpaque = true
@@ -66,7 +74,7 @@ class ElementsStarView(
 
     private fun drawBackground(g: Graphics2D) {
         g.color = Color.LIGHT_GRAY
-        g.fillRect(FRAME_PADDING, FRAME_PADDING, width - (FRAME_PADDING *2), height - (FRAME_PADDING *2))
+        g.fillRect(FRAME_PADDING, FRAME_PADDING, width - (FRAME_PADDING * 2), height - (FRAME_PADDING * 2))
     }
 
     private fun onMouseClicked(point: Point) {
@@ -131,11 +139,11 @@ class ElementsStarView(
         map.put(Element.Fire, ensuredPoint(width / 2, CIRCLE_PADDING))
         map.put(Element.Earth, ensuredPoint(width - CIRCLE_PADDING, verticalGap))
         map.put(Element.Metal, ensuredPoint(width - CIRCLE_PADDING - horizontalGap, height - CIRCLE_PADDING))
-        map.put(Element.Water, ensuredPoint(    0 + CIRCLE_PADDING + horizontalGap, height - CIRCLE_PADDING))
+        map.put(Element.Water, ensuredPoint(0 + CIRCLE_PADDING + horizontalGap, height - CIRCLE_PADDING))
         return ElementsCoordinates(map)
     }
 
-    private fun ensuredPoint(x: Int, y: Int):Coordinate {
+    private fun ensuredPoint(x: Int, y: Int): Coordinate {
         val center = Point(
                 Math.min(Math.max(x, CIRCLE_PADDING), width - CIRCLE_PADDING),
                 Math.min(Math.max(y, CIRCLE_PADDING), height - CIRCLE_PADDING)
@@ -152,10 +160,6 @@ private data class ElementsCoordinates(
 ) {
     val coordinatesArray: Array<Pair<Element, Coordinate>> = coordinateByElement.map { Pair(it.key, it.value) }.toTypedArray()
 }
-
-
-
-
 
 
 /**
