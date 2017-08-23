@@ -13,6 +13,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext
 import com.thoughtworks.xstream.converters.UnmarshallingContext
 import com.thoughtworks.xstream.io.HierarchicalStreamReader
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter
+import com.thoughtworks.xstream.security.NoTypePermission
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 import org.slf4j.LoggerFactory
@@ -80,6 +81,7 @@ class ExportXstreamService : ExportService {
 
         // http://x-stream.github.io/graphs.html
         xstream.setMode(XStream.XPATH_RELATIVE_REFERENCES)
+        xstream.addPermission(NoTypePermission.NONE)
 
         xstream.registerConverter(MyImageConverter())
         xstream.registerConverter(JodaDateTimeConverter())
