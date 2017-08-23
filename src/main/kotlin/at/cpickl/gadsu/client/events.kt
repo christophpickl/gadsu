@@ -119,3 +119,8 @@ class ClientChangeDonation(
         val client: Client,
         val newDonation: ClientDonation
 ) : UserEvent()
+
+class ClientChangeCategory(
+        val client: Client,
+        val newCategory: ClientCategory
+) : UserEvent()

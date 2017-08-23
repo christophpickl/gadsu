@@ -2,6 +2,8 @@ package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientCategory
+import at.cpickl.gadsu.client.ClientChangeCategory
 import at.cpickl.gadsu.client.ClientChangeDonation
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientSelectedEvent
@@ -17,6 +19,7 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.containsById
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.logic.addEnumMenu
 import at.cpickl.gadsu.view.logic.addKPopup
 import at.cpickl.gadsu.view.logic.addKPopupItem
 import at.cpickl.gadsu.view.swing.enableHoverListener
@@ -31,7 +34,6 @@ import java.awt.GridBagConstraints
 import java.awt.Insets
 import java.util.HashMap
 import javax.swing.JList
-import javax.swing.JMenu
 import javax.swing.ListSelectionModel
 
 
@@ -140,13 +142,8 @@ class SwingClientMasterView @Inject constructor(
                 addKPopupItem(bus, "Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
             }
             addSeparator()
-            add(JMenu("Spende").apply {
-                ClientDonation.Enum.orderedValues.forEach { donation ->
-                    addKPopupItem(bus, donation.label, { ClientChangeDonation(selectedClient.client, donation) }) {
-                        isEnabled = donation != selectedClient.donation
-                    }
-                }
-            })
+            addEnumMenu(bus, "Spende", ClientDonation.Enum, { ClientChangeDonation(selectedClient.client, it) }, { selectedClient.client.donation })
+            addEnumMenu(bus, "Kategorie", ClientCategory.Enum, { ClientChangeCategory(selectedClient.client, it) }, { selectedClient.client.category })
         }
     }
 

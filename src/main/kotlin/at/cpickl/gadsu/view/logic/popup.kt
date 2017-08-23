@@ -1,5 +1,9 @@
 package at.cpickl.gadsu.view.logic
 
+import at.cpickl.gadsu.EnumBase
+import at.cpickl.gadsu.Labeled
+import at.cpickl.gadsu.Ordered
+import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.view.swing.elementAtPoint
 import com.google.common.eventbus.EventBus
@@ -43,5 +47,21 @@ fun JMenu.addKPopupItem(bus: EventBus, label: String, eventBuilder: () -> UserEv
     add(JMenuItem(label).apply {
         addActionListener { bus.post(eventBuilder()) }
         withItem(this)
+    })
+}
+
+fun <T, E : EnumBase<T>> JPopupMenu.addEnumMenu(
+        bus: EventBus,
+        topLabel: String,
+        enums: E,
+        fnCreateEvent: (T) -> UserEvent,
+        fnClientPropExtractor: () -> T
+) where T : Ordered, T : SqlEnum, T : Labeled {
+    add(JMenu(topLabel).apply {
+        enums.orderedValues.forEach { enum ->
+            addKPopupItem(bus, enum.label, { fnCreateEvent(enum) }) {
+                isEnabled = enum != fnClientPropExtractor
+            }
+        }
     })
 }

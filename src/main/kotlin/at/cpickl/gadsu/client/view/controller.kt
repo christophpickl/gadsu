@@ -6,6 +6,7 @@ import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ClientChangeCategory
 import at.cpickl.gadsu.client.ClientChangeDonation
 import at.cpickl.gadsu.client.ClientCreatedEvent
 import at.cpickl.gadsu.client.ClientDeletedEvent
@@ -226,8 +227,11 @@ open class ClientViewController @Inject constructor(
     }
 
     @Subscribe open fun onClientChangeDonation(event: ClientChangeDonation) {
-        val client = view.detailView.readClient().copy(donation = event.newDonation)
-        saveClient(client)
+        saveClient(view.detailView.readClient().copy(donation = event.newDonation))
+    }
+
+    @Subscribe open fun onClientChangeCategory(event: ClientChangeCategory) {
+        saveClient(view.detailView.readClient().copy(category = event.newCategory))
     }
 
     private fun doDeleteClient(client: Client) {

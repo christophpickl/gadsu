@@ -183,8 +183,8 @@ open class SwingClientDetailView @Inject constructor(
                 tabMain.inpSymptoms.text,
                 tabMain.inpFiveElements.text,
                 tabMain.inpSyndrom.text,
-                tabMain.inpCategory.selectedItemTyped,
-                currentClient.data.donation, // not changeable via client detail view
+                currentClient.data.category, // not changeable via client detail view, but via popup
+                currentClient.data.donation, // not changeable via client detail view, but via popup
 
                 tabTcm.inpTcmNote.toEnrichedText(),
                 currentClient.data.picture,
@@ -212,16 +212,6 @@ open class SwingClientDetailView @Inject constructor(
         }
         return false
     }
-
-//    override fun changeImage(newImage: MyImage) {
-//        log.debug("changeImage(newImage)")
-//        tabMain.imageChanged = true
-//
-//        tabMain.originalImage = newImage
-//        tabMain.imageContainer.icon = tabMain.originalImage.toViewBigRepresentation()
-//
-//        modificationChecker.trigger()
-//    }
 
     private fun updateFields() {
         log.debug("updateFields(), currentClient.data={}", currentClient.data)
