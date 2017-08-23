@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientChangeDonation
 import at.cpickl.gadsu.client.ClientDonation
@@ -18,8 +17,8 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.containsById
 import at.cpickl.gadsu.view.components.newEventButton
 import at.cpickl.gadsu.view.components.panels.GridPanel
-import at.cpickl.gadsu.view.logic.enableSmartPopup
-import at.cpickl.gadsu.view.logic.popupLineSeparator
+import at.cpickl.gadsu.view.logic.addKPopup
+import at.cpickl.gadsu.view.logic.addKPopupItem
 import at.cpickl.gadsu.view.swing.enableHoverListener
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.scrolled
@@ -31,8 +30,8 @@ import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
 import java.util.HashMap
-import java.util.LinkedList
 import javax.swing.JList
+import javax.swing.JMenu
 import javax.swing.ListSelectionModel
 
 
@@ -133,27 +132,22 @@ class SwingClientMasterView @Inject constructor(
             }
         }
 
-        list.enableSmartPopup(bus, { selectedClient ->
-            val list = LinkedList<Pair<String, () -> UserEvent>>()
-
+        list.addKPopup { selectedClient ->
             if (selectedClient.picture.isUnsavedDefaultPicture) {
-                list += Pair<String, () -> UserEvent>("Bild hinzuf\u00fcgen", { SelectImageEvent() })
+                addKPopupItem(bus, "Bild hinzuf\u00fcgen", { SelectImageEvent() })
             } else {
-                list += Pair<String, () -> UserEvent>("Bild \u00e4ndern", { SelectImageEvent() })
-                list += Pair<String, () -> UserEvent>("Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
+                addKPopupItem(bus, "Bild \u00e4ndern", { SelectImageEvent() })
+                addKPopupItem(bus, "Bild l\u00f6schen", { DeleteImageEvent(selectedClient.client) })
             }
-            list += popupLineSeparator()
-            ClientDonation.Enum.orderedValues.forEach { donation ->
-                list.addDonation(selectedClient, donation)
-            }
-
-            list
-
-        })
-    }
-
-    private fun MutableList<Pair<String, () -> UserEvent>>.addDonation(client: ExtendedClient, donation: ClientDonation) {
-        if (client.donation != donation) this += Pair<String, () -> UserEvent>("Spende: ${donation.label}", { ClientChangeDonation(client.client, donation) })
+            addSeparator()
+            add(JMenu("Spende").apply {
+                ClientDonation.Enum.orderedValues.forEach { donation ->
+                    addKPopupItem(bus, donation.label, { ClientChangeDonation(selectedClient.client, donation) }) {
+                        isEnabled = donation != selectedClient.donation
+                    }
+                }
+            })
+        }
     }
 
     override fun asComponent() = this

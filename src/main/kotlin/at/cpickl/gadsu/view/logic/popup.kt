@@ -14,6 +14,7 @@ import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JList
+import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPanel
 import javax.swing.JPopupMenu
@@ -48,15 +49,55 @@ fun main(args: Array<String>) {
 //</editor-fold>
 
 
+fun <T> JList<T>.addKPopup(withMenu: JPopupMenu.(T)  -> Unit) {
+    val list = this
+    addMouseListener(object : MouseAdapter() {
+        override fun mousePressed(e: MouseEvent) {
+            maybeShowPopup(e)
+        }
+        override fun mouseReleased(e: MouseEvent) {
+            maybeShowPopup(e)
+        }
+        private fun maybeShowPopup(e: MouseEvent) {
+            if (e.isPopupTrigger) {
+                val (index, element) = elementAtPoint(e.point) ?: return
+
+                val menu = JPopupMenu()
+                withMenu(menu, element)
+                menu.show(list, e.point.x, e.point.y)
+            }
+        }
+    })
+}
+
+fun JPopupMenu.addKPopupItem(bus: EventBus, label: String, eventBuilder: () -> UserEvent) {
+    add(JMenuItem(label).apply {
+        addActionListener { bus.post(eventBuilder()) }
+    })
+}
+
+fun JMenu.addKPopupItem(bus: EventBus, label: String, eventBuilder: () -> UserEvent, withItem: JMenuItem.() -> Unit = {}) {
+    add(JMenuItem(label).apply {
+        addActionListener { bus.post(eventBuilder()) }
+        withItem(this)
+    })
+}
+
+@Deprecated("use other")
 fun SwingFactory.createAndShowPopup(invoker: Component, point: Point, vararg entries: Pair<String, () -> UserEvent>) {
     createAndShowPopup(bus, invoker, point, entries.toList())
 }
 
+@Deprecated("use other")
 val POPUP_LINE_ENTRY = "----"
+
+@Deprecated("use other")
 object NoopUserEvent : UserEvent()
+
+@Deprecated("use other")
 fun popupLineSeparator() = Pair(POPUP_LINE_ENTRY, { NoopUserEvent })
 
-// label: String, eventFunction: () -> UserEvent
+@Deprecated("use other")
 fun createAndShowPopup(bus: EventBus, invoker: Component, point: Point, entries: List<Pair<String, () -> UserEvent>>) {
     SWING_log.trace("createAndShowPopup(bus, invoker, point={}, entries={})", point, entries)
     val popup = JPopupMenu()
@@ -76,9 +117,13 @@ fun createAndShowPopup(bus: EventBus, invoker: Component, point: Point, entries:
 }
 
 
+
+@Deprecated("use other")
 fun <T> JList<T>.enableSmartPopup(bus: EventBus, entriesFunction: (element: T) -> List<Pair<String, () -> UserEvent>>) {
     _enablePopup(bus, entriesFunction)
 }
+
+@Deprecated("use other")
 fun <T> JList<T>.enablePopup(bus: EventBus, vararg entries: Pair<String, (element: T) -> UserEvent>) {
 
     val builderFunction = { element: T ->
@@ -87,7 +132,8 @@ fun <T> JList<T>.enablePopup(bus: EventBus, vararg entries: Pair<String, (elemen
     _enablePopup(bus = bus, entriesFunction = builderFunction)
 }
 
-private fun <T> JList<T>._enablePopup(bus: EventBus, entriesFunction: (element: T) -> List<Pair<String, () -> UserEvent>>) { //entries: List<Pair<String, (element: T) -> UserEvent>>) {
+@Deprecated("use other")
+private fun <T> JList<T>._enablePopup(bus: EventBus, entriesFunction: (element: T) -> List<Pair<String, () -> UserEvent>>) {
     val list = this
     addMouseListener(object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
