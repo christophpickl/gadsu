@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.persistence.PersistenceException
 import at.cpickl.gadsu.persistence.toByteArray
@@ -34,7 +35,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- insert
 
     fun `insertWithoutPicture should really just insert no picture`() {
-        val toBeSaved = Client.fullInstance().copy(id = null)
+        val toBeSaved = Client.fullInstance().copy(id = null, cprops = CProps.empty)
         val expected = toBeSaved.copy(id = TEST_UUID1)// returned by mock
 
         assertThat(testee.insertWithoutPicture(toBeSaved), equalTo(expected))
