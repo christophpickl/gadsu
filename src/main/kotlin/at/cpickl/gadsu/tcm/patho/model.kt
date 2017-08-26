@@ -4,7 +4,7 @@ import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.Substances
 import at.cpickl.gadsu.tcm.model.YinYang
 
-enum class SyndromeTendency(val yy: YinYang) {
+enum class MangelUeberfluss(val yy: YinYang) {
     Mangel(YinYang.Yin),
     Ueberfluss(YinYang.Yang)
 }

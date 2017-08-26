@@ -3,22 +3,6 @@ package at.cpickl.gadsu.tcm.model
 import at.cpickl.gadsu.tcm.model.YinYangDetailMiddle.*
 import java.awt.Color
 
-enum class ZangFu(val yy: YinYang) {
-    Zang(YinYang.Yin),
-    Fu(YinYang.Yang)
-}
-
-enum class ZangOrgan(
-        val meridian: Meridian
-) {
-    Lung(Meridian.Lung),
-    Spleen(Meridian.Spleen),
-    Heart(Meridian.Heart),
-    Liver(Meridian.Liver),
-    Kidney(Meridian.Kidney)
-    ;
-}
-
 enum class Element(
         val label: String,
         val labelChinese: String,
