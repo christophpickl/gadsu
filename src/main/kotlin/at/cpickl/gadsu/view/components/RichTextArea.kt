@@ -197,6 +197,7 @@ open class RichTextArea(
     private var isAcupunctDetectionEnabled = false
 
     private fun formatAcupunct(punct: Acupunct, endPosition: Int) {
+        log.trace { "formatAcupunct(punct=${punct.titleShort}, endPosition=$endPosition)" }
         replaceTextStyle { adoc ->
             val label = punct.coordinate.label
             adoc.replace(endPosition - label.length, label.length, label, FORMAT_ATTRIBUTES_ACUPUNCT)
@@ -204,6 +205,7 @@ open class RichTextArea(
     }
 
     private fun clearAcupunctFormat(offset: Int, textToClear: String) {
+        log.trace { "clearAcupunctFormat(offset=$offset, textToClear=[$textToClear])" }
         replaceTextStyle { adoc ->
             adoc.replace(offset, textToClear.length, textToClear, RichFormat.CLEAN_FORMAT)
         }
@@ -235,18 +237,41 @@ open class RichTextArea(
             }
 
             private fun checkAcupunct(e: DocumentEvent) {
+                if (_isReformatting) {
+                    log.trace { "Not checking for acupunct as currently reformatting..." }
+                    return
+                }
                 log.debug { "checkAcupunct(e.type=${e.type}, e.offset=${e.offset}, e.length=${e.length})" }
                 val text = this@RichTextArea.text
-                log.debug { "RichTextArea.text = [[[$text]]]" }
+                log.debug { "RichTextArea.text = [$text]" }
 
                 if (e.type == DocumentEvent.EventType.INSERT && e.length == 1) {
                     val word = extractWordAt(text, this@RichTextArea.selectionEnd) ?: return
-                    log.trace {"Extracted word: [$word]" }
-                    if (isAcupunctFormatAt(e.offset)) {
+                    log.trace { "Extracted word: [$word]" }
+                    if (isAcupunctFormatAt(e.offset - 1)) {
                         if (Acupunct.byLabel(word) == null) {
+                            // MINOR fix if adding e.g. whitespace in between valid acupunct text
                             val beginOfWordOffset = e.offset - word.length + 1
                             SwingUtilities.invokeLater {
                                 clearAcupunctFormat(beginOfWordOffset, word)
+                            }
+                        }
+                    }
+                } else if (e.type == DocumentEvent.EventType.REMOVE && e.length == 1) {
+                    val word = extractWordAt(text, e.offset) ?: return
+                    log.trace { "Extracted word: [$word]" }
+                    if (isAcupunctFormatAt(e.offset - 1)) {
+                        if (Acupunct.byLabel(word) == null) {
+                            val beginOfWordOffset = e.offset - word.length
+                            SwingUtilities.invokeLater {
+                                clearAcupunctFormat(beginOfWordOffset, word)
+                            }
+                        }
+                    } else {
+                        val punct = Acupunct.byLabel(word)
+                        if (punct != null) {
+                            SwingUtilities.invokeLater {
+                                formatAcupunct(punct, e.offset)
                             }
                         }
                     }

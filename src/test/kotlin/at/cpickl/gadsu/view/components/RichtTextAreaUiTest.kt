@@ -20,24 +20,8 @@ import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
 import java.util.LinkedList
-import javax.swing.JLabel
 import javax.swing.JPanel
-
-
-@Test(groups = arrayOf("uiTest"))
-class RichTextAreaTestasdf : SimpleUiTest() {
-    override fun postInit(window: Window) {
-    }
-
-    override fun newMainClassAdapter(): MainClassAdapter {
-        TestViewStarter.componentToShow = JLabel()
-        return MainClassAdapter(TestViewStarter::class.java)
-    }
-
-    fun `foo`() {
-
-    }
-}
+import javax.swing.SwingUtilities
 
 @Test(groups = arrayOf("uiTest"))
 class RichTextAreaUiTest : SimpleUiTest() {
@@ -174,7 +158,9 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     fun `acupuncture - emphasize as single word`() {
         textArea.readEnrichedText("Lu1")
+
         assertAcupunctFormat(0, 2)
+        textAsserter.assertPlainTextEquals("Lu1")
     }
 
     @DataProvider
@@ -188,6 +174,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textArea.readEnrichedText(text)
 
         assertAcupunctFormat(inclusiveFrom, inclusiveTo)
+        textAsserter.assertPlainTextEquals(text)
     }
 
     fun `acupuncture - emphasize within other words`() {
@@ -195,6 +182,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         assertNotAcupunctFormat(0, 1)
         assertAcupunctFormat(2, 4)
         assertNotAcupunctFormat(5, 5)
+        textAsserter.assertPlainTextEquals("a Lu1 b")
     }
 
     fun `acupuncture - emphasize many points`() {
@@ -204,37 +192,55 @@ class RichTextAreaUiTest : SimpleUiTest() {
         assertAcupunctFormat(14, 16)
     }
 
-    // FIXME
-    fun `acupuncture - de-emphasize after text added behind`() {
+    fun `acupuncture - de-emphasize when text added behind`() {
         textArea.readEnrichedText("Lu1")
 
         textAsserter.appendAtEnd("x")
 
         assertNotAcupunctFormat(0, 3)
+        textAsserter.assertPlainTextEquals("Lu1x")
     }
 
-    fun `acupuncture - de-emphasize after last char deleted`() {
+    fun `acupuncture - de-emphasize when last char deleted`() {
         textArea.readEnrichedText("Lu1")
 
         textArea.removeLastChar()
 
         assertNotAcupunctFormat(0, 2)
+        textAsserter.assertPlainTextEquals("Lu")
     }
+
+    fun `acupuncture - emphasize when surrounded by paranthesis`() {
+        textAsserter.enterText("(Bl1) ")
+        assertNotAcupunctFormat(0, 0)
+        assertAcupunctFormat(1, 3)
+        assertNotAcupunctFormat(4, 4)
+        textAsserter.assertPlainTextEquals("(Bl1) ")
+    }
+
+
+    // MINOR implement tests
+//    fun `acupuncture - de-emphasize when char in between removed`() {}
+//    fun `acupuncture - de-emphasize when char in between deleted`() {}
 
     // INTERNALS
     // -----------------------------------------------------------------------------------------------------------------
 
     private fun assertAcupunctFormat(inclusiveFrom: Int, inclusiveTo: Int) {
-        inclusiveFrom.rangeTo(inclusiveTo).forEach {
-            MatcherAssert.assertThat("Expected character at position $it which is '${textArea.text[it]}' to be formated as acupunct in text: [${textArea.text}]",
-                    textArea.isAcupunctFormatAt(it), Matchers.equalTo(true))
+        SwingUtilities.invokeLater {
+            inclusiveFrom.rangeTo(inclusiveTo).forEach {
+                MatcherAssert.assertThat("Expected character at position $it which is '${textArea.text[it]}' to be formated as acupunct in text: [${textArea.text}]",
+                        textArea.isAcupunctFormatAt(it), Matchers.equalTo(true))
+            }
         }
     }
 
     private fun assertNotAcupunctFormat(from: Int, to: Int) {
-        from.rangeTo(to).forEach {
-            MatcherAssert.assertThat("Expected NOT to be in acupuncture format at position: $it",
-                    textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))
+        SwingUtilities.invokeLater {
+            from.rangeTo(to).forEach {
+                MatcherAssert.assertThat("Expected NOT to be in acupuncture format at position: $it",
+                        textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))
+            }
         }
     }
 

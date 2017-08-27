@@ -27,17 +27,21 @@ class AcupunctWordDetector : WordListener {
         val charsAfterAcupunctLabel = if (word.endsWith(punct.titleShort)) 0 else {
             val punctIndex = word.indexOf(punct.titleShort)
             log.trace { "punctIndex: $punctIndex" }
-            val wordFromPunctOn = word.substring(punctIndex)
-            val cleanedWordFromPunctOn = cleanWord.substring(punctIndex)
-            wordFromPunctOn.length - cleanedWordFromPunctOn.length
+            if (punctIndex == 0) {
+                val wordFromPunctOn = word.substring(punctIndex)
+                val cleanedWordFromPunctOn = cleanWord.substring(punctIndex)
+                wordFromPunctOn.length - cleanedWordFromPunctOn.length
+            } else {
+                word.length - (punctIndex + punct.titleShort.length)
+            }
         }
-        val correctedPosition = endPosition - charsAfterAcupunctLabel
+        val correctedEndPosition = endPosition - charsAfterAcupunctLabel
         if (charsAfterAcupunctLabel != 0) {
 
-            log.trace { "correctedPosition: $correctedPosition" }
+            log.trace { "correctedEndPosition: $correctedEndPosition" }
         }
 
-        listeners.forEach { it.invoke(punct, correctedPosition) }
+        listeners.forEach { it.invoke(punct, correctedEndPosition) }
     }
 
     fun addAcupunctListener(listener: (Acupunct, Int) -> Unit) {
