@@ -6,17 +6,35 @@ import javax.swing.AbstractAction
 import javax.swing.KeyStroke
 import javax.swing.text.JTextComponent
 
-fun extractPreviousWord(text: String, endPosition: Int): String? {
-    if (endPosition == 0) return null // inserted space at very beginning
+fun extractPreviousWord(text: String, exclusiveEndPosition: Int): String? {
+    if (exclusiveEndPosition == 0) return null // inserted space at very beginning
+    if (exclusiveEndPosition > /*FIXME or >= ???*/ text.length) return null
 
-    val textToPosition = text.substring(0, endPosition)
+    val textToPosition = text.substring(0, exclusiveEndPosition)
     val lastSpacePosition = textToPosition.lastIndexOf(' ')
-    if (lastSpacePosition == - 1) {
+    if (lastSpacePosition == -1) {
         return textToPosition
     }
 
-    val substring = text.substring(lastSpacePosition + 1, endPosition)
+    val substring = text.substring(lastSpacePosition + 1, exclusiveEndPosition)
     return if (substring.isEmpty()) null else substring
+}
+
+fun extractWordAt(text: String, position: Int): String? {
+    if (position < 0) return null
+    if (text.isEmpty()) return null
+    if (position > text.length) return null
+
+    val firstPosSpace = text.substring(0, position).lastIndexOf(' ')
+    val lastPosSpace = text.substring(position).indexOf(' ')
+    val x = text.substring(
+            if (firstPosSpace != -1) firstPosSpace + 1 else 0,
+            if (lastPosSpace != -1) lastPosSpace + position else text.length
+    )
+    if (x.trim().isEmpty()) {
+        return null
+    }
+    return x
 }
 
 class WordDetector(val jtext: JTextComponent) {

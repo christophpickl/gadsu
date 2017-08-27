@@ -238,9 +238,11 @@ open class RichTextArea(
                 val text = this@RichTextArea.text
                 log.debug { "RichTextArea.text = [[[$text]]]" }
 
-                if (e.type == DocumentEvent.EventType.INSERT) {
-                    val prevWord = extractPreviousWord(text, this@RichTextArea.selectionStart - 1)
-                    println("prevWord: $prevWord")
+                if (e.type == DocumentEvent.EventType.INSERT && e.length == 1) {
+//                    val prevWord = extractPreviousWord(text, this@RichTextArea.selectionEnd + 1) ?: return
+//                    println("prevWord: $prevWord")
+                    val word = extractWordAt(text, this@RichTextArea.selectionEnd)
+                    println("word: $word")
                 }
                 // MINOR #113 be more precise when it comes to acupunct coordinages (there is no Lu99!)
 //                val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
@@ -295,7 +297,7 @@ open class RichTextArea(
     }
 
     private fun DocumentEvent.extractText(jtext: JTextComponent): String {
-        if (type == DocumentEvent.EventType.REMOVE && jtext.text.isEmpty()) {
+        if (type == DocumentEvent.EventType.REMOVE) {
             return ""
         }
         return jtext.text.substring(offset, offset + length)
