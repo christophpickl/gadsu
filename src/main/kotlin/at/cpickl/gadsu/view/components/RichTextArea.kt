@@ -25,6 +25,7 @@ import java.util.HashMap
 import java.util.LinkedList
 import javax.swing.JLabel
 import javax.swing.JTextPane
+import javax.swing.SwingUtilities
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.text.AbstractDocument
@@ -239,50 +240,17 @@ open class RichTextArea(
                 log.debug { "RichTextArea.text = [[[$text]]]" }
 
                 if (e.type == DocumentEvent.EventType.INSERT && e.length == 1) {
-//                    val prevWord = extractPreviousWord(text, this@RichTextArea.selectionEnd + 1) ?: return
-//                    println("prevWord: $prevWord")
-                    val word = extractWordAt(text, this@RichTextArea.selectionEnd)
-                    println("word: $word")
+                    val word = extractWordAt(text, this@RichTextArea.selectionEnd) ?: return
+                    log.trace {"Extracted word: [$word]" }
+                    if (isAcupunctFormatAt(e.offset)) {
+                        if (Acupunct.byLabel(word) == null) {
+                            val beginOfWordOffset = e.offset - word.length + 1
+                            SwingUtilities.invokeLater {
+                                clearAcupunctFormat(beginOfWordOffset, word)
+                            }
+                        }
+                    }
                 }
-                // MINOR #113 be more precise when it comes to acupunct coordinages (there is no Lu99!)
-//                val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
-//                val matches = regexp.matcher(text)
-//                while (matches.find()) {
-//                    val found = matches.group(0)
-//                    println("FOUND: $found at ")
-//                    println("Start: ${matches.}, end: ${matches.regionEnd()}")
-//                }
-//                this@RichTextArea.text.split(" ").map {
-//                    it
-//                            .replace("(", "")
-//                            .replace(")", "")
-//                            .replace(".", "")
-//                            .replace(",", "")
-//                            .replace(";", "")
-//                            .replace("-", "")
-//                }.also { word -> println(word) }
-
-
-                // TODO clearAcupunctFormat
-//                var word: String? = null
-//                var afterWordPos: Int? = null
-//                if (e.type == DocumentEvent.EventType.INSERT) {
-//                    log.debug { "modified text ===> [[[${e.extractText(this@RichTextArea)}]]]" }
-//                    // jtext.selectionStart
-//                    afterWordPos = e.offset + e.length
-//                    word = extractPreviousWord(text = text, position = afterWordPos)
-//                } else if (e.type == DocumentEvent.EventType.REMOVE) {
-//
-//                } else if (e.type == DocumentEvent.EventType.CHANGE) {
-//
-//                } else {
-//                    log.warn { "Unhandled DocumentEvent.type: [${e.type}]" }
-//                }
-//
-//                if (word == null || afterWordPos == null) return
-//                if (!AcupunctCoordinate.isPotentialLabel(word)) return
-//                val punct = Acupunct.byLabel(word) ?: return
-//                formatAcupunct(punct, afterWordPos)
             }
         })
         addMouseListener(object : MouseAdapter() {

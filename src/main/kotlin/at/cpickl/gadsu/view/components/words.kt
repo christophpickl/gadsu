@@ -8,7 +8,7 @@ import javax.swing.text.JTextComponent
 
 fun extractPreviousWord(text: String, exclusiveEndPosition: Int): String? {
     if (exclusiveEndPosition == 0) return null // inserted space at very beginning
-    if (exclusiveEndPosition > /*FIXME or >= ???*/ text.length) return null
+    if (exclusiveEndPosition > text.length) return null
 
     val textToPosition = text.substring(0, exclusiveEndPosition)
     val lastSpacePosition = textToPosition.lastIndexOf(' ')

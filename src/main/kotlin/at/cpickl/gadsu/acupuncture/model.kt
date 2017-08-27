@@ -122,7 +122,7 @@ data class AcupunctCoordinate(
 ) : Comparable<AcupunctCoordinate> {
 
     companion object {
-        // MINOR be more precise when it comes to acupunct coordinages (there is no Lu99!)
+        // MINOR #118 be more precise when it comes to acupunct coordinages (there is no Lu99!)
         private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
         fun isPotentialLabel(potent: String) = regexp.matcher(potent).matches()
 
