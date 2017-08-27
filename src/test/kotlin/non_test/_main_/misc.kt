@@ -16,13 +16,11 @@ import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.FramedContext
-import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import com.google.common.eventbus.EventBus
 import org.mockito.Mockito
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -33,11 +31,12 @@ import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
-    Framed.showWithContext(::clientTabAssist, Dimension(600, 600))
+    Framed.showWithContext(
+            ::clientTabAssist,
+            Dimension(600, 600))
 //        treatmentGoal()
 //        triState()
 //        meridianSelector()
-//        richWordTextArea()
 }
 
 fun clientTabAssist(context: FramedContext): JComponent {
@@ -54,21 +53,6 @@ fun clientTabMain(context: FramedContext): JComponent {
             TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
             context.bus
     ).asComponent()
-}
-
-fun richWordTextArea(): JComponent {
-//    val text = MyTextArea("")
-//    val words = WordDetector(text)
-//    words.addWordListener(object : WordListener {
-//        override fun onWord(word: String) {
-//            println("word pressed: [$word]")
-//        }
-//    })
-//    words.addWordListener(AcupunctWordDetector().apply {
-//        addAcupunctListener { println("punct: [$it]") }
-//    })
-//    return text
-    return RichTextArea("", EventBus())
 }
 
 fun meridianSelector() = MeridianSelector().apply {

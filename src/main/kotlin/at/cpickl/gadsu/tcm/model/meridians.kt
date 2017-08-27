@@ -5,8 +5,9 @@ import at.cpickl.gadsu.tcm.model.Element.*
 import at.cpickl.gadsu.tcm.model.Extremity.Foot
 import at.cpickl.gadsu.tcm.model.Extremity.Hand
 import at.cpickl.gadsu.tcm.model.Family.*
-import at.cpickl.gadsu.tcm.model.ZangFu.Fu
-import at.cpickl.gadsu.tcm.model.ZangFu.Zang
+import at.cpickl.gadsu.tcm.patho.ZangFu
+import at.cpickl.gadsu.tcm.patho.ZangFu.Fu
+import at.cpickl.gadsu.tcm.patho.ZangFu.Zang
 
 // https://en.wikipedia.org/wiki/Meridian_%28Chinese_medicine%29#Twelve_standard_meridians
 
@@ -30,6 +31,7 @@ enum class UnpairedMeridian(val label: String, val labelDe: String) {
  */
 enum class Meridian(
         val labelLong: String,
+        /** Lu, Di, Ma, ...*/
         val labelShort: String,
         val labelChinese: String,
         val sqlCode: String, // of length 2

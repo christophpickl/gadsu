@@ -88,6 +88,7 @@ data class Acupunct(
 
     // move to and delegate by AcupunctCoordinate??
     val titleLong: String get() = "${meridian.labelLong} $number"
+    /** Lu1, Bl12, ... */
     val titleShort: String get() = "${meridian.labelShort}$number"
 
     val elementFlag: AcupunctFlag.ElementPoint? = flags.filterIsInstance(AcupunctFlag.ElementPoint::class.java).firstOrNull()
@@ -121,6 +122,7 @@ data class AcupunctCoordinate(
 ) : Comparable<AcupunctCoordinate> {
 
     companion object {
+        // MINOR be more precise when it comes to acupunct coordinages (there is no Lu99!)
         private val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
         fun isPotentialLabel(potent: String) = regexp.matcher(potent).matches()
 

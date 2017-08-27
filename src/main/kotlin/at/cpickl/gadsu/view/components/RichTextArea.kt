@@ -7,13 +7,13 @@ import at.cpickl.gadsu.acupuncture.AcupunctCoordinate
 import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
 import at.cpickl.gadsu.isShortcutDown
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 import com.github.christophpickl.kpotpourri.common.string.removePreAndSuffix
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
@@ -25,8 +25,11 @@ import java.util.HashMap
 import java.util.LinkedList
 import javax.swing.JLabel
 import javax.swing.JTextPane
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 import javax.swing.text.AbstractDocument
 import javax.swing.text.AttributeSet
+import javax.swing.text.JTextComponent
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 import javax.swing.text.StyleContext
@@ -132,13 +135,11 @@ open class RichTextArea(
     companion object {
         private val FORMATS = RichFormat.values().associateBy { it.shortcutKey }
 
-        private val ACUPUNCT_ASET = buildAcupunctFormat()
-
-        private fun buildAcupunctFormat(): AttributeSet? {
+        private val FORMAT_ATTRIBUTES_ACUPUNCT: AttributeSet by lazy {
             val sc = StyleContext()//StyleContext.getDefaultStyleContext()
             var aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Colors.ACUPUNCT_LINK)
             aset = sc.addAttribute(aset, StyleConstants.Underline, true)
-            return aset
+            aset
         }
 
         private fun isAcupunctFormat(aset: AttributeSet): Boolean {
@@ -168,7 +169,7 @@ open class RichTextArea(
 
     }
 
-    private val log = LOG(javaClass)
+    private val log = LOG {}
 
     init {
         name = viewName
@@ -194,10 +195,16 @@ open class RichTextArea(
 
     private var isAcupunctDetectionEnabled = false
 
-    private fun formatAcupunct(punct: Acupunct, position: Int) {
+    private fun formatAcupunct(punct: Acupunct, endPosition: Int) {
         replaceTextStyle { adoc ->
             val label = punct.coordinate.label
-            adoc.replace(position - label.length, label.length, label, ACUPUNCT_ASET)
+            adoc.replace(endPosition - label.length, label.length, label, FORMAT_ATTRIBUTES_ACUPUNCT)
+        }
+    }
+
+    private fun clearAcupunctFormat(offset: Int, textToClear: String) {
+        replaceTextStyle { adoc ->
+            adoc.replace(offset, textToClear.length, textToClear, RichFormat.CLEAN_FORMAT)
         }
     }
 
@@ -212,6 +219,70 @@ open class RichTextArea(
                 formatAcupunct(punct, position)
             }
         })
+        // https://stackoverflow.com/questions/7740465/text-changed-event-in-jtextarea-how-to
+        document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent) {
+                checkAcupunct(e)
+            }
+
+            override fun removeUpdate(e: DocumentEvent) {
+                checkAcupunct(e)
+            }
+
+            override fun changedUpdate(e: DocumentEvent) {
+                checkAcupunct(e)
+            }
+
+            private fun checkAcupunct(e: DocumentEvent) {
+                log.debug { "checkAcupunct(e.type=${e.type}, e.offset=${e.offset}, e.length=${e.length})" }
+                val text = this@RichTextArea.text
+                log.debug { "RichTextArea.text = [[[$text]]]" }
+
+                if (e.type == DocumentEvent.EventType.INSERT) {
+                    val prevWord = extractPreviousWord(text, this@RichTextArea.selectionStart - 1)
+                    println("prevWord: $prevWord")
+                }
+                // MINOR #113 be more precise when it comes to acupunct coordinages (there is no Lu99!)
+//                val regexp = Pattern.compile("((Lu)|(Di)|(Ma)|(MP)|(He)|(Due)|(Bl)|(Ni)|(Pk)|(3E)|(Gb)|(Le))[1-9][0-9]?")
+//                val matches = regexp.matcher(text)
+//                while (matches.find()) {
+//                    val found = matches.group(0)
+//                    println("FOUND: $found at ")
+//                    println("Start: ${matches.}, end: ${matches.regionEnd()}")
+//                }
+//                this@RichTextArea.text.split(" ").map {
+//                    it
+//                            .replace("(", "")
+//                            .replace(")", "")
+//                            .replace(".", "")
+//                            .replace(",", "")
+//                            .replace(";", "")
+//                            .replace("-", "")
+//                }.also { word -> println(word) }
+
+
+                // TODO clearAcupunctFormat
+//                var word: String? = null
+//                var afterWordPos: Int? = null
+//                if (e.type == DocumentEvent.EventType.INSERT) {
+//                    log.debug { "modified text ===> [[[${e.extractText(this@RichTextArea)}]]]" }
+//                    // jtext.selectionStart
+//                    afterWordPos = e.offset + e.length
+//                    word = extractPreviousWord(text = text, position = afterWordPos)
+//                } else if (e.type == DocumentEvent.EventType.REMOVE) {
+//
+//                } else if (e.type == DocumentEvent.EventType.CHANGE) {
+//
+//                } else {
+//                    log.warn { "Unhandled DocumentEvent.type: [${e.type}]" }
+//                }
+//
+//                if (word == null || afterWordPos == null) return
+//                if (!AcupunctCoordinate.isPotentialLabel(word)) return
+//                val punct = Acupunct.byLabel(word) ?: return
+//                formatAcupunct(punct, afterWordPos)
+            }
+        })
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.button == MouseEvent.BUTTON1 && e.clickCount == 1) {
@@ -223,6 +294,14 @@ open class RichTextArea(
         })
     }
 
+    private fun DocumentEvent.extractText(jtext: JTextComponent): String {
+        if (type == DocumentEvent.EventType.REMOVE && jtext.text.isEmpty()) {
+            return ""
+        }
+        return jtext.text.substring(offset, offset + length)
+    }
+
+    /** In order to enable click action. */
     private fun extractAcupunctInSelection(): Acupunct? {
         val txt = text
         if (txt.isEmpty()) return null
@@ -278,7 +357,7 @@ open class RichTextArea(
     @VisibleForTesting
     fun isAcupunctFormatAt(index: Int) = isAcupunctFormat(styledDocument.getCharacterElement(index).attributes)
 
-    fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
+    private fun RichFormat.clearTag(input: String) = input.replace(tag1, "").replace(tag2, "")
 
     fun readEnrichedText(enrichedText: String) {
         log.trace("readEnrichedText(enrichedText=[{}]) viewName={}", enrichedText, name)

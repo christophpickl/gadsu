@@ -10,7 +10,9 @@ import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
 import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterClass
+import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeClass
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.uispec4j.Panel
 import org.uispec4j.UISpec4J
@@ -64,6 +66,13 @@ abstract class SimpleUiTest : UISpecTestCase() {
 
     @AfterClass fun destroyUi() {
         log.debug("destroyUi()")
+        super.tearDown()
+    }
+
+    @BeforeMethod fun beforeBridgeJunit() {
+        super.setUp()
+    }
+    @AfterMethod fun afterBridgeJunit() {
         super.tearDown()
     }
 

@@ -26,6 +26,7 @@ object DummyMainFrame : MainFrame {
     override fun requestFocus() { }
 }
 
+val DEFAULT_FRAMED_DIMENSION = Dimension(600, 600)
 /**
  * For internal use, when starting up part of the UI in its own main method.
  */

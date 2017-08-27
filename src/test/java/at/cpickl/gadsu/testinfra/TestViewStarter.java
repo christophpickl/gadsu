@@ -12,7 +12,7 @@ public class TestViewStarter {
     // invoked by ui tests
     public static void main(String[] args) {
         if (componentToShow == null) {
-            Assert.fail("componentToShow must be set first!");
+            Assert.fail("TestViewStarter.componentToShow (static var) must be set first before using it in MainClassAdapter!");
         }
         Framed.Companion.show(componentToShow, null);
     }

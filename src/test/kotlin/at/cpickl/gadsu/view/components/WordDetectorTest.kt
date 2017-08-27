@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.view.components.WordDetector.Companion.extractPreviousWord
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.DataProvider

@@ -6,6 +6,7 @@ import at.cpickl.gadsu.testinfra.ui.RichTextAreaAsserter
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
+import at.cpickl.gadsu.view.components.inputs.removeLastChar
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import com.github.christophpickl.kpotpourri.common.string.times
@@ -19,8 +20,24 @@ import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import java.awt.BorderLayout
 import java.util.LinkedList
+import javax.swing.JLabel
 import javax.swing.JPanel
 
+
+@Test(groups = arrayOf("uiTest"))
+class RichTextAreaTestasdf : SimpleUiTest() {
+    override fun postInit(window: Window) {
+    }
+
+    override fun newMainClassAdapter(): MainClassAdapter {
+        TestViewStarter.componentToShow = JLabel()
+        return MainClassAdapter(TestViewStarter::class.java)
+    }
+
+    fun `foo`() {
+
+    }
+}
 
 @Test(groups = arrayOf("uiTest"))
 class RichTextAreaUiTest : SimpleUiTest() {
@@ -66,7 +83,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertEnrichedTextEquals(format.wrap("one two three"))
     }
 
-    fun testSetEnrichedText() {
+    fun `readEnrichedText`() {
         val enrichedText = "${RichFormat.Bold.wrap("one")} mid1 ${RichFormat.Bold.wrap("two")} mid2 ${RichFormat.Bold.wrap("three")}"
         textArea.readEnrichedText(enrichedText)
 
@@ -74,7 +91,7 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertPlainTextEquals("one mid1 two mid2 three")
     }
 
-    fun testSetEnrichedTextShouldMergeTwoAdjacent() {
+    fun `readEnrichedText should merge two adjacent`() {
         textArea.readEnrichedText("ab")
         textAsserter.select(0, 1).hitShortcut(RichFormat.Bold)
 
@@ -152,27 +169,63 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertHasBeeped()
     }
 
-    fun `emphasize acupuncture as single word`() {
+    // ACUPUNCTURE
+    // -----------------------------------------------------------------------------------------------------------------
+
+    fun `acupuncture - emphasize as single word`() {
         textArea.readEnrichedText("Lu1")
         assertAcupunctFormat(0, 2)
     }
 
-    fun `emphasize acupuncture within`() {
+    @DataProvider
+    fun provideAcupunctSurroundings(): Array<Array<out Any>> = arrayOf(
+            arrayOf("(Lu1 ", 1, 3),
+            arrayOf("Lu1) ", 0, 2)
+    )
+
+    @Test(dataProvider = "provideAcupunctSurroundings")
+    fun `acupuncture - emphasize even when surrounded by weird chars`(text: String, inclusiveFrom: Int, inclusiveTo: Int) {
+        textArea.readEnrichedText(text)
+
+        assertAcupunctFormat(inclusiveFrom, inclusiveTo)
+    }
+
+    fun `acupuncture - emphasize within other words`() {
         textArea.readEnrichedText("a Lu1 b")
         assertNotAcupunctFormat(0, 1)
         assertAcupunctFormat(2, 4)
         assertNotAcupunctFormat(5, 5)
     }
 
-    fun `emphasize acupuncture many points`() {
+    fun `acupuncture - emphasize many points`() {
         textArea.readEnrichedText("a Lu1 b Lu1 c Bl1")
         assertAcupunctFormat(2, 4)
         assertAcupunctFormat(8, 10)
         assertAcupunctFormat(14, 16)
     }
 
-    private fun assertAcupunctFormat(from: Int, to: Int) {
-        from.rangeTo(to).forEach {
+    // FIXME
+    fun `acupuncture - de-emphasize after text added behind`() {
+        textArea.readEnrichedText("Lu1")
+
+        textAsserter.appendAtEnd("x")
+
+        assertNotAcupunctFormat(0, 3)
+    }
+
+    fun `acupuncture - de-emphasize after last char deleted`() {
+        textArea.readEnrichedText("Lu1")
+
+        textArea.removeLastChar()
+
+        assertNotAcupunctFormat(0, 2)
+    }
+
+    // INTERNALS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private fun assertAcupunctFormat(inclusiveFrom: Int, inclusiveTo: Int) {
+        inclusiveFrom.rangeTo(inclusiveTo).forEach {
             MatcherAssert.assertThat("Expected character at position $it which is '${textArea.text[it]}' to be formated as acupunct in text: [${textArea.text}]",
                     textArea.isAcupunctFormatAt(it), Matchers.equalTo(true))
         }
@@ -180,7 +233,8 @@ class RichTextAreaUiTest : SimpleUiTest() {
 
     private fun assertNotAcupunctFormat(from: Int, to: Int) {
         from.rangeTo(to).forEach {
-            MatcherAssert.assertThat(textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))
+            MatcherAssert.assertThat("Expected NOT to be in acupuncture format at position: $it",
+                    textArea.isAcupunctFormatAt(it), Matchers.equalTo(false))
         }
     }
 
