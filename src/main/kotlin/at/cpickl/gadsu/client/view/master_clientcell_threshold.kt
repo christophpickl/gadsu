@@ -12,7 +12,13 @@ import javax.inject.Inject
 import javax.swing.JPanel
 
 
-class ThresholdCalculator @Inject constructor(private val prefs: Prefs) {
+interface ThresholdCalculator {
+
+    fun calc(client: ExtendedClient): ThresholdResult
+
+}
+
+class ThresholdCalculatorImpl @Inject constructor(private val prefs: Prefs) : ThresholdCalculator {
 
     private val ClientCategory.threshold: Double
         get() = when (this) {
@@ -29,7 +35,7 @@ class ThresholdCalculator @Inject constructor(private val prefs: Prefs) {
             ClientDonation.MONEY -> 0.7
         }
 
-    fun calc(client: ExtendedClient): ThresholdResult {
+    override fun calc(client: ExtendedClient): ThresholdResult {
         if (client.upcomingAppointment != null) {
             return ThresholdResult.GotNextAppointment
         }

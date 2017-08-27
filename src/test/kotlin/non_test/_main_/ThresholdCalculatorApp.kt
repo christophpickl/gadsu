@@ -3,7 +3,7 @@ package non_test._main_
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.view.ExtendedClient
-import at.cpickl.gadsu.client.view.ThresholdCalculator
+import at.cpickl.gadsu.client.view.ThresholdCalculatorImpl
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.ThresholdPrefData
@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
             upcomingAppointment = null,
             differenceDaysToRecentTreatment = null)
 
-    val calcer = ThresholdCalculator(prefs)
+    val calcer = ThresholdCalculatorImpl(prefs)
 
     fun ClientDonation.shortLabel() = this.sqlCode.substring(0, 3)
     val donationsReordered = listOf(ClientDonation.NONE, ClientDonation.UNKNOWN, ClientDonation.PRESENT, ClientDonation.MONEY)

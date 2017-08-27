@@ -5,10 +5,11 @@ import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.view.ClientList
 import at.cpickl.gadsu.client.view.ExtendedClient
-import at.cpickl.gadsu.client.view.ThresholdCalculator
+import at.cpickl.gadsu.client.view.ThresholdCalculatorImpl
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.testinfra.SimpleTestableClock
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.MyListModel
@@ -40,6 +41,6 @@ fun main(args: Array<String>) {
                             upcomingAppointment = DateTime.now().plusDays(1),
                             differenceDaysToRecentTreatment = 390)
             ))
-        }, ThresholdCalculator(prefs)))
+        }, ThresholdCalculatorImpl(prefs), SimpleTestableClock(DateTime.now())))
     })
 }

@@ -11,6 +11,7 @@ import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.SelectImageEvent
+import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
@@ -64,12 +65,12 @@ interface ClientMasterView {
 
 }
 
-class ClientList(model: MyListModel<ExtendedClient>, calc: ThresholdCalculator) : JList<ExtendedClient>(model) {
+class ClientList(model: MyListModel<ExtendedClient>, calc: ThresholdCalculator, clock: Clock) : JList<ExtendedClient>(model) {
     init {
         name = ViewNames.Client.List
 
         val myCellRenderer = object : MyListCellRenderer<ExtendedClient>() {
-            override fun newCell(value: ExtendedClient) = ClientCell(value, calc)
+            override fun newCell(value: ExtendedClient) = ClientCell(value, calc, clock)
         }
         cellRenderer = myCellRenderer
         enableHoverListener(myCellRenderer)
@@ -81,13 +82,14 @@ class ClientList(model: MyListModel<ExtendedClient>, calc: ThresholdCalculator) 
 class SwingClientMasterView @Inject constructor(
         private val bus: EventBus,
         swing: SwingFactory,
-        calc: ThresholdCalculator
+        calc: ThresholdCalculator,
+        clock: Clock
 ) : GridPanel(), ClientMasterView {
 
     override val model = MyListModel<ExtendedClient>()
 
     private val log = LOG(javaClass)
-    private val list = ClientList(model, calc)
+    private val list = ClientList(model, calc, clock)
     private var previousSelected: ExtendedClient? = null
     private val client2extended: MutableMap<String, ExtendedClient> = HashMap()
 

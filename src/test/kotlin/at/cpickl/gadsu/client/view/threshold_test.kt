@@ -19,7 +19,7 @@ import org.testng.annotations.Test
 
 
 @Test
-class ThresholdCalculatorTest {
+class ThresholdCalculatorImplTest {
 
     private lateinit var prefs: Prefs
 
@@ -107,7 +107,7 @@ class ThresholdCalculatorTest {
             calcThreshold(buildClient(days, category, donation, appointment))
 
     private fun calcThreshold(client: ExtendedClient) =
-            ThresholdCalculator(prefs).calc(client)
+            ThresholdCalculatorImpl(prefs).calc(client)
 
 
 }

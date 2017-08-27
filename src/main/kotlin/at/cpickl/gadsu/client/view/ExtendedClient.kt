@@ -19,6 +19,10 @@ data class ExtendedClient(
         var differenceDaysToRecentTreatment: Int?
 ) : IClient, Comparable<ExtendedClient> {
 
+    companion object {
+        // for extensions
+    }
+
     override fun compareTo(other: ExtendedClient): Int {
         return this.client.compareTo(other.client)
     }

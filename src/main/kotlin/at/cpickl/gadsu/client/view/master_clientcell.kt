@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.image.ImageSize
+import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.differenceDaysWithinYear
 import at.cpickl.gadsu.service.formatDate
@@ -44,7 +45,15 @@ enum class TreatCount(number: Int) {
 }
 
 
-class ClientCell(val client: ExtendedClient, calc: ThresholdCalculator) : DefaultCellView<ExtendedClient>(client) {
+class ClientCell(
+        // MINOR REFACTOR - too many dependencies in here!
+        val client: ExtendedClient,
+        calc: ThresholdCalculator,
+        val clock: Clock,
+        // MINOR could be outsourced to preferences
+        private val birthdayFutureLimit: Int = 21,
+        private val birthdayPastLimit: Int = 14
+) : DefaultCellView<ExtendedClient>(client) {
 
     companion object {
         private val BIRTHDAY_ICON = Images.loadFromClasspath("/gadsu/images/birthday.png")
@@ -80,7 +89,11 @@ class ClientCell(val client: ExtendedClient, calc: ThresholdCalculator) : Defaul
     private val detailLabels = arrayOf(upcomingAppointment)
     override val applicableForegrounds: Array<JComponent> = arrayOf(nameLbl, upcomingAppointment)
 
-    private fun ExtendedClient.hasSoonBirthday() = birthday != null && DateTime.now().differenceDaysWithinYear(birthday!!).isBetweenInclusive(0, 14)
+    @VisibleForTesting
+    fun birthdayAround() =
+            client.birthday != null &&
+                    // MINOR the within year check will cause unexpected behaviour when it's new year :-/ also direct date instantiation
+                    clock.now().differenceDaysWithinYear(client.birthday!!).isBetweenInclusive(birthdayPastLimit.unaryMinus(), birthdayFutureLimit)
 
     private val recentPanel = if (client.differenceDaysToRecentTreatment == null) null else
         RecentTreatmentPanel(client.differenceDaysToRecentTreatment!!, calc.calc(client))
@@ -116,7 +129,7 @@ class ClientCell(val client: ExtendedClient, calc: ThresholdCalculator) : Defaul
         c.weightx = 1.0
         c.gridx++
         c.fill = GridBagConstraints.HORIZONTAL
-        if (client.hasSoonBirthday()) {
+        if (birthdayAround()) {
             add(GridPanel().apply {
                 c.insets = Pad.NONE
                 c.fill = GridBagConstraints.NONE
