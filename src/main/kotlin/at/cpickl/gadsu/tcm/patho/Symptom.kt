@@ -193,7 +193,7 @@ sealed class Symptom(
     // TEMPERATUR
     abstract class TemperaturSymptom(source: SymptomSource) : Symptom(SymptomCategory.Temperatur, source)
     object AversionKaelte : TemperaturSymptom(SymptomSource.XPropSource(XProps.Temperature, XProps.TemperatureOpts.AversionCold))
-    object AversionWind : TemperaturSymptom(SymptomSource.XPropSource(XProps.Temperature, XProps.TemperatureOpts.AversionCold))
+    object AversionWind : TemperaturSymptom(NOT_IMPLEMENTED)
     object Erkaeltungen : TemperaturSymptom(NOT_IMPLEMENTED)
     object HitzeGefuehlAbends : TemperaturSymptom(NOT_IMPLEMENTED)
     object FroestelnMitEtwasFieber : TemperaturSymptom(NOT_IMPLEMENTED)
