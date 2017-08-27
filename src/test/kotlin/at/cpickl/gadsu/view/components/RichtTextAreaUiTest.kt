@@ -218,7 +218,6 @@ class RichTextAreaUiTest : SimpleUiTest() {
         textAsserter.assertPlainTextEquals("(Bl1) ")
     }
 
-
     // MINOR implement tests
 //    fun `acupuncture - de-emphasize when char in between removed`() {}
 //    fun `acupuncture - de-emphasize when char in between deleted`() {}
