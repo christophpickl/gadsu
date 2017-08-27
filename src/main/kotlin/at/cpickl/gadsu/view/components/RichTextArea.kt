@@ -10,6 +10,7 @@ import at.cpickl.gadsu.isShortcutDown
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.beep
+import at.cpickl.gadsu.view.swing.clearSelectionOnFocusLost
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters
 import at.cpickl.gadsu.view.swing.focusTraversalWithTabs
 import at.cpickl.gadsu.view.swing.onTriedToInsertTooManyChars
@@ -175,6 +176,7 @@ open class RichTextArea(
     init {
         name = viewName
         focusTraversalWithTabs()
+        clearSelectionOnFocusLost()
 
         enforceMaxCharacters(maxChars)
         enableAcupunctDetection() // enable for ALL by defaut ;)

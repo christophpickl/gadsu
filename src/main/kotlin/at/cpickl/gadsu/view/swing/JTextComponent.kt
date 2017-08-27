@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.view.swing
 
-import org.slf4j.LoggerFactory
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import javax.swing.JTextField
 import javax.swing.text.JTextComponent
 
-val LOG_JTextComponent = LoggerFactory.getLogger(JTextComponent::class.java)!!
+private val log = LOG {}
 
 fun <T : JTextComponent> T.disabled(): T {
     isEditable = false
@@ -17,8 +17,17 @@ fun <T : JTextComponent> T.disabled(): T {
 fun <T : JTextComponent> T.selectAllOnFocus(): T {
     addFocusListener(object : FocusAdapter() {
         override fun focusGained(e: FocusEvent) {
-            LOG_JTextComponent.trace("focusGained; selectAll()")
+            log.trace("focusGained() select all")
             selectAll()
+        }
+    })
+    return this
+}
+fun <T : JTextComponent> T.clearSelectionOnFocusLost(): T {
+    addFocusListener(object : FocusAdapter() {
+        override fun focusLost(e: FocusEvent?) {
+            log.trace("focusLost() clear selection")
+            select(selectionEnd, selectionEnd)
         }
     })
     return this
