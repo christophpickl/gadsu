@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.tcm.model
 
 import at.cpickl.gadsu.tcm.model.YinYangDetailMiddle.*
+import at.cpickl.gadsu.tcm.patho.ZangOrgan
 import java.awt.Color
 
 enum class Element(
@@ -24,11 +25,11 @@ enum class Extremity(val label: String) {
 enum class Substances(
         val label: String,
         val yy: YinYang,
-        val meridian: Meridian // MINOR should actually be a ZangFu, not a Meridian
+        val zangFu: ZangOrgan
 ) {
-    Qi("Vitalenergie", YinYang.Yang, Meridian.Lung),
-    Xue("Blut", YinYang.Yin, Meridian.Liver),
-    Jing("Essenz", YinYang.Yang, Meridian.Kidney),
-    Shen("Geist", YinYang.Yang, Meridian.Heart),
-    JinYe("Körperflüssigkeiten", YinYang.Yin, Meridian.Spleen)
+    Qi("Qi", YinYang.Yang, ZangOrgan.Lung),
+    Xue("Blut", YinYang.Yin, ZangOrgan.Liver),
+    Jing("Jing", YinYang.Yang, ZangOrgan.Kidney),
+    Shen("Shen", YinYang.Yang, ZangOrgan.Heart),
+    JinYe("JinYe", YinYang.Yin, ZangOrgan.Spleen)
 }

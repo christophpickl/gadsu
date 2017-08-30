@@ -129,6 +129,7 @@ enum class OrganSyndrome(
                     Symptom.ZungeRoteSpitze,
                     Symptom.DuennerBelag,
                     Symptom.GelberBelag,
+
                     Symptom.PulsOberflaechlich,
                     Symptom.PulsBeschleunigt
                     )
@@ -155,6 +156,7 @@ enum class OrganSyndrome(
                     Symptom.GelberBelag,
                     Symptom.DuennerBelag,
                     Symptom.TrockenerBelag,
+
                     Symptom.PulsOberflaechlich,
                     Symptom.PulsBeschleunigt
             )

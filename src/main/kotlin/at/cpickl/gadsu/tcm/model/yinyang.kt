@@ -8,10 +8,10 @@ enum class YinYang(val label: String) {
     Yang("Yang")
 }
 
-enum class YinYangMiddle(val yy: YinYang?) {
-    Yin(YinYang.Yin),
-    Yang(YinYang.Yang),
-    Middle(null)
+enum class YinYangMiddle(val label: String, val yy: YinYang?) {
+    Yin(YinYang.Yin.label, YinYang.Yin),
+    Yang(YinYang.Yang.label, YinYang.Yang),
+    Middle("Mitte", null)
 }
 
 enum class YinYangSize(val labelChinese: String) {
