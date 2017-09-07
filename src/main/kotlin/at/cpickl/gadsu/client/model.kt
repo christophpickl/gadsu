@@ -36,7 +36,8 @@ interface IClient : HasId, Persistable {
     val firstName: String
     val lastName: String
     val nickNameInt: String
-    val preferredName: String // either nickNameInt (if set) or firstName
+    val nickNameExt: String
+    val preferredName: String // either nickNameInt (if set) or firstName; used INTERNALLY only! (don't use for mails, etc)
     val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
@@ -79,6 +80,7 @@ data class Client(
         override val firstName: String,
         override val lastName: String,
         override val nickNameInt: String,
+        override val nickNameExt: String,
         override val contact: Contact,
         override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
@@ -131,6 +133,7 @@ data class Client(
                 firstName = "",
                 lastName = "",
                 nickNameInt = "",
+                nickNameExt = "",
                 contact = Contact.EMPTY,
                 wantReceiveMails = true,
                 birthday = null,

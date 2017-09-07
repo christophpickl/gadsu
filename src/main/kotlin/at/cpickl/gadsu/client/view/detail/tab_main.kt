@@ -49,7 +49,8 @@ class ClientTabMain(
     // base
     val inpFirstName = fields.newTextField("Vorname", { it.firstName }, ViewNames.Client.InputFirstName)
     val inpLastName = fields.newTextField("Nachname", { it.lastName }, ViewNames.Client.InputLastName)
-    val inpNickName = fields.newTextField("Spitzname (int.)", { it.nickNameInt }, ViewNames.Client.InputNickName)
+    val inpNickNameInt = fields.newTextField("Spitzname (int.)", { it.nickNameInt }, ViewNames.Client.InputNickNameInt)
+    val inpNickNameExt = fields.newTextField("Spitzname (ext.)", { it.nickNameExt }, ViewNames.Client.InputNickNameExt)
     val inpGender = fields.newComboBox(Gender.Enum.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
     val outAge = JLabel().bold()
@@ -85,7 +86,8 @@ class ClientTabMain(
             debugColor = Color.CYAN
             addFormInput(inpFirstName)
             addFormInput(inpLastName)
-            addFormInput(inpNickName)
+            addFormInput(inpNickNameInt)
+            addFormInput(inpNickNameExt)
             addFormInput(inpGender)
 //            addFormInput(inpBirthday)
             addFormInput(inpBirthday.formLabel, JPanel(FlowLayout(FlowLayout.LEFT)).apply {

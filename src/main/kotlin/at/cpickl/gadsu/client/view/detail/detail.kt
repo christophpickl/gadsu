@@ -153,7 +153,8 @@ open class SwingClientDetailView @Inject constructor(
                 currentClient.data.state,
                 tabMain.inpFirstName.text,
                 tabMain.inpLastName.text,
-                tabMain.inpNickName.text,
+                tabMain.inpNickNameInt.text,
+                tabMain.inpNickNameExt.text,
 
                 Contact(
                         mail = tabMain.inpMail.text,

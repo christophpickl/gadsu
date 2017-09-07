@@ -82,7 +82,7 @@ class ClientJdbcRepository @Inject constructor(
         }
         val sqlInsert = """
         INSERT INTO $TABLE (
-            id, created, firstName, lastName, nickNameInt,
+            id, created, firstName, lastName, nickNameInt, nickNameExt,
             mail, phone, street, zipCode, city,
             wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
@@ -90,7 +90,7 @@ class ClientJdbcRepository @Inject constructor(
             mainObjective, symptoms, elements, syndrom, tcmNote,
             category, donation
         ) VALUES (
-            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
@@ -99,7 +99,7 @@ class ClientJdbcRepository @Inject constructor(
             ?, ?
         )"""
         jdbcx.update(sqlInsert,
-                newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt,
+                newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
                 client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
@@ -118,7 +118,7 @@ class ClientJdbcRepository @Inject constructor(
         client.ensurePersisted()
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    state = ?, firstName = ?, lastName = ?, nickNameInt = ?,
+                    state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameInt = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
                     wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
@@ -126,7 +126,7 @@ class ClientJdbcRepository @Inject constructor(
                     mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
                     category = ?, donation = ?
                 WHERE id = ?""",
-                client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt,
+                client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
                 client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
@@ -164,6 +164,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 rs.getString("nickNameInt"),
+                rs.getString("nickNameExt"),
                 Contact(
                         rs.getString("mail"),
                         rs.getString("phone"),

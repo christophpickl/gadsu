@@ -91,9 +91,10 @@ open class DevelopmentController @Inject constructor(
                         created = DUMMY_CREATED/* will not be used anyway, hmpf ... */,
                         picture = MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
                         state = ClientState.ACTIVE,
-                        firstName = "Max",
+                        firstName = "Maximilian",
                         lastName = "Mustermann",
-                        nickNameInt = "Maxi",
+                        nickNameInt = "Max Schnarcher",
+                        nickNameExt = "Max",
                         birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
                         gender = Gender.MALE,
                         contact = Contact(

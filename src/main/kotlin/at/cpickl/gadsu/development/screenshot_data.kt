@@ -39,7 +39,7 @@ class ScreenshotDataInserter @Inject constructor(
 
     fun insertData() {
         arrayOf(
-                Client(null, DUMMY_CREATED, ClientState.ACTIVE, "Max", "Mustermann", "Maxi",
+                Client(null, DUMMY_CREATED, ClientState.ACTIVE, "Maximilian", "Mustermann", "Max Schnarcher", "Max",
                         Contact(
                                 mail = "max@mustermann.at",
                                 phone = "0699 11 22 33 432",

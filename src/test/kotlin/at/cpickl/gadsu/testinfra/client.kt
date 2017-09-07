@@ -37,7 +37,7 @@ fun Client.Companion.savedValidInstance2() = unsavedValidInstance().copy(id = TE
 fun Client.copyWithoutCprops() = this.copy(cprops = CProps.empty)
 
 fun Client.Companion.fullInstance() = Client(
-        null, DateTime.now(), ClientState.ACTIVE, "first name", "last name", "nick name",
+        null, DateTime.now(), ClientState.ACTIVE, "first name", "last name", "nick name int", "nick name ext",
         Contact("mail", "phone", "street", "zip", "city"),
         true, "24.8.1984".parseDate(), Gender.MALE, "herkunft", "origin", Relationship.DIVORCED, "job", "children",
         "hobbies", "note", "impression", "medical", "complaints", "personal", "objectives",
