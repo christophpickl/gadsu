@@ -1,6 +1,6 @@
 
 Used variables:
-* RELEASE_SCRIPT = `/scripts/release.sh`
+* RELEASE_SCRIPT = `/bin/release.sh`
 * BUILD_DIR = `../gadsu_release_build`
 
 # Preconditions
@@ -17,13 +17,13 @@ Used variables:
 
 The actual doing consists of:
 
-1. Start the RELEASE_SCRIPT: `$ ./scripts/release.sh` (invoke the script from project directory rather inside the `scripts` folder)
+1. Start the RELEASE_SCRIPT: `$ ./bin/release.sh` (invoke the script from project directory rather inside the `scripts` folder)
 1. Specify release and next dev version; e.g.: `1.4.0` and `1.5.0-SNAPSHOT`
 1. Wait until the build is done (takes about 5 minutes) and find artifacts in the BUILD_DIR
 
 **Sample output:**
 ```
-$ ./scripts/release.sh 
+$ ./bin/release.sh 
 
 [RELEASE] Preparing new GADSU release
 [RELEASE] ====================================
