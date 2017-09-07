@@ -118,7 +118,7 @@ class ClientJdbcRepository @Inject constructor(
         client.ensurePersisted()
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameInt = ?,
+                    state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameExt = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
                     wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
