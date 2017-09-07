@@ -3,6 +3,7 @@ package at.cpickl.gadsu.mail
 import at.cpickl.gadsu.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.firstNotEmpty
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.TemplatingEngine
 import com.google.common.annotations.VisibleForTesting
@@ -20,7 +21,6 @@ class AppointmentConfirmationerImpl @Inject constructor(
         private val prefs: Prefs
 ) : AppointmentConfirmationer {
 
-
     // see: GCalSyncService
     override fun sendConfirmation(client: Client, appointment: Appointment) {
         client.validateTemplateData()
@@ -33,7 +33,7 @@ class AppointmentConfirmationerImpl @Inject constructor(
 
     @VisibleForTesting fun buildMail(subjectTemplate: String, bodyTemplate: String, client: Client, appointment: Appointment): Mail {
         val data = mapOf(
-                "name" to client.firstName,
+                "name" to firstNotEmpty(client.nickNameExt, client.firstName),
                 "dateStart" to appointment.start.toDate(),
                 "dateEnd" to appointment.end.toDate(),
                 "gender" to client.gender.sqlCode

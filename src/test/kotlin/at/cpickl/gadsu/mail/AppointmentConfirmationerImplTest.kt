@@ -19,6 +19,7 @@ import org.testng.annotations.Test
     private lateinit var mockSender: MailSender
     private lateinit var mockPrefs: Prefs
     private val templating = FreemarkerTemplatingEngine()
+    private val contactWithMail = Contact.EMPTY.copy(mail = "client@mail.at")
 
     @BeforeMethod fun setup() {
         mockSender = mock(MailSender::class.java)
@@ -30,7 +31,7 @@ import org.testng.annotations.Test
         val client = Client.savedValidInstance().copy(
                 firstName = "Florian",
                 gender = Gender.MALE,
-                contact = Contact.EMPTY.copy(mail = "client@mail.at"))
+                contact = contactWithMail)
         val appointmentStart = "1.2.2001 14:30:00".parseDateTime()
         val appointmentEnd = appointmentStart.plusHours(1)
         val appointment = Appointment.savedValidInstance(client.id!!).copy(start = appointmentStart, end = appointmentEnd)
@@ -58,5 +59,40 @@ import org.testng.annotations.Test
         val appointment = Appointment.savedValidInstance(client.id!!)
 
         confirmer.sendConfirmation(client, appointment)
+    }
+
+
+    fun `Given client with all names set Should use nickNameExt`() {
+        val client = Client.savedValidInstance().copy(
+                firstName = "firstName",
+                nickNameInt = "nickNameInt",
+                nickNameExt = "nickNameExt",
+                contact = contactWithMail)
+        assertNameUsedInTemplate(client, client.nickNameExt)
+    }
+
+    fun `Given client with only firstName and nickNameInt set Should use firstName`() {
+        val client = Client.savedValidInstance().copy(
+                firstName = "firstName",
+                nickNameInt = "nickNameInt",
+                contact = contactWithMail)
+        assertNameUsedInTemplate(client, client.firstName)
+    }
+
+    private fun assertNameUsedInTemplate(client: Client, expectedName: String) {
+        val appointment = Appointment.savedValidInstance(client.id!!)
+        `when`(mockPrefs.preferencesData).thenReturn(PreferencesData.DEFAULT.copy(
+                templateConfirmSubject = "subject",
+                templateConfirmBody = "name: \${name}"
+        ))
+
+        confirmer.sendConfirmation(client, appointment)
+
+        verify(mockSender).send(Mail(
+                recipient = client.contact.mail,
+                subject = "subject",
+                body = "name: $expectedName",
+                recipientsAsBcc = false
+        ))
     }
 }

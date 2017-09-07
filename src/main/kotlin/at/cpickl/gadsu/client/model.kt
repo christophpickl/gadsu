@@ -6,6 +6,7 @@ import at.cpickl.gadsu.Labeled
 import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.firstNotEmpty
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
@@ -174,12 +175,7 @@ data class Client(
             firstName + lastName
         }
 
-    override val preferredName: String
-        get() = if (nickNameInt.isNotEmpty()) {
-            nickNameInt
-        } else {
-            firstName
-        }
+    override val preferredName = firstNotEmpty(nickNameInt, nickNameExt, firstName)
 
     val idComparator: (Client) -> Boolean
         get() = { that -> this.id.equals(that.id) }

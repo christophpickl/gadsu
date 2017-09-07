@@ -38,7 +38,7 @@ class ClientRenderer : ListCellRenderer<Client> {
             insets = Pad.LEFT
             fill = GridBagConstraints.BOTH
             weightx = 1.0
-            panel.add(JLabel(value?.fullName ?: "null"))
+            panel.add(JLabel(value?.preferredName ?: "null"))
 
         }
         return panel
