@@ -33,16 +33,4 @@ fun Client.Companion.savedValidInstance() = unsavedValidInstance().copy(id = TES
 @Suppress("UNUSED")
 fun Client.Companion.savedValidInstance2() = unsavedValidInstance().copy(id = TEST_UUID2)
 
-
 fun Client.copyWithoutCprops() = this.copy(cprops = CProps.empty)
-
-fun Client.Companion.fullInstance() = Client(
-        null, DateTime.now(), ClientState.ACTIVE, "first name", "last name", "nick name int", "nick name ext",
-        Contact("mail", "phone", "street", "zip", "city"),
-        true, "24.8.1984".parseDate(), Gender.MALE, "herkunft", "origin", Relationship.DIVORCED, "job", "children",
-        "hobbies", "note", "impression", "medical", "complaints", "personal", "objectives",
-        "main objective", "symptoms", "5elements", "syndrom", ClientCategory.A, ClientDonation.PRESENT, "tcm note", Gender.MALE.defaultImage,
-        CProps.builder()
-                .add(XProps.Sleep, XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.Dreams)
-                .build()
-)

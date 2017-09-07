@@ -46,7 +46,8 @@ object ClientViewNames {
     val InputChildren = "Client.InputChildren"
     val InputCountryOfOrigin = "Client.InputCountryOfOrigin"
     val InputOrigin = "Client.InputOrigin"
-    val InputHobbies= "Client.InputHobbies"
+    val InputHobbies = "Client.InputHobbies"
+    val InputKnownBy = "Client.InputKnownBy"
     val InputMail = "Client.InputMail"
     val InputPhone = "Client.InputPhone"
     val InputStreet = "Client.InputStreet"
@@ -103,6 +104,7 @@ object TreatmentViewNames {
 
 
 }
+
 object AcupunctViewNames {
     val List = "Acupunct.List"
 }
@@ -124,6 +126,7 @@ object MultiProtocolViewNames {
 object ComponentsViewNames {
     val MultiProperties = MultiPropertiesViewNames
 }
+
 object AssistentViewNames {
     val ButtonRecalculate = "Assistent.ButtonRecalculate"
 }

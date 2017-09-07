@@ -20,13 +20,14 @@ object DummyMainFrame : MainFrame {
     override var descriptor = WindowDescriptor(Point(0, 0), Dimension(0, 0))
     override val dockPositionRight: Point = Point(0, 0)
 
-    override fun start() { }
-    override fun close() { }
+    override fun start() {}
+    override fun close() {}
     override fun asJFrame() = JFrame()
-    override fun requestFocus() { }
+    override fun requestFocus() {}
 }
 
 val DEFAULT_FRAMED_DIMENSION = Dimension(600, 600)
+
 /**
  * For internal use, when starting up part of the UI in its own main method.
  */
@@ -40,6 +41,10 @@ class Framed {
         fun initUi() {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
             JFrame.setDefaultLookAndFeelDecorated(true)
+        }
+
+        fun showWithContextDefaultSize(function: ((context: FramedContext) -> Component)) {
+            showWithContext(function, DEFAULT_FRAMED_DIMENSION)
         }
 
         fun showWithContext(function: ((context: FramedContext) -> Component), size: Dimension? = null) {

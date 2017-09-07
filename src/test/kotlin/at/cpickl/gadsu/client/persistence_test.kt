@@ -9,7 +9,6 @@ import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
 import at.cpickl.gadsu.testinfra.TEST_UUID1
-import at.cpickl.gadsu.testinfra.fullInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
@@ -35,7 +34,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- insert
 
     fun `insertWithoutPicture should really just insert no picture`() {
-        val toBeSaved = Client.fullInstance().copy(id = null, cprops = CProps.empty)
+        val toBeSaved = Client.REAL_DUMMY.copy(id = null, cprops = CProps.empty)
         val expected = toBeSaved.copy(id = TEST_UUID1)// returned by mock
 
         assertThat(testee.insertWithoutPicture(toBeSaved), equalTo(expected))

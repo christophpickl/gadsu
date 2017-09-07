@@ -12,11 +12,14 @@ import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
+import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.HasId
+import at.cpickl.gadsu.tcm.model.XProps
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
+import java.io.File
 import javax.inject.Inject
 
 class CurrentClient @Inject constructor(bus: EventBus) :
@@ -160,6 +163,64 @@ data class Client(
                 tcmNote = "",
                 picture = MyImage.DEFAULT_PROFILE_MAN,
                 cprops = CProps.empty
+        )
+
+        val REAL_DUMMY = Client(
+                id = null,
+                created = DUMMY_CREATED/* will not be used anyway, hmpf ... */,
+                picture = MyImage.byFile(File("src/main/resources/gadsu/images/profile_pic-real_dummy.jpg")),
+                state = ClientState.ACTIVE,
+                firstName = "Maximilian",
+                lastName = "Mustermann",
+                nickNameInt = "Max Schnarcher",
+                nickNameExt = "Max",
+                birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
+                gender = Gender.MALE,
+                contact = Contact(
+                        mail = "maxmustermann@discard.email",
+                        phone = "0699 11 22 33 432",
+                        street = "Hauptstrasse 22/11/A",
+                        zipCode = "1010",
+                        city = "Wien"
+                ),
+                wantReceiveMails = true,
+                countryOfOrigin = "\u00d6sterreich",
+                origin = "Eisenstadt, Bgld",
+                relationship = Relationship.MARRIED,
+                job = "Computermensch",
+                children = "keine",
+                hobbies = "Radfahren",
+                note = "Meine supi wuzi Anmerkung.",
+
+                textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
+                textMedical = "er hatte ein gebrochenes bein",
+                textComplaints = "nacken; zuwenig selbstbewusstsein",
+                textPersonal = "perfektionist; schlangen phobie; single",
+                textObjective = "mag mehr selbstbewusstein",
+
+                textMainObjective = "Regelbeschwerden",
+                textSymptoms = "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
+                textFiveElements = "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
+                textSyndrom = "Le-Qi-Stau",
+
+                tcmNote = "zyklus 24T-6T; drahtiger puls",
+                category = ClientCategory.A,
+                donation = ClientDonation.PRESENT,
+
+                cprops = CProps.builder()
+                        .add(XProps.Impression, "* war irgendwie anders", XProps.ImpressionOpts.BehaveCalm, XProps.ImpressionOpts.EyesClear)
+                        .add(XProps.BodyConception, XProps.BodyConceptionOpts.HeightTall)
+                        // XProps.ChiStatus not added
+
+                        .add(XProps.Temperature, XProps.TemperatureOpts.AversionCold, XProps.TemperatureOpts.SweatEasily)
+                        .add(XProps.Hungry, XProps.HungryOpts.BigHunger, XProps.HungryOpts.ChewLess, XProps.HungryOpts.TasteSweet)
+                        .add(XProps.Liquid, XProps.LiquidOpts.DrinkCoffee)
+
+                        .add(XProps.Sleep, "* morgenmuffel", XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
+                        .add(XProps.Digestion, XProps.DigestionOpts.DigestionFast)
+                        .add(XProps.Menstruation, XProps.MenstruationOpts.BloodDark)
+                        .build()
+
         )
     }
 

@@ -1,7 +1,6 @@
 package at.cpickl.gadsu.development
 
 import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.DUMMY_CREATED
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
@@ -10,21 +9,17 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientService
-import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.Gender
-import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentEvent
-import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.tcm.model.Meridian
-import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.CurrentTreatment
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentCreatedEvent
@@ -45,7 +40,6 @@ import at.cpickl.gadsu.view.MainFrame
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import org.joda.time.DateTime
-import java.io.File
 import javax.inject.Inject
 
 
@@ -86,63 +80,7 @@ open class DevelopmentController @Inject constructor(
         deleteAll()
 
         arrayOf(
-                Client(
-                        id = null,
-                        created = DUMMY_CREATED/* will not be used anyway, hmpf ... */,
-                        picture = MyImage.byFile(File("src/test/resources/gadsu_test/profile_pic-valid_man1.jpg")),
-                        state = ClientState.ACTIVE,
-                        firstName = "Maximilian",
-                        lastName = "Mustermann",
-                        nickNameInt = "Max Schnarcher",
-                        nickNameExt = "Max",
-                        birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
-                        gender = Gender.MALE,
-                        contact = Contact(
-                                mail = "maxmustermann@discard.email",
-                                phone = "0699 11 22 33 432",
-                                street = "Hauptstrasse 22/11/A",
-                                zipCode = "1010",
-                                city = "Wien"
-                        ),
-                        wantReceiveMails = true,
-                        countryOfOrigin = "\u00d6sterreich",
-                        origin = "Eisenstadt, Bgld",
-                        relationship = Relationship.MARRIED,
-                        job = "Computermensch",
-                        children = "keine",
-                        hobbies = "Radfahren",
-                        note = "Meine supi wuzi Anmerkung.",
-
-                        textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
-                        textMedical = "er hatte ein gebrochenes bein",
-                        textComplaints = "nacken; zuwenig selbstbewusstsein",
-                        textPersonal = "perfektionist; schlangen phobie; single",
-                        textObjective = "mag mehr selbstbewusstein",
-
-                        textMainObjective = "Regelbeschwerden",
-                        textSymptoms = "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
-                        textFiveElements = "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
-                        textSyndrom = "Le-Qi-Stau",
-
-                        tcmNote = "zyklus 24T-6T; drahtiger puls",
-                        category = ClientCategory.A,
-                        donation = ClientDonation.PRESENT,
-
-                        cprops = CProps.builder()
-                                .add(XProps.Impression, "* war irgendwie anders", XProps.ImpressionOpts.BehaveCalm, XProps.ImpressionOpts.EyesClear)
-                                .add(XProps.BodyConception, XProps.BodyConceptionOpts.HeightTall)
-                                // XProps.ChiStatus not added
-
-                                .add(XProps.Temperature, XProps.TemperatureOpts.AversionCold, XProps.TemperatureOpts.SweatEasily)
-                                .add(XProps.Hungry, XProps.HungryOpts.BigHunger, XProps.HungryOpts.ChewLess, XProps.HungryOpts.TasteSweet)
-                                .add(XProps.Liquid, XProps.LiquidOpts.DrinkCoffee)
-
-                                .add(XProps.Sleep, "* morgenmuffel", XProps.SleepOpts.ProblemsFallAsleep, XProps.SleepOpts.TiredInMorning)
-                                .add(XProps.Digestion, XProps.DigestionOpts.DigestionFast)
-                                .add(XProps.Menstruation, XProps.MenstruationOpts.BloodDark)
-                                .build()
-
-                ),
+                Client.REAL_DUMMY,
                 Client.INSERT_PROTOTYPE.copy(
                         firstName = "Xnna",
                         lastName = "Xym",
