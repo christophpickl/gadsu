@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressureMeasurement

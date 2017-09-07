@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
@@ -7,7 +7,6 @@ import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.view.SwingTreatmentView
 import at.cpickl.gadsu.view.GadsuMenuBar
-import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.TestMacHandler
 import at.cpickl.gadsu.view.components.Framed
 import java.awt.Dimension

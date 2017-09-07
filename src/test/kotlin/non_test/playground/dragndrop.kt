@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test.playground
 
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.components.Framed

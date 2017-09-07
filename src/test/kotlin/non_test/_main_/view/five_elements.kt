@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.tcm.ElementsStarView
 import at.cpickl.gadsu.view.components.Framed

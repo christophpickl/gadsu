@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.view.PreferencesSwingWindow

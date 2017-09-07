@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.view.SwingAppointmentWindow
@@ -12,17 +12,19 @@ import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.view.components.DummyMainFrame
 import at.cpickl.gadsu.view.components.Framed
-import org.mockito.Mockito
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 
 fun main(args: Array<String>) {
     val internetAvailable = false
     val gcalName = "foobar"
 
-    val internet = Mockito.mock(InternetConnectionController::class.java)
-    val prefs = Mockito.mock(Prefs::class.java)
-    Mockito.`when`(internet.isConnected).thenReturn(internetAvailable)
-    Mockito.`when`(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName,
+    val internet = mock<InternetConnectionController>()
+    val prefs = mock<Prefs>()
+    whenever(internet.isConnected).thenReturn(internetAvailable)
+    whenever(prefs.preferencesData).thenReturn(PreferencesData("", false, "", gcalName,
             null, null, null, ThresholdPrefData.DEFAULT, null, null))
+
     Framed.showFrameWithContext({ context ->
         val currentClient = CurrentClient(context.bus)
         currentClient.data = Client.savedValidInstance()

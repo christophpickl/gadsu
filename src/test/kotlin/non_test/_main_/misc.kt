@@ -1,26 +1,20 @@
 package non_test._main_
 
-import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
-import at.cpickl.gadsu.appointment.view.AppointmentList
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientRepository
 import at.cpickl.gadsu.client.view.detail.ClientTabAssist
-import at.cpickl.gadsu.client.view.detail.ClientTabMain
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.tcm.patho.SyndromeReport
 import at.cpickl.gadsu.testinfra.fullInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
-import at.cpickl.gadsu.treatment.inclient.TreatmentList
-import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
+import at.cpickl.gadsu.view.components.DEFAULT_FRAMED_DIMENSION
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.FramedContext
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
-import at.cpickl.gadsu.view.logic.ModificationAware
-import at.cpickl.gadsu.view.logic.ModificationChecker
 import org.mockito.Mockito
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -33,7 +27,7 @@ import javax.swing.JPanel
 fun main(args: Array<String>) {
     Framed.showWithContext(
             ::clientTabAssist,
-            Dimension(600, 600))
+            DEFAULT_FRAMED_DIMENSION)
 //        treatmentGoal()
 //        triState()
 //        meridianSelector()
@@ -41,18 +35,6 @@ fun main(args: Array<String>) {
 
 fun clientTabAssist(context: FramedContext): JComponent {
     return ClientTabAssist(context.bus).apply { updateReport(Client.fullInstance(), SyndromeReport.dummy) }.asComponent()
-}
-
-fun clientTabMain(context: FramedContext): JComponent {
-    return ClientTabMain(
-            Client.INSERT_PROTOTYPE,
-            ModificationChecker(object : ModificationAware {
-                override fun isModified() = true
-            }),
-            AppoinmentsInClientView(context.swing, AppointmentList(context.bus)),
-            TreatmentsInClientView(context.swing, TreatmentList(context.bus)),
-            context.bus
-    ).asComponent()
 }
 
 fun meridianSelector() = MeridianSelector().apply {

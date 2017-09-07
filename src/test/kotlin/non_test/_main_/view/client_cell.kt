@@ -1,4 +1,4 @@
-package non_test._main_
+package non_test._main_.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
