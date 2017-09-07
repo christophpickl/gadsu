@@ -4,11 +4,13 @@ import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.firstNotEmpty
 import at.cpickl.gadsu.mail.Mail
 import at.cpickl.gadsu.mail.MailPreferencesData
 import at.cpickl.gadsu.mail.MailSender
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.TemplatingEngine
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType
@@ -23,7 +25,8 @@ open class BulkMailController @Inject constructor(
         private val clientService: ClientService,
         private val view: BulkMailView,
         private val dialogs: Dialogs,
-        private val asyncWorker: AsyncWorker
+        private val asyncWorker: AsyncWorker,
+        private val templating: TemplatingEngine
 ) {
 
     private val log = LOG(javaClass)
@@ -44,14 +47,18 @@ open class BulkMailController @Inject constructor(
     }
 
     @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendBulkMailEvent) {
-        val mail = readMailFromView() ?: return
+        val mails = readMailsFromView() ?: return
 
-        asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut ..."),
-                { mailSender.send(mail) },
+        asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut und Mails versendet ..."),
+                {
+                    mails.forEach {
+                        mailSender.send(it)
+                    }
+                },
                 {
                     dialogs.show(
                             title = "Mail versendet",
-                            message = "Die Mail wurde an ${mail.recipients.size} Empfänger erfolgreich versendet.",
+                            message = "Die Mail wurde an ${mails.size} Empfänger erfolgreich versendet.",
                             overrideOwner = view.asJFrame())
                     view.closeWindow()
                 },
@@ -96,27 +103,34 @@ open class BulkMailController @Inject constructor(
         return true
     }
 
-    private fun readMailFromView(): Mail? {
+    private fun readMailsFromView(): List<Mail>? {
         val recipients = view.readRecipients()
-        if (recipients.isEmpty()) {
-            dialogs.show(
-                    title = "Ungültige Eingabe",
-                    message = "Es muss zumindest ein Klient ausgewählt sein!",
-                    type = DialogType.WARN,
-                    overrideOwner = view.asJFrame())
-            return null
-        }
         val subject = view.readSubject()
         val body = view.readBody()
-        if (subject.isEmpty() || body.isEmpty()) {
-            dialogs.show(
-                    title = "Ungültige Eingabe",
-                    message = "Betreff und Mailinhalt darf nicht leer sein!",
-                    type = DialogType.WARN,
-                    overrideOwner = view.asJFrame())
+
+        if (recipients.isEmpty()) {
+            dialogs.showInvalidInput("Es muss zumindest ein Klient ausgewählt sein!")
             return null
         }
-        return Mail(recipients.map { it.contact.mail }, subject, body)
+        if (subject.isEmpty() || body.isEmpty()) {
+            dialogs.showInvalidInput("Betreff und Mailinhalt darf nicht leer sein!")
+            return null
+        }
+
+        return recipients.map {
+            val data = mapOf("name" to firstNotEmpty(it.nickNameExt, it.firstName))
+            val processedSubject = templating.process(subject, data)
+            val processedBody = templating.process(body, data)
+            Mail(it.contact.mail, processedSubject, processedBody)
+        }
+    }
+
+    private fun Dialogs.showInvalidInput(message: String) {
+        dialogs.show(
+                title = "Ungültige Eingabe",
+                message = message,
+                type = DialogType.WARN,
+                overrideOwner = view.asJFrame())
     }
 
     private fun showDialog(message: String) {
