@@ -34,17 +34,21 @@ fun CurrentEvent.forClient(function: (Client?) -> Unit) {
     if (this.id == CurrentClient.ID) function(this.newData as Client?)
 }
 
+// ATTENTION: dont forget to extend others as well when adding properties:
+// - Client.equals
+// - ClientTest.changingClientProvider
 interface IClient : HasId, Persistable {
 
     val created: DateTime
     val firstName: String
     val lastName: String
-    val nickNameInt: String
     val nickNameExt: String
+    val nickNameInt: String
     val preferredName: String // either nickNameInt (if set) or firstName; used INTERNALLY only! (don't use for mails, etc)
     val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
+    val knownBy: String
     val hasMail: Boolean // inferred
     val hasMailAndWantsMail: Boolean
     val wantReceiveMails: Boolean
@@ -83,9 +87,10 @@ data class Client(
 
         override val firstName: String,
         override val lastName: String,
-        override val nickNameInt: String,
         override val nickNameExt: String,
+        override val nickNameInt: String,
         override val contact: Contact,
+        override val knownBy: String,
         override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
         override val gender: Gender,
@@ -139,6 +144,7 @@ data class Client(
                 nickNameInt = "",
                 nickNameExt = "",
                 contact = Contact.EMPTY,
+                knownBy = "",
                 wantReceiveMails = true,
                 birthday = null,
                 gender = Gender.UNKNOWN,
@@ -172,8 +178,8 @@ data class Client(
                 state = ClientState.ACTIVE,
                 firstName = "Maximilian",
                 lastName = "Mustermann",
-                nickNameInt = "Max Schnarcher",
                 nickNameExt = "Max",
+                nickNameInt = "Max Schnarcher",
                 birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
                 gender = Gender.MALE,
                 contact = Contact(
@@ -183,6 +189,7 @@ data class Client(
                         zipCode = "1010",
                         city = "Wien"
                 ),
+                knownBy = "von Maria",
                 wantReceiveMails = true,
                 countryOfOrigin = "\u00d6sterreich",
                 origin = "Eisenstadt, Bgld",
@@ -252,15 +259,17 @@ data class Client(
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is Client) return false
-        val that = other
+        @Suppress("UnnecessaryVariable") val that = other
 
         return Objects.equal(this.id, that.id) &&
                 Objects.equal(this.created, that.created) &&
                 Objects.equal(this.state, that.state) &&
                 Objects.equal(this.firstName, that.firstName) &&
                 Objects.equal(this.lastName, that.lastName) &&
+                Objects.equal(this.nickNameExt, that.nickNameExt) &&
                 Objects.equal(this.nickNameInt, that.nickNameInt) &&
                 Objects.equal(this.contact, that.contact) &&
+                Objects.equal(this.knownBy, that.knownBy) &&
                 Objects.equal(this.birthday, that.birthday) &&
                 Objects.equal(this.gender, that.gender) &&
                 Objects.equal(this.countryOfOrigin, that.countryOfOrigin) &&

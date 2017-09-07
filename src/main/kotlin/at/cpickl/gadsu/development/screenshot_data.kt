@@ -47,6 +47,7 @@ class ScreenshotDataInserter @Inject constructor(
                                 zipCode = "1010",
                                 city = "Wien"
                         ),
+                        "von Anna",
                         true,
                         DateFormats.DATE.parseDateTime("26.10.1986"),
                         Gender.MALE,

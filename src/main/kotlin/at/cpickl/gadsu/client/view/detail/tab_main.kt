@@ -18,7 +18,6 @@ import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
-import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.titledBorder
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
@@ -61,6 +60,8 @@ class ClientTabMain(
     val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", { it.children }, ViewNames.Client.InputChildren)
     val inpHobbies = fields.newTextField("Hobbies", { it.hobbies }, ViewNames.Client.InputHobbies)
+    // FIXME known by
+    val inpKnownBy = fields.newTextField("Bekannt durch", { "N/A" }, ViewNames.Client.InputKnownBy)
 
     // contact
     val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail)
@@ -104,16 +105,9 @@ class ClientTabMain(
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
 
-            // ---------------------------
-
-            addFormInput(inpMainObjective)
-            addFormInput(inpSymptoms)
-            addFormInput(inpFiveElements)
-            addFormInput(inpSyndrom)
         }
 
-        val contactForm = FormPanel()
-        with(contactForm) {
+        val contactForm = FormPanel().apply {
             titledBorder("Kontaktdaten")
             debugColor = Color.BLUE
             addFormInput(inpMail)
@@ -123,8 +117,29 @@ class ClientTabMain(
             addFormInput(inpCity)
             addFormInput(inpWantReceiveMails)
         }
-        // this is nearly the same, as the min width of the baseForm (135 for the textfield column, and some more for the label width)
-        contactForm.enforceWidth(200)
+        val additionalTopForm = FormPanel().apply {
+            addFormInput(inpMainObjective)
+            addFormInput(inpSymptoms)
+            addFormInput(inpFiveElements)
+            addFormInput(inpSyndrom)
+        }
+        val additionalBottomForm = FormPanel().apply {
+            addFormInput(inpKnownBy)
+        }
+        val sideForm = GridPanel().apply {
+            titledBorder("Zusatzdaten")
+//            enforceWidth(200) // this is nearly the same, as the min width of the baseForm (135 for the textfield column, and some more for the label width)
+            c.weightx = 1.0
+            c.weighty = 0.0
+            c.fill = GridBagConstraints.HORIZONTAL
+            add(additionalTopForm)
+            c.gridy++
+            add(contactForm)
+            c.gridy++
+            add(additionalBottomForm)
+        }
+
+        // add content
 
         c.fill = GridBagConstraints.HORIZONTAL
         c.anchor = GridBagConstraints.NORTHWEST
@@ -134,7 +149,7 @@ class ClientTabMain(
 
         c.gridx++
         c.insets = Pad.LEFT
-        add(contactForm)
+        add(sideForm)
 
         c.gridx++
         c.fill = GridBagConstraints.BOTH

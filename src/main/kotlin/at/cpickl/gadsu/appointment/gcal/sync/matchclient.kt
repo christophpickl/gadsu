@@ -36,18 +36,21 @@ class MatchClientsInDb @Inject constructor(
         return clients.map {
             SimilarClient(it,
                     checkScore(name, it.firstName),
+                    checkScore(name, it.nickNameExt),
                     checkScore(name, it.nickNameInt),
                     checkScore(name, it.lastName)
             )
         }.filter {
             it.scoresFirst.anyReachesThreshold() ||
-                    it.scoresNick.anyReachesThreshold() ||
+                    it.scoresNickExt.anyReachesThreshold() ||
+                    it.scoresNickInt.anyReachesThreshold() ||
                     it.scoresLast.anyReachesThreshold()
         }.sortedByDescending {
             log.trace("Possible candidate: $it")
             listOf(
                     it.scoresFirst.max() ?: 0.0,
-                    it.scoresNick.max() ?: 0.0,
+                    it.scoresNickExt.max() ?: 0.0,
+                    it.scoresNickInt.max() ?: 0.0,
                     it.scoresLast.max() ?: 0.0
             ).max()!!
         }.map { it.client }
@@ -65,6 +68,7 @@ class MatchClientsInDb @Inject constructor(
 private data class SimilarClient(
         val client: Client,
         val scoresFirst: List<Double>,
-        val scoresNick: List<Double>,
+        val scoresNickExt: List<Double>,
+        val scoresNickInt: List<Double>,
         val scoresLast: List<Double>
 )

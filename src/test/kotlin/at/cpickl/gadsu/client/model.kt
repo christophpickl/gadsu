@@ -15,7 +15,9 @@ class ClientTest {
 
     private val contact1 = Contact("1", "1", "1", "1", "1")
     private val cprops1 = CProps.builder().build()
-    private val client1 = Client("1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", contact1, true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
+    private val client1 = Client(
+            "1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", contact1, "1",
+            true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
             "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
@@ -24,8 +26,10 @@ class ClientTest {
             arrayOf<Any>("state",           { it: Client -> it.copy(state = ClientState.INACTIVE) }),
             arrayOf<Any>("firstName",       { it: Client -> it.copy(firstName = "2") }),
             arrayOf<Any>("lastName",        { it: Client -> it.copy(lastName = "2") }),
-            arrayOf<Any>("nickNameInt",        { it: Client -> it.copy(nickNameInt = "2") }),
+            arrayOf<Any>("nickNameExt",     { it: Client -> it.copy(nickNameExt = "2") }),
+            arrayOf<Any>("nickNameInt",     { it: Client -> it.copy(nickNameInt = "2") }),
             arrayOf<Any>("contact",         { it: Client -> it.copy(contact = contact1.copy(mail = "2")) }),
+            arrayOf<Any>("knownBy",         { it: Client -> it.copy(knownBy = "2") }),
             arrayOf<Any>("birthday",        { it: Client -> it.copy(birthday = null) }),
             arrayOf<Any>("gender",          { it: Client -> it.copy(gender = Gender.MALE) }),
             arrayOf<Any>("countryOfOrigin", { it: Client -> it.copy(countryOfOrigin = "2") }),

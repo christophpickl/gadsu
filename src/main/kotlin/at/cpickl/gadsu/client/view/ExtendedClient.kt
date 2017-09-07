@@ -36,13 +36,14 @@ data class ExtendedClient(
     override val yetPersisted: Boolean get() = client.yetPersisted
     override val created: DateTime get() = client.created
     override val firstName: String get() = client.firstName
-    override val lastName: String get() = client.lastName
-    override val nickNameInt: String get() = client.nickNameInt
     override val nickNameExt: String get() = client.nickNameExt
+    override val nickNameInt: String get() = client.nickNameInt
+    override val lastName: String get() = client.lastName
     override val preferredName: String get() = client.preferredName
     override val fullName: String get() = client.fullName
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
+    override val knownBy: String get() = client.knownBy
     override val hasMail: Boolean get() = client.hasMail
     override val hasMailAndWantsMail: Boolean get() = client.hasMailAndWantsMail
     override val wantReceiveMails = client.wantReceiveMails

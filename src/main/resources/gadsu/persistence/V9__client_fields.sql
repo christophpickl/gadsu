@@ -5,4 +5,5 @@
 -- ========================================================================= --
 
 ALTER TABLE client ALTER COLUMN nickname RENAME TO nicknameInt;
-ALTER TABLE client ADD COLUMN nicknameExt VARCHAR(128);
+ALTER TABLE client ADD COLUMN nicknameExt VARCHAR(512);
+ALTER TABLE client ADD COLUMN knownBy VARCHAR(512);

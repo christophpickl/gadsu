@@ -148,48 +148,49 @@ open class SwingClientDetailView @Inject constructor(
     override fun readClient(): Client {
         log.trace("readClient()")
         return Client(
-                currentClient.data.id,
-                currentClient.data.created,
-                currentClient.data.state,
-                tabMain.inpFirstName.text,
-                tabMain.inpLastName.text,
-                tabMain.inpNickNameInt.text,
-                tabMain.inpNickNameExt.text,
+                id = currentClient.data.id,
+                created = currentClient.data.created,
+                state = currentClient.data.state,
+                firstName = tabMain.inpFirstName.text,
+                lastName = tabMain.inpLastName.text,
+                nickNameExt = tabMain.inpNickNameExt.text,
+                nickNameInt = tabMain.inpNickNameInt.text,
 
-                Contact(
+                contact = Contact(
                         mail = tabMain.inpMail.text,
                         phone = tabMain.inpPhone.text,
                         street = tabMain.inpStreet.text,
                         zipCode = tabMain.inpZipCode.text,
                         city = tabMain.inpCity.text
                 ),
-                tabMain.inpWantReceiveMails.delegate.isSelected,
-                tabMain.inpBirthday.selectedDate,
-                tabMain.inpGender.selectedItemTyped,
-                tabMain.inpCountryOfOrigin.text,
-                tabMain.inpOrigin.text,
-                tabMain.inpRelationship.selectedItemTyped,
-                tabMain.inpJob.text,
-                tabMain.inpChildren.text,
-                tabMain.inpHobbies.text,
-                tabMain.inpNote.toEnrichedText(),
+                knownBy = tabMain.inpKnownBy.text,
+                wantReceiveMails = tabMain.inpWantReceiveMails.delegate.isSelected,
+                birthday = tabMain.inpBirthday.selectedDate,
+                gender = tabMain.inpGender.selectedItemTyped,
+                countryOfOrigin = tabMain.inpCountryOfOrigin.text,
+                origin = tabMain.inpOrigin.text,
+                relationship = tabMain.inpRelationship.selectedItemTyped,
+                job = tabMain.inpJob.text,
+                children = tabMain.inpChildren.text,
+                hobbies = tabMain.inpHobbies.text,
+                note = tabMain.inpNote.toEnrichedText(),
 
-                tabTexts.inpImpression.toEnrichedText(),
-                tabTexts.inpMedical.toEnrichedText(),
-                tabTexts.inpComplaints.toEnrichedText(),
-                tabTexts.inpPersonal.toEnrichedText(),
-                tabTexts.inpObjective.toEnrichedText(),
+                textImpression = tabTexts.inpImpression.toEnrichedText(),
+                textMedical = tabTexts.inpMedical.toEnrichedText(),
+                textComplaints = tabTexts.inpComplaints.toEnrichedText(),
+                textPersonal = tabTexts.inpPersonal.toEnrichedText(),
+                textObjective = tabTexts.inpObjective.toEnrichedText(),
 
-                tabMain.inpMainObjective.text,
-                tabMain.inpSymptoms.text,
-                tabMain.inpFiveElements.text,
-                tabMain.inpSyndrom.text,
-                currentClient.data.category, // not changeable via client detail view, but via popup
-                currentClient.data.donation, // not changeable via client detail view, but via popup
+                textMainObjective = tabMain.inpMainObjective.text,
+                textSymptoms = tabMain.inpSymptoms.text,
+                textFiveElements = tabMain.inpFiveElements.text,
+                textSyndrom = tabMain.inpSyndrom.text,
+                category = currentClient.data.category, // not changeable via client detail view, but via popup
+                donation = currentClient.data.donation, // not changeable via client detail view, but via popup
 
-                tabTcm.inpTcmNote.toEnrichedText(),
-                currentClient.data.picture,
-                tabTcm.readProps()
+                tcmNote = tabTcm.inpTcmNote.toEnrichedText(),
+                picture = currentClient.data.picture,
+                cprops = tabTcm.readProps()
         )
     }
 

@@ -83,7 +83,7 @@ class ClientJdbcRepository @Inject constructor(
         val sqlInsert = """
         INSERT INTO $TABLE (
             id, created, firstName, lastName, nickNameInt, nickNameExt,
-            mail, phone, street, zipCode, city,
+            mail, phone, street, zipCode, city, knownBy,
             wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
             textImpression, textMedical, textComplaints, textPersonal, textObjective,
@@ -91,7 +91,7 @@ class ClientJdbcRepository @Inject constructor(
             category, donation
         ) VALUES (
             ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
@@ -100,7 +100,7 @@ class ClientJdbcRepository @Inject constructor(
         )"""
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
-                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
+                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
                 client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
@@ -119,7 +119,7 @@ class ClientJdbcRepository @Inject constructor(
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
                     state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameExt = ?,
-                    mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
+                    mail = ?, phone = ?, street = ?, zipCode = ?, city = ?, knownBy = ?,
                     wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
                     textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
@@ -127,7 +127,7 @@ class ClientJdbcRepository @Inject constructor(
                     category = ?, donation = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
-                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
+                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
                 client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
@@ -172,6 +172,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                         rs.getString("zipCode"),
                         rs.getString("city")
                 ),
+                rs.getString("knownBy"),
                 rs.getBoolean("wantReceiveMails"),
                 rs.getTimestamp("birthday")?.run { DateTime(this) },
 //                rs.getTimestamp("birthday").nullOrWith(::DateTime),
