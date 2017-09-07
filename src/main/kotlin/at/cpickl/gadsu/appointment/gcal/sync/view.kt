@@ -74,15 +74,17 @@ class SyncReportSwingWindow @Inject constructor(
     private var deleteAppointments = emptyList<Appointment>()
     private var updateAppointments = emptyList<Appointment>()
 
+    // keep in sync with SyncTable.COL indices!!!
     private val model = MyTableModel<ImportAppointment>(listOf(
             TableColumn("", { it.enabled }, COL_LIL, COL_LIL, COL_LIL),
             TableColumn("Titel", { it.event.summary }, 100, 100),
             TableColumn("Klient", { it.selectedClient.preferredName }, 150, 120),
             TableColumn("Zeit", { Pair(it.event.start, it.event.end) }, 130, 130, 130),
-            TableColumn("Mail", { MyEnableValue(
+            TableColumn("", { MyEnableValue(
                     enabled = it.selectedClient.hasMailAndWantsMail && it.isGmailGloballyConfigured,
                     selected = it.sendConfirmation && it.isGmailGloballyConfigured
-            ) }, COL_LIL, COL_LIL, COL_LIL)
+            ) }, COL_LIL, COL_LIL, COL_LIL),
+            TableColumn("Mail", { it.selectedClient.contact.mail }, 150, 150)
     ))
 
     private val table = SyncTable(model)

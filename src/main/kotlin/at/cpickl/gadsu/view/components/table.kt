@@ -51,7 +51,7 @@ class MyEnableCheckboxTableCellRenderer : TableCellRenderer {
     override fun getTableCellRendererComponent(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
         return box.apply {
             ViewConstants.Table.changeBackground(this, isSelected)
-            val enableValue = value as MyEnableValue
+            val enableValue = value as? MyEnableValue ?: throw IllegalArgumentException("Table value ($value) must be of type MyEnableValue! (Maybe forgot to change column indices in SyncTable?!)")
             this.isEnabled = enableValue.enabled
             this.isSelected = enableValue.selected
         }

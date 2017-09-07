@@ -19,7 +19,6 @@ import javax.swing.JComboBox
 import javax.swing.JTable
 import javax.swing.table.TableCellEditor
 
-// MINOR bg color of column confirmation is white
 class SyncTable(
         private val model: MyTableModel<ImportAppointment>
 ) :
@@ -27,9 +26,11 @@ class SyncTable(
 
     companion object {
         private val COL_CHECKBOX = 0
+//        private val COL_TITLE = 1
         private val COL_CLIENT = 2
         private val COL_DATE = 3
         private val COL_CONFIRMATION = 4
+//        private val COL_MAIL = 5
     }
 
     private val logg = LOG(javaClass)
@@ -47,7 +48,6 @@ class SyncTable(
             }
         }
 
-        // textTable.setDefaultRenderer(String.class, new RowHeightCellRenderer());
         columnModel.getColumn(COL_CHECKBOX).cellEditor = enabledEditor
         columnModel.getColumn(COL_CHECKBOX).cellRenderer = MyCheckboxTableCellRenderer()
         columnModel.getColumn(COL_DATE).cellRenderer = DateRangeTableCellRenderer()
