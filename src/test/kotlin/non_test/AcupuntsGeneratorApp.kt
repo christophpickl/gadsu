@@ -117,7 +117,7 @@ class AcupunctsReader {
 
 private object FlagMapper {
 
-    private val FLAGS = mapOf<String, String>(
+    private val FLAGS = mapOf(
             "!!!" to "AcupunctFlag.Marinaportant",
             "ort" to "AcupunctFlag.Orientation",
             "bo" to "AcupunctFlag.BoPoint.Companion.",
@@ -142,18 +142,16 @@ private object FlagMapper {
      * @return "AcupunctFlag.Marinaportant, AcupunctFlag.BoPoint.Companion.Lung"
      */
     fun mapFlags(input: String): String {
-        return input.split(",").map {
+        return input.split(",").joinToString(",") {
             val singleFlagText = it.trim().toLowerCase()
-            if (singleFlagText.startsWith("bo")) {
-                mapFlagWithMeridian(singleFlagText, "bo")
-            } else if (singleFlagText.startsWith("yu")) {
-                mapFlagWithMeridian(singleFlagText, "yu")
-            } else if (singleFlagText.startsWith("ein")) { // MINOR #12 "ein" point hat nix mit Herz/meridian zu tun.. heisst nur auf chinesisch "He" ;)
-                mapFlagWithMeridian(singleFlagText, "ein")
-            } else {
-                before + flagFor(singleFlagText)
+            when {
+                singleFlagText.startsWith("bo") -> mapFlagWithMeridian(singleFlagText, "bo")
+                singleFlagText.startsWith("yu") -> mapFlagWithMeridian(singleFlagText, "yu")
+                // MINOR #12 "ein" point hat nix mit Herz/meridian zu tun.. heisst nur auf chinesisch "He" ;)
+                singleFlagText.startsWith("ein") -> mapFlagWithMeridian(singleFlagText, "ein")
+                else -> before + flagFor(singleFlagText)
             }
-        }.joinToString(",")
+        }
     }
 
     private val before = """
@@ -230,7 +228,7 @@ $acupunctsText
 
         val target = File(targetPath)
         log.info("Write acupunct content to: {}", target.absolutePath)
-        Files.write(content, target, Charset.defaultCharset())
+        Files.asCharSink(target, Charset.defaultCharset()).write(content)
     }
 
 }
