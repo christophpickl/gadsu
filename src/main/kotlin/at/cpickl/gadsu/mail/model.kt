@@ -27,3 +27,8 @@ fun String.isNotValidMail() = !this.isValidMail()
 fun String.isValidMail(): Boolean {
     return mailPattern.matcher(this).matches()
 }
+
+data class MailPreferencesData(
+        val subject: String,
+        val body: String
+)

@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.mail
+package at.cpickl.gadsu.mail.bulkmail
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.LOG
@@ -30,13 +30,12 @@ import javax.swing.JPanel
 import javax.swing.JTextField
 import javax.swing.ListSelectionModel
 
-interface MailView : ClosableWindow {
+interface BulkMailView : ClosableWindow {
     fun start()
     fun destroy()
     fun asJFrame(): JFrame
 
     fun initClients(clients: List<Client>)
-    fun initSelectedClients(selectedClients: List<Client>)
     fun initSubject(subject: String)
     fun initBody(body: String)
 
@@ -45,10 +44,10 @@ interface MailView : ClosableWindow {
     fun readBody(): String
 }
 
-class MailSwingView @Inject constructor(
+class BulkMailSwingView @Inject constructor(
         private val mainFrame: MainFrame,
         private val bus: EventBus
-) : MyFrame("Mails versenden"), MailView {
+) : MyFrame("Mails versenden"), BulkMailView {
 
     private val log = LOG(javaClass)
 
@@ -112,7 +111,7 @@ class MailSwingView @Inject constructor(
         rootPanel.c.anchor = GridBagConstraints.CENTER
         rootPanel.add(GridPanel().apply {
             add(JButton("Senden").apply {
-                addActionListener { bus.post(RequestSendMailEvent()) }
+                addActionListener { bus.post(RequestSendBulkMailEvent()) }
             })
             c.gridx++
             add(JButton("Abbrechen").apply {
@@ -146,10 +145,6 @@ class MailSwingView @Inject constructor(
         clientsModel.resetData(clients)
     }
 
-    override fun initSelectedClients(selectedClients: List<Client>) {
-        inpClients.addSelectedValues(selectedClients)
-    }
-
     override fun initSubject(subject: String) {
         inpSubject.text = subject
     }
@@ -175,7 +170,7 @@ class MailSwingView @Inject constructor(
 
     private fun doClose(shouldPersistState: Boolean) {
         isVisible = false
-        bus.post(MailWindowClosedEvent(shouldPersistState))
+        bus.post(BulkMailWindowClosedEvent(shouldPersistState))
     }
 }
 

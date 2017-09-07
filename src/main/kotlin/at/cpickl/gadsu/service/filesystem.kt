@@ -11,6 +11,7 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.charset.Charset
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -45,9 +46,7 @@ object ChooseFile {
     }
 }
 
-fun File.readContent(): String {
-    return Files.toString(this, Charsets.UTF_8)
-}
+fun File.readContent() = Files.asCharSink(this, Charset.defaultCharset()) // Charsets.UTF_8
 
 fun File.writeByClasspath(classpath: String, overwrite: Boolean = false) {
     LOG_File.debug("writeByClasspath(classpath='{}')", classpath)

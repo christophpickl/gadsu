@@ -1,6 +1,9 @@
 package at.cpickl.gadsu.mail
 
 import at.cpickl.gadsu.development.Development
+import at.cpickl.gadsu.mail.bulkmail.BulkMailController
+import at.cpickl.gadsu.mail.bulkmail.BulkMailSwingView
+import at.cpickl.gadsu.mail.bulkmail.BulkMailView
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import org.slf4j.LoggerFactory
@@ -22,8 +25,8 @@ class MailModule : AbstractModule() {
 
         bind(AppointmentConfirmationer::class.java).to(AppointmentConfirmationerImpl::class.java).`in`(Scopes.SINGLETON)
 
-        bind(MailView::class.java).to(MailSwingView::class.java).`in`(Scopes.SINGLETON)
-        bind(MailController::class.java).asEagerSingleton()
+        bind(BulkMailView::class.java).to(BulkMailSwingView::class.java).`in`(Scopes.SINGLETON)
+        bind(BulkMailController::class.java).asEagerSingleton()
 
     }
 

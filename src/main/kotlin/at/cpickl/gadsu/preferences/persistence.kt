@@ -96,14 +96,12 @@ class JdbcPrefs @Inject constructor(
     override var mailPreferencesData: MailPreferencesData
         get() {
             log.trace("get mailPreferencesData()")
-            val recipientIds = (queryValue(KEY_MAIL_RECIPIENT_IDS) ?: "").split(delimiters = ",")
             val subject = queryValue(KEY_MAIL_SUBJECT) ?: "Betreff"
             val body = queryValue(KEY_MAIL_BODY) ?: "Mail Nachricht"
-            return MailPreferencesData(recipientIds, subject, body)
+            return MailPreferencesData(subject, body)
         }
         set(value) {
             log.trace("set mailPreferencesData(value={})", value)
-            storeValue(KEY_MAIL_RECIPIENT_IDS, value.recipientClientIds.joinToString(separator = ","))
             storeValue(KEY_MAIL_SUBJECT, value.subject)
             storeValue(KEY_MAIL_BODY, value.body)
         }

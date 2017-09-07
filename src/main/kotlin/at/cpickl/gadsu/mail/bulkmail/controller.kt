@@ -1,9 +1,12 @@
-package at.cpickl.gadsu.mail
+package at.cpickl.gadsu.mail.bulkmail
 
 import at.cpickl.gadsu.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.mail.Mail
+import at.cpickl.gadsu.mail.MailPreferencesData
+import at.cpickl.gadsu.mail.MailSender
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.AsyncDialogSettings
@@ -14,24 +17,18 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
 
-data class MailPreferencesData(
-        val recipientClientIds: List<String>,
-        val subject: String,
-        val body: String
-)
-
-open class MailController @Inject constructor(
+open class BulkMailController @Inject constructor(
         private val prefs: Prefs,
         private val mailSender: MailSender,
         private val clientService: ClientService,
-        private val view: MailView,
+        private val view: BulkMailView,
         private val dialogs: Dialogs,
         private val asyncWorker: AsyncWorker
 ) {
 
     private val log = LOG(javaClass)
 
-    @Subscribe open fun onRequestOpenBulkMailEvent(event: RequestPrepareMailEvent) {
+    @Subscribe open fun onRequestOpenBulkMailEvent(event: RequestPrepareBulkMailEvent) {
         if (!ensurePreferencesSet()) {
             return
         }
@@ -40,16 +37,13 @@ open class MailController @Inject constructor(
         view.initClients(mailEnabledClients)
 
         val mailPrefs = prefs.mailPreferencesData
-        val preselectedClients = mailEnabledClients.filter { mailPrefs.recipientClientIds.contains(it.id) }
-
-        view.initSelectedClients(preselectedClients)
         view.initSubject(mailPrefs.subject)
         view.initBody(mailPrefs.body)
 
         view.start()
     }
 
-    @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendMailEvent) {
+    @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendBulkMailEvent) {
         val mail = readMailFromView() ?: return
 
         asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut ..."),
@@ -76,15 +70,14 @@ open class MailController @Inject constructor(
         )
     }
 
-    @Subscribe open fun onMailWindowClosedEvent(event: MailWindowClosedEvent) {
+    @Subscribe open fun onMailWindowClosedEvent(event: BulkMailWindowClosedEvent) {
         if (!event.shouldPersistState) {
             return
         }
-        val recipients = view.readRecipients()
         val subject = view.readSubject()
         val body = view.readBody()
 
-        prefs.mailPreferencesData = MailPreferencesData(recipients.map { it.id!! }, subject, body)
+        prefs.mailPreferencesData = MailPreferencesData(subject, body)
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
