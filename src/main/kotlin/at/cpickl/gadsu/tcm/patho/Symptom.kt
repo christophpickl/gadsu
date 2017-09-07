@@ -15,6 +15,7 @@ enum class SymptomCategory {
     Essen,
     Farbe,
     Gesicht,
+    Haut,
     Hoeren,
     Herz,
     Mens,
@@ -90,6 +91,7 @@ sealed class Symptom(
     abstract class MiscSymptom(source: SymptomSource) : Symptom(SymptomCategory.Misc, source)
     object ThorakalesEngegefuehl : MiscSymptom(NOT_IMPLEMENTED)
     object Schwindel : MiscSymptom(NOT_IMPLEMENTED)
+    object Druckgefuehl : MiscSymptom(NOT_IMPLEMENTED)
 
     // ATMUNG
     // =================================================================================================================
@@ -139,19 +141,28 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class EssenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Essen, source)
     object WenigAppetit : EssenSymptom(NOT_IMPLEMENTED)
+    object BittererMundgeschmack : EssenSymptom(NOT_IMPLEMENTED)
 
     // FARBE
     // =================================================================================================================
     abstract class FarbeSymptom(source: SymptomSource) : Symptom(SymptomCategory.Farbe, source)
-    object Blaesse : FarbeSymptom(NOT_IMPLEMENTED) // hat mehrere untertypen
+    object Blaesse : FarbeSymptom(NOT_IMPLEMENTED) // MINOR hat mehrere untertypen
     object StumpfeBlaesse : FarbeSymptom(NOT_IMPLEMENTED)
     object LeuchtendeBlaesse : FarbeSymptom(NOT_IMPLEMENTED)
+    object BlaufaerbungGesicht : FarbeSymptom(NOT_IMPLEMENTED) // wange, lippen, zunge
+    object BlaufaerbungNaegeln : FarbeSymptom(NOT_IMPLEMENTED)
 
     // GESICHT
     // =================================================================================================================
     abstract class GesichtSymptom(source: SymptomSource) : Symptom(SymptomCategory.Gesicht, source)
     object WeissesGesicht : GesichtSymptom(NOT_IMPLEMENTED)
     object BlassesGesicht : GesichtSymptom(NOT_IMPLEMENTED)
+    object RotesGesicht : GesichtSymptom(NOT_IMPLEMENTED)
+
+    // HAUT
+    // =================================================================================================================
+    abstract class HautSymptom(source: SymptomSource) : Symptom(SymptomCategory.Haut, source)
+    object Erosionen : HautSymptom(NOT_IMPLEMENTED) // wie krater bei blasen beim spiegelei
 
     // HERZ
     // =================================================================================================================
@@ -161,6 +172,8 @@ sealed class Symptom(
     // HOEREN
     // =================================================================================================================
     abstract class HoerenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Hoeren, source)
+    object LeichterTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // MINOR ===> Ni
+    object StarkerTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // MINOR ===> Le
 
     // MENS
     // =================================================================================================================
@@ -171,23 +184,14 @@ sealed class Symptom(
     abstract class PsychoSymptom(source: SymptomSource) : Symptom(SymptomCategory.Psycho, source)
     object SchlechteMerkfaehigkeit : PsychoSymptom(NOT_IMPLEMENTED)
     object Konzentrationsstoerungen : PsychoSymptom(NOT_IMPLEMENTED)
-
-    // PULS
-    // =================================================================================================================
-    abstract class PulsSymptom(source: SymptomSource) : Symptom(SymptomCategory.Puls, source) {
-        constructor(pulse: PulseProperty) : this(SymptomSource.PulseSource(pulse))
-    }
-    object LeererPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object WeicherPuls : PulsSymptom(PulseProperty.Soft)
-    object SchwacherPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object DuennerPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object SchluepfrigerPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object OberflaechlicherPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object GespannterPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object VerlangsamterPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object LangsamerPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object BeschleunigterPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object UnregelmaessigerPuls : PulsSymptom(NOT_IMPLEMENTED) // leitsymptom He
+    object Gewalttaetig : PsychoSymptom(NOT_IMPLEMENTED)
+    object Verwirrung : PsychoSymptom(NOT_IMPLEMENTED)
+    object Weinen : PsychoSymptom(NOT_IMPLEMENTED)
+    object Extrovertiertheit : PsychoSymptom(NOT_IMPLEMENTED)
+    object GetruebteBewusstsein : PsychoSymptom(NOT_IMPLEMENTED)
+    object Lethargie : PsychoSymptom(NOT_IMPLEMENTED)
+    object Depression : PsychoSymptom(NOT_IMPLEMENTED)
+    object Bewusstseinsverlust : PsychoSymptom(NOT_IMPLEMENTED)
 
     // SCHMERZEN
     // =================================================================================================================
@@ -195,13 +199,18 @@ sealed class Symptom(
     object LeichteKopfschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object Kopfschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object Muskelschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+    object StechenderSchmerz : SchmerzenSymptom(NOT_IMPLEMENTED)
+    object FixierterSchmerz : SchmerzenSymptom(NOT_IMPLEMENTED)
+    object ArmAusstrahlendeSchmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+    object Magenschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
 
     // SCHLAF
     // =================================================================================================================
     abstract class SchlafSymptom(source: SymptomSource) : Symptom(SymptomCategory.Schlaf, source)
     object Traeumen : SchlafSymptom(NOT_IMPLEMENTED)
     object VieleTraeume : SchlafSymptom(NOT_IMPLEMENTED)
-    object Schlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED) // hat untertypen
+    object Schlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED) // MINOR hat untertypen
+    object StarkeSchlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED)
     object EinschlafStoerungen : SchlafSymptom(NOT_IMPLEMENTED)
 
     // SCHLEIM
@@ -214,7 +223,7 @@ sealed class Symptom(
     object TrueberSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     // menge
     object VermehrterSchleim : SchleimSymptom(NOT_IMPLEMENTED)
-    object ReichlichSchleim : SchleimSymptom(NOT_IMPLEMENTED) // synonym?!
+    object ReichlichSchleim : SchleimSymptom(NOT_IMPLEMENTED) // MINOR synonym?!
     object WenigSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object KeinSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     // konsistenz
@@ -237,11 +246,18 @@ sealed class Symptom(
     // SEHEN
     // =================================================================================================================
     abstract class SehenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Sehen, source)
+    object DahinStarren : SehenSymptom(NOT_IMPLEMENTED)
+
 
     // SPRECHEN
     // =================================================================================================================
     abstract class SprechenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Sprechen, source)
     object WenigLeiseSprechen : SprechenSymptom(NOT_IMPLEMENTED)
+    object VerwirrtesSprechen : SprechenSymptom(NOT_IMPLEMENTED)
+    object GrundlosesLachen : SprechenSymptom(NOT_IMPLEMENTED)
+    object Schreien : SprechenSymptom(NOT_IMPLEMENTED)
+    object Selbstgespraeche : SprechenSymptom(NOT_IMPLEMENTED)
+    object NichtReden : SprechenSymptom(NOT_IMPLEMENTED)
 
     // STUHL
     // =================================================================================================================
@@ -263,6 +279,7 @@ sealed class Symptom(
     object HitzeZeichen : TemperaturSymptom(NOT_IMPLEMENTED)
     object KalteHaende : TemperaturSymptom(NOT_IMPLEMENTED)
     object KalteFuesse : TemperaturSymptom(NOT_IMPLEMENTED)
+    object KalteExtremitaeten : TemperaturSymptom(NOT_IMPLEMENTED) // MINOR contains hand/fuss
     object FuenfZentrenHitze : TemperaturSymptom(NOT_IMPLEMENTED)
     object RoteWangenflecken : TemperaturSymptom(NOT_IMPLEMENTED)
 
@@ -272,12 +289,14 @@ sealed class Symptom(
     object WenigDurst : TrinkenSymptom(NOT_IMPLEMENTED)
     object KeinDurst : TrinkenSymptom(NOT_IMPLEMENTED)
     object MehrDurst : TrinkenSymptom(NOT_IMPLEMENTED)
-    object MehrDurstSpaeter : TrinkenSymptom(NOT_IMPLEMENTED) // untertyp von MehrDurst
+    object MehrDurstSpaeter : TrinkenSymptom(NOT_IMPLEMENTED) // MINOR untertyp von MehrDurst
     object MoechteKaltesTrinken : TrinkenSymptom(NOT_IMPLEMENTED)
 
     // URIN
     // =================================================================================================================
     abstract class UrinSymptom(source: SymptomSource) : Symptom(SymptomCategory.Urin, source)
+    object UrinierenBrennen : UrinSymptom(NOT_IMPLEMENTED)
+    object BlutInUrin : UrinSymptom(NOT_IMPLEMENTED)
 
     // VERDAUUNG
     // =================================================================================================================
@@ -293,9 +312,14 @@ sealed class Symptom(
     object TrockeneZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object FeuchteZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object LaengsrissInZunge : ZungeSymptom(NOT_IMPLEMENTED)
+    object Ulzerationen : ZungeSymptom(NOT_IMPLEMENTED) // rote dippeln (nicht rote puenktchen)
+    object Zungenspalt : ZungeSymptom(NOT_IMPLEMENTED)
+    object Dornen : ZungeSymptom(NOT_IMPLEMENTED) // belag waechst in mittelriss rein
+    object VioletteZungenflecken : ZungeSymptom(NOT_IMPLEMENTED)
     // farbe
     object BlasseZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object RoteZunge : ZungeSymptom(NOT_IMPLEMENTED)
+    object LivideZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object RoteZungenspitze : ZungeSymptom(NOT_IMPLEMENTED)
     // belag - farbe
     object WeisserBelag : ZungeSymptom(NOT_IMPLEMENTED)
@@ -311,6 +335,29 @@ sealed class Symptom(
     object TrockenerBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object FeuchterBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object SchmierigerBelag : ZungeSymptom(NOT_IMPLEMENTED)
+
+    // PULS
+    // =================================================================================================================
+    abstract class PulsSymptom(source: SymptomSource) : Symptom(SymptomCategory.Puls, source) {
+        constructor(pulse: PulseProperty) : this(SymptomSource.PulseSource(pulse))
+    }
+    object BeschleunigterPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object DuennerPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object GespannterPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object HaengenderPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object JagenderPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object KraeftigerPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object LangsamerPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object LeererPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object OberflaechlicherPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object RauherPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object SchluepfrigerPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object SchwacherPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object SaitenfoermigerPuls : PulsSymptom(NOT_IMPLEMENTED) // = gespannt
+    object UnregelmaessigerPuls : PulsSymptom(NOT_IMPLEMENTED) // = "intermittierend" // MINOR leitsymptom He
+    object UeberflutenderPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object VerlangsamterPuls : PulsSymptom(NOT_IMPLEMENTED)
+    object WeicherPuls : PulsSymptom(PulseProperty.Soft)
 
 }
 
