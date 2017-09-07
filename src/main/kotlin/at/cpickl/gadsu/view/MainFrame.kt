@@ -35,7 +35,7 @@ enum class MainContentType {
 
 interface MainContent {
     val type: MainContentType
-    /** Right now only to close datepicker popup. */
+    // used to close datepicker popup
     fun closePreparations()
     fun asComponent(): Component
 

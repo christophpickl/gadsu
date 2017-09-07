@@ -28,6 +28,7 @@ interface DynTreatmentRenderer {
     var originalDynTreatment: DynTreatment
     val view: JComponent
 
+    fun initState() = Unit
     fun readDynTreatment(): DynTreatment
 
     fun registerOnChange(changeListener: () -> Unit)
@@ -37,19 +38,20 @@ interface DynTreatmentRenderer {
 
 }
 
-@VisibleForTesting class DynTreatmentTabbedPane(
+@VisibleForTesting
+class DynTreatmentTabbedPane(
         private var originalTreatment: Treatment,
         private val bus: EventBus
 ) : JTabbedPane(), ChangeAware {
 
     private val log = LOG(javaClass)
+
     @VisibleForTesting var index = HashMap<Int, DynTreatmentRenderer>()
 
     private lateinit var lateChangeListener: () -> Unit
     override fun onChange(changeListener: () -> Unit) {
         this.lateChangeListener = changeListener
     }
-
 
     fun addDynTreatment(dynTreatment: DynTreatment) {
         val addIndex = calcTabIndex(dynTreatment)
@@ -66,6 +68,7 @@ interface DynTreatmentRenderer {
         selectedIndex = addIndex
         recalcDynTreatmentsIndicesForAddAndAddIt(addIndex, renderer)
 
+        renderer.initState()
         renderer.registerOnChange(lateChangeListener)
         lateChangeListener()
     }
@@ -91,7 +94,8 @@ interface DynTreatmentRenderer {
         return index.values.map { it.readDynTreatment() }
     }
 
-    @VisibleForTesting fun calcTabIndex(toAdd: DynTreatment): Int {
+    @VisibleForTesting
+    fun calcTabIndex(toAdd: DynTreatment): Int {
         var currentIndex = 1
         for (renderer in index.values) {
             if (DynTreatmentsFactory.dynTreatmentsFor(toAdd).order <
@@ -103,7 +107,8 @@ interface DynTreatmentRenderer {
         return currentIndex
     }
 
-    @VisibleForTesting fun recalcDynTreatmentsIndicesForAddAndAddIt(addIndex: Int, renderer: DynTreatmentRenderer) {
+    @VisibleForTesting
+    fun recalcDynTreatmentsIndicesForAddAndAddIt(addIndex: Int, renderer: DynTreatmentRenderer) {
         val newIndex = HashMap<Int, DynTreatmentRenderer>()
         index.entries.forEach { entry ->
             val key = if (entry.key >= addIndex) entry.key + 1 else entry.key
@@ -113,7 +118,8 @@ interface DynTreatmentRenderer {
         index = newIndex
     }
 
-    @VisibleForTesting fun recalcDynTreatmentsIndicesForDelete(removedIndex: Int) {
+    @VisibleForTesting
+    fun recalcDynTreatmentsIndicesForDelete(removedIndex: Int) {
         val newIndex = HashMap<Int, DynTreatmentRenderer>()
         index.entries.forEach { entry ->
             val key = if (entry.key > removedIndex) entry.key - 1 else entry.key
@@ -140,7 +146,8 @@ interface DynTreatmentRenderer {
 
 }
 
-@VisibleForTesting fun Treatment.areDynTreatmentsModified(renderers: Collection<DynTreatmentRenderer>): Boolean {
+@VisibleForTesting
+fun Treatment.areDynTreatmentsModified(renderers: Collection<DynTreatmentRenderer>): Boolean {
     return dynTreatments.map { it.javaClass }.sortedBy { it.name } !=
             renderers.map { it.originalDynTreatment.javaClass }.sortedBy { it.name }
 }

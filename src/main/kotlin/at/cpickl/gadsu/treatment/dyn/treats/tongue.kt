@@ -290,6 +290,7 @@ class TongueDiagnosisRenderer(
             Special.values().toList(), bus, TonguePropertableRenderer(), "TongueSpecial", { it.map { it.label } }, false)
 
     private val inpLists = listOf(inpListColor, inpListShape, inpListCoat, inpListSpecial)
+    private val listsExpander = MultiPropExpander(inpLists)
     private val inpNote = MyTextArea("TongueDiagnosisRenderer.inpNote", 2) // does not work, see gridpanel...
     override var originalDynTreatment: DynTreatment = tongueDiagnosis
 
@@ -298,7 +299,7 @@ class TongueDiagnosisRenderer(
 
             c.gridwidth = 2
             c.anchor = GridBagConstraints.EAST
-            add(MultiPropExpander(inpLists))
+            add(listsExpander)
 
             c.gridy++
             c.gridwidth = 1
@@ -354,6 +355,10 @@ class TongueDiagnosisRenderer(
 
             initValues(tongueDiagnosis)
         }
+    }
+
+    override fun initState() {
+        listsExpander.expandAll()
     }
 
     private fun initValues(tongueDiagnosis: TongueDiagnosis) {

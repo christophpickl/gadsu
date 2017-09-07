@@ -267,7 +267,6 @@ class KyoJitsuCheckBox(val meridianAndPos: MeridianAndPosition) : TriCheckBox<Me
 }
 
 class HaraDiagnosisRenderer(haraDiagnosis: HaraDiagnosis) : DynTreatmentRenderer {
-
     private val mapOfCheckboxes = MeridianAndPosition.values().associate { Pair(it, KyoJitsuCheckBox(it)) }
 
     private val inpNote = MyTextArea("HaraDiagnosisRenderer.inpNote", 2)

@@ -107,18 +107,18 @@ class MultiPropExpander(private val switchables: List<EditorRendererSwitchable>)
 
         transparent()
         add(JButton("+").apply {
-            addActionListener { onExpand() }
+            addActionListener { expandAll() }
         })
         add(JButton("-").apply {
-            addActionListener { onCollapse() }
+            addActionListener { collapseAll() }
         })
     }
 
-    private fun onExpand() {
+    fun expandAll() {
         switchables.forEach(EditorRendererSwitchable::changeToEditor)
     }
 
-    private fun onCollapse() {
+    fun collapseAll() {
         switchables.forEach(EditorRendererSwitchable::changeToRenderer)
     }
 

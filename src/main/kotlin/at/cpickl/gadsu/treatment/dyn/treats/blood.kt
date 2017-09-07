@@ -160,6 +160,10 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
         }
     }
 
+    override fun initState() {
+        beforeMeasure.inpSystolic.requestFocus()
+    }
+
     private fun initValues(bloodPressure: BloodPressure) {
         beforeMeasure.measurement = bloodPressure.before
         afterMeasure.measurement = bloodPressure.after

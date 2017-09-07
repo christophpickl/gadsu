@@ -220,13 +220,15 @@ class PulseDiagnosisRenderer(
             ALL_SECONDARY, bus, PulsePropertyCellRenderer, "Puls2", { it.map { it.label } }, false)
 
     private val inpNote = MyTextArea("PulseDiagnosisRenderer.inpNote", 1)
+    private val inpLists = listOf(inpPulseProps1, inpPulseProps2)
+    private val listsExpander = MultiPropExpander(inpLists)
 
     override val view: JComponent by lazy {
         GridPanel().apply {
 
             c.gridwidth = 2
             c.anchor = GridBagConstraints.EAST
-            add(MultiPropExpander(inpPulseProps1, inpPulseProps2))
+            add(listsExpander)
 
             c.gridy++
             c.anchor = GridBagConstraints.CENTER
@@ -253,6 +255,10 @@ class PulseDiagnosisRenderer(
         }
     }
 
+    override fun initState() {
+        listsExpander.expandAll()
+    }
+
     private val NOTE_IGNORED = ""
     private fun initValues(pulseDiagnosis: PulseDiagnosis) {
 
@@ -271,8 +277,9 @@ class PulseDiagnosisRenderer(
     )
 
     override fun registerOnChange(changeListener: () -> Unit) {
-        inpPulseProps1.addListSelectionListener(ListSelectionListener { e -> if (!e.valueIsAdjusting) changeListener() })
-        inpPulseProps2.addListSelectionListener(ListSelectionListener { e -> if (!e.valueIsAdjusting) changeListener() })
+        inpLists.forEach {
+            it.addListSelectionListener(ListSelectionListener { e -> if (!e.valueIsAdjusting) changeListener() })
+        }
         inpNote.addChangeListener { changeListener() }
     }
 
