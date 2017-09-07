@@ -7,9 +7,7 @@ import at.cpickl.gadsu.tcm.model.XProps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
-import org.testng.Assert
 import org.testng.annotations.DataProvider
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 @Test
@@ -26,7 +24,7 @@ class ClientTest {
             arrayOf<Any>("state",           { it: Client -> it.copy(state = ClientState.INACTIVE) }),
             arrayOf<Any>("firstName",       { it: Client -> it.copy(firstName = "2") }),
             arrayOf<Any>("lastName",        { it: Client -> it.copy(lastName = "2") }),
-            arrayOf<Any>("nickName",        { it: Client -> it.copy(nickName = "2") }),
+            arrayOf<Any>("nickNameInt",        { it: Client -> it.copy(nickNameInt = "2") }),
             arrayOf<Any>("contact",         { it: Client -> it.copy(contact = contact1.copy(mail = "2")) }),
             arrayOf<Any>("birthday",        { it: Client -> it.copy(birthday = null) }),
             arrayOf<Any>("gender",          { it: Client -> it.copy(gender = Gender.MALE) }),

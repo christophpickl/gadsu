@@ -122,7 +122,7 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
             ?
         )"""
         jdbcx.update(sqlInsert,
-                client.id, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
+                client.id, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
                 client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,

@@ -82,7 +82,7 @@ class ClientJdbcRepository @Inject constructor(
         }
         val sqlInsert = """
         INSERT INTO $TABLE (
-            id, created, firstName, lastName, nickName,
+            id, created, firstName, lastName, nickNameInt,
             mail, phone, street, zipCode, city,
             wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
@@ -99,7 +99,7 @@ class ClientJdbcRepository @Inject constructor(
             ?, ?
         )"""
         jdbcx.update(sqlInsert,
-                newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickName,
+                newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
                 client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
@@ -118,7 +118,7 @@ class ClientJdbcRepository @Inject constructor(
         client.ensurePersisted()
         jdbcx.updateSingle("""
                 UPDATE $TABLE SET
-                    state = ?, firstName = ?, lastName = ?, nickName = ?,
+                    state = ?, firstName = ?, lastName = ?, nickNameInt = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?,
                     wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
@@ -126,7 +126,7 @@ class ClientJdbcRepository @Inject constructor(
                     mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
                     category = ?, donation = ?
                 WHERE id = ?""",
-                client.state.sqlCode, client.firstName, client.lastName, client.nickName,
+                client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
                 client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
@@ -163,7 +163,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 ClientState.parseSqlCode(rs.getString("state")),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
-                rs.getString("nickName"),
+                rs.getString("nickNameInt"),
                 Contact(
                         rs.getString("mail"),
                         rs.getString("phone"),

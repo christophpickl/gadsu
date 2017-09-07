@@ -37,7 +37,7 @@ data class ExtendedClient(
     override val created: DateTime get() = client.created
     override val firstName: String get() = client.firstName
     override val lastName: String get() = client.lastName
-    override val nickName: String get() = client.nickName
+    override val nickNameInt: String get() = client.nickNameInt
     override val preferredName: String get() = client.preferredName
     override val fullName: String get() = client.fullName
     override val state: ClientState get() = client.state

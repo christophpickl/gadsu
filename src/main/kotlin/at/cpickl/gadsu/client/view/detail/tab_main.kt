@@ -2,7 +2,6 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
@@ -50,7 +49,7 @@ class ClientTabMain(
     // base
     val inpFirstName = fields.newTextField("Vorname", { it.firstName }, ViewNames.Client.InputFirstName)
     val inpLastName = fields.newTextField("Nachname", { it.lastName }, ViewNames.Client.InputLastName)
-    val inpNickName = fields.newTextField("Spitzname", { it.nickName }, ViewNames.Client.InputNickName)
+    val inpNickName = fields.newTextField("Spitzname (int.)", { it.nickNameInt }, ViewNames.Client.InputNickName)
     val inpGender = fields.newComboBox(Gender.Enum.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
     val outAge = JLabel().bold()

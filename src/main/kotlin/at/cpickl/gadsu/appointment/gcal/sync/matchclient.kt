@@ -36,7 +36,7 @@ class MatchClientsInDb @Inject constructor(
         return clients.map {
             SimilarClient(it,
                     checkScore(name, it.firstName),
-                    checkScore(name, it.nickName),
+                    checkScore(name, it.nickNameInt),
                     checkScore(name, it.lastName)
             )
         }.filter {

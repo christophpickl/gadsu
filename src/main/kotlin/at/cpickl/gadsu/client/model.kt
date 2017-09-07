@@ -7,7 +7,6 @@ import at.cpickl.gadsu.Ordered
 import at.cpickl.gadsu.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.orderedValuesOf
 import at.cpickl.gadsu.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
@@ -36,8 +35,8 @@ interface IClient : HasId, Persistable {
     val created: DateTime
     val firstName: String
     val lastName: String
-    val nickName: String
-    val preferredName: String // either nickName (if set) or firstName
+    val nickNameInt: String
+    val preferredName: String // either nickNameInt (if set) or firstName
     val fullName: String // "$firstName $lastName"
     val state: ClientState
     val contact: Contact
@@ -79,7 +78,7 @@ data class Client(
 
         override val firstName: String,
         override val lastName: String,
-        override val nickName: String,
+        override val nickNameInt: String,
         override val contact: Contact,
         override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
@@ -131,7 +130,7 @@ data class Client(
                 state = ClientState.ACTIVE,
                 firstName = "",
                 lastName = "",
-                nickName = "",
+                nickNameInt = "",
                 contact = Contact.EMPTY,
                 wantReceiveMails = true,
                 birthday = null,
@@ -173,8 +172,8 @@ data class Client(
         }
 
     override val preferredName: String
-        get() = if (nickName.isNotEmpty()) {
-            nickName
+        get() = if (nickNameInt.isNotEmpty()) {
+            nickNameInt
         } else {
             firstName
         }
@@ -200,7 +199,7 @@ data class Client(
                 Objects.equal(this.state, that.state) &&
                 Objects.equal(this.firstName, that.firstName) &&
                 Objects.equal(this.lastName, that.lastName) &&
-                Objects.equal(this.nickName, that.nickName) &&
+                Objects.equal(this.nickNameInt, that.nickNameInt) &&
                 Objects.equal(this.contact, that.contact) &&
                 Objects.equal(this.birthday, that.birthday) &&
                 Objects.equal(this.gender, that.gender) &&
@@ -233,7 +232,7 @@ data class Client(
 //        return MoreObjects.toStringHelper(javaClass)
 //                .add("id", id)
 //                .add("firstName", firstName)
-//                .add("nickName", nickName)
+//                .add("nickNameInt", nickNameInt)
 //                .add("lastName", lastName)
 //                .toString()
 //    }

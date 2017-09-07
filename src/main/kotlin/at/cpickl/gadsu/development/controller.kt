@@ -93,7 +93,7 @@ open class DevelopmentController @Inject constructor(
                         state = ClientState.ACTIVE,
                         firstName = "Max",
                         lastName = "Mustermann",
-                        nickName = "Maxi",
+                        nickNameInt = "Maxi",
                         birthday = DateFormats.DATE.parseDateTime("26.10.1986"),
                         gender = Gender.MALE,
                         contact = Contact(

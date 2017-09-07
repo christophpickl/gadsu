@@ -50,7 +50,7 @@ import org.testng.annotations.Test
     }
 
     private fun newClient(firstName: String, nickName: String, lastName: String) =
-            insertClientViaRepo(Client.unsavedValidInstance().copy(firstName = firstName, nickName = nickName, lastName = lastName))
+            insertClientViaRepo(Client.unsavedValidInstance().copy(firstName = firstName, nickNameInt = nickName, lastName = lastName))
 
     private fun testCase(searchName: String, vararg expectedClients: Client): Pair<String, List<Client>> {
         return Pair(searchName, expectedClients.toList())
