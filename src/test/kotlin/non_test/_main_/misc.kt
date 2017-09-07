@@ -9,7 +9,6 @@ import at.cpickl.gadsu.testinfra.fullInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
-import at.cpickl.gadsu.view.components.DEFAULT_FRAMED_DIMENSION
 import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.FramedContext
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
@@ -17,7 +16,6 @@ import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
 import org.mockito.Mockito
 import java.awt.BorderLayout
-import java.awt.Dimension
 import java.awt.FlowLayout
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -25,9 +23,7 @@ import javax.swing.JPanel
 
 
 fun main(args: Array<String>) {
-    Framed.showWithContext(
-            ::clientTabAssist,
-            DEFAULT_FRAMED_DIMENSION)
+    Framed.showWithContextDefaultSize(::clientTabAssist)
 //        treatmentGoal()
 //        triState()
 //        meridianSelector()
