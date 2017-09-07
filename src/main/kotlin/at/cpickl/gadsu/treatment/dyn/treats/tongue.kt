@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment.dyn.treats
 
 import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
@@ -357,8 +358,10 @@ class TongueDiagnosisRenderer(
         }
     }
 
-    override fun initState() {
-        listsExpander.expandAll()
+    override fun initState(persistable: Persistable) {
+        if (!persistable.yetPersisted) {
+            listsExpander.expandAll()
+        }
     }
 
     private fun initValues(tongueDiagnosis: TongueDiagnosis) {

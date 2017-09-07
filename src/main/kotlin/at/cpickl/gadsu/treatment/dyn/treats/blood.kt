@@ -1,6 +1,7 @@
 package at.cpickl.gadsu.treatment.dyn.treats
 
 import at.cpickl.gadsu.persistence.Jdbcx
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentCallback
 import at.cpickl.gadsu.treatment.dyn.DynTreatmentManager
@@ -160,7 +161,7 @@ class BloodPressureRenderer(bloodPressure: BloodPressure) : DynTreatmentRenderer
         }
     }
 
-    override fun initState() {
+    override fun initState(persistable: Persistable) {
         beforeMeasure.inpSystolic.requestFocus()
     }
 

@@ -8,7 +8,7 @@ import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.treatment.CurrentTreatment
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.OpenTreatmentEvent
-import at.cpickl.gadsu.treatment.PrefilledTreatment
+import at.cpickl.gadsu.treatment.PrefillByAppointmentTreatment
 import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
@@ -68,7 +68,7 @@ open class TreatmentController @Inject constructor(
         if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
             return
         }
-        changeToTreatmentView(null, event.prefilled)
+        changeToTreatmentView(null, event.prefillByAppointment)
     }
 
     @Subscribe open fun onOpenTreatmentEvent(event: OpenTreatmentEvent) {
@@ -190,8 +190,8 @@ open class TreatmentController @Inject constructor(
         treatmentView!!.wasSaved(treatmentAfterSave)
     }
 
-    private fun changeToTreatmentView(treatment: Treatment?, prefilled: PrefilledTreatment?) {
-        log.debug("changeToTreatmentView(treatment={}, prefilled={})", treatment, prefilled)
+    private fun changeToTreatmentView(treatment: Treatment?, prefillByAppointment: PrefillByAppointmentTreatment?) {
+        log.debug("changeToTreatmentView(treatment={}, prefilled={})", treatment, prefillByAppointment)
         val client = currentClient.data
 
         treatmentView?.closePreparations()
@@ -201,8 +201,8 @@ open class TreatmentController @Inject constructor(
             nullSafeTreatment = treatment
         } else {
             val number = treatmentService.calculateNextNumber(client)
-            val startDate = prefilled?.start ?: clock.now()
-            val duration = if (prefilled == null) Treatment.DEFAULT_DURATION else minutes(prefilled.duration)
+            val startDate = prefillByAppointment?.start ?: clock.now()
+            val duration = if (prefillByAppointment == null) Treatment.DEFAULT_DURATION else minutes(prefillByAppointment.duration)
             nullSafeTreatment = Treatment.insertPrototype(
                     clientId = client.id!!,
                     number = number,

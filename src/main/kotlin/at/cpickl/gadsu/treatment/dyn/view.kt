@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.treatment.dyn
 
+import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.dyn.treats.BloodPressure
@@ -28,7 +29,7 @@ interface DynTreatmentRenderer {
     var originalDynTreatment: DynTreatment
     val view: JComponent
 
-    fun initState() = Unit
+    fun initState(persistable: Persistable) = Unit
     fun readDynTreatment(): DynTreatment
 
     fun registerOnChange(changeListener: () -> Unit)
@@ -46,7 +47,7 @@ class DynTreatmentTabbedPane(
 
     private val log = LOG(javaClass)
 
-    @VisibleForTesting var index = HashMap<Int, DynTreatmentRenderer>()
+    @VisibleForTesting var renderers = HashMap<Int, DynTreatmentRenderer>()
 
     private lateinit var lateChangeListener: () -> Unit
     override fun onChange(changeListener: () -> Unit) {
@@ -68,36 +69,36 @@ class DynTreatmentTabbedPane(
         selectedIndex = addIndex
         recalcDynTreatmentsIndicesForAddAndAddIt(addIndex, renderer)
 
-        renderer.initState()
+        renderer.initState(originalTreatment)
         renderer.registerOnChange(lateChangeListener)
         lateChangeListener()
     }
 
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
         log.trace("getDynTreatmentAt(tabIndex=$tabIndex)")
-        return index[tabIndex]!!.originalDynTreatment
+        return renderers[tabIndex]!!.originalDynTreatment
     }
 
     fun getAllDynTreatmentClasses(): List<Class<DynTreatment>> {
-        return index.values.map { it.originalDynTreatment.javaClass }
+        return renderers.values.map { it.originalDynTreatment.javaClass }
     }
 
     fun removeDynTreatmentAt(tabIndex: Int) {
         log.trace("removeDynTreatmentAt(tabIndex=$tabIndex)")
         removeTabAt(tabIndex)
-        index.remove(tabIndex)
+        renderers.remove(tabIndex)
         recalcDynTreatmentsIndicesForDelete(tabIndex)
         lateChangeListener()
     }
 
     fun readDynTreatments(): List<DynTreatment> {
-        return index.values.map { it.readDynTreatment() }
+        return renderers.values.map { it.readDynTreatment() }
     }
 
     @VisibleForTesting
     fun calcTabIndex(toAdd: DynTreatment): Int {
         var currentIndex = 1
-        for (renderer in index.values) {
+        for (renderer in renderers.values) {
             if (DynTreatmentsFactory.dynTreatmentsFor(toAdd).order <
                     DynTreatmentsFactory.dynTreatmentsFor(renderer.originalDynTreatment).order) {
                 break
@@ -110,32 +111,32 @@ class DynTreatmentTabbedPane(
     @VisibleForTesting
     fun recalcDynTreatmentsIndicesForAddAndAddIt(addIndex: Int, renderer: DynTreatmentRenderer) {
         val newIndex = HashMap<Int, DynTreatmentRenderer>()
-        index.entries.forEach { entry ->
+        renderers.entries.forEach { entry ->
             val key = if (entry.key >= addIndex) entry.key + 1 else entry.key
             newIndex.put(key, entry.value)
         }
         newIndex.put(addIndex, renderer)
-        index = newIndex
+        renderers = newIndex
     }
 
     @VisibleForTesting
     fun recalcDynTreatmentsIndicesForDelete(removedIndex: Int) {
         val newIndex = HashMap<Int, DynTreatmentRenderer>()
-        index.entries.forEach { entry ->
+        renderers.entries.forEach { entry ->
             val key = if (entry.key > removedIndex) entry.key - 1 else entry.key
             newIndex.put(key, entry.value)
         }
-        index = newIndex
+        renderers = newIndex
     }
 
     fun isModified(): Boolean {
-        return originalTreatment.areDynTreatmentsModified(index.values) ||
-                index.values.any { it.isModified() }
+        return originalTreatment.areDynTreatmentsModified(renderers.values) ||
+                renderers.values.any { it.isModified() }
     }
 
     fun wasSaved(newTreatment: Treatment) {
         originalTreatment = newTreatment
-        index.values.forEach {
+        renderers.values.forEach {
             it.originalDynTreatment = newTreatment.dynTreatmentByType(it.originalDynTreatment.javaClass)
         }
     }

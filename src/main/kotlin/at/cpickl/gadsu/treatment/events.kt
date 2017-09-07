@@ -5,9 +5,9 @@ import at.cpickl.gadsu.UserEvent
 import com.google.common.base.MoreObjects
 import org.joda.time.DateTime
 
-data class PrefilledTreatment(val start: DateTime, val duration: Int)
+data class PrefillByAppointmentTreatment(val start: DateTime, val duration: Int)
 
-class PrepareNewTreatmentEvent(val prefilled: PrefilledTreatment? = null) : UserEvent()
+class PrepareNewTreatmentEvent(val prefillByAppointment: PrefillByAppointmentTreatment? = null) : UserEvent()
 
 class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
     override fun toString(): String{
