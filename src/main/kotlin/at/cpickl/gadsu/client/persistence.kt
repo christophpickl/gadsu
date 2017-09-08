@@ -158,50 +158,50 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
         log.trace("Transforming database row for client with first name: '{}'", rs.getString("firstName"))
         val gender = Gender.Enum.parseSqlCode(rs.getString("gender_enum"))
         Client(
-                rs.getString("id"),
-                DateTime(rs.getTimestamp("created")),
-                ClientState.parseSqlCode(rs.getString("state")),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("nickNameInt"),
-                rs.getString("nickNameExt"),
-                Contact(
+                id = rs.getString("id"),
+                created = DateTime(rs.getTimestamp("created")),
+                state = ClientState.parseSqlCode(rs.getString("state")),
+                firstName = rs.getString("firstName"),
+                lastName = rs.getString("lastName"),
+                nickNameExt = rs.getString("nickNameExt"),
+                nickNameInt = rs.getString("nickNameInt"),
+                contact = Contact(
                         rs.getString("mail"),
                         rs.getString("phone"),
                         rs.getString("street"),
                         rs.getString("zipCode"),
                         rs.getString("city")
                 ),
-                rs.getString("knownBy"),
-                rs.getBoolean("wantReceiveMails"),
-                rs.getTimestamp("birthday")?.run { DateTime(this) },
+                knownBy = rs.getString("knownBy"),
+                wantReceiveMails = rs.getBoolean("wantReceiveMails"),
+                birthday = rs.getTimestamp("birthday")?.run { DateTime(this) },
 //                rs.getTimestamp("birthday").nullOrWith(::DateTime),
-                gender,
-                rs.getString("countryOfOrigin"),
-                rs.getString("origin"),
-                Relationship.Enum.parseSqlCode(rs.getString("relationship_enum")),
-                rs.getString("job"),
-                rs.getString("children"),
-                rs.getString("hobbies"),
-                rs.getString("note"),
+                gender = gender,
+                countryOfOrigin = rs.getString("countryOfOrigin"),
+                origin = rs.getString("origin"),
+                relationship = Relationship.Enum.parseSqlCode(rs.getString("relationship_enum")),
+                job = rs.getString("job"),
+                children = rs.getString("children"),
+                hobbies = rs.getString("hobbies"),
+                note = rs.getString("note"),
 
-                rs.getString("textImpression"),
-                rs.getString("textMedical"),
-                rs.getString("textComplaints"),
-                rs.getString("textPersonal"),
-                rs.getString("textObjective"),
+                textImpression = rs.getString("textImpression"),
+                textMedical = rs.getString("textMedical"),
+                textComplaints = rs.getString("textComplaints"),
+                textPersonal = rs.getString("textPersonal"),
+                textObjective = rs.getString("textObjective"),
 
-                rs.getString("mainObjective"),
-                rs.getString("symptoms"),
-                rs.getString("elements"),
-                rs.getString("syndrom"),
-                ClientCategory.Enum.parseSqlCode(rs.getString("category")),
-                ClientDonation.Enum.parseSqlCode(rs.getString("donation")),
+                textMainObjective = rs.getString("mainObjective"),
+                textSymptoms = rs.getString("symptoms"),
+                textFiveElements = rs.getString("elements"),
+                textSyndrom = rs.getString("syndrom"),
 
-                rs.getString("tcmNote"),
-                readFromBlob(rs.getBlob("picture"), gender),
-                CProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
+                category = ClientCategory.Enum.parseSqlCode(rs.getString("category")),
+                donation = ClientDonation.Enum.parseSqlCode(rs.getString("donation")),
 
+                tcmNote = rs.getString("tcmNote"),
+                picture = readFromBlob(rs.getBlob("picture"), gender),
+                cprops = CProps.empty // will be loaded by higher-leveled service layer, who combines this with other repo's result
         )
     }
 
