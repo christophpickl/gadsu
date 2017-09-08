@@ -389,22 +389,235 @@ enum class OrganSyndrome(
                     Symptom.UnregelmaessigerPuls,
                     Symptom.SaitenfoermigerPuls
             )
-    )
+    ),
 
     // NIERE
     // =================================================================================================================
 
+    NiYinXu(
+            label = "Nieren Yin Mangel",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = `Symptoms of general Yin Xu` + setOf(
+                    // schmerzen unterer bereich
+                    Symptom.SchmerzenLumbalregion,
+                    Symptom.KnieSchmerzen,
+                    Symptom.FersenSchmerzen,
+                    Symptom.VermehrteLibido,
+                    Symptom.SexuelleTraeme,
+                    Symptom.VorzeitigerSamenerguss,
+                    Symptom.NaechtlicheEjakulation,
+                    Symptom.MenstruationBeeinflusst,
+                    Symptom.GedaechtnisStoerungen,
+                    Symptom.Schwindel,
+                    Symptom.Tinnitus,
+                    Symptom.Hoerverlust,
+
+                    Symptom.RoterBelag,
+                    Symptom.DuennerBelag,
+                    Symptom.FehlenderBelag,
+
+                    Symptom.DuennerPuls,
+                    Symptom.BeschleunigterPuls
+            )
+    ),
+    NiYangXu(
+            label = "Nieren Yang Mangel",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = `Symptoms of general Yang Xu` +  setOf(
+                    Symptom.KreuzSchmerzen,
+                    Symptom.KnieSchmerzen,
+                    Symptom.FersenSchmerzen,
+                    Symptom.VerminderteLibido,
+                    Symptom.Unfruchtbarkeit,
+                    Symptom.Impotenz,
+                    Symptom.Spermatorrhoe,
+                    Symptom.Ausfluss,
+                    Symptom.GedaechtnisStoerungen,
+                    Symptom.Zahnausfall,
+                    Symptom.HoervermoegenVermindert,
+                    Symptom.Tinnitus,
+                    Symptom.KlarerUrin,
+                    Symptom.HellerUrin,
+                    Symptom.ReichlichUrin,
+                    Symptom.WenigUrin,
+                    Symptom.Oedeme,
+                    // MP auch beeinflusst
+                    Symptom.VerdauungsProbleme,
+                    Symptom.BreiigerStuhl,
+                    Symptom.HahnenschreiDiarrhoe,
+
+                    Symptom.BlasseZunge,
+                    Symptom.VergroesserteZunge,
+                    Symptom.DuennerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.TieferPuls,
+                    Symptom.SchwacherPuls,
+                    Symptom.VerlangsamterPuls
+            )
+    ),
+    NiYangUeberfliessenXu(
+            label = "Nieren Yang Mangel mit Überfließen des Wassers",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = NiYangXu.symptoms + setOf(
+                    Symptom.StarkeOedemeBeine,
+                    Symptom.Aszites,
+                    Symptom.LungenOedem,
+                    Symptom.Husten,
+                    Symptom.Atemnot,
+                    Symptom.Palpitationen,
+
+                    Symptom.BlasseZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.DuennerBelag,
+                    Symptom.DickerBelag,
+                    Symptom.WeisserBelag,
+
+                    Symptom.TieferPuls,
+                    Symptom.SchwacherPuls,
+                    Symptom.HaftenderPuls
+            )
+    ),
+    NiYangFestigkeitXu(
+            label = "Mangelnde Festigkeit des Nieren Qi",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.Spermatorrhoe,
+                    Symptom.NaechtlicherSamenverlust,
+                    Symptom.SexuelleTraeume,
+                    Symptom.VerfruehteEjakulation,
+                    Symptom.Ausfluss,
+                    Symptom.Unfruchtbarkeit,
+
+                    Symptom.HaeufigesUrinieren,
+                    Symptom.ReichlichUrin,
+                    Symptom.KlarerUrin,
+                    Symptom.Nachttroepfeln,
+                    Symptom.Harninkontinenz,
+
+                    Symptom.BlasseZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.TieferPuls,
+                    Symptom.SchwacherPuls
+            )
+    ),
+    NiYangEinfangenXu(
+            label = "Unfähigkeit der Nieren das Qi einzufangen",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.Atemnot,
+                    Symptom.Kurzatmigkeit,
+                    Symptom.Asthma,
+                    Symptom.Husten,
+                    Symptom.LeiseSprechen,
+                    Symptom.SchwacheStimme,
+                    Symptom.Infektanfaelligkeit,
+                    Symptom.ReichlichUrin,
+                    Symptom.HellerUrin,
+                    Symptom.KreuzSchmerzen,
+
+                    Symptom.BlasseZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.DuennerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.TieferPuls,
+                    Symptom.DuennerPuls,
+                    Symptom.SchwacherPuls,
+                    Symptom.OberflaechlicherPuls,
+                    Symptom.LeererPuls
+            )
+    ),
+    NiJingPraenatalXu(
+            label = "Nieren Jing Mangel (Pränatal)",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.VerzoegerteGeistigeEntwicklung,
+                    Symptom.VerzoegerteKoerperlicheEntwicklung,
+                    Symptom.VerzoegerteKnochenEntwicklung,
+                    Symptom.VeroegertesWachstum,
+                    Symptom.VerzoegerteReifung,
+                    Symptom.GestoerteZahnentwicklung,
+                    Symptom.Hoerstoerung
+            )
+    ),
+    NiJingPostnatalXu(
+            label = "Nieren Jing Mangel (Postnatal)",
+            organ = ZangOrgan.Kidney,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.VerfruehtesSenium,
+                    Symptom.ProblemeUntererRuecken,
+                    Symptom.ProblemeKnie,
+                    Symptom.ProblemeFussknoechel,
+                    Symptom.ProblemeKnochen,
+                    Symptom.ProblemeZaehne,
+                    Symptom.ProblemeGedaechtnis,
+                    Symptom.ProblemeGehirn,
+                    Symptom.ProblemeOhren,
+                    Symptom.ProblemeHaare
+            )
+    )
 
     // LEBER
     // =================================================================================================================
 
+//    XXX(
+//            label = "XXX",
+//            organ = ZangOrgan.XXX,
+//            tendency = MangelUeberfluss.XXX,
+//            symptoms = setOf(
+//                    Symptom.,
+//                    Symptom.
+//            )
+//    ),
 
     // MILZ
     // =================================================================================================================
 
+//    XXX(
+//            label = "XXX",
+//            organ = ZangOrgan.XXX,
+//            tendency = MangelUeberfluss.XXX,
+//            symptoms = setOf(
+//                    Symptom.,
+//                    Symptom.
+//            )
+//    ),
 
 }
 
+private val `Symptoms of general Yin Xu` = setOf(
+        Symptom.RoteWangenflecken,
+        Symptom.MehrDurst,
+        Symptom.FuenfZentrenHitze,
+        Symptom.Nachtschweiss,
+        Symptom.Durchfall,
+        Symptom.KonzentrierterUrin,
+        Symptom.DunklerUrin,
+        Symptom.HitzeGefuehlAbends,
+        Symptom.TrockenerMund,
+        Symptom.TrockenerHals,
+        Symptom.Halsschmerzen, // haeufig, leichte
+        Symptom.Schlafstoerungen,
+        Symptom.Unruhe,
+        Symptom.Nervoesitaet
+)
+
+private val `Symptoms of general Yang Xu` = setOf(
+        Symptom.BlassesGesicht,
+        Symptom.LeuchtendWeissesGesicht,
+        Symptom.AversionKaelte,
+        Symptom.KalteHaende,
+        Symptom.KalteFuesse,
+        Symptom.Lethargie,
+        Symptom.Schwaeche,
+        Symptom.Antriebslosigkeit
+)
 private val `Symptoms of general LuSchleim` = setOf(
         Symptom.ThorakalesEngegefuehl,
         Symptom.VoelleGefuehl,
