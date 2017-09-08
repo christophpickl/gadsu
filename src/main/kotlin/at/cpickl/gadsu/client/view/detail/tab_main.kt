@@ -60,8 +60,7 @@ class ClientTabMain(
     val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)
     val inpChildren = fields.newTextField("Kinder", { it.children }, ViewNames.Client.InputChildren)
     val inpHobbies = fields.newTextField("Hobbies", { it.hobbies }, ViewNames.Client.InputHobbies)
-    // FIXME known by
-    val inpKnownBy = fields.newTextField("Bekannt durch", { "N/A" }, ViewNames.Client.InputKnownBy)
+    val inpKnownBy = fields.newTextField("Bekannt durch", { it.knownBy }, ViewNames.Client.InputKnownBy)
 
     // contact
     val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail)
