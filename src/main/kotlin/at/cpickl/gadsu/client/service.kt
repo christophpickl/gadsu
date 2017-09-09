@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.xprops.XPropsService
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.image.defaultImage
-import at.cpickl.gadsu.mail.isNotValidMail
+import at.cpickl.gadsu.isNotValidMail
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -93,7 +93,6 @@ open class ClientServiceImpl @Inject constructor(
         bus.post(ClientCreatedEvent(savedClient))
         return savedClient
     }
-
 
 
     @Subscribe open fun onClientChangeState(event: ClientChangeStateEvent) {

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.mail
 
-import java.util.regex.Pattern
+import at.cpickl.gadsu.isNotValidMail
 
 
 data class Mail(
@@ -22,11 +22,6 @@ data class Mail(
     }
 }
 
-private val mailPattern = Pattern.compile("""^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$""")
-fun String.isNotValidMail() = !this.isValidMail()
-fun String.isValidMail(): Boolean {
-    return mailPattern.matcher(this).matches()
-}
 
 data class MailPreferencesData(
         val subject: String,

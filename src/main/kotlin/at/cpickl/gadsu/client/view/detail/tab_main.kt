@@ -7,6 +7,7 @@ import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
+import at.cpickl.gadsu.validateMailEntered
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
@@ -63,7 +64,7 @@ class ClientTabMain(
     val inpKnownBy = fields.newTextField("Bekannt durch", { it.knownBy }, ViewNames.Client.InputKnownBy)
 
     // contact
-    val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail)
+    val inpMail = fields.newTextField("Mail", { it.contact.mail }, ViewNames.Client.InputMail).validateMailEntered()
     val inpPhone = fields.newTextField("Telefon", { it.contact.phone }, ViewNames.Client.InputPhone)
     val inpStreet = fields.newTextField("Strasse", { it.contact.street }, ViewNames.Client.InputStreet)
     val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)

@@ -5,8 +5,6 @@ GADSU REVIEW MIT RENE
 ?! 5e window kann man nicht zu machen?!
 ! acupunct window (und alle anderen auch) mit CMD+W schliessbar
 ! ctrl+4 change auf tab assistent
-! wenn ungueltige mail eingegeben, und focus lost => rot umranden
-	-> ansonsten erst beim speichern warnen...
 ! treatment list nur single selection (kein multi, geht eh net, zb loeschen bei mehrfachselektion loescht nur einen)
 !! beep() bei add dyntreat wenn alle da sind ist annoying => just disable button
 !! wenn in multiprop edit mode => mit enter finishen
