@@ -64,15 +64,19 @@ abstract class SimpleUiTest : UISpecTestCase() {
         postInit(window!!)
     }
 
-    @AfterClass fun destroyUi() {
+    @AfterClass
+    fun destroyUi() {
         log.debug("destroyUi()")
         super.tearDown()
     }
 
-    @BeforeMethod fun beforeBridgeJunit() {
+    @BeforeMethod
+    fun beforeBridgeJunit() {
         super.setUp()
     }
-    @AfterMethod fun afterBridgeJunit() {
+
+    @AfterMethod
+    fun afterBridgeJunit() {
         super.tearDown()
     }
 

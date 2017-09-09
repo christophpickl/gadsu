@@ -31,7 +31,7 @@ fun LOGUI(javaClass: Class<Any>, viewName: String): Logger {
 private val Class<Any>.nameAopCleaned: String get() = if (name.contains("$$")) name.substring(0, name.indexOf("$$")) else name
 
 
-
+// MINOR outsource to kpot
 abstract class BaseLogConfigurator {
 
     protected val defaultPattern = "%-43(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) [%-5level] %logger{42} - %msg%n"
