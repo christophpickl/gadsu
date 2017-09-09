@@ -115,9 +115,10 @@ open class GadsuMenuBar @Inject constructor(
     private val clientTabMain = buildItem("Tab Allgemein", { SelectClientTab(ClientTabType.MAIN) }, KeyStroke.getKeyStroke(KeyEvent.VK_1, SHORTCUT_MODIFIER, true))
     private val clientTabTexts = buildItem("Tab Texte", { SelectClientTab(ClientTabType.TEXTS) }, KeyStroke.getKeyStroke(KeyEvent.VK_2, SHORTCUT_MODIFIER, true))
     private val clientTabTcm = buildItem("Tab TCM", { SelectClientTab(ClientTabType.TCM) }, KeyStroke.getKeyStroke(KeyEvent.VK_3, SHORTCUT_MODIFIER, true))
+    private val clientTabAssist = buildItem("Tab Assistent", { SelectClientTab(ClientTabType.ASSIST) }, KeyStroke.getKeyStroke(KeyEvent.VK_4, SHORTCUT_MODIFIER, true))
 
     private val clientEntries: List<JComponent> = listOf(clientSeperator1, clientSeperator2, clientShowInactives, clientSave, clientActivate, clientDeactivate, clientDelete,
-            clientTabMain, clientTabTexts, clientTabTcm, clientNavigateUp, clientNavigateDown)
+            clientTabMain, clientTabTexts, clientTabTcm, clientTabAssist, clientNavigateUp, clientNavigateDown)
 
     val treatmentPrevious = buildItem("Vorherige Behandlung", { PreviousTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK, true))
     val treatmentNext = buildItem("N\u00e4chste Behandlung", { NextTreatmentEvent() }, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK, true))
@@ -196,6 +197,7 @@ open class GadsuMenuBar @Inject constructor(
         add(clientTabMain)
         add(clientTabTexts)
         add(clientTabTcm)
+        add(clientTabAssist)
         add(clientSeperator1)
         add(clientNavigateUp)
         add(clientNavigateDown)
