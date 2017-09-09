@@ -7,21 +7,50 @@ import at.cpickl.gadsu.persistence.GADSU_DATABASE_DIRECTORY
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.service.GADSU_LOG_FILE
+import at.cpickl.gadsu.service.LogConfigurator
 import at.cpickl.gadsu.view.MacHandler
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.ShowAboutDialogEvent
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 import com.google.common.eventbus.EventBus
 import com.google.common.net.HostAndPort
 import com.google.inject.Guice
 import org.slf4j.LoggerFactory
+import java.util.Arrays
 import javax.inject.Inject
 import javax.swing.SwingUtilities
 
+/**
+ * This name will also show up in the native mac app, so dont rename that class.
+ */
+object Gadsu {
 
-class GadsuStarter {
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LOG {}
 
-    fun start(args: Args) {
+    @JvmStatic
+    fun main(cliArgs: Array<String>) {
+        val args = parseArgsOrHelp(cliArgs, false) ?: return
+
+        initLogging(args.debug)
+        initSwingLookAndFeel()
+
+        try {
+            start(args)
+        } catch (e: ArgsActionException) {
+            log.error("Invalid CLI arguments! " + Arrays.toString(cliArgs), e)
+            System.err.println("You entered an invalid CLI argument: '" + Arrays.toString(cliArgs) + "'! Exception message: " + e.message)
+        }
+    }
+
+    private fun initLogging(debug: Boolean) {
+        if (GadsuSystemProperty.disableLog.isEnabledOrFalse()) {
+            println("Gadsu log configuration disabled. (most likely because tests come with own log config)")
+        } else {
+            LogConfigurator(debug).configureLog()
+        }
+    }
+
+    private fun start(args: Args) {
         log.info("start(args={})", args)
 
         GlobalExceptionHandler.register()
@@ -41,7 +70,6 @@ class GadsuStarter {
 
         app.start()
     }
-
 }
 
 class GadsuGuiceStarter @Inject constructor(
