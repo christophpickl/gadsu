@@ -3,6 +3,7 @@ package at.cpickl.gadsu.tcm.patho
 
 enum class OrganSyndrome(
         val label: String,
+        val sqlCode: String,
         val description: String = "",
         val organ: ZangOrgan,
         val part: SyndromePart? = null,
@@ -16,6 +17,7 @@ enum class OrganSyndrome(
     // =================================================================================================================
     LuQiMangel(
             label = "Lu-Qi-Mangel",
+            sqlCode = "LuQiXu",
             description = "Hat etwas von einer Art Depression aber ohne der Trauer.",
             organ = ZangOrgan.Lung,
             part = SyndromePart.Qi,
@@ -48,6 +50,7 @@ enum class OrganSyndrome(
             )),
     LuYinMangel(
             label = "Lu-Yin-Mangel",
+            sqlCode = "LuYinXu",
             organ = ZangOrgan.Lung,
             part = SyndromePart.Yin,
             tendency = MangelUeberfluss.Mangel,
@@ -72,7 +75,8 @@ enum class OrganSyndrome(
                     Symptom.SchwacherPuls
             )),
     LuWindKaelteWind(
-            label = "Wind Wind Kälte attackiert Lu",
+            label = "Wind-Kälte attackiert Lu (mehr Wind)",
+            sqlCode = "LuWind",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of LuWindKaelte` + setOf(
@@ -84,7 +88,8 @@ enum class OrganSyndrome(
             )
     ),
     LuWindKaelteKaelte(
-            label = "Kälte Wind Kälte attackiert Lu",
+            label = "Wind-Kälte attackiert Lu (mehr Kälte)",
+            sqlCode = "LuKalt",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of LuWindKaelte` + setOf(
@@ -103,7 +108,8 @@ enum class OrganSyndrome(
             )
     ),
     LuWindHitze(
-            label = "Wind Hitze attackiert Lu",
+            label = "Wind-Hitze attackiert Lu",
+            sqlCode = "LuHitze",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             // TODO plus symptoms of ExoWind; evtl plus HitzeSymptoms
@@ -130,6 +136,7 @@ enum class OrganSyndrome(
     ),
     LuTrocken(
             label = "Trockenheit attackiert Lu",
+            sqlCode = "LuTrocken",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -160,6 +167,7 @@ enum class OrganSyndrome(
     //     - ursachen: MP-Qi/Yang-Mangel, Lu-Qi-Mangel
     LuSchleimKalt(
             label = "Kalte Schleimretention in Lu",
+            sqlCode = "LuSchleimKalt",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of general LuSchleim` + setOf(
@@ -175,6 +183,7 @@ enum class OrganSyndrome(
     ),
     LuSchleimHeiss(
             label = "Heisse Schleimretention in Lu",
+            sqlCode = "LuSchleimHeiss",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of general LuSchleim` + setOf(
@@ -193,6 +202,7 @@ enum class OrganSyndrome(
 
     HeQiXu(
             label = "He-Qi-Mangel",
+            sqlCode = "HeQiXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
@@ -215,6 +225,7 @@ enum class OrganSyndrome(
     ),
     HeYangXu(
             label = "He-Yang-Mangel",
+            sqlCode = "HeYangXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
             symptoms = HeQiXu.symptoms + setOf(
@@ -237,6 +248,7 @@ enum class OrganSyndrome(
     // He Yang Erschoepfung (ausgepraegter he yang xu) => hat noch 3 unterarten...
     HeBlutXu(
             label = "He-Blut-Mangel",
+            sqlCode = "HeBlutXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(// plus(allgemeiner blut mangel symptoms)
@@ -257,6 +269,7 @@ enum class OrganSyndrome(
     ),
     HeYinXu(
             label = "He-Yin-Mangel",
+            sqlCode = "HeYinXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(// plus(allgemeiner yin mangel = palpitationen, unruhe, gereiztheit)
@@ -280,6 +293,7 @@ enum class OrganSyndrome(
     ),
     HeFeuer(// staerkere variante von He-Yin-Xu
             label = "Loderndes Herz Feuer",
+            sqlCode = "HeFeuer",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -310,6 +324,7 @@ enum class OrganSyndrome(
     ),
     HeSchleimBeunruhigt(// psychisches bild
             label = "Schleim-Feuer beunruhigt das Herz",
+            sqlCode = "HeSchleimFeuer",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -340,6 +355,7 @@ enum class OrganSyndrome(
     ),
     HeSchleimVerstopft(
             label = "Kalter Schleim verstopft die Herzöffnungen",
+            sqlCode = "HeSchleimKaelte",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -364,6 +380,7 @@ enum class OrganSyndrome(
     ),
     HeBlutStau(
             label = "Herz Blut Stauung",
+            sqlCode = "HeBlutStau",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -396,6 +413,7 @@ enum class OrganSyndrome(
 
     NiYinXu(
             label = "Nieren Yin Mangel",
+            sqlCode = "NiYinXu",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = `Symptoms of general Yin Xu` + setOf(
@@ -423,6 +441,7 @@ enum class OrganSyndrome(
     ),
     NiYangXu(
             label = "Nieren Yang Mangel",
+            sqlCode = "NiYangXu",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = `Symptoms of general Yang Xu` +  setOf(
@@ -459,6 +478,7 @@ enum class OrganSyndrome(
     ),
     NiYangUeberfliessenXu(
             label = "Nieren Yang Mangel mit Überfließen des Wassers",
+            sqlCode = "NiYangXuUeber",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = NiYangXu.symptoms + setOf(
@@ -482,6 +502,7 @@ enum class OrganSyndrome(
     ),
     NiYangFestigkeitXu(
             label = "Mangelnde Festigkeit des Nieren Qi",
+            sqlCode = "NiYangXuFest",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
@@ -506,6 +527,7 @@ enum class OrganSyndrome(
     ),
     NiYangEinfangenXu(
             label = "Unfähigkeit der Nieren das Qi einzufangen",
+            sqlCode = "NiYangXuFangen",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
@@ -533,6 +555,7 @@ enum class OrganSyndrome(
     ),
     NiJingPraenatalXu(
             label = "Nieren Jing Mangel (Pränatal)",
+            sqlCode = "NiJingXuPre",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
@@ -547,6 +570,7 @@ enum class OrganSyndrome(
     ),
     NiJingPostnatalXu(
             label = "Nieren Jing Mangel (Postnatal)",
+            sqlCode = "NiJingXuPost",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
@@ -568,6 +592,7 @@ enum class OrganSyndrome(
 
 //    XXX(
 //            label = "XXX",
+//            sqlCode = "xxx",
 //            organ = ZangOrgan.XXX,
 //            tendency = MangelUeberfluss.XXX,
 //            symptoms = setOf(
@@ -581,6 +606,7 @@ enum class OrganSyndrome(
 
 //    XXX(
 //            label = "XXX",
+//            sqlCode = "xxx",
 //            organ = ZangOrgan.XXX,
 //            tendency = MangelUeberfluss.XXX,
 //            symptoms = setOf(
