@@ -8,6 +8,7 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
+import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.weightxy
 import com.google.common.eventbus.Subscribe
 import com.google.inject.CreationException
@@ -78,24 +79,22 @@ class PanicDialog(throwable: Throwable, _owner: JFrame?, onClose: () -> Unit) : 
     private val log = LOG(javaClass)
 
     init {
-        title = "Ujeeeee!"
+        title = "Unerwarteter Fehler!"
         defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
         addCloseListener { dispose(); onClose() }
         val content = GridPanel()
 
         with (content.c) {
 
-            gridheight = 2
+            weightxy(0.0)
+            fill = GridBagConstraints.NONE
             insets = Pad.right(20)
             anchor = GridBagConstraints.NORTH
-            fill = GridBagConstraints.NONE
-            weightxy(0.0)
             content.add(JLabel(UIManager.getIcon("OptionPane.errorIcon")))
 
             gridx++
             weightxy(1.0)
             fill = GridBagConstraints.BOTH
-            gridheight = 1
             insets = Pad.bottom(10)
             val message = HtmlEditorPane("""${buildMessage(throwable)}<br>
                 <br>
@@ -105,16 +104,18 @@ class PanicDialog(throwable: Throwable, _owner: JFrame?, onClose: () -> Unit) : 
                 Am besten fügst du auch gleich die Programmlogs hinzu. Du findest sie unter:<br/>
                 <tt>${GADSU_LOG_FILE.absolutePath}</tt>
             """)
+            message.enforceSize(400, 200)
             message.addOnUrlClickListener { SwingWebPageOpener().silentlyTryToOpen(it) }
             content.add(message)
 
+            gridx = 0
             gridy++
             gridwidth = 2
             weightxy(0.0)
             fill = GridBagConstraints.NONE
             insets = Pad.ZERO
             anchor = GridBagConstraints.EAST
-            val btnQuit = JButton("Programm schlie\u00dfen")
+            val btnQuit = JButton("Programm beenden")
             btnQuit.addActionListener { dispose(); onClose() }
             rootPane.defaultButton = btnQuit
             content.add(btnQuit)
