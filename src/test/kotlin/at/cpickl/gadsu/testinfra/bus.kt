@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.Event
+import at.cpickl.gadsu.global.Event
 import com.google.common.eventbus.Subscribe
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

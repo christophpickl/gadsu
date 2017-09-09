@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.Labeled
+import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
 import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.MyTextArea

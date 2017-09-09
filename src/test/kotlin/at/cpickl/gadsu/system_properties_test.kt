@@ -1,5 +1,9 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.global.AbstractSystemProperty
+import at.cpickl.gadsu.global.BooleanSystemProperty
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.StringSystemProperty
 import at.cpickl.gadsu.testinfra.Expects.expect
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

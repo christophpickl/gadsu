@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.version
 
-import at.cpickl.gadsu.GADSU_LATEST_VERSION_URL
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.GADSU_LATEST_VERSION_URL
+import at.cpickl.gadsu.global.UserEvent
 import com.google.inject.AbstractModule
 
 class CheckForUpdatesEvent : UserEvent()

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.IS_OS_WIN
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.swing.clearSelectionOnFocusLost
 import at.cpickl.gadsu.view.swing.enforceMaxCharacters

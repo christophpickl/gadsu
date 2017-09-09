@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view.language
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import com.google.common.annotations.VisibleForTesting
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Field

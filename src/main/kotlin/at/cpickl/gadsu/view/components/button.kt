@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.language.Labels

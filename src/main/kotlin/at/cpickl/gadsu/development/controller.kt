@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.global.AppStartupEvent
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService

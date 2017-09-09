@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.GoogleConnector
 import at.cpickl.gadsu.service.InternetConnectionLostEvent

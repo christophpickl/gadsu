@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.version
 
-import at.cpickl.gadsu.APP_SUFFIX
-import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.APP_SUFFIX
+import at.cpickl.gadsu.global.AppStartupEvent
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.InternetConnectionLostEvent
 import at.cpickl.gadsu.service.LOG
@@ -82,7 +82,7 @@ open class VersionUpdaterImpl @Inject constructor(
                 }
 
                 val version = result.latest.toLabel()
-                val downloadUrl = "https://github.com/christophpickl/gadsu/releases/download/v$version/Gadsu-$version.$APP_SUFFIX"
+                val downloadUrl = "https://github.com/christophpickl/gadsu/releases/download/v$version/Gadsu-$version.${APP_SUFFIX}"
                 log.info("Going to download latest gadsu version from: {}", downloadUrl)
                 bus.post(OpenWebpageEvent(URL(downloadUrl)))
             }

@@ -1,6 +1,6 @@
 package non_test.release_generator
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import ch.qos.logback.classic.Level
 import com.github.christophpickl.kpotpourri.common.collection.toPrettyString
 import com.github.christophpickl.kpotpourri.common.file.humanReadableSize

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent

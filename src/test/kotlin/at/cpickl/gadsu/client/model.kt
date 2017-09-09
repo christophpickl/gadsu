@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.tcm.model.XProps

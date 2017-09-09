@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client.xprops.view
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.*
 import at.cpickl.gadsu.service.LOG

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.global.AppStartupEvent
 import at.cpickl.gadsu.appointment.AppointmentChangedEvent
 import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent

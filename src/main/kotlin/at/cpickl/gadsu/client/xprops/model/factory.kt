@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client.xprops.model
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.tcm.model.XPropsFinder
 import at.cpickl.gadsu.view.language.Labels
 import org.slf4j.LoggerFactory

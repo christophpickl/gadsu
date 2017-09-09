@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientJdbcRepository
 import at.cpickl.gadsu.persistence.PersistenceErrorCode
@@ -9,7 +9,6 @@ import at.cpickl.gadsu.report.multiprotocol.MultiProtocol
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolJdbcRepository
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolRepository
 import at.cpickl.gadsu.service.IdGenerator
-import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.Expects.expect
 import at.cpickl.gadsu.testinfra.HsqldbTest

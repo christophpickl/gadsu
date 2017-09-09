@@ -1,5 +1,6 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.global
 
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.service.DateFormats
 import java.awt.event.KeyEvent
 import java.io.File

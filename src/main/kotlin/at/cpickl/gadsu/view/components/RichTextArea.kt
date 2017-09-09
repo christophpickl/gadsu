@@ -1,12 +1,12 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.IS_OS_WIN
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.acupuncture.Acupunct
 import at.cpickl.gadsu.acupuncture.AcupunctCoordinate
 import at.cpickl.gadsu.acupuncture.AcupunctWordDetector
 import at.cpickl.gadsu.acupuncture.ShowAcupunctEvent
-import at.cpickl.gadsu.isShortcutDown
+import at.cpickl.gadsu.global.isShortcutDown
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.logic.MAX_FIELDLENGTH_LONG
 import at.cpickl.gadsu.view.logic.beep

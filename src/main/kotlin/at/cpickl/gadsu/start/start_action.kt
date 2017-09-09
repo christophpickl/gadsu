@@ -1,5 +1,6 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.start
 
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.persistence.DatabaseManager
 import at.cpickl.gadsu.preferences.Prefs
 import com.google.common.annotations.VisibleForTesting

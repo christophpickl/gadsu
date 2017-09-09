@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.view.language.Buttons
 import at.cpickl.gadsu.view.language.Labels

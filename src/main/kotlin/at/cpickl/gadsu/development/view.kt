@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.IS_OS_WIN
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.formatDateTime
 import at.cpickl.gadsu.treatment.Treatment

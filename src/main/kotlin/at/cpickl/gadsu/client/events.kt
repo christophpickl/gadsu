@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.AppEvent
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.AppEvent
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.UserEvent
 import com.google.common.base.MoreObjects
 
 /**

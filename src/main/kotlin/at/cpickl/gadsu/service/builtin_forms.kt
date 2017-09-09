@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs

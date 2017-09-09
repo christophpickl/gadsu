@@ -1,6 +1,6 @@
 package non_test._main_.view
 
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.parseDateTime

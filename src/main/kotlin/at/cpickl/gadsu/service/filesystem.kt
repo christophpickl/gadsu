@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import com.google.common.io.Files
 import net.lingala.zip4j.core.ZipFile
 import net.lingala.zip4j.exception.ZipException

@@ -1,8 +1,8 @@
 package non_test._main_
 
-import at.cpickl.gadsu.Args
-import at.cpickl.gadsu.GadsuModule
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.start.Args
+import at.cpickl.gadsu.start.GadsuModule
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.report.DUMMY
 import at.cpickl.gadsu.report.JasperEngineImpl
 import at.cpickl.gadsu.report.JasperProtocolGenerator

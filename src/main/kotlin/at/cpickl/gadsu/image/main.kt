@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.client.Client
 import org.hsqldb.jdbc.JDBCBlob
 import org.slf4j.LoggerFactory

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.preferences
 
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.service.GapiCredentials
 
 

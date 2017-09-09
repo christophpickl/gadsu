@@ -1,4 +1,4 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.global
 
 import at.cpickl.gadsu.persistence.DatabaseLockedException
 import at.cpickl.gadsu.service.GADSU_LOG_FILE
@@ -54,7 +54,7 @@ object GlobalExceptionHandler {
         try {
             action.invoke()
         } catch(e: Exception) {
-            GlobalExceptionHandler.showDialogAndDie(e)
+            showDialogAndDie(e)
         }
     }
 

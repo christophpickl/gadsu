@@ -1,10 +1,12 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.start
 
 import at.cpickl.gadsu.acupuncture.AcupunctureModule
 import at.cpickl.gadsu.appointment.AppointmentModule
 import at.cpickl.gadsu.client.ClientModule
 import at.cpickl.gadsu.development.DevelopmentModule
 import at.cpickl.gadsu.export.ExportModule
+import at.cpickl.gadsu.global.AllMightyEventCatcher
+import at.cpickl.gadsu.global.GlobalExceptionHandler
 import at.cpickl.gadsu.image.ImageModule
 import at.cpickl.gadsu.mail.MailModule
 import at.cpickl.gadsu.persistence.PersistenceModule

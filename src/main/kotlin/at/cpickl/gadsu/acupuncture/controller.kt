@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.service.Search
 import at.cpickl.gadsu.view.swing.addCloseListener
 import com.google.common.eventbus.Subscribe

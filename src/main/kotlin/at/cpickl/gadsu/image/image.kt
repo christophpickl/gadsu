@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.Gender
 import sun.awt.image.ToolkitImage
 import java.awt.Dimension

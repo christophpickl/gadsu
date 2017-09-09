@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.AppStartupEvent
-import at.cpickl.gadsu.Event
-import at.cpickl.gadsu.QuitAskEvent
-import at.cpickl.gadsu.SHORTCUT_MODIFIER
+import at.cpickl.gadsu.global.AppStartupEvent
+import at.cpickl.gadsu.global.Event
+import at.cpickl.gadsu.global.QuitAskEvent
+import at.cpickl.gadsu.global.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.acupuncture.ShowAcupunctureViewEvent
 import at.cpickl.gadsu.appointment.gcal.sync.RequestGCalSyncEvent
 import at.cpickl.gadsu.client.Client

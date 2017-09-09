@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
-import at.cpickl.gadsu.Args
-import at.cpickl.gadsu.GadsuModule
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.start.Args
+import at.cpickl.gadsu.start.GadsuModule
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentRepository
 import at.cpickl.gadsu.appointment.gcal.GCalEvent

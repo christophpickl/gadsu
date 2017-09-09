@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra.ui
 
-import at.cpickl.gadsu.Event
+import at.cpickl.gadsu.global.Event
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.treatment.Treatment

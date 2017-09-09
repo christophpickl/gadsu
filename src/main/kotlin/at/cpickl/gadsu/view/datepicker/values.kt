@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.datepicker
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.view.Images
 import java.awt.Color
 import java.awt.SystemColor

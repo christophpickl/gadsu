@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.persistence.Jdbcx
 import at.cpickl.gadsu.persistence.ensureNotPersisted

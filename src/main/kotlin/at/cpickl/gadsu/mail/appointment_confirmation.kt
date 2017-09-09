@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.mail
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.firstNotEmpty

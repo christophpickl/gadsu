@@ -1,5 +1,6 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.start
 
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.persistence.PersistenceModule
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.DefaultParser

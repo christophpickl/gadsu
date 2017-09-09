@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.Gadsu
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
 import at.cpickl.gadsu.preferences.PreferencesDriver

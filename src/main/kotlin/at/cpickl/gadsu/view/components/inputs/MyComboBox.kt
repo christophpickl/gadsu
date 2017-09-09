@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.components.inputs
 
-import at.cpickl.gadsu.Labeled
+import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.swing.opaque
 import at.cpickl.gadsu.view.swing.transparent

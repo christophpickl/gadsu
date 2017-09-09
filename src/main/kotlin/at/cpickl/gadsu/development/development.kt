@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.GadsuSystemProperty
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.GadsuSystemProperty
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.view.GadsuMenuBar
 import com.google.common.eventbus.EventBus
 import javax.swing.JMenu

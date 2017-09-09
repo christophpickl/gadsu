@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.persistence
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG

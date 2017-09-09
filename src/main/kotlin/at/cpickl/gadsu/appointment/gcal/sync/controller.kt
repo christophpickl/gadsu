@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.appointment.gcal.GCalService

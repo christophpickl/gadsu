@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.logic
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs

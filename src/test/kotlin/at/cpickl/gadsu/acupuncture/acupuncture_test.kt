@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.acupuncture
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.tcm.model.Meridian
 import gadsu.generated.Acupuncts
 import org.hamcrest.MatcherAssert.assertThat

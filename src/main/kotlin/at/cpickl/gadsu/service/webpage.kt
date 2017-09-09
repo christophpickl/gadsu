@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
 import com.google.common.eventbus.Subscribe

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.report.multiprotocol
 
-import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.service.toDateTime
 import at.cpickl.gadsu.testinfra.*
 import at.cpickl.gadsu.treatment.Treatment

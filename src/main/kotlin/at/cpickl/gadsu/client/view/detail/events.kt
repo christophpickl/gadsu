@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client.view.detail
 
-import at.cpickl.gadsu.AppEvent
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.AppEvent
+import at.cpickl.gadsu.global.UserEvent
 
 
 /**

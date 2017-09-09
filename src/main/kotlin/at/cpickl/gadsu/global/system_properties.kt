@@ -1,4 +1,4 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.global
 
 object GadsuSystemProperty {
     val development = BooleanSystemProperty("gadsu.development")

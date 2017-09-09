@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import com.google.inject.AbstractModule
 import org.slf4j.LoggerFactory
 

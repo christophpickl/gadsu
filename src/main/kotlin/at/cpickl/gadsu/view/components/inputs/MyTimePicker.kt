@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view.components.inputs
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.Labeled
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.service.ensureNoSeconds
 import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.equalsHoursAndMinute

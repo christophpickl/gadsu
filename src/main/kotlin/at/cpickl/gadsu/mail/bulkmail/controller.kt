@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.mail.bulkmail
 
-import at.cpickl.gadsu.QuitEvent
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState

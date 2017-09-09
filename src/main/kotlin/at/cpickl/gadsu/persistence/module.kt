@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.persistence
 
-import at.cpickl.gadsu.GADSU_DIRECTORY
+import at.cpickl.gadsu.global.GADSU_DIRECTORY
 import com.google.inject.AbstractModule
 import org.hsqldb.jdbc.JDBCDataSource
 import org.slf4j.LoggerFactory

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.components.panels
 
-import at.cpickl.gadsu.IS_OS_WIN
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.swing.*

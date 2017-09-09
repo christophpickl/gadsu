@@ -1,5 +1,8 @@
 package at.cpickl.gadsu
 
+import at.cpickl.gadsu.global.QuitEvent
+import at.cpickl.gadsu.start.Args
+import at.cpickl.gadsu.start.GadsuModule
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
 import com.google.inject.Injector

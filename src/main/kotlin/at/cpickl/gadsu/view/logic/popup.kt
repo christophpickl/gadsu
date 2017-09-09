@@ -1,10 +1,10 @@
 package at.cpickl.gadsu.view.logic
 
-import at.cpickl.gadsu.EnumBase
-import at.cpickl.gadsu.Labeled
-import at.cpickl.gadsu.Ordered
-import at.cpickl.gadsu.SqlEnum
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.EnumBase
+import at.cpickl.gadsu.global.Labeled
+import at.cpickl.gadsu.global.Ordered
+import at.cpickl.gadsu.global.SqlEnum
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.view.swing.elementAtPoint
 import com.google.common.eventbus.EventBus
 import java.awt.event.MouseAdapter

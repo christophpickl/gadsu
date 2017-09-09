@@ -12,6 +12,8 @@ private val log = LOG {}
 
 fun firstNotEmpty(vararg strings: String) = strings.toList().firstOrNull { it.isNotEmpty() } ?: ""
 
+annotation class KotlinNoArg
+
 
 // ----- SWING4k
 

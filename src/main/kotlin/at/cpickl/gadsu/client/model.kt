@@ -1,14 +1,14 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.DUMMY_CREATED
-import at.cpickl.gadsu.EnumBase
-import at.cpickl.gadsu.Labeled
-import at.cpickl.gadsu.Ordered
-import at.cpickl.gadsu.SqlEnum
+import at.cpickl.gadsu.global.DUMMY_CREATED
+import at.cpickl.gadsu.global.EnumBase
+import at.cpickl.gadsu.global.Labeled
+import at.cpickl.gadsu.global.Ordered
+import at.cpickl.gadsu.global.SqlEnum
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.firstNotEmpty
 import at.cpickl.gadsu.image.MyImage
-import at.cpickl.gadsu.parseSqlCodeFor
+import at.cpickl.gadsu.global.parseSqlCodeFor
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
@@ -329,7 +329,7 @@ enum class ClientState(override val sqlCode: String, override val label: String)
 
     companion object {
         //        val orderedValues:List<ClientState> = orderedValuesOf(ClientState.values())
-        fun parseSqlCode(search: String) = parseSqlCodeFor(ClientState.values(), search)
+        fun parseSqlCode(search: String) = parseSqlCodeFor(values(), search)
     }
 }
 

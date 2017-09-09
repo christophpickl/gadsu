@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.Test

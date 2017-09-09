@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.DUMMY_CREATED
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService

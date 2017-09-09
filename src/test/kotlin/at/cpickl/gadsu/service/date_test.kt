@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.joda.time.DateTime

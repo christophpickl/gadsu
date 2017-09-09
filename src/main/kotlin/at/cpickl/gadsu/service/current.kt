@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.AppEvent
+import at.cpickl.gadsu.global.AppEvent
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.treatment.CurrentTreatment
 import com.google.common.base.Objects

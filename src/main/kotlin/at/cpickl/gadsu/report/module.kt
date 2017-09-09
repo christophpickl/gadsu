@@ -1,10 +1,7 @@
 package at.cpickl.gadsu.report
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.xprops.model.CPropEnum
-import at.cpickl.gadsu.client.xprops.model.CPropTypeCallback
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.report.multiprotocol.MultiProtocolModule
 import at.cpickl.gadsu.service.PrintReportController
 import com.google.inject.AbstractModule

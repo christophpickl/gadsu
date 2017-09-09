@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.treatment
 
-import at.cpickl.gadsu.AppStartupEvent
+import at.cpickl.gadsu.global.AppStartupEvent
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.emptyInstance

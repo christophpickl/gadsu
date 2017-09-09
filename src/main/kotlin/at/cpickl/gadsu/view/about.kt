@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.QuitEvent
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.QuitEvent
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.service.OpenWebpageEvent

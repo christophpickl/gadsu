@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import freemarker.core.InvalidReferenceException
 import freemarker.core.UnknownDateTypeFormattingUnsupportedException
 import freemarker.template.Configuration

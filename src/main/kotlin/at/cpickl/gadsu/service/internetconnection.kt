@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.AppEvent
-import at.cpickl.gadsu.GADSU_LATEST_VERSION_URL
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.AppEvent
+import at.cpickl.gadsu.global.GADSU_LATEST_VERSION_URL
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
 import at.cpickl.gadsu.view.components.DialogType

@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra.ui
 
-import at.cpickl.gadsu.IS_OS_MAC
+import at.cpickl.gadsu.global.IS_OS_MAC
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.view.UiTestEnabler
 import at.cpickl.gadsu.view.components.RichFormat

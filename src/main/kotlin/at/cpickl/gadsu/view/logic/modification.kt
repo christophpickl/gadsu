@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.logic
 
-import at.cpickl.gadsu.Labeled
+import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.view.ElRichTextArea
 import at.cpickl.gadsu.view.components.MyList
 import at.cpickl.gadsu.view.components.RichTextArea

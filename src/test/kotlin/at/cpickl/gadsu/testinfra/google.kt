@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.testinfra
 
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.service.GapiCredentials
 import at.cpickl.gadsu.service.GoogleConnectorImpl
 import at.cpickl.gadsu.service.clearMinutes

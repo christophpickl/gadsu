@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.preferences.Prefs

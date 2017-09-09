@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.UserEvent
 
 class ShowDevWindowEvent : UserEvent()
 

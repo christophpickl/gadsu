@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.view.components
 
-import at.cpickl.gadsu.GadsuException
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.GadsuException
+import at.cpickl.gadsu.global.UserEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.view.components.panels.SingleButtonPanel
 import at.cpickl.gadsu.view.logic.IndexableModel

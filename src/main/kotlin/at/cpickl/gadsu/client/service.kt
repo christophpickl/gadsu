@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.appointment.AppointmentService
 import at.cpickl.gadsu.client.xprops.XPropsService
 import at.cpickl.gadsu.image.defaultImage

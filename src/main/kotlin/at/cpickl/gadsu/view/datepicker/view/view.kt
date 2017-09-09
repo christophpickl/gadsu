@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.view.datepicker.view
 
-import at.cpickl.gadsu.GadsuException
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.view.datepicker.DateModel
 import at.cpickl.gadsu.view.datepicker.DateSelectionConstraint

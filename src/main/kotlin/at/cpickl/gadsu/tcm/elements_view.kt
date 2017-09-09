@@ -1,6 +1,6 @@
 package at.cpickl.gadsu.tcm
 
-import at.cpickl.gadsu.Event
+import at.cpickl.gadsu.global.Event
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.view.brighterIfTrue
 import at.cpickl.gadsu.view.swing.addSingleLeftClickListener

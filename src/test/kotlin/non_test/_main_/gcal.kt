@@ -1,6 +1,6 @@
 package non_test._main_
 
-import at.cpickl.gadsu.GadsuSystemProperty
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
 import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId

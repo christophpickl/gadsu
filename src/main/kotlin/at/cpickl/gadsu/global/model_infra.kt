@@ -1,4 +1,4 @@
-package at.cpickl.gadsu
+package at.cpickl.gadsu.global
 
 import java.util.Collections
 

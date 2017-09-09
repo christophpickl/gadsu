@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.appointment
 
-import at.cpickl.gadsu.Event
-import at.cpickl.gadsu.UserEvent
+import at.cpickl.gadsu.global.Event
+import at.cpickl.gadsu.global.UserEvent
 import com.google.common.base.MoreObjects
 
 class CreateAppointmentEvent() : UserEvent()
