@@ -2,7 +2,6 @@
 
 GADSU REVIEW MIT RENE
 
-!!! schreibt keine logs raus (auf win)
 ! wenn starten, dann kann man klient deaktivieren?!?
 ?! 5e window kann man nicht zu machen?!
 ! acupunct window (und alle anderen auch) mit CMD+W schliessbar
