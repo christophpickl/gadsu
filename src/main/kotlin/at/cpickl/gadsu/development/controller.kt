@@ -68,7 +68,6 @@ open class DevelopmentController @Inject constructor(
     @Subscribe open fun onCurrentEvent(event: CurrentEvent) {
         event.forClient { devFrame?.updateClient(it) }
         event.forTreatment{ devFrame?.updateTreatment(it) }
-
     }
 
     @Subscribe fun onAny(event: Any) {

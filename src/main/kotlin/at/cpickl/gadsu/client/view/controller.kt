@@ -237,7 +237,7 @@ open class ClientViewController @Inject constructor(
     private fun doDeleteClient(client: Client) {
         dialogs.confirmedDelete("den Klienten '${client.fullName}'", {
             clientService.delete(client)
-
+            // MINOR should we set currentClient to null?!
             if (client.id!! == currentClient.data.id) {
                 bus.post(ClientUnselectedEvent(client))
             }

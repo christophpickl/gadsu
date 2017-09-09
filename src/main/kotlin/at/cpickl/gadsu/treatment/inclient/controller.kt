@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.treatment.inclient
 
-import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ClientSelectedEvent
-import at.cpickl.gadsu.client.ClientUnselectedEvent
+import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.client.forClient
+import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.treatment.DeleteTreatmentEvent
 import at.cpickl.gadsu.treatment.TreatmentChangedEvent
@@ -18,38 +18,38 @@ import javax.inject.Inject
 open class TreatmentsInClientController @Inject constructor(
         private val view: TreatmentsInClientView,
         private val service: TreatmentService,
-        private val dialogs: Dialogs
+        private val dialogs: Dialogs,
+        private val currentClient: CurrentClient
 ) {
-    private var recentClient: Client? = null // MINOR @REFACTOR - change to Current infra
 
-    @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
-        recentClient = event.client
-
-        view.enableData(service.findAllFor(event.client))
-    }
-
-    @Subscribe open fun onClientUnselectedEvent(event: ClientUnselectedEvent) {
-        view.disableData()
+    @Subscribe open fun onCurrentEvent(event: CurrentEvent) {
+        event.forClient { client ->
+            if (client == null || !client.yetPersisted) {
+                view.disableData()
+            } else {
+                view.enableData(service.findAllFor(client))
+            }
+        }
     }
 
     @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
-        if (!event.treatment.clientId.equals(recentClient?.id)) {
+        if (event.treatment.clientId != currentClient.data.id) {
             return
         }
         view.insert(event.treatment)
+    }
+
+    @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
+        if (event.treatment.clientId != currentClient.data.id) {
+            return
+        }
+        view.delete(event.treatment)
     }
 
     @Subscribe open fun onDeleteTreatmentEvent(event: DeleteTreatmentEvent) {
         dialogs.confirmedDelete("die Behandlung Nr. ${event.treatment.number}", {
             service.delete(event.treatment)
         })
-    }
-
-    @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
-        if (!event.treatment.clientId.equals(recentClient?.id)) {
-            return
-        }
-        view.delete(event.treatment)
     }
 
     @Subscribe open fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
