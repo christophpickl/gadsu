@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.GADSU_DIRECTORY
 import at.cpickl.gadsu.development.Development
+import at.cpickl.gadsu.global.GADSU_DIRECTORY
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -14,6 +14,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.rolling.TriggeringPolicyBase
 import ch.qos.logback.core.spi.FilterReply
 import ch.qos.logback.core.status.InfoStatus
+import ch.qos.logback.core.util.FileSize
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -24,6 +25,7 @@ val GADSU_LOG_FILE = File(GADSU_DIRECTORY, "gadsu.log")
 fun LOG(javaClass: Class<Any>): Logger {
     return LoggerFactory.getLogger(javaClass.nameAopCleaned)
 }
+
 fun LOGUI(javaClass: Class<Any>, viewName: String): Logger {
     return LoggerFactory.getLogger("${javaClass.nameAopCleaned}#$viewName")
 }
@@ -52,7 +54,11 @@ abstract class BaseLogConfigurator {
         return appender
     }
 
-    protected fun fileAppender(name: String, filename: String, filenamePattern: String): Appender<ILoggingEvent> {
+    protected fun fileAppender(
+            name: String,
+            filename: String,
+            filenamePattern: String
+    ): Appender<ILoggingEvent> {
         val appender = RollingFileAppender<ILoggingEvent>()
         appender.file = filename
 
@@ -63,12 +69,10 @@ abstract class BaseLogConfigurator {
         rollingPolicy.setParent(appender)
         rollingPolicy.fileNamePattern = filenamePattern
         rollingPolicy.maxHistory = 14 // two weeks
+        rollingPolicy.setTotalSizeCap(FileSize.valueOf("100MB"))
         rollingPolicy.start()
         appender.rollingPolicy = rollingPolicy
 
-        val triggeringPolicy = RollOncePerSessionTriggeringPolicy<ILoggingEvent>()
-        triggeringPolicy.start()
-        appender.triggeringPolicy = triggeringPolicy
         appender.isAppend = true
         appender.context = context
         appender.name = name
@@ -78,7 +82,7 @@ abstract class BaseLogConfigurator {
     }
 
     // or: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    protected fun patternLayout(pattern: String = defaultPattern): PatternLayoutEncoder {
+    private fun patternLayout(pattern: String = defaultPattern): PatternLayoutEncoder {
         val layout = PatternLayoutEncoder()
         layout.context = context
         layout.pattern = pattern
@@ -113,7 +117,6 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
 
     override fun configureInternal(logger: ch.qos.logback.classic.Logger) {
         logger.level = if (debugEnabled || Development.ENABLED) Level.ALL else Level.DEBUG
-
         arrayOf(
                 "org.apache",
                 "org.springframework",
@@ -130,11 +133,11 @@ class LogConfigurator(private val debugEnabled: Boolean) : BaseLogConfigurator()
                 logger.addAppender(consoleAppender("Gadsu-ConsoleAppender", withAppender = { appender ->
                     appender.addFilter(ThresholdFilter(Level.WARN))
                 }))
-
             }
-            logger.addAppender(fileAppender("Gadsu-FileAppender",
-                    GADSU_LOG_FILE.absolutePath,
-                    File(GADSU_DIRECTORY, "gadsu-%d{yyyy_MM_dd}.log.zip").absolutePath
+            logger.addAppender(fileAppender(
+                    name = "Gadsu-FileAppender",
+                    filename = GADSU_LOG_FILE.absolutePath,
+                    filenamePattern = File(GADSU_LOG_FILE.parentFile, "gadsu-%d{yyyy_MM_dd}.log.zip").absolutePath
             ))
         }
     }
@@ -145,6 +148,7 @@ private class ThresholdFilter(private val level: Level) : Filter<ILoggingEvent>(
     init {
         start()
     }
+
     override fun decide(event: ILoggingEvent): FilterReply {
         if (event.level.isGreaterOrEqual(level)) {
             return FilterReply.ACCEPT
