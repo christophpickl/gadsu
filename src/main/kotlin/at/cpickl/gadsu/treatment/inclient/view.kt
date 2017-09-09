@@ -4,17 +4,15 @@ import at.cpickl.gadsu.treatment.PrepareNewTreatmentEvent
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.ListyView
 import at.cpickl.gadsu.view.components.newEventButton
-import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 class TreatmentsInClientView @Inject constructor(
         swing: SwingFactory,
         private val treatmentsList: TreatmentList
-): ListyView<Treatment>(
+) : ListyView<Treatment>(
         treatmentsList,
         swing.newEventButton("Neue Behandlung erstellen", ViewNames.Treatment.OpenNewButton, { PrepareNewTreatmentEvent() })
 ) {

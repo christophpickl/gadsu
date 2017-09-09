@@ -1,8 +1,8 @@
 package non_test.kotlin_playground
 
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.RichTextArea
 import com.google.common.eventbus.EventBus
+import non_test.Framed
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.JPanel

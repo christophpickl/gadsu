@@ -1,7 +1,5 @@
 package non_test._main_
 
-import at.cpickl.gadsu.start.Args
-import at.cpickl.gadsu.start.GadsuModule
 import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.report.DUMMY
 import at.cpickl.gadsu.report.JasperEngineImpl
@@ -17,12 +15,14 @@ import at.cpickl.gadsu.report.testInstance
 import at.cpickl.gadsu.service.DUMMY
 import at.cpickl.gadsu.service.LogConfigurator
 import at.cpickl.gadsu.service.MetaInf
+import at.cpickl.gadsu.start.Args
+import at.cpickl.gadsu.start.GadsuModule
 import at.cpickl.gadsu.testinfra.SimpleTestableClock
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
-import at.cpickl.gadsu.view.components.Framed
 import com.google.common.eventbus.EventBus
 import com.google.inject.Guice
+import non_test.Framed
 import org.mockito.Mockito
 import java.io.File
 import javax.swing.SwingUtilities
@@ -67,9 +67,6 @@ private fun generateAndViewProtocol() {
             .view(ProtocolReportData.testInstance())
 //            .savePdfTo(report, File("report.pdf"), true)
 }
-
-
-
 
 
 private fun viewMultiProtocolSwingWindow() {

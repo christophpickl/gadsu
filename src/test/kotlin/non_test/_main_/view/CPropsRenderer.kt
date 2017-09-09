@@ -6,10 +6,10 @@ import at.cpickl.gadsu.client.xprops.view.CPropsRenderer
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import at.cpickl.gadsu.view.Fields
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import non_test.Framed
 import java.awt.Dimension
 
 fun main(args: Array<String>) {

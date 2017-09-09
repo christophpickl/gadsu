@@ -11,10 +11,10 @@ import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.testinfra.SimpleTestableClock
 import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.MyListModel
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import non_test.Framed
 import org.joda.time.DateTime
 import javax.swing.JPanel
 

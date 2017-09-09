@@ -8,11 +8,11 @@ import at.cpickl.gadsu.tcm.patho.SyndromeReport
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.savedValidInstance2
 import at.cpickl.gadsu.treatment.TreatmentGoalView
-import at.cpickl.gadsu.view.components.Framed
-import at.cpickl.gadsu.view.components.FramedContext
 import at.cpickl.gadsu.view.components.inputs.MeridianSelector
 import at.cpickl.gadsu.view.components.inputs.NumberField
 import at.cpickl.gadsu.view.components.inputs.TriCheckBox
+import non_test.Framed
+import non_test.FramedContext
 import org.mockito.Mockito
 import java.awt.BorderLayout
 import java.awt.FlowLayout

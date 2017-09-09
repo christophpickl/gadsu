@@ -1,9 +1,9 @@
 package non_test._main_.view
 
 import at.cpickl.gadsu.tcm.ElementsStarView
-import at.cpickl.gadsu.view.components.Framed
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import non_test.Framed
 import java.awt.Dimension
 
 

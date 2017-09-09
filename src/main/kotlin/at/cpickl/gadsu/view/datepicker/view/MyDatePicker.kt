@@ -7,7 +7,6 @@ import at.cpickl.gadsu.service.clearTime
 import at.cpickl.gadsu.service.formatDate
 import at.cpickl.gadsu.service.parseDate
 import at.cpickl.gadsu.service.toDateTime
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.currentActiveJFrame
 import at.cpickl.gadsu.view.datepicker.UtilDateModel
@@ -21,7 +20,6 @@ import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -31,22 +29,6 @@ import javax.swing.JDialog
 import javax.swing.JFormattedTextField
 import javax.swing.JTextField
 import javax.swing.SwingUtilities
-
-
-//<editor-fold desc="main">
-// https://github.com/JDatePicker/JDatePicker
-// http://www.codejava.net/java-se/swing/how-to-use-jdatepicker-to-display-calendar-component
-fun main(args: Array<String>) {
-    val datePicker = MyDatePicker.build(null, "my")
-//    datePicker.disableClear()
-    val btn = JButton("print selected date")
-    btn.addActionListener {
-        println("selectedDate: " + datePicker.selectedDate())
-    }
-
-    Framed.show(arrayOf(datePicker as Component, btn))
-}
-//</editor-fold>
 
 ///**
 // * @param navigateToDate defaults to current date

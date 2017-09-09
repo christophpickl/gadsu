@@ -1,7 +1,7 @@
 package non_test._main_.view
 
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.RichTextArea
+import non_test.Framed
 import java.awt.BorderLayout
 import javax.swing.JPanel
 import javax.swing.JTextField

@@ -10,10 +10,10 @@ import at.cpickl.gadsu.preferences.ThresholdPrefData
 import at.cpickl.gadsu.service.InternetConnectionController
 import at.cpickl.gadsu.service.parseDateTime
 import at.cpickl.gadsu.testinfra.savedValidInstance
-import at.cpickl.gadsu.view.components.DummyMainFrame
-import at.cpickl.gadsu.view.components.Framed
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import non_test.DummyMainFrame
+import non_test.Framed
 
 fun main(args: Array<String>) {
     val internetAvailable = false

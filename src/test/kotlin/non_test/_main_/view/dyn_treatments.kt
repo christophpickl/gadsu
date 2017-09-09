@@ -14,8 +14,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosis
 import at.cpickl.gadsu.treatment.dyn.treats.TongueDiagnosisRenderer
 import at.cpickl.gadsu.treatment.dyn.treats.TongueProperty
-import at.cpickl.gadsu.view.components.Framed
 import com.google.common.eventbus.EventBus
+import non_test.Framed
 
 fun main(args: Array<String>) {
     Framed.show(

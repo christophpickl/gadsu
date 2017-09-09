@@ -1,8 +1,8 @@
 package non_test.kotlin_playground
 
-import at.cpickl.gadsu.start.allGadsuModules
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
+import at.cpickl.gadsu.start.allGadsuModules
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import com.google.inject.AbstractModule
 import com.google.inject.Guice

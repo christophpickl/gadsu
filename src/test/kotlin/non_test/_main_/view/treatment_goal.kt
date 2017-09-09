@@ -1,8 +1,8 @@
 package non_test._main_.view
 
 import at.cpickl.gadsu.treatment.TreatmentGoalView
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.inputs.NumberField
+import non_test.Framed
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.JButton

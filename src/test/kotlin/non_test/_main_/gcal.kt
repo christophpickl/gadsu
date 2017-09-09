@@ -1,9 +1,9 @@
 package non_test._main_
 
-import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.appointment.gcal.GCalEvent
 import at.cpickl.gadsu.appointment.gcal.RealGCalRepository
 import at.cpickl.gadsu.appointment.gcal.transformCalendarNameToId
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.service.GoogleConnectorImpl
 import at.cpickl.gadsu.testinfra.readGapiCredentialsFromSysProps
 import org.joda.time.DateTime

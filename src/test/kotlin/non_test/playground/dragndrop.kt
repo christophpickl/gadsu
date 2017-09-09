@@ -1,10 +1,10 @@
 package non_test.playground
 
 import at.cpickl.gadsu.service.LOG
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.scrolled
+import non_test.Framed
 import java.awt.Color
 import java.awt.Container
 import java.awt.Cursor

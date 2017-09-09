@@ -6,9 +6,9 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.detail.ClientTabMain
 import at.cpickl.gadsu.treatment.inclient.TreatmentList
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
-import at.cpickl.gadsu.view.components.Framed
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
+import non_test.Framed
 
 
 fun main(args: Array<String>) {

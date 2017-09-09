@@ -1,4 +1,4 @@
-package at.cpickl.gadsu.view.components
+package non_test
 
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Clock

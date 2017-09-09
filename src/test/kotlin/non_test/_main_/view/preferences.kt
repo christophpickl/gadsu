@@ -1,8 +1,8 @@
 package non_test._main_.view
 
 import at.cpickl.gadsu.preferences.PreferencesData
-import at.cpickl.gadsu.preferences.view.PreferencesSwingWindow
 import at.cpickl.gadsu.preferences.testInstance
+import at.cpickl.gadsu.preferences.view.PreferencesSwingWindow
 import at.cpickl.gadsu.service.RealClock
 import at.cpickl.gadsu.view.MainFrame
 import at.cpickl.gadsu.view.SwingFactory
