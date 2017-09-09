@@ -1,9 +1,5 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.global.AppStartupEvent
-import at.cpickl.gadsu.global.Event
-import at.cpickl.gadsu.global.QuitAskEvent
-import at.cpickl.gadsu.global.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.acupuncture.ShowAcupunctureViewEvent
 import at.cpickl.gadsu.appointment.gcal.sync.RequestGCalSyncEvent
 import at.cpickl.gadsu.client.Client
@@ -21,6 +17,10 @@ import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
 import at.cpickl.gadsu.development.Development
+import at.cpickl.gadsu.global.AppStartupEvent
+import at.cpickl.gadsu.global.Event
+import at.cpickl.gadsu.global.QuitAskEvent
+import at.cpickl.gadsu.global.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.mail.bulkmail.RequestPrepareBulkMailEvent
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.report.CreateProtocolEvent
@@ -29,7 +29,6 @@ import at.cpickl.gadsu.service.CurrentChangedEvent
 import at.cpickl.gadsu.service.FormSaveEvent
 import at.cpickl.gadsu.service.FormType
 import at.cpickl.gadsu.service.InternetConnectionStateChangedEvent
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.PrintFormEvent
 import at.cpickl.gadsu.service.ReconnectInternetConnectionEvent
@@ -37,6 +36,7 @@ import at.cpickl.gadsu.tcm.ShowElementsTableViewEvent
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
 import at.cpickl.gadsu.treatment.PreviousTreatmentEvent
 import at.cpickl.gadsu.treatment.TreatmentSaveEvent
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import java.awt.event.KeyEvent
@@ -96,7 +96,7 @@ open class GadsuMenuBar @Inject constructor(
         private val mac: MacHandler
 ) : JMenuBar() {
 
-    private val log = LOG(javaClass)
+    private val log = LOG {}
 
     private val gcalSync = buildItem("GCal Sync", { RequestGCalSyncEvent() })
 
@@ -213,6 +213,8 @@ open class GadsuMenuBar @Inject constructor(
         }
         val isPersisted = client?.yetPersisted ?: false
         itemProtocol.isEnabled = isPersisted
+        clientActivate.isEnabled = isPersisted
+        clientDeactivate.isEnabled = isPersisted
         clientDelete.isEnabled = isPersisted
 
         if (client == null) {
@@ -260,7 +262,10 @@ open class GadsuMenuBar @Inject constructor(
 
     private fun buildItem(label: String, eventBuilder: () -> Event, shortcut: KeyStroke? = null): JMenuItem {
         val item = JMenuItem(label)
-        item.addActionListener { bus.post(eventBuilder()) }
+        item.addActionListener {
+            log.trace { "menu item clicked: '$label'" }
+            bus.post(eventBuilder())
+        }
         if (shortcut != null) item.accelerator = shortcut
         return item
     }

@@ -2,6 +2,11 @@ package at.cpickl.gadsu.view.language
 
 object Labels {
 
+    object ClientSaveDialog {
+        val title = "Speichern abgebrochen"
+        val button = "Abbrechen"
+    }
+
     // resulted in a compile error with kotlin 1.0.5 :(
     val Buttons: Buttons get() = Buttons_DE //LabelsLanguageFinder.find(Buttons::class.java)
     val Tabs: Tabs get() = Tabs_DE //LabelsLanguageFinder.find(Tabs::class.java)

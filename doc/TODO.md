@@ -2,7 +2,6 @@
 
 GADSU REVIEW MIT RENE
 
-! wenn starten, dann kann man klient deaktivieren?!?
 ?! 5e window kann man nicht zu machen?!
 ! acupunct window (und alle anderen auch) mit CMD+W schliessbar
 ! ctrl+4 change auf tab assistent

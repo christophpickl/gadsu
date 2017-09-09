@@ -6,6 +6,7 @@ import at.cpickl.gadsu.testinfra.TEST_DATETIME2
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.testinfra.ui.clickAndDisposeDialog
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.view.language.Labels
 import com.github.christophpickl.kpotpourri.test4k.skip
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -91,7 +92,7 @@ class ClientUiTest : UiTest() {
         assertThat("Expected save button to be enabled after changing some property (different from names)",
                 driver.saveButton.isEnabled)
 
-        driver.saveButton.clickAndDisposeDialog("Speichern Abbrechen", "Speichern abgebrochen")
+        driver.saveButton.clickAndDisposeDialog(Labels.ClientSaveDialog.button, Labels.ClientSaveDialog.title)
     }
 
     fun `changing TCM note and saving client should disable save button`() {

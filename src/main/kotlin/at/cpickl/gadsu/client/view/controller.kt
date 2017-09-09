@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.global.AppStartupEvent
 import at.cpickl.gadsu.appointment.AppointmentChangedEvent
 import at.cpickl.gadsu.appointment.AppointmentDeletedEvent
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
@@ -29,6 +28,7 @@ import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.view.detail.ClientTabSelected
 import at.cpickl.gadsu.client.view.detail.ClientTabType
 import at.cpickl.gadsu.client.view.detail.SelectClientTab
+import at.cpickl.gadsu.global.AppStartupEvent
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.RequestClientPictureSaveEvent
 import at.cpickl.gadsu.service.Clock
@@ -44,6 +44,7 @@ import at.cpickl.gadsu.view.ChangeMainContentEvent
 import at.cpickl.gadsu.view.MainContentChangedEvent
 import at.cpickl.gadsu.view.components.DialogType
 import at.cpickl.gadsu.view.components.Dialogs
+import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ChangeBehaviour
 import at.cpickl.gadsu.view.logic.ChangesChecker
 import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
@@ -265,9 +266,9 @@ open class ClientViewController @Inject constructor(
 
         if (client.firstName.isEmpty() && client.lastName.isEmpty()) {
             dialogs.show(
-                    title = "Speichern abgebrochen",
+                    title = Labels.ClientSaveDialog.title,
                     message = "Es muss zumindest entweder ein Vorname oder ein Nachname eingegeben werden.",
-                    buttonLabels = arrayOf("Speichern Abbrechen"),
+                    buttonLabels = arrayOf(Labels.ClientSaveDialog.button),
                     type = DialogType.WARN
             )
             return
