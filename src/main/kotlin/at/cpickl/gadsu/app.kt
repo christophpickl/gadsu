@@ -1,6 +1,5 @@
 package at.cpickl.gadsu
 
-import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.development.Development
 import at.cpickl.gadsu.development.ShowDevWindowEvent
 import at.cpickl.gadsu.global.AppStartupEvent
@@ -14,6 +13,7 @@ import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.ShowPreferencesEvent
 import at.cpickl.gadsu.service.GADSU_LOG_FILE
 import at.cpickl.gadsu.service.LogConfigurator
+import at.cpickl.gadsu.service.MetaInf
 import at.cpickl.gadsu.start.Args
 import at.cpickl.gadsu.start.ArgsActionException
 import at.cpickl.gadsu.start.ArgsActionExecutor
@@ -26,7 +26,6 @@ import com.github.christophpickl.kpotpourri.common.logging.LOG
 import com.google.common.eventbus.EventBus
 import com.google.common.net.HostAndPort
 import com.google.inject.Guice
-import org.slf4j.LoggerFactory
 import java.util.Arrays
 import javax.inject.Inject
 import javax.swing.SwingUtilities
@@ -62,8 +61,9 @@ object Gadsu {
     }
 
     private fun start(args: Args) {
-        log.info("start(args={})", args)
-
+        log.info("************************************************************************************************")
+        log.info("************************************************************************************************")
+        log.info("************************************************************************************************")
         GlobalExceptionHandler.register()
         log.debug("====> GUICE START")
         val guice = Guice.createInjector(GadsuModule(args))
@@ -89,9 +89,9 @@ class GadsuGuiceStarter @Inject constructor(
         private val mac: MacHandler,
         private val mainFrame: MainFrame,
         private val prefs: Prefs,
-        private val clientService: ClientService
+        private val metaInf: MetaInf
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LOG {}
 
     fun start() {
         logInfo()
@@ -128,22 +128,20 @@ class GadsuGuiceStarter @Inject constructor(
     private fun logInfo() {
         log.info("")
         log.info("")
-        log.info("""
-  _____             _
- / ____|           | |
-| |  __   __ _   __| | ___  _   _
-| | |_ | / _` | / _` |/ __|| | | |
-| |__| || (_| || (_| |\__ \| |_| |
- \_____| \__,_| \__,_||___/ \__,_|
-""")
-        log.info("")
-        log.info("-==================================================================-")
-        log.info("Gadsu directory: {}", GADSU_DIRECTORY.absolutePath)
-        log.info("Database directory: {}", GADSU_DATABASE_DIRECTORY.absolutePath)
-        log.info("Log file: {}", GADSU_LOG_FILE.absolutePath)
-        log.info("-==================================================================-")
-        log.info("")
-        log.info("")
+        log.info { """
+    _____             _
+   / ____|           | |
+  | |  __   __ _   __| | ___  _   _
+  | | |_ | / _` | / _` |/ __|| | | |
+  | |__| || (_| || (_| |\__ \| |_| |
+   \_____| \__,_| \__,_||___/ \__,_| v${metaInf.applicationVersion.toLabel()}
+   -==================================================================-
+    Gadsu directory: ${GADSU_DIRECTORY.absolutePath}
+    Database directory: ${GADSU_DATABASE_DIRECTORY.absolutePath}
+    Log file: ${GADSU_LOG_FILE.absolutePath}
+   -==================================================================-
+
+""" }
     }
 
     private fun registerMacHandler() {
