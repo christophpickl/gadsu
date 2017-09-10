@@ -29,6 +29,8 @@ annotation class KotlinNoArg
 
 // ----- SWING4k
 
+// ===> package at.cpickl.gadsu.view.swing
+
 fun initSwingLookAndFeel() {
     JFrame.setDefaultLookAndFeelDecorated(true)
     try {

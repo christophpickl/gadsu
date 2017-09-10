@@ -7,13 +7,16 @@ import java.awt.event.WindowEvent
 import javax.swing.JComponent
 import javax.swing.JFrame
 
-
 interface ClosableWindow {
     fun getContentPane(): Container // every JFrame got it ;)
     fun closeWindow()
 }
 
-
+fun <W> W.registerOnCloseWindow() where W : Window, W : ClosableWindow {
+    addCloseListener {
+        closeWindow()
+    }
+}
 
 fun <W : ClosableWindow> W.registerCloseOnEscape(): W {
     val component = getContentPane() as JComponent // hacky-da-hack ;)

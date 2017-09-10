@@ -1,6 +1,5 @@
 
 GADSU REVIEW MIT RENE
-?! 5e window kann man nicht zu machen?!
 ! acupunct window (und alle anderen auch) mit CMD+W schliessbar
 ! treatment list nur single selection (kein multi, geht eh net, zb loeschen bei mehrfachselektion loescht nur einen)
 !! beep() bei add dyntreat wenn alle da sind ist annoying => just disable button

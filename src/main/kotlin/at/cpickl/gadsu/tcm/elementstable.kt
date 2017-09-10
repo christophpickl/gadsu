@@ -6,6 +6,7 @@ import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerOnCloseWindow
 import com.google.common.eventbus.Subscribe
 import java.awt.BorderLayout
 import javax.swing.ImageIcon
@@ -39,6 +40,7 @@ class ElementsTableWindow : MyFrame("Entsprechungstabelle"), ClosableWindow {
 
     init {
         registerCloseOnEscape()
+        registerOnCloseWindow()
 
         contentPane.add(JPanel(BorderLayout()).apply {
             add(JLabel(ImageIcon(ElementsTableWindow::class.java.getResource("/gadsu/images/elementstable.png"))), BorderLayout.CENTER)
