@@ -45,9 +45,15 @@ class DynTreatmentTabbedPane(
         private val bus: EventBus
 ) : JTabbedPane(), ChangeAware {
 
+    companion object {
+        private val INDEX_ADD_BUTTON = 0
+    }
     private val log = LOG(javaClass)
 
-    @VisibleForTesting var renderers = HashMap<Int, DynTreatmentRenderer>()
+    @VisibleForTesting
+    var renderers = HashMap<Int, DynTreatmentRenderer>()
+
+    val isAddDynTreatButtonEnabled get() = isEnabledAt(INDEX_ADD_BUTTON)
 
     private lateinit var lateChangeListener: () -> Unit
     override fun onChange(changeListener: () -> Unit) {
@@ -72,6 +78,9 @@ class DynTreatmentTabbedPane(
         renderer.initState(originalTreatment)
         renderer.registerOnChange(lateChangeListener)
         lateChangeListener()
+        if (renderers.size == DynTreatmentFactory.size) {
+            addDynTreatButtonEnabled(false)
+        }
     }
 
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment {
@@ -89,6 +98,7 @@ class DynTreatmentTabbedPane(
         renderers.remove(tabIndex)
         recalcDynTreatmentsIndicesForDelete(tabIndex)
         lateChangeListener()
+        addDynTreatButtonEnabled(true)
     }
 
     fun readDynTreatments(): List<DynTreatment> {
@@ -143,6 +153,10 @@ class DynTreatmentTabbedPane(
 
     private fun Treatment.dynTreatmentByType(dynTreatment: Class<DynTreatment>): DynTreatment {
         return this.dynTreatments.first { it.javaClass == dynTreatment }
+    }
+
+    private fun addDynTreatButtonEnabled(enabled: Boolean) {
+        setEnabledAt(INDEX_ADD_BUTTON, enabled)
     }
 
 }

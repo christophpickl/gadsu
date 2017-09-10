@@ -78,7 +78,7 @@ class SwingTreatmentView @Inject constructor(
 ), TreatmentView {
 
     companion object {
-        val DYN_TAB_TITLE_ADD = "+"
+        private val DYN_TAB_TITLE_ADD = "+"
 
         // because of meridian selector
         private val GAP_LEFT = 100
@@ -263,6 +263,9 @@ class SwingTreatmentView @Inject constructor(
 
                         if (SwingUtilities.isLeftMouseButton(e)) {
                             if (title == DYN_TAB_TITLE_ADD) {
+                                if (!subTreatmentView.isAddDynTreatButtonEnabled) {
+                                    return
+                                }
                                 val tabBounds = subTreatmentView.getBoundsAt(index)
                                 bus.post(DynTreatmentRequestAddEvent(PopupSpec(subTreatmentView, tabBounds.x, tabBounds.y + tabBounds.height)))
                             } else {

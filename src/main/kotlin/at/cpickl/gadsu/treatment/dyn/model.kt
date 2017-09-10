@@ -116,8 +116,10 @@ object DynTreatmentFactory {
         }
         all = tmp
     }
+    val size = all.size
 
     fun managersForAllExcept(except: List<Class<out DynTreatment>>): List<DynTreatmentManager> {
         return all.filter { !it.matches(except) }
     }
+
 }

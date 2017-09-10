@@ -29,7 +29,6 @@ import at.cpickl.gadsu.view.components.Dialogs
 import at.cpickl.gadsu.view.logic.ChangeBehaviour
 import at.cpickl.gadsu.view.logic.ChangesChecker
 import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
-import at.cpickl.gadsu.view.logic.beep
 import at.cpickl.gadsu.view.swing.MyKeyListener
 import at.cpickl.gadsu.view.swing.RegisteredKeyListener
 import at.cpickl.gadsu.view.swing.registerMyKeyListener
@@ -132,13 +131,11 @@ open class TreatmentController @Inject constructor(
         changeToTreatmentView(newTreatment, null)
     }
 
-
     @Subscribe open fun onDynTreatmentRequestAddEvent(event: DynTreatmentRequestAddEvent) {
         val existingDynTreats = treatmentView!!.getAllDynTreatmentClasses()
         val dynTreatmentManagers = DynTreatmentFactory.managersForAllExcept(existingDynTreats)
         if (dynTreatmentManagers.isEmpty()) {
-            beep()
-            return
+            throw IllegalStateException("Requested to add dyn treatment but none is available!")
         }
         val popup = JPopupMenu()
         dynTreatmentManagers.forEach { manager ->
