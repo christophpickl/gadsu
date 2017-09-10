@@ -1,8 +1,21 @@
 package at.cpickl.gadsu.tcm.patho
 
+/*
+TODOs
+- alle tasktags durchgehen
+- gruppe MISC aufloesen soweit wie moeglich
+- manche symptoms includen andere
+- nochmal alles durchgehen, manche gruppierungen passen nicht
 
+- manche symtpoms haben Qi/Blut/Yin/Yang bezug, manche starke Zang, manche typisch fuer element
+- CLI app schreiben, die auswertung printed; zb welche symptoms nur ein zang betreffen, ...
+- 9er gruppe finden (auch zukuenftige beruecksichtigen)
+- symptoms mit dynTreats matchen (zunge, puls)
+- TCM props implementieren
+ */
 enum class OrganSyndrome(
         val label: String,
+        // label LONG vs SHORT
         val sqlCode: String,
         val description: String = "",
         val organ: ZangOrgan,
@@ -444,7 +457,7 @@ enum class OrganSyndrome(
             sqlCode = "NiYangXu",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = `Symptoms of general Yang Xu` +  setOf(
+            symptoms = `Symptoms of general Yang Xu` + setOf(
                     Symptom.KreuzSchmerzen,
                     Symptom.KnieSchmerzen,
                     Symptom.FersenSchmerzen,
@@ -585,37 +598,525 @@ enum class OrganSyndrome(
                     Symptom.ProblemeOhren,
                     Symptom.ProblemeHaare
             )
-    )
+    ),
 
     // LEBER
     // =================================================================================================================
 
-//    XXX(
-//            label = "XXX",
-//            sqlCode = "xxx",
-//            organ = ZangOrgan.XXX,
-//            tendency = MangelUeberfluss.XXX,
-//            symptoms = setOf(
-//                    Symptom.,
-//                    Symptom.
-//            )
-//    ),
+    LeBlutXu(
+            label = "Leber Blut Mangel",
+            sqlCode = "LeBlutXu",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    // allgemein
+                    Symptom.Blaesse,
+                    Symptom.Konzentrationsstoerungen,
+                    Symptom.Schreckhaftigkeit,
+                    Symptom.Palpitationen,
+                    Symptom.Schlafstoerungen,
+                    Symptom.TaubheitsgefuehlExtremitaeten,
+                    // Le spezifisch
+                    Symptom.UnscharfesSehen,
+                    Symptom.VerschwommenesSehen,
+                    Symptom.Nachtblindheit,
+                    Symptom.MouchesVolantes,
+                    Symptom.TrockeneAugen,
+                    Symptom.SteifeSehnen,
+                    Symptom.Zittern,
+                    Symptom.AussetzerMenstruation, // Amenorrhoe
+                    Symptom.VerlaengerterZyklus,
+
+                    Symptom.BlasseZunge,
+                    Symptom.DuennerPuls // fadenfoermig
+            )
+    ),
+    LeYinXu(// wie Blutmangel, aber plus Mangel-Hitze
+            label = "Leber Yin Mangel",
+            sqlCode = "LeYinXu",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.TrockeneAugen,
+                    Symptom.Nachtblindheit,
+                    Symptom.Tinnitus,
+                    Symptom.Schlafstoerungen,
+                    // hitze
+                    Symptom.TrockenerHals,
+                    Symptom.Durst,
+                    Symptom.Durchfall,
+                    Symptom.Verstopfung,
+                    Symptom.Unruhe,
+                    Symptom.Nachtschweiss,
+                    Symptom.FuenfZentrenHitze,
+                    Symptom.HitzeGefuehlAbends,
+                    // Le yang steigt auf
+                    Symptom.Kopfschmerzen,
+                    Symptom.Gereiztheit,
+                    Symptom.Zornesanfaelle,
+                    Symptom.Laehmung,
+                    Symptom.HalbseitigeLaehmung,
+                    Symptom.Schlaganfall,
+
+                    Symptom.RoteZunge,
+                    Symptom.WenigBelag,
+                    Symptom.BeschleunigterPuls,
+                    Symptom.DuennerPuls,
+                    Symptom.SchwacherPuls
+            )
+    ),
+    LeQiStau(
+            label = "Leber Qi Stau",
+            sqlCode = "xxx",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.VielAppetit,
+                    Symptom.WenigAppetit,
+                    Symptom.VoelleGefuehl,
+                    Symptom.Blaehungen,
+                    Symptom.Aufstossen,
+                    Symptom.Sodbrennen,
+                    Symptom.Brechreiz,
+                    Symptom.Erbrechen,
+                    Symptom.Magenschmerzen,
+                    Symptom.Uebelkeit,
+                    Symptom.MorgendlicheUebelkeit,
+                    Symptom.UnregelmaessigerStuhl,
+                    Symptom.WechselhafteVerdauung,
+
+                    Symptom.SpannungZwerchfell,
+                    Symptom.SchmerzZwerchfell,
+                    Symptom.Seufzen,
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.DruckgefuehlBrustbein,
+                    Symptom.BrustspannungPMS,
+                    Symptom.Schulterschmerzen,
+                    Symptom.Nackenschmerzen,
+                    Symptom.Kopfschmerzen,
+                    Symptom.FroschImHals,
+
+                    Symptom.Zyklusunregelmaessigkeiten,
+                    Symptom.PMS,
+                    Symptom.Regelkraempfe,
+                    Symptom.UnterbauchziehenPMS,
+                    Symptom.EmotionaleSchwankungenMens,
+
+                    Symptom.Reizbarkeit,
+                    Symptom.Aufbrausen,
+                    Symptom.Zornesausbrueche,
+                    Symptom.Launisch,
+                    Symptom.Frustration,
+                    Symptom.Depression,
+                    Symptom.UnterdrueckteGefuehle,
+
+                    Symptom.NormaleZunge,
+                    Symptom.RoteZungenspitze,
+                    Symptom.RoterZungenrand,
+                    Symptom.SaitenfoermigerPuls
+            )
+    ),
+    LeBlutStau(
+            label = "Leber Blut Stau",
+            sqlCode = "LeBlutStau",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.StechenderSchmerz,
+                    Symptom.FixierterSchmerz,
+                    Symptom.SchmerzNachtsSchlimmer,
+                    Symptom.DunklesMenstruationsblut,
+                    Symptom.ZaehesMenstruationsblut,
+                    Symptom.KlumpenInBlut,
+                    Symptom.Knoten,
+                    Symptom.Tumore,
+                    Symptom.LeberVergroesserung,
+                    Symptom.Milzvergroesserung,
+                    Symptom.DunkleGesichtsfarbe,
+                    Symptom.StumpfeGesichtsfarbe,
+                    Symptom.GestauteVenen,
+
+                    Symptom.VioletteZunge,
+                    Symptom.DunkleZunge,
+                    Symptom.BlauVioletteZungenpunkte,
+                    Symptom.GestauteUnterzungenvenen,
+                    Symptom.RauherPuls
+            )
+    ),
+    LeFeuer(
+            label = "Leber Feuer",
+            sqlCode = "LeFeuer",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.HeftigeKopfschmerzen,
+                    Symptom.KopfschmerzenScheitel,
+                    Symptom.Tinnitus,
+                    Symptom.Hoersturz,
+                    Symptom.Schwindel,
+                    Symptom.RoteAugen,
+                    Symptom.RoteBindehaut,
+                    Symptom.RoteSkleren,
+                    Symptom.TrockenerMund,
+                    Symptom.BittererMundgeschmack,
+                    Symptom.Nasenbluten,
+                    Symptom.BlutHusten,
+                    Symptom.BlutErbrechen,
+
+                    Symptom.Zornesausbrueche,
+                    Symptom.Unruhe,
+                    Symptom.Gereiztheit,
+                    Symptom.Gewalttaetig,
+
+                    Symptom.Magenschmerzen,
+                    Symptom.Sodbrennen,
+                    Symptom.Brechreiz,
+                    Symptom.Erbrechen,
+                    Symptom.Verstopfung,
+                    Symptom.BrennenderDurchfall,
+
+                    // allg. zeichen ueberfluss-hitze (He-Feuer, holz das feuer uebernaehrt)
+                    Symptom.Unruhe,
+                    Symptom.Schlaflosigkeit,
+                    Symptom.Durst,
+                    Symptom.Durchfall,
+                    Symptom.WenigUrin,
+                    Symptom.DunklerUrin,
+                    Symptom.RotesGesicht,
+                    Symptom.RoteAugen,
+                    Symptom.Palpitationen,
+
+                    Symptom.RoteZunge,
+                    Symptom.RoteZungenspitze,
+                    Symptom.RoterZungenrand,
+                    Symptom.GelberBelag,
+                    Symptom.SaitenfoermigerPuls,
+                    Symptom.BeschleunigterPuls,
+                    Symptom.KraeftigerPuls
+            )
+    ),
+    LeWindHitze(
+            label = "Leber Wind (Extreme Hitze)",
+            sqlCode = "LeWindHitze",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = `Symptoms of general Le Wind` + setOf(// TODO + ueberfluss-hitze
+                    Symptom.Kraempfe, // spasmen
+                    Symptom.Koma,
+                    Symptom.Delirium,
+
+                    Symptom.RoteZunge,
+                    Symptom.ScharlachRoteZunge,
+                    Symptom.TrockenerBelag,
+                    Symptom.GelberBelag,
+                    Symptom.SteifeZunge,
+                    Symptom.SchnellerPuls,
+                    Symptom.VollerPuls,
+                    Symptom.SaitenfoermigerPuls
+            )
+    ),
+    LeWindYang(
+            label = "Leber Wind (Aufsteigendes Leber Yang)",
+            sqlCode = "LeWindLeYang",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Schwindel,
+                    Symptom.Schwanken,
+                    Symptom.KopfUnwillkuerlichBewegt,
+                    Symptom.Laehmung,
+                    Symptom.HalbseitigeLaehmung,
+                    Symptom.Desorientiertheit,
+                    Symptom.Bewusstseinsverlust,
+                    Symptom.Sprachstoerungen,
+                    // TODO + YinMangel + BlutMangel
+
+                    Symptom.RoteZunge,
+                    Symptom.WenigBelag,
+                    Symptom.FehlenderBelag,
+                    Symptom.BeschleunigterPuls
+            )
+    ),
+    LeWindBlut(
+            label = "Leber Wind (Blut Mangel)",
+            sqlCode = "LeWindBlutXu",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Zittern,
+                    Symptom.Tics,
+                    Symptom.Augenzucken,
+                    Symptom.KopfUnwillkuerlichBewegt,
+                    // TODO + blut mangel
+                    Symptom.Sehstoerungen,
+                    Symptom.Schwindel,
+                    Symptom.Benommenheit,
+
+                    Symptom.BlasseZunge,
+                    Symptom.DuennerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.DuennerPuls
+            )
+    ),
+    LeFeuchteHitze(
+            label = "Feuchtigkeit und Hitze in Le und Gb",
+            sqlCode = "LeFeuchteHitze",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.SchmerzBrustkorb,
+                    Symptom.SchmerzZwerchfell,
+                    Symptom.WenigAppetit,
+                    Symptom.Brechreiz,
+                    Symptom.Erbrechen,
+                    Symptom.DurckgefuehlBauch,
+                    Symptom.Blaehungen,
+                    Symptom.BittererMundgeschmack,
+                    Symptom.Durst,
+                    Symptom.Unruhe,
+                    Symptom.Gereiztheit,
+                    Symptom.KonzentrierterUrin,
+                    Symptom.DunklerUrin,
+                    Symptom.Fieber, // niedrig, anhaltend
+                    Symptom.Gelbsucht,
+
+                    // frauen
+                    Symptom.GelberAusfluss,
+                    Symptom.RiechenderAusfluss,
+                    Symptom.JuckreizScheide,
+                    Symptom.Entzuendungsherde, // bereich Le-/Gb-meridian
+                    Symptom.Hautpilz,
+                    Symptom.Herpes,
+
+                    // maenner
+                    Symptom.Hodenschmerzen,
+                    Symptom.Hodenschwellungen,
+                    Symptom.Ausfluss,
+                    Symptom.Prostatitis,
+                    Symptom.Hautausschlag, // bereich Le-/Gb-meridian
+
+                    Symptom.RoteZunge,
+                    Symptom.RoteZungenspitze,
+                    Symptom.RoterZungenrand,
+                    Symptom.DickerBelag,
+                    Symptom.GelberBelag,
+                    Symptom.SchmierigerBelag,
+                    Symptom.BeschleunigterPuls,
+                    Symptom.SaitenfoermigerPuls,
+                    Symptom.SchluepfrigerPuls
+            )
+    ),
+    LeKaelteJingLuo(
+            label = "Kälte im Lebermeridian",
+            sqlCode = "LeKaltMerid",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Unterbauchschmerzen,
+                    Symptom.Kraempfe,
+                    Symptom.Kontraktionen,
+                    Symptom.WaermeErleichtert,
+                    Symptom.Ausfluss,
+                    Symptom.Infertilitaet,
+                    Symptom.UntenZiehendeHoden,
+                    Symptom.Impotenz,
+                    Symptom.Menstruationskraempfe,
+
+                    Symptom.BlasseZunge,
+                    Symptom.WeisserBelag,
+                    Symptom.FeuchterBelag,
+                    Symptom.VerlangsamterPuls,
+                    Symptom.TieferPuls,
+                    Symptom.SaitenfoermigerPuls
+            )
+    ),
 
     // MILZ
     // =================================================================================================================
 
-//    XXX(
-//            label = "XXX",
-//            sqlCode = "xxx",
-//            organ = ZangOrgan.XXX,
-//            tendency = MangelUeberfluss.XXX,
-//            symptoms = setOf(
-//                    Symptom.,
-//                    Symptom.
-//            )
-//    ),
+    MPQiXu(
+            label = "Milz Qi Mangel",
+            sqlCode = "MPQiXu",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = setOf(
+                    Symptom.WenigAppetit,
+                    Symptom.VoelleGefuehl,
+                    Symptom.Blaehungen,
+                    Symptom.Aufstossen,
+                    Symptom.LeichteSchmerzenOberbauch,
+                    Symptom.BreiigerStuhl,
+
+                    Symptom.Muedigkeit,
+                    Symptom.EnergieMangel,
+                    Symptom.Ausgezehrt,
+                    Symptom.AnstrengungSchnellErschoepft,
+                    Symptom.KraftloseMuskeln,
+                    Symptom.Oedeme,
+                    Symptom.OedemeBauch,
+                    Symptom.LeuchtendeBlaesse,
+                    Symptom.Zwischenblutung,
+                    Symptom.KurzeMensZyklen,
+                    Symptom.HelleBlutung,
+                    Symptom.ReichlichBlutung,
+
+                    Symptom.BlasseZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.Zahneindruecke,
+                    Symptom.DuennerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.SchwacherPuls,
+                    Symptom.WeicherPuls,
+                    Symptom.LeererPuls
+            )
+    ),
+    MPYangXu(
+            label = "Milz Yang Mangel",
+            sqlCode = "MPYangXu",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = MPQiXu.symptoms + setOf(
+                    Symptom.AversionKaelte,
+                    Symptom.KalteHaende,
+                    Symptom.KalteFuesse,
+                    Symptom.KalterBauch,
+                    Symptom.Unterbauchschmerzen,
+                    Symptom.Kraempfe, // durch waerme gelindert
+                    Symptom.WeicherStuhl,
+                    Symptom.WaessrigerStuhl,
+                    Symptom.UnverdauteNahrungInStuhl,
+                    Symptom.Blaesse,
+                    Symptom.LeuchtendWeissesGesicht,
+                    Symptom.Oedeme,
+                    Symptom.HahnenschreiDiarrhoe,
+
+                    Symptom.BlasseZunge,
+                    Symptom.LeichtBlaeulicheZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.Zahneindruecke,
+                    Symptom.NasseZunge,
+                    Symptom.WeisserBelag,
+                    Symptom.DuennerBelag,
+                    Symptom.TieferPuls,
+                    Symptom.SchwacherPuls,
+                    Symptom.LangsamerPuls
+            )
+    ),
+    MPQiAbsinken(
+            label = "Absinken des Milz Qi",
+            sqlCode = "MPQiAbsinken",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = MPYangXu.symptoms + setOf(
+                    Symptom.UntenZiehendeBauchorgane,
+                    Symptom.Schweregefuehl,
+                    Symptom.OrgansenkungUnterleibsorgane,
+                    Symptom.Hernien,
+                    Symptom.Haemorrhoiden
+            )
+    ),
+    MPBlutUnkontrolle(
+            label = "Milz kann das Blut nicht kontrollieren",
+            sqlCode = "MPBlutUnkontrolle",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = MPYangXu.symptoms + setOf(
+                    Symptom.Petechien,
+                    Symptom.Purpura,
+                    Symptom.BlaueFlecken,
+                    Symptom.Blutsturz,
+                    Symptom.Hypermenorrhoe,
+                    Symptom.Schmierblutung,
+                    Symptom.BlutInUrin,
+                    Symptom.BlutImStuhl
+            )
+    ),
+    MPFeuchtKalt(
+            label = "Kälte und Feuchtigkeit in Milz",
+            sqlCode = "MPFeuchtKalt",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Muedigkeit,
+                    Symptom.Schlappheit,
+                    Symptom.SchwererKopf,
+                    Symptom.SchwereGliedmassen,
+                    Symptom.VoelleGefuehl,
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.DurckgefuehlBauch,
+                    Symptom.KeinAppetit,
+                    Symptom.Uebelkeit,
+                    Symptom.Brechreiz,
+                    Symptom.Erbrechen,
+                    Symptom.WeicherStuhl,
+                    Symptom.KlebrigerStuhl,
+                    Symptom.Bauchschmerzen, // besser waerme
+                    Symptom.VerminderterGeschmackssinn,
+                    Symptom.FaderMundgeschmack,
+                    Symptom.BlanderMundgeschmack,
+                    Symptom.KaelteGefuehl,
+                    Symptom.KeinDurst,
+                    Symptom.WenigDurst,
+                    Symptom.Ausfluss,
+                    Symptom.TrueberUrin,
+                    Symptom.Gelbsucht,
+
+                    Symptom.BlasseZunge,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.DickerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.SchluepfrigerPuls,
+                    Symptom.VerlangsamterPuls
+            )
+    ),
+    MPFeuchtHitze(
+            label = "Hitze und Feuchtigkeit in Milz",
+            sqlCode = "MPFeuchtHitze",
+            organ = ZangOrgan.Spleen,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.DurckgefuehlBauch,
+                    Symptom.Brechreiz,
+                    Symptom.Uebelkeit,
+                    Symptom.Erbrechen,
+                    Symptom.Schlappheit,
+                    Symptom.Schweregefuehl,
+                    Symptom.WenigUrin,
+                    Symptom.KonzentrierterUrin,
+                    Symptom.TrueberUrin,
+                    Symptom.Durst,
+                    Symptom.Bauchschmerzen,
+                    Symptom.AversionWaerme,
+                    Symptom.WeicherStuhl,
+                    Symptom.StinkenderStuhl,
+                    Symptom.Durchfall,
+                    Symptom.AnalesBrennen,
+                    Symptom.Fieber,
+                    Symptom.Gelbsucht,
+
+                    Symptom.RoteZunge,
+                    Symptom.GelberBelag,
+                    Symptom.DickerBelag,
+                    Symptom.SchmierigerBelag,
+                    Symptom.BeschleunigterPuls,
+                    Symptom.SchluepfrigerPuls
+            )
+    ),
 
 }
+
+private val `Symptoms of general Le Wind` = setOf(
+        Symptom.PloetzlicheBewegungen,
+        Symptom.UnkoordinierteBewegungen,
+        Symptom.Zuckungen,
+        Symptom.Tics,
+        Symptom.Augenzucken,
+        Symptom.AllgemeineUnregelmaessigkeiten,
+        Symptom.OberkoerperStaerkerBetroffen,
+        Symptom.KopfStaerkerBetroffen,
+        Symptom.YangLokalisationenStaerkerBetroffen
+)
 
 private val `Symptoms of general Yin Xu` = setOf(
         Symptom.RoteWangenflecken,
