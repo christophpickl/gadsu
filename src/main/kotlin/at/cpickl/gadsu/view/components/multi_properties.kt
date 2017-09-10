@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.view.components
 
+import at.cpickl.gadsu.isEnter
+import at.cpickl.gadsu.isEscape
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.Colors
 import at.cpickl.gadsu.view.ViewNames
@@ -11,6 +13,8 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JButton
@@ -20,6 +24,8 @@ import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 import javax.swing.ScrollPaneConstants
 import javax.swing.event.ListSelectionListener
+
+
 
 interface EditorRendererSwitchable {
     fun changeToEditor()
@@ -52,6 +58,14 @@ class MultiProperties<T : Comparable<T>>(
 
     init {
         changeContainerContent(rendererView)
+
+        editorView.list.addKeyListener(object : KeyAdapter() {
+            override fun keyReleased(event: KeyEvent) {
+                if (event.isEnter || event.isEscape) {
+                    changeToRenderer()
+                }
+            }
+        })
     }
 
     val selectedValues: List<T> get() = editorView.list.selectedValuesList

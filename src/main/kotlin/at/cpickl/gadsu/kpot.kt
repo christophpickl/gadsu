@@ -4,6 +4,7 @@ import com.github.christophpickl.kpotpourri.common.logging.LOG
 import java.awt.Color
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
+import java.awt.event.KeyEvent
 import java.util.regex.Pattern
 import javax.swing.JFrame
 import javax.swing.JTextField
@@ -53,3 +54,6 @@ fun <T : JTextField> T.validateMailEntered() = apply {
         }
     })
 }
+
+val KeyEvent.isEnter get() = keyCode == KeyEvent.VK_ENTER
+val KeyEvent.isEscape get() = keyCode == KeyEvent.VK_ESCAPE
