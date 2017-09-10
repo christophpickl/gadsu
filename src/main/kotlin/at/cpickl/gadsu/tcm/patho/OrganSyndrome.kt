@@ -1,12 +1,7 @@
 package at.cpickl.gadsu.tcm.patho
 
 /*
-TODOs
-- alle tasktags durchgehen
-- gruppe MISC aufloesen soweit wie moeglich
-- manche symptoms includen andere
-- nochmal alles durchgehen, manche gruppierungen passen nicht
-
+TODOs:
 - manche symtpoms haben Qi/Blut/Yin/Yang bezug, manche starke Zang, manche typisch fuer element
 - CLI app schreiben, die auswertung printed; zb welche symptoms nur ein zang betreffen, ...
 - 9er gruppe finden (auch zukuenftige beruecksichtigen)
