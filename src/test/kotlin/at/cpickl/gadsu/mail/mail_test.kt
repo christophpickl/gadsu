@@ -1,5 +1,7 @@
 package at.cpickl.gadsu.mail
 
+import at.cpickl.gadsu.isNotValidMail
+import at.cpickl.gadsu.isValidMail
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.testng.annotations.DataProvider
