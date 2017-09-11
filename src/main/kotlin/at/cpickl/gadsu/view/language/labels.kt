@@ -13,7 +13,7 @@ object Labels {
     val XProps: XPropsLabels get() = XPropsLabels_DE //LabelsLanguageFinder.find(XPropsLabels::class.java)
 
     val Buttons_DE = object : Buttons {
-        override val Insert = "Neu anlegen"
+        override val Insert = "Anlegen"
         override val Update = "Speichern"
         override val Back = "Zur\u00fcck"
     }

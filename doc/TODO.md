@@ -1,4 +1,7 @@
 
+* [10] recent mail liste fuehren (sowas wie templates); kann sie laden, speichern, loeschen (evtl benennen);
+    - man sieht wen man was geschickt hat (achtung beim handeln von inzwischen deleted clients!)
+* [10] sich umschauen nach einem alternative doodle anbieter mit gscheiter API
 * (2) prefs von bulk mail nicht in prefs window, sondern als "..." button in "bulk mail window"
 * (20) evtl nicht wirklich loeschen, sondern nur mark as deleted?! (oder zumindest in backup table schieben?!) 
 * (2) @UI: client view die tabs alle mit CMD+number ansprechbar (implizit sobald tab hinzugefuegt wird, weil daweil is es haendisch deshalb funkts fuern assistent nicht!) 

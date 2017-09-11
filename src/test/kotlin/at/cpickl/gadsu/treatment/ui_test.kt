@@ -5,6 +5,7 @@ import at.cpickl.gadsu.testinfra.LogTestListener
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.ui.UiTest
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
+import at.cpickl.gadsu.view.language.Labels
 import com.github.christophpickl.kpotpourri.test4k.skip
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.equalTo
@@ -149,11 +150,11 @@ class TreatmentUiTest : UiTest() {
     fun `When creating a new treatment, then the button labels change`() {
         saveClient(client)
         driver.openNewButton.click()
-        driver.assertSaveButtonLabel("Neu anlegen")
+        driver.assertSaveButtonLabel(Labels.Buttons.Insert)
         driver.inputNote.text = "a"
 
         driver.saveButton.click()
-        driver.assertSaveButtonLabel("Speichern")
+        driver.assertSaveButtonLabel(Labels.Buttons.Update)
         assertThat(not(driver.saveButton.isEnabled))
     }
 

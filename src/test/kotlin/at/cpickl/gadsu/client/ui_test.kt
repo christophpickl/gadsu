@@ -58,10 +58,10 @@ class ClientUiTest : UiTest() {
 
     fun `save client should change save button text`() {
         with(driver) {
-            assertSaveButtonTextEquals("Neu anlegen") // sanity check
+            assertSaveButtonTextEquals(Labels.Buttons.Insert) // sanity check
 
             saveFullClient(client)
-            assertSaveButtonTextEquals("Speichern")
+            assertSaveButtonTextEquals(Labels.Buttons.Update)
 
             assertViewContains(client)
             assertListContains(client)
