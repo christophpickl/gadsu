@@ -1,6 +1,8 @@
 package at.cpickl.gadsu.preferences.view
 
+import at.cpickl.gadsu.client.view.ThresholdResult
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.color
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.KTab
@@ -60,7 +62,7 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
         addDescriptiveFormInput("Behandlungsziel*", inpTreatmentGoal, "Setze dir ein Ziel wieviele (unprotokollierte) Behandlungen du schaffen m\u00f6chtest.")
 
-        addDescriptiveFormInput("Threshold", initPanelThreshold(), "Anzahl der Tage zur Einfärbung der Cooldown Leiste.",
+        addDescriptiveFormInput("Einfärbungsgrenzen", initPanelThreshold(), "Anzahl der Tage zur Einfärbung der Farbleiste für Klienten.",
                 GridBagFill.None, addTopInset = VGAP_BETWEEN_COMPONENTS)
 
         addDescriptiveFormInput("Programm Ordner", inpApplicationDirectory, "Hier werden die progamm-internen Daten gespeichert.",
@@ -78,11 +80,12 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
         layout = BoxLayout(this, BoxLayout.X_AXIS)
         transparent()
 
-        add(JLabel("Achtung / Orange"))
+
+        add(JLabel("${ThresholdResult.Attention.label}: ").color(ThresholdResult.Attention.color))
         add(inpThresholdAttention)
-        add(JLabel("Warnung / Rot"))
+        add(JLabel("${ThresholdResult.Warn.label}: ").color(ThresholdResult.Warn.color))
         add(inpThresholdWarn)
-        add(JLabel("Fatal / Lila"))
+        add(JLabel("${ThresholdResult.Fatal.label}: ").color(ThresholdResult.Fatal.color))
         add(inpThresholdFatal)
     }
 
@@ -105,7 +108,7 @@ class PrefsTabGeneral(swing: SwingFactory) : PrefsTab("Allgemein") {
 
 }
 
-class PrefsTabConnectivity : PrefsTab("Connectivity") {
+class PrefsTabConnectivity : PrefsTab("Netzwerk") {
 
     val inpProxy = JTextField()
     val inpGcalName = JTextField()
@@ -121,7 +124,7 @@ class PrefsTabConnectivity : PrefsTab("Connectivity") {
             inputAnchor = GridBagConstraints.NORTHWEST).apply {
         border = BorderFactory.createEmptyBorder(10, HGAP_FROM_WINDOW, 0, HGAP_FROM_WINDOW)
 
-        addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst,<br/>dann konfiguriere diesen bitte hier. (z.B.: <tt>proxy.heim.at:8080</tt>)")
+        addDescriptiveFormInput("HTTP Proxy*", inpProxy, "Falls du \u00fcber einen Proxy ins Internet gelangst, dann konfiguriere diesen bitte hier.,br/>Z.B.: <tt>proxy.heim.at:8080</tt>")
         addDescriptiveFormInput("Google Calendar*", inpGcalName, "Trage hier den Kalendernamen ein um die Google Integration einzuschalten.")
         addDescriptiveFormInput("GMail Addresse", inpGmailAddress, "Trage hier deine GMail Adresse ein für das Versenden von E-Mails.")
         addDescriptiveFormInput("Google API ID", inpGapiClientId, "Um die Google API nutzen zu können, brauchst du eine Zugangs-ID.<br/>" +

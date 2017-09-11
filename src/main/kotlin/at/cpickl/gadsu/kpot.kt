@@ -7,6 +7,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.KeyEvent
 import java.util.regex.Pattern
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JTextField
 import javax.swing.UIManager
 
@@ -58,3 +59,7 @@ fun <T : JTextField> T.validateMailEntered() = apply {
 val KeyEvent.isEnter get() = keyCode == KeyEvent.VK_ENTER
 val KeyEvent.isEscape get() = keyCode == KeyEvent.VK_ESCAPE
 val KeyEvent.isW get() = keyCode == KeyEvent.VK_W
+
+fun JLabel.color(newForeground: Color) = apply {
+    foreground = newForeground
+}

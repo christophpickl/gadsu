@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client.view
 
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
+import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.preferences.ThresholdPrefData
 import at.cpickl.gadsu.view.Colors
@@ -85,8 +86,8 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, result: ThresholdResult)
 
     var labelColor = Color.BLACK!!
     private val labelText = labelTextForRecentTreatment(daysSinceLastTreatment)
-    private val colorFilling = result.color1
-    private val colorBorder = result.color2
+    private val colorFilling = result.color
+    private val colorBorder = result.colorDarker
 
     init {
         enforceSize(138, 12)
@@ -108,10 +109,14 @@ class RecentTreatmentPanel(daysSinceLastTreatment: Int, result: ThresholdResult)
 
 }
 
-enum class ThresholdResult(val color1: Color, val color2: Color) {
-    GotNextAppointment(Color.GRAY, Color.BLACK),
-    Ok(Colors.byHex("02bb1c"), Colors.byHex("015d0e")), // green
-    Attention(Colors.byHex("e0b520"), Colors.byHex("705a10")), // orange
-    Warn(Colors.byHex("cb3412"), Colors.byHex("651a09")), // red
-    Fatal(Colors.byHex("9512cb"), Colors.byHex("4a0965")); // lila
+enum class ThresholdResult(
+        override val label: String,
+        val color: Color,
+        val colorDarker: Color
+) : Labeled {
+    GotNextAppointment("Bevorstehend", Color.GRAY, Color.BLACK),
+    Ok("Okay", Colors.byHex("02bb1c"), Colors.byHex("015d0e")), // green
+    Attention("Achtung", Colors.byHex("e0b520"), Colors.byHex("705a10")), // orange
+    Warn("Warnung", Colors.byHex("cb3412"), Colors.byHex("651a09")), // red
+    Fatal("Kritisch", Colors.byHex("9512cb"), Colors.byHex("4a0965")); // lila
 }
