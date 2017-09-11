@@ -34,7 +34,7 @@ enum class OrganSyndrome(
                     Symptom.Kurzatmigkeit,
                     Symptom.Husten,
                     Symptom.DuennerSchleim,
-                    Symptom.VermehrterSchleim,
+                    Symptom.VielSchleim,
                     Symptom.Asthma,
                     Symptom.FlacheAtmung,
 
@@ -181,7 +181,7 @@ enum class OrganSyndrome(
             symptoms = `Symptoms of general LuSchleim` + setOf(
                     Symptom.WeisserSchleim,
                     Symptom.TrueberSchleim,
-                    Symptom.ReichlichSchleim,
+                    Symptom.VielSchleim,
                     Symptom.Blaesse,
                     Symptom.Muedigkeit,
                     Symptom.KaelteGefuehl,
@@ -196,7 +196,7 @@ enum class OrganSyndrome(
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of general LuSchleim` + setOf(
                     Symptom.GelberSchleim,
-                    Symptom.ReichlichSchleim,
+                    Symptom.VielSchleim,
                     Symptom.Fieber,
                     Symptom.HitzeZeichen,
                     Symptom.GelberBelag,
@@ -404,7 +404,7 @@ enum class OrganSyndrome(
                     Symptom.BlaufaerbungGesicht,
                     Symptom.BlaufaerbungNaegeln,
 
-                    Symptom.LivideZunge,
+                    Symptom.VioletteZunge,
                     Symptom.VioletteZungenflecken,
                     Symptom.DuennerBelag,
 
@@ -431,7 +431,7 @@ enum class OrganSyndrome(
                     Symptom.FersenSchmerzen,
                     Symptom.VermehrteLibido,
                     Symptom.SexuelleTraeme,
-                    Symptom.VorzeitigerSamenerguss,
+                    Symptom.VerfruehteEjakulation,
                     Symptom.NaechtlicheEjakulation,
                     Symptom.MenstruationBeeinflusst,
                     Symptom.GedaechtnisStoerungen,
@@ -515,7 +515,7 @@ enum class OrganSyndrome(
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
                     Symptom.Spermatorrhoe,
-                    Symptom.NaechtlicherSamenverlust,
+                    Symptom.NaechtlicheEjakulation,
                     Symptom.SexuelleTraeume,
                     Symptom.VerfruehteEjakulation,
                     Symptom.Ausfluss,
@@ -726,7 +726,7 @@ enum class OrganSyndrome(
                     Symptom.Knoten,
                     Symptom.Tumore,
                     Symptom.LeberVergroesserung,
-                    Symptom.Milzvergroesserung,
+                    Symptom.MilzVergroesserung,
                     Symptom.DunkleGesichtsfarbe,
                     Symptom.StumpfeGesichtsfarbe,
                     Symptom.GestauteVenen,
@@ -796,7 +796,7 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = `Symptoms of general Le Wind` + setOf(// TODO + ueberfluss-hitze
-                    Symptom.Kraempfe, // spasmen
+                    Symptom.Kraempfe,
                     Symptom.Koma,
                     Symptom.Delirium,
 
@@ -912,7 +912,7 @@ enum class OrganSyndrome(
                     Symptom.Kontraktionen,
                     Symptom.WaermeErleichtert,
                     Symptom.Ausfluss,
-                    Symptom.Infertilitaet,
+                    Symptom.Unfruchtbarkeit,
                     Symptom.UntenZiehendeHoden,
                     Symptom.Impotenz,
                     Symptom.Menstruationskraempfe,
@@ -1005,7 +1005,6 @@ enum class OrganSyndrome(
             symptoms = MPYangXu.symptoms + setOf(
                     Symptom.UntenZiehendeBauchorgane,
                     Symptom.Schweregefuehl,
-                    Symptom.OrgansenkungUnterleibsorgane,
                     Symptom.Hernien,
                     Symptom.Haemorrhoiden
             )
@@ -1146,7 +1145,7 @@ private val `Symptoms of general LuSchleim` = setOf(
         Symptom.Atemnot,
         Symptom.Asthma,
         Symptom.Husten,
-        Symptom.ReichlichSchleim,
+        Symptom.VielSchleim,
         Symptom.RasselndeKehle,
         Symptom.WenigAppetit,
         Symptom.Breichreiz,
