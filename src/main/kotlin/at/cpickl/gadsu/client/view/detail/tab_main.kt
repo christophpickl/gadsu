@@ -11,7 +11,6 @@ import at.cpickl.gadsu.validateMailEntered
 import at.cpickl.gadsu.view.Fields
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.addFormInput
-import at.cpickl.gadsu.view.components.DisabledTextField
 import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
@@ -19,6 +18,7 @@ import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.titledBorder
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
@@ -26,7 +26,6 @@ import org.joda.time.DateTime
 import org.joda.time.Years
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.FlowLayout
 import java.awt.GridBagConstraints
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -53,8 +52,7 @@ class ClientTabMain(
     val inpNickNameInt = fields.newTextField("Spitzname (int.)", { it.nickNameInt }, ViewNames.Client.InputNickNameInt)
     val inpGender = fields.newComboBox(Gender.Enum.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
-    val outAge = JLabel().bold()
-    val outStarsign = DisabledTextField()
+    private val outNextToBirthday = JLabel().bold()
     val inpCountryOfOrigin = fields.newTextField("Geburtsort", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Wohnort", { it.origin }, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.Enum.orderedValues, initialClient.relationship, "Beziehungsstatus", { it.relationship }, ViewNames.Client.InputRelationship)
@@ -81,8 +79,7 @@ class ClientTabMain(
     init {
         debugColor = Color.ORANGE
 
-        val baseForm = FormPanel()
-        with(baseForm) {
+        val baseForm = FormPanel().apply {
             titledBorder("Basisdaten")
             debugColor = Color.CYAN
             addFormInput(inpFirstName)
@@ -90,21 +87,29 @@ class ClientTabMain(
             addFormInput(inpNickNameInt)
             addFormInput(inpNickNameExt)
             addFormInput(inpGender)
-//            addFormInput(inpBirthday)
-            addFormInput(inpBirthday.formLabel, JPanel(FlowLayout(FlowLayout.LEFT)).apply {
-                transparent()
+            addFormInput(inpBirthday.formLabel, GridPanel().apply {
+                c.fill = GridBagConstraints.VERTICAL
+                c.weightx = 0.0
                 add(inpBirthday.toComponent())
-                add(outAge)
+
+                c.gridx++
+                c.insets = Pad.LEFT
+                outNextToBirthday.enforceWidth(140)
+                add(outNextToBirthday)
+
+                c.gridx++
+                c.insets = Pad.NONE
+                c.fill = GridBagConstraints.BOTH
+                c.weightx = 1.0
+                add(JPanel().transparent()) // hacky di hack bumbum
             })
 
-            addFormInput("Sternzeichen", outStarsign)
             addFormInput(inpCountryOfOrigin)
             addFormInput(inpOrigin)
             addFormInput(inpRelationship)
             addFormInput(inpJob)
             addFormInput(inpChildren)
             addFormInput(inpHobbies)
-
         }
 
         val contactForm = FormPanel().apply {
@@ -189,8 +194,9 @@ class ClientTabMain(
         log.trace("updateFields(client={})", client)
         fields.updateAll(client)
 
-        outAge.text = if (client.birthday == null) "" else Years.yearsBetween(client.birthday, DateTime.now()).years.toString() + " Jahre"
-        outStarsign.text = if (client.birthday == null) "" else StarSignCalculator.signFor(client.birthday).label
+        outNextToBirthday.text = if (client.birthday == null) "" else {
+            Years.yearsBetween(client.birthday, DateTime.now()).years.toString() + " J. (" + StarSignCalculator.signFor(client.birthday).label + ")"
+        }
     }
 
 }

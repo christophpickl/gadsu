@@ -10,3 +10,4 @@
 * (1) add global dummy data (different client with lots of values) -> reuse in development data reset and all of those main-classes
 * (2) stack trace anzeigen; log file path clickable machen
 - (1) remove language support again
+* (3) chinese star sign calculator
