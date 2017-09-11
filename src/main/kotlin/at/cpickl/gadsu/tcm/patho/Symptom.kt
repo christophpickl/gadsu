@@ -211,8 +211,8 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class HoerenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Hoeren, source)
 
-    object LeichterTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // MINOR ===> Ni
-    object StarkerTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // MINOR ===> Le
+    object LeichterTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // ===> Ni
+    object StarkerTinnitus : HoerenSymptom(NOT_IMPLEMENTED) // ===> Le
     object Tinnitus : HoerenSymptom(NOT_IMPLEMENTED)
     object Hoerverlust : HoerenSymptom(NOT_IMPLEMENTED)
     object HoervermoegenVermindert : HoerenSymptom(NOT_IMPLEMENTED)
@@ -437,8 +437,7 @@ sealed class Symptom(
     object KaelteGefuehl : TemperaturSymptom(NOT_IMPLEMENTED)
     object WaermeErleichtert : TemperaturSymptom(NOT_IMPLEMENTED)
     object Fieber : TemperaturSymptom(NOT_IMPLEMENTED)
-    // TODO #115 dieses sollte dann auf viele andere symptoms matchen
-    object HitzeZeichen : TemperaturSymptom(NOT_IMPLEMENTED)
+    object HitzeZeichen : TemperaturSymptom(NOT_IMPLEMENTED) // MINOR dieses sollte dann auf viele andere symptoms matchen
     object KalteHaende : TemperaturSymptom(NOT_IMPLEMENTED)
     object KalteFuesse : TemperaturSymptom(NOT_IMPLEMENTED)
     object KalterBauch : TemperaturSymptom(NOT_IMPLEMENTED)
@@ -583,7 +582,7 @@ sealed class Symptom(
     object SchnellerPuls : PulsSymptom(NOT_IMPLEMENTED)
     object SaitenfoermigerPuls : PulsSymptom(NOT_IMPLEMENTED) // = gespannt
     object TieferPuls : PulsSymptom(NOT_IMPLEMENTED)
-    object UnregelmaessigerPuls : PulsSymptom(NOT_IMPLEMENTED) // = "intermittierend" // MINOR leitsymptom He
+    object UnregelmaessigerPuls : PulsSymptom(NOT_IMPLEMENTED) // "intermittierend" // MINOR leitsymptom He
     object UeberflutenderPuls : PulsSymptom(NOT_IMPLEMENTED)
     object VerlangsamterPuls : PulsSymptom(NOT_IMPLEMENTED)
     object VollerPuls : PulsSymptom(NOT_IMPLEMENTED)
@@ -650,7 +649,6 @@ enum class SymptomCategory {
     Misc,
     Zunge,
     Puls,
-
     Trinken,
     Urin,
     Essen,
@@ -658,33 +656,27 @@ enum class SymptomCategory {
     Stuhl,
     Schleim,
     Schweiss,
-
     Hoeren,
     Sehen,
     Sprechen,
     Atmung,
-
     Mens,
     Sex,
     Blut,
-
     Emotion,
     Psycho,
     Energie,
     Schmerzen,
     Temperatur,
-
     Farbe,
     Gesicht,
-
     Schlaf,
-
     Frau,
     Mann,
-
     Niere,
     Leber,
     WasserPatho
     ;
 }
+
 

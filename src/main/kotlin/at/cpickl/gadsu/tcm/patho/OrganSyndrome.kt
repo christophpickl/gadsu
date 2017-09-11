@@ -815,7 +815,7 @@ enum class OrganSyndrome(
             sqlCode = "LeWindLeYang",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
+            symptoms = LeYinXu.symptoms + LeBlutXu.symptoms + setOf(
                     Symptom.Schwindel,
                     Symptom.Schwanken,
                     Symptom.KopfUnwillkuerlichBewegt,
@@ -824,7 +824,6 @@ enum class OrganSyndrome(
                     Symptom.Desorientiertheit,
                     Symptom.Bewusstseinsverlust,
                     Symptom.Sprachstoerungen,
-                    // TODO + YinMangel + BlutMangel
 
                     Symptom.RoteZunge,
                     Symptom.WenigBelag,
@@ -837,12 +836,11 @@ enum class OrganSyndrome(
             sqlCode = "LeWindBlutXu",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
+            symptoms = LeBlutXu.symptoms + setOf(
                     Symptom.Zittern,
                     Symptom.Tics,
                     Symptom.Augenzucken,
                     Symptom.KopfUnwillkuerlichBewegt,
-                    // TODO + blut mangel
                     Symptom.Sehstoerungen,
                     Symptom.Schwindel,
                     Symptom.Benommenheit,
