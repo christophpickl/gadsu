@@ -18,6 +18,7 @@ import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.ListSelectionModel
 
 
 class TreatmentList @Inject constructor(
@@ -34,6 +35,8 @@ class TreatmentList @Inject constructor(
         initSinglePopup("L\u00f6schen", ::DeleteTreatmentEvent)
         initDoubleClicked(::OpenTreatmentEvent)
         initEnterPressed(::OpenTreatmentEvent)
+
+        selectionMode = ListSelectionModel.SINGLE_SELECTION
     }
 
 }
