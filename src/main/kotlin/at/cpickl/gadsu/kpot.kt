@@ -57,3 +57,4 @@ fun <T : JTextField> T.validateMailEntered() = apply {
 
 val KeyEvent.isEnter get() = keyCode == KeyEvent.VK_ENTER
 val KeyEvent.isEscape get() = keyCode == KeyEvent.VK_ESCAPE
+val KeyEvent.isW get() = keyCode == KeyEvent.VK_W

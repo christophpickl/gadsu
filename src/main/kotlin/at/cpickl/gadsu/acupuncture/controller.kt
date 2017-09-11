@@ -21,7 +21,7 @@ open class AcupunctureController @Inject constructor(
 
         frame.addCloseListener {
             log.trace("frame closing")
-            frame.close()
+            frame.closeWindow()
         }
 
         frame.list.addListSelectionListener {

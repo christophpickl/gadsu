@@ -12,7 +12,7 @@ import at.cpickl.gadsu.view.components.EventButton
 import at.cpickl.gadsu.view.components.MyFrame
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.transparent
 import com.github.christophpickl.kpotpourri.common.string.nullIfEmpty
 import com.google.common.eventbus.EventBus
@@ -63,7 +63,7 @@ class PreferencesSwingWindow @Inject constructor(
     override val btnCheckUpdate: EventButton = tabGeneral.btnCheckUpdate
 
     init {
-        registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
 
         name = ViewNames.Preferences.Window
         addCloseListener { doClose(false) }

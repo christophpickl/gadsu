@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.swing
 
+import at.cpickl.gadsu.global.SHORTCUT_MODIFIER
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.view.ViewNames
 import java.awt.Color
@@ -24,16 +25,26 @@ import javax.swing.JScrollPane
 import javax.swing.KeyStroke
 
 class MyKeyListener(
+        val keyStrokes: List<KeyStroke>,
         val actionCommand: String,
-        val keyStroke: KeyStroke,
         val onTriggered: (e: ActionEvent) -> Unit
 ) {
     companion object {
-        fun onEscape(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) = MyKeyListener(actionCommand, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), onTriggered)
+        fun onEscape(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) =
+                MyKeyListener(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), actionCommand, onTriggered)
+        fun onShortcutW(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) =
+                MyKeyListener(KeyStroke.getKeyStroke(KeyEvent.VK_W, SHORTCUT_MODIFIER), actionCommand, onTriggered)
+        fun onEscapeOrShortcutW(actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) =
+                MyKeyListener(listOf(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                        KeyStroke.getKeyStroke(KeyEvent.VK_W, SHORTCUT_MODIFIER)
+                ), actionCommand, onTriggered)
     }
 
+    constructor(keyStroke: KeyStroke, actionCommand: String, onTriggered: (e: ActionEvent) -> Unit) : this(listOf(keyStroke), actionCommand, onTriggered)
+
     override fun toString(): String {
-        return "MyKeyListener(actionCommand='$actionCommand', keyStroke=$keyStroke)"
+        return "MyKeyListener(actionCommand='$actionCommand', keyStrokes=$keyStrokes)"
     }
 
 }
@@ -47,9 +58,12 @@ class RegisteredKeyListenerImpl(
 ) : RegisteredKeyListener {
 
     private val log = LOG(javaClass)
+
     fun registerYourself() {
         log.trace("registerYourself() ... listener={}", listener)
-        inputMap.put(listener.keyStroke, listener.actionCommand)
+        listener.keyStrokes.forEach {
+            inputMap.put(it, listener.actionCommand)
+        }
         actionMap.put(listener.actionCommand, object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent) {
                 listener.onTriggered.invoke(e)
@@ -59,7 +73,9 @@ class RegisteredKeyListenerImpl(
 
     override fun deregisterYourself() {
         log.trace("deregisterYourself() ... listener={}", listener)
-        inputMap.remove(listener.keyStroke)
+        listener.keyStrokes.forEach {
+            inputMap.remove(it)
+        }
         actionMap.remove(listener.actionCommand)
     }
 }

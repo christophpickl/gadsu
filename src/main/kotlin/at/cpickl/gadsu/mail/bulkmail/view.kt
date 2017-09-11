@@ -15,7 +15,7 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
@@ -62,7 +62,7 @@ class BulkMailSwingView @Inject constructor(
     private var yetCreated: Boolean = false
 
     init {
-        registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
         addCloseListener { doClose(true) }
 
         // see ClientList

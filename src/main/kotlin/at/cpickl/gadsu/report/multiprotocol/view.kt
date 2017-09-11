@@ -11,7 +11,7 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.VFillFormPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.scrolled
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -45,7 +45,7 @@ class MultiProtocolSwingWindow @Inject constructor(
         log.debug("creating new window instance (should be a prototype and received via a provider by controller.")
 
         rootPane.border = BorderFactory.createEmptyBorder(0, 15, 10, 15)!!
-        registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
         addCloseListener { closeWindow() }
         isResizable = false
 

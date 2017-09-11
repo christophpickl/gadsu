@@ -18,19 +18,17 @@ fun <W> W.registerOnCloseWindow() where W : Window, W : ClosableWindow {
     }
 }
 
-fun <W : ClosableWindow> W.registerCloseOnEscape(): W {
+fun <W : ClosableWindow> W.registerCloseOnEscape(): W = apply {
+    registerCloseOn(MyKeyListener.onEscape("disposeWindowOnEscape", { closeWindow() }))
+}
+
+fun <W : ClosableWindow> W.registerCloseOnEscapeOrShortcutW(): W = apply {
+    registerCloseOn(MyKeyListener.onEscapeOrShortcutW("disposeWindowOnEscapeOrShortcutW", { closeWindow() }))
+}
+
+private fun <W : ClosableWindow> W.registerCloseOn(listener: MyKeyListener): W = apply {
     val component = getContentPane() as JComponent // hacky-da-hack ;)
-    component.registerMyKeyListener(MyKeyListener.onEscape("disposeMyWindow", { closeWindow() }))
-//    val inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-//    val actionMap = component.actionMap
-//
-//    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "dispose")
-//    actionMap.put("dispose", object : AbstractAction() {
-//        override fun actionPerformed(e: ActionEvent?) {
-//            closeWindow()
-//        }
-//    })
-    return this
+    component.registerMyKeyListener(listener)
 }
 
 fun JFrame.packCenterAndShow() {

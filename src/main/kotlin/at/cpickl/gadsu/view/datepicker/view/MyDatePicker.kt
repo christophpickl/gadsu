@@ -15,7 +15,7 @@ import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.changeBackgroundForASec
 import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.transparent
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -144,7 +144,8 @@ private class EnterDateByKeyboardDialog(
     private val inpText = JTextField(10)
 
     init {
-        registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
+
         val panel = GridPanel()
         panel.emptyBorderForDialogs()
 

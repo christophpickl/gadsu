@@ -24,10 +24,10 @@ import at.cpickl.gadsu.view.components.panels.FormPanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.logic.ModificationAware
 import at.cpickl.gadsu.view.logic.ModificationChecker
-import at.cpickl.gadsu.view.swing.MyKeyListener
+import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.registerMyKeyListener
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -38,15 +38,14 @@ import java.net.URL
 import javax.inject.Inject
 import javax.swing.BorderFactory
 import javax.swing.JButton
-import javax.swing.JComponent
 import javax.swing.JLabel
 
-interface AppointmentWindow {
+interface AppointmentWindow : ClosableWindow{
     fun changeCurrent(newCurrent: Appointment)
     fun isShowing(appointment: Appointment): Boolean
     fun showWindow()
     fun hideWindow()
-    fun close()
+    fun destroyWindow()
 }
 
 class SwingAppointmentWindow @Inject constructor(
@@ -61,7 +60,7 @@ class SwingAppointmentWindow @Inject constructor(
         // but if do strange things happen: not closeable anymore as no event is properly dispatched to controller :-/
 
 //) : MyDialog(mainFrame.asJFrame(), "Termin"), AppointmentWindow, ModificationAware {
-) : MyFrame("Termin"), AppointmentWindow, ModificationAware {
+) : MyFrame("Termin"), AppointmentWindow, ModificationAware  {
 
     private var current: Appointment = Appointment.insertPrototype("xxx", DateTime(0))
 
@@ -89,7 +88,8 @@ class SwingAppointmentWindow @Inject constructor(
     }
 
     init {
-        (contentPane as JComponent).registerMyKeyListener(MyKeyListener.onEscape("disposeMyWindow", { hideWindow() })) // nah ... registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
+
         val gcalVisible = internetController.isConnected && prefs.preferencesData.gcalName != null
         modificationChecker.disableAll()
 
@@ -164,7 +164,11 @@ class SwingAppointmentWindow @Inject constructor(
 //        isVisible = false // only works for JFrame
     }
 
-    override fun close() {
+    override fun destroyWindow() {
+        hideAndClose()
+    }
+
+    override fun closeWindow() {
         hideAndClose()
     }
 

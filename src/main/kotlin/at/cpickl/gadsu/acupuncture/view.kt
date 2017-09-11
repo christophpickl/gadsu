@@ -11,11 +11,13 @@ import at.cpickl.gadsu.view.components.MyListModel
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.inputs.SearchTextField
 import at.cpickl.gadsu.view.components.panels.GridPanel
+import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.enforceSize
 import at.cpickl.gadsu.view.swing.enforceWidth
 import at.cpickl.gadsu.view.swing.opaque
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import at.cpickl.gadsu.view.toHexString
@@ -31,10 +33,9 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-
 class AcupunctureFrame @Inject constructor(
         val list: AcupunctureList
-) : MyFrame("Akupunkturpunkte") {
+) : MyFrame("Akupunkturpunkte"), ClosableWindow {
 
     val inpSearch = SearchTextField()
 
@@ -43,6 +44,8 @@ class AcupunctureFrame @Inject constructor(
 
     init {
         val panel = GridPanel()
+        registerCloseOnEscapeOrShortcutW()
+
         inpSearch.enforceWidth(200)
         // NOOOOO! list.enforceWidth(200)
 
@@ -114,12 +117,12 @@ class AcupunctureFrame @Inject constructor(
         isVisible = true
     }
 
-    fun close() {
+    override fun closeWindow() {
         isVisible = false
     }
 
     fun destroy() {
-        close()
+        closeWindow()
         dispose()
     }
 

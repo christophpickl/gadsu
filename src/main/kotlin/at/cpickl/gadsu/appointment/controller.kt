@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.appointment
 
-import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.appointment.gcal.GCalException
 import at.cpickl.gadsu.appointment.view.AppointmentWindow
 import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.persistence.ensurePersisted
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.Logged
@@ -50,7 +50,7 @@ open class AppointmentControllerImpl @Inject constructor(
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {
-        window.close()
+        window.destroyWindow()
     }
 
     @Subscribe open fun onOpenAppointmentEvent(event: OpenAppointmentEvent) {

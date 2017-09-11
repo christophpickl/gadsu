@@ -13,7 +13,7 @@ import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.ClosableWindow
 import at.cpickl.gadsu.view.swing.addCloseListener
-import at.cpickl.gadsu.view.swing.registerCloseOnEscape
+import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.scrolled
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
@@ -100,7 +100,7 @@ class SyncReportSwingWindow @Inject constructor(
 
     init {
         addCloseListener { closeWindow() }
-        registerCloseOnEscape()
+        registerCloseOnEscapeOrShortcutW()
 
         contentPane.add(GridPanel().apply {
             border = BorderFactory.createEmptyBorder(10, 15, 10, 15)
