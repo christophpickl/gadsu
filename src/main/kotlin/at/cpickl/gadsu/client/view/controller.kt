@@ -33,7 +33,6 @@ import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.RequestClientPictureSaveEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.CurrentPropertiesChangedEvent
-import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.service.differenceDaysTo
 import at.cpickl.gadsu.treatment.TreatmentChangedEvent
@@ -49,6 +48,7 @@ import at.cpickl.gadsu.view.logic.ChangeBehaviour
 import at.cpickl.gadsu.view.logic.ChangesChecker
 import at.cpickl.gadsu.view.logic.ChangesCheckerCallback
 import at.cpickl.gadsu.view.logic.calculateInsertIndex
+import com.github.christophpickl.kpotpourri.common.logging.LOG
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
@@ -67,7 +67,7 @@ open class ClientViewController @Inject constructor(
         private val dialogs: Dialogs
 ) {
 
-    private val log = LOG(javaClass)
+    private val log = LOG {}
 
     private val changesChecker = ChangesChecker(dialogs, object : ChangesCheckerCallback {
         override fun isModified() = view.detailView.isModified()
@@ -276,7 +276,7 @@ open class ClientViewController @Inject constructor(
 
         try {
             clientService.insertOrUpdate(client)
-        } catch(e: InvalidMailException) {
+        } catch (e: InvalidMailException) {
             dialogs.show(
                     title = "Speichern fehlgeschlagen",
                     message = "Die angegebene Email Adresse ist ungültig: ${client.contact.mail}",

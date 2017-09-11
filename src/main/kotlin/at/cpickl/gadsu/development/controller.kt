@@ -1,7 +1,5 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.global.AppStartupEvent
-import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
@@ -15,6 +13,7 @@ import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.Logged
@@ -124,7 +123,7 @@ open class DevelopmentController @Inject constructor(
                 bus.post(TreatmentCreatedEvent(treatmentService.insert(
                         Treatment.insertPrototype(clientId = saved.id!!, number = 1, date = DateTime.now().minusDays(99))
                 )))
-            } else if (saved.firstName == "Max") {
+            } else if (saved.firstName == Client.REAL_DUMMY.firstName) {
                 val clientId = saved.id!!
                 val clientWithPic = saved.copy(picture = it.picture)
                 clientService.savePicture(clientWithPic)
@@ -206,6 +205,18 @@ open class DevelopmentController @Inject constructor(
                                             after = BloodPressureMeasurement(70, 110, 50)
                                     )
                                 }) }
+                        ),
+                        Treatment.insertPrototype(
+                                clientId = clientId,
+                                number = 5,
+                                date = DateTime.now().minusDays(5),
+                                dynTreatments = emptyList()
+                        ),
+                        Treatment.insertPrototype(
+                                clientId = clientId,
+                                number = 6,
+                                date = DateTime.now().minusDays(6),
+                                dynTreatments = emptyList()
                         )
                 ).forEach {
                     treatmentService.insert(it)
@@ -223,13 +234,6 @@ open class DevelopmentController @Inject constructor(
 
     @Subscribe open fun onDevelopmentClearDataEvent(event: DevelopmentClearDataEvent) {
         deleteAll()
-    }
-
-    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
-//        val max = clientService.findAll().first { it.firstName == "Max" }
-//        bus.post(ClientSelectedEvent(max, null))
-//        val treatment = treatmentService.findAllFor(max).first { it.number == 1 }
-//        bus.post(OpenTreatmentEvent(treatment))
     }
 
     @Subscribe open fun onQuitEvent(event: QuitEvent) {

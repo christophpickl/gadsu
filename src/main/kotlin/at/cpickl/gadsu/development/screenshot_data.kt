@@ -1,6 +1,5 @@
 package at.cpickl.gadsu.development
 
-import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentSavedEvent
 import at.cpickl.gadsu.appointment.AppointmentService
@@ -15,7 +14,9 @@ import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.image.MyImage
+import at.cpickl.gadsu.image.bySrcTestFile
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.treatment.Treatment
@@ -24,7 +25,6 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import com.github.christophpickl.kpotpourri.common.numbers.forEach
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
-import java.io.File
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.swing.SwingUtilities
@@ -103,18 +103,35 @@ class ScreenshotDataInserter @Inject constructor(
             val saved = clientService.insertOrUpdate(it)
             updatePic(saved, it.picture)
 
-            if (it.firstName == "Max") {
-                val clientId = saved.id!!
-                val today = DateTime.now()
+            val clientId = saved.id!!
+            val today = DateTime.now()
 
+            if (it.firstName == "Pam") {
                 TreatmentCreator(clientId)
+                        .add(today.minusDays(1))
+                        .insert(treatmentService, bus)
+            } else if (it.firstName == "Queen") {
+                    TreatmentCreator(clientId)
+                            .add(today.minusDays(20))
+                            .insert(treatmentService, bus)
+            } else if (it.firstName == "Anna") {
+                    TreatmentCreator(clientId)
+                            .add(today.minusDays(40))
+                            .insert(treatmentService, bus)
+
+
+            } else if (it.firstName == "Maximilian") {
+                TreatmentCreator(clientId)
+                        .add(today.minusWeeks(6))
+                        .add(today.minusWeeks(5))
+                        .add(today.minusWeeks(4))
                         .add(today.minusWeeks(3))
                         .add(today.minusWeeks(2))
                         .add(today.minusWeeks(1))
                         .insert(treatmentService, bus)
 
                 // haha, some nice hack to get the proper number displayed in list (event dispatching is delayed, therefor DB count will return 3, and then treat created event will increase to 6! ;)
-                SwingUtilities.invokeLater { 3.forEach { clientListView.treatmentCountDecrease(clientId) } }
+                SwingUtilities.invokeLater { 6.forEach { clientListView.treatmentCountDecrease(clientId) } }
 
                 arrayOf(
                         Appointment.insertPrototype(clientId, today.plusWeeks(1)),
@@ -127,7 +144,7 @@ class ScreenshotDataInserter @Inject constructor(
         }
     }
 
-    private fun pic(fileName: String) = MyImage.byFile(File("src/test/resources/gadsu_test/$fileName"))
+    private fun pic(fileName: String) = MyImage.bySrcTestFile(fileName)
 
     private fun updatePic(saved: Client, picture: MyImage) {
         if (picture.isUnsavedDefaultPicture) {

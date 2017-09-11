@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.image
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.Gender
+import at.cpickl.gadsu.global.GadsuException
 import sun.awt.image.ToolkitImage
 import java.awt.Dimension
 import java.awt.image.BufferedImage
@@ -50,6 +50,8 @@ fun BufferedImage.toMyImage(): MyImage = ImageIconImage(ImageIcon(this))
 fun File.toMyImage(): MyImage = FileImage(this)
 fun String.toMyImage(): MyImage = ClasspathImage(this)
 fun ByteArray.toMyImage(): MyImage = this.readBufferedImage().toMyImage()
+
+fun MyImage.Companion.bySrcTestFile(fileName: String) = MyImage.byFile(File("src/test/resources/gadsu_test/$fileName"))
 
 val Gender.defaultImage: MyImage get() =
 when (this) {
