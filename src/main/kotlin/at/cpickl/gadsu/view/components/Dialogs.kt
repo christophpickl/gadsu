@@ -36,6 +36,7 @@ class Dialogs @Inject constructor(
         if (type == DialogType.ERROR) {
             log.debug("ERROR dialog showing: {} - {}", title, message)
         }
+        // MINOR rewrite dialog, use custom content in order to avoid having veeeeeeery wide dialogs because of very looooooong text
         // could enable html (<br>) in Dialogs, but would need to rewrite dialog from scratch...
         val selected = JOptionPane.showOptionDialog(overrideOwner ?: frame?.asJFrame(), message, title,
                 JOptionPane.DEFAULT_OPTION, type.swingConstant, null, buttonLabels, defaultButton?:buttonLabels[0])

@@ -1,11 +1,12 @@
 package at.cpickl.gadsu.appointment.gcal.sync
 
-import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.appointment.AppointmentService
+import at.cpickl.gadsu.appointment.gcal.CalendarNameInvalidException
 import at.cpickl.gadsu.appointment.gcal.GCalService
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
@@ -64,7 +65,7 @@ open class GCalControllerImpl @Inject constructor(
                 },
                 exceptionTask = { e ->
                     log.error("GCal synchronisation failed!", e)
-                    dialogs.show(DIALOG_TITLE, "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
+                    dialogs.showGCalError()
                 }
         )
     }
@@ -91,7 +92,7 @@ open class GCalControllerImpl @Inject constructor(
                 },
                 exceptionTask = { e ->
                     log.error("GCal import failed!", e)
-                    dialogs.show(DIALOG_TITLE, "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
+                    dialogs.showGCalError()
                     window.closeWindow()
                 }
         )
@@ -102,7 +103,16 @@ open class GCalControllerImpl @Inject constructor(
     }
 
     private fun doTheSync(): SyncReport? {
-        if (!gcal.isOnline) { // this isOnline request got some heavy I/O
+        val isOnline: Boolean
+        try {
+            isOnline = gcal.isOnline // this isOnline request got some heavy I/O
+        } catch(e: CalendarNameInvalidException) {
+            dialogs.show(DIALOG_TITLE, "Ungültigen Kalendarname eingegeben: ${e.calendarName}!\n\n" +
+                    "Verfügbare Kalender:\n${e.availableCalendars}", type = DialogType.ERROR)
+            return null
+        }
+
+        if (!isOnline) {
             dialogs.show(
                     title = DIALOG_TITLE,
                     message = "Du bist nicht mit Google Calender verbunden. Siehe Einstellungen. Neustarten!",
@@ -129,6 +139,10 @@ open class GCalControllerImpl @Inject constructor(
         syncService.import(appointmentsToImport)
 
         log.debug("IMPORT ================================ END")
+    }
+
+    private fun Dialogs.showGCalError() {
+        dialogs.show(DIALOG_TITLE, "Beim Synchronisieren mit Google Calender ist ein Fehler aufgetreten.", type = DialogType.ERROR)
     }
 
 }

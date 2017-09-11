@@ -12,6 +12,7 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.CalendarListEntry
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import org.eclipse.jdt.internal.compiler.parser.Parser.name
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.net.UnknownHostException
@@ -35,10 +36,11 @@ open class InternetConnectionAwareGCalService @Inject constructor(
     private val log = LOG(javaClass)
     private var repo: GCalRepository? = null
 
-    override val isOnline: Boolean get() {
-        initRepo()
-        return repo is RealGCalRepository
-    }
+    override val isOnline: Boolean
+        get() {
+            initRepo()
+            return repo is RealGCalRepository
+        }
 
     override fun listEvents(start: DateTime, end: DateTime): List<GCalEvent> {
         initRepo()
@@ -114,12 +116,17 @@ fun transformCalendarNameToId(calendar: Calendar, name: String): String {
         throw GCalException(e.statusCode, "GCal request failed with status code: ${e.statusCode}", e)
     }
     return calendars.firstOrNull { it.summary == name }?.id ?:
-            throw GadsuException("Could not find calendar by name '$name'! (Available calendars: ${calendars.map { it.summary }.joinToString(", ")})")
+            throw CalendarNameInvalidException(name, calendars)
 }
 
 class GCalException(
         val statusCode: Int,
         message: String,
-        cause: Throwable? = null) : GadsuException("$message (status code = $statusCode)", cause) {
+        cause: Throwable? = null) : GadsuException("$message (status code = $statusCode)", cause)
 
+class CalendarNameInvalidException(
+        val calendarName: String,
+        calendars: List<CalendarListEntry>
+) : GadsuException("Could not find calendar by name '$name'! (Available calendars: ${calendars.map { it.summary }.joinToString(", ")})") {
+    val availableCalendars = calendars.map { it.summary }.joinToString(", ")
 }
