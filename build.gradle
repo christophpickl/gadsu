@@ -39,7 +39,6 @@ buildscript {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.12.0'
         classpath 'com.autoscout24.gradle:gradle-todo-plugin:1.0'
         classpath 'commons-io:commons-io:2.0.1'
-        // for checkTodo to work: https://github.com/AutoScout24/gradle-todo-plugin/issues/2
     }
 }
 

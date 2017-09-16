@@ -18,48 +18,73 @@ enum class ZangOrgan(
         val leadSymptoms: List<Symptom>,
         val functions: List<ZangFunction>
 ) {
-    Lung(
-            meridian = Meridian.Lung,
-            leadSymptoms = listOf(
-                    Symptom.Husten, Symptom.Heiserkeit, Symptom.Stimmbaender
-            ),
+    Liver(meridian = Meridian.Liver,
             functions = listOf(
-                    ZangFunction("Sendet Qi nach außen und unten"),
-                    ZangFunction("Reguliert Wasserbewegung"),
-                    ZangFunction("Pumpfunktion")
-            )
-    ),
-    Spleen(meridian = Meridian.Spleen,
-            leadSymptoms = listOf(
-                // TODO implement us
+                    ZangFunction("Blut speichern"),
+                    ZangFunction("Freier Qi-Fluss"),
+                    ZangFunction("Emotionen harmonisieren"),
+                    ZangFunction("Menstruation harmonisieren"),
+                    ZangFunction("Verdauung harmonisieren"),
+                    ZangFunction("4 vitale Richtungen")
             ),
-            functions = listOf(
-                    ZangFunction("")
+            leadSymptoms = listOf(
+                    Symptom.WechselhaftAllgemein,
+                    Symptom.EmotionalAllgemein,
+                    Symptom.MenstruationAllgemein
             )
     ),
     Heart(meridian = Meridian.Heart,
-            leadSymptoms = listOf(
-
-            ),
             functions = listOf(
-                    ZangFunction("")
+                    ZangFunction("Blut/-gefäße regieren (Zirkulation, Geschmeidigkeit)")
+            ),
+            leadSymptoms = listOf(
+                    Symptom.Palpitationen,
+                    Symptom.Schlafstoerungen,
+                    Symptom.SpracheAllgemein
             )
     ),
-    Liver(meridian = Meridian.Liver,
-            leadSymptoms = listOf(
-
-            ),
+    Spleen(meridian = Meridian.Spleen,
             functions = listOf(
-                    ZangFunction("")
+                    ZangFunction("Transformation, Transportation"),
+                    ZangFunction("Reine rauf, Unreine runter"),
+                    ZangFunction("Blut produzieren"),
+                    ZangFunction("Haltefunktion (Blutgefäße, Organe)")
+            ),
+            leadSymptoms = listOf(
+                    Symptom.VerdauungsProbleme
+            )
+    ),
+    Lung(
+            meridian = Meridian.Lung,
+            functions = listOf(
+                    ZangFunction("Qi und Atmung regieren"),
+                    ZangFunction("Qi und JinYe verteilen"),
+                    ZangFunction("Wasser bewegen"),
+                    ZangFunction("Körperoberfläche herrschen"),
+                    ZangFunction("Blut/-gefäße reinigen"),
+                    ZangFunction("Pumpfunktion")
+            ),
+            leadSymptoms = listOf(
+                    Symptom.Husten,
+                    Symptom.Heiserkeit,
+                    Symptom.Stimmbaender
             )
     ),
     Kidney(meridian = Meridian.Kidney,
-            leadSymptoms = listOf(
-
-            ),
             functions = listOf(
-                    ZangFunction("")
+                    ZangFunction("Jing speichern"),
+                    ZangFunction("Wurzel von Yin und Yang"),
+                    ZangFunction("Wasser regulieren"),
+                    ZangFunction("Qi aus Atmung einfangen")
+            ),
+            leadSymptoms = listOf(
+                    Symptom.LendenBereichAllgemein,
+                    Symptom.KnieAllgemein,
+                    Symptom.FussknoechelAllgemein
             )
     )
     ;
+
+    val syndromes: List<OrganSyndrome> by lazy { OrganSyndrome.values().filter { it.organ == this } }
+
 }

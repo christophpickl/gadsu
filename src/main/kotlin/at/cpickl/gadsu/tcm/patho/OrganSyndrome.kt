@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.tcm.patho
 
+
 /*
 TODOs:
 - manche symtpoms haben Qi/Blut/Yin/Yang bezug, manche starke Zang, manche typisch fuer element
@@ -330,7 +331,7 @@ enum class OrganSyndrome(
                     Symptom.JagenderPuls
             )
     ),
-    HeSchleimBeunruhigt(// psychisches bild
+    HeSchleimFeuerBeunruhigt(// psychisches bild
             label = "Schleim-Feuer beunruhigt das Herz",
             sqlCode = "HeSchleimFeuer",
             organ = ZangOrgan.Heart,
@@ -361,7 +362,7 @@ enum class OrganSyndrome(
                     Symptom.SaitenfoermigerPuls // Le einfluss
             )
     ),
-    HeSchleimVerstopft(
+    HeSchleimKaelteVerstopft(
             label = "Kalter Schleim verstopft die Herzöffnungen",
             sqlCode = "HeSchleimKaelte",
             organ = ZangOrgan.Heart,
@@ -810,7 +811,7 @@ enum class OrganSyndrome(
                     Symptom.SaitenfoermigerPuls
             )
     ),
-    LeWindYang(
+    LeWindYangAuf(
             label = "Leber Wind (Aufsteigendes Leber Yang)",
             sqlCode = "LeWindLeYang",
             organ = ZangOrgan.Liver,
@@ -831,7 +832,7 @@ enum class OrganSyndrome(
                     Symptom.BeschleunigterPuls
             )
     ),
-    LeWindBlut(
+    LeWindBlutXu(
             label = "Leber Wind (Blut Mangel)",
             sqlCode = "LeWindBlutXu",
             organ = ZangOrgan.Liver,
@@ -995,7 +996,7 @@ enum class OrganSyndrome(
                     Symptom.LangsamerPuls
             )
     ),
-    MPQiAbsinken(
+    MPYangXuAbsinkenQi(
             label = "Absinken des Milz Qi",
             sqlCode = "MPQiAbsinken",
             organ = ZangOrgan.Spleen,
@@ -1007,7 +1008,7 @@ enum class OrganSyndrome(
                     Symptom.Haemorrhoiden
             )
     ),
-    MPBlutUnkontrolle(
+    MPYangXuBlutUnkontrolle(
             label = "Milz kann das Blut nicht kontrollieren",
             sqlCode = "MPBlutUnkontrolle",
             organ = ZangOrgan.Spleen,

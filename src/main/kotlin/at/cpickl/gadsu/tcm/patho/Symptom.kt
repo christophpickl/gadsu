@@ -13,7 +13,8 @@ import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 // TADA es gibt unused symptoms!? wie das?!
 sealed class Symptom(
         val category: SymptomCategory,
-        val source: SymptomSource
+        val source: SymptomSource,
+        val label: String = source.label
         // maybe add: weighting: Double ???
 ) {
     companion object {
@@ -34,11 +35,22 @@ sealed class Symptom(
                     .associateBy { (it.source as SymptomSource.PulseSource).property }
         }
 
+        private val zangOrganByLeadSymptom: Map<Symptom, ZangOrgan> by lazy {
+            val map = mutableMapOf<Symptom, ZangOrgan>()
+            ZangOrgan.values().forEach { zang ->
+                zang.leadSymptoms.forEach { symptom ->
+                    map[symptom] = zang
+                }
+            }
+            map
+        }
     }
 
     init {
         allMutable += this
     }
+
+    val leadSymptomFor: ZangOrgan? by lazy { zangOrganByLeadSymptom[this] }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -54,7 +66,7 @@ sealed class Symptom(
         }
 
         object NOT_IMPLEMENTED : SymptomSource() {
-            override val label = "N/A"
+            override val label = "!N/A!"
         }
     }
 
@@ -64,7 +76,7 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class MiscSymptom(source: SymptomSource) : Symptom(SymptomCategory.Misc, source)
 
-    object Palpitationen : MiscSymptom(NOT_IMPLEMENTED)
+    object Palpitationen : MiscSymptom(NOT_IMPLEMENTED) // leitsymptom
     object Erosionen : MiscSymptom(NOT_IMPLEMENTED) // wie krater bei blasen beim spiegelei
 
 
@@ -74,28 +86,33 @@ sealed class Symptom(
     abstract class AtmungSymptom(source: SymptomSource) : Symptom(SymptomCategory.Atmung, source)
 
     // atmen
-    object Asthma : AtmungSymptom(NOT_IMPLEMENTED)
+    object Asthma : AtmungSymptom(NOT_IMPLEMENTED) // MINOR associate with Lu?!
+
     object FlacheAtmung : AtmungSymptom(NOT_IMPLEMENTED)
     object Kurzatmigkeit : AtmungSymptom(NOT_IMPLEMENTED)
     object Atemnot : AtmungSymptom(NOT_IMPLEMENTED)
     object Seufzen : AtmungSymptom(NOT_IMPLEMENTED)
     // trockenheit
-    object Heiserkeit : AtmungSymptom(NOT_IMPLEMENTED)
+    object Heiserkeit : AtmungSymptom(NOT_IMPLEMENTED) // leitsymptom
+
     object TrockenerHals : AtmungSymptom(NOT_IMPLEMENTED)
     object TrockenerRachen : AtmungSymptom(NOT_IMPLEMENTED)
     object TrockeneNase : AtmungSymptom(NOT_IMPLEMENTED)
     object TrockenerMund : AtmungSymptom(NOT_IMPLEMENTED)
     // nase
     object Schnupfen : AtmungSymptom(NOT_IMPLEMENTED)
+
     object VerstopfteNase : AtmungSymptom(NOT_IMPLEMENTED)
     object Nasenbluten : AtmungSymptom(NOT_IMPLEMENTED)
     // husten
-    object Husten : AtmungSymptom(NOT_IMPLEMENTED)
+    object Husten : AtmungSymptom(NOT_IMPLEMENTED) // leitsymptom
+
     object BlutHusten : AtmungSymptom(NOT_IMPLEMENTED)
     object TrockenerHusten : AtmungSymptom(NOT_IMPLEMENTED)
     // misc
     object FroschImHals : AtmungSymptom(NOT_IMPLEMENTED)
-    object Stimmbaender : AtmungSymptom(NOT_IMPLEMENTED)
+
+    object Stimmbaender : AtmungSymptom(NOT_IMPLEMENTED) // leitsymptom
     object KratzenderHals : AtmungSymptom(NOT_IMPLEMENTED)
     object RasselndeKehle : AtmungSymptom(NOT_IMPLEMENTED)
     object Halsschmerzen : AtmungSymptom(NOT_IMPLEMENTED)
@@ -248,6 +265,7 @@ sealed class Symptom(
     object Menstruationskraempfe : MensSymptom(NOT_IMPLEMENTED)
     // blut
     object DunklesMenstruationsblut : MensSymptom(NOT_IMPLEMENTED)
+
     object ZaehesMenstruationsblut : MensSymptom(NOT_IMPLEMENTED)
     object KlumpenInBlut : MensSymptom(NOT_IMPLEMENTED)
     object HelleBlutung : MensSymptom(NOT_IMPLEMENTED)
@@ -258,6 +276,7 @@ sealed class Symptom(
     object Hypermenorrhoe : MensSymptom(NOT_IMPLEMENTED)
     // zyklus
     object Zyklusunregelmaessigkeiten : MensSymptom(NOT_IMPLEMENTED)
+
     object AussetzerMenstruation : MensSymptom(NOT_IMPLEMENTED)
     object VerlaengerterZyklus : MensSymptom(NOT_IMPLEMENTED)
     object KurzeMensZyklen : MensSymptom(NOT_IMPLEMENTED)
@@ -287,11 +306,13 @@ sealed class Symptom(
 
     // kopfschmerzen
     object LeichteKopfschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+
     object Kopfschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object HeftigeKopfschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object KopfschmerzenScheitel : SchmerzenSymptom(NOT_IMPLEMENTED)
     // koerperteile
     object KnieSchmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+
     object FersenSchmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object KreuzSchmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object SchmerzZwerchfell : SchmerzenSymptom(NOT_IMPLEMENTED)
@@ -303,10 +324,12 @@ sealed class Symptom(
     object SchmerzenLumbalregion : SchmerzenSymptom(NOT_IMPLEMENTED)
     // bauch
     object Bauchschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+
     object Unterbauchschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
     object LeichteSchmerzenOberbauch : SchmerzenSymptom(NOT_IMPLEMENTED)
     // misc
     object Muskelschmerzen : SchmerzenSymptom(NOT_IMPLEMENTED)
+
     object StechenderSchmerz : SchmerzenSymptom(NOT_IMPLEMENTED)
     object FixierterSchmerz : SchmerzenSymptom(NOT_IMPLEMENTED)
     object SchmerzNachtsSchlimmer : SchmerzenSymptom(NOT_IMPLEMENTED)
@@ -318,7 +341,7 @@ sealed class Symptom(
 
     object Traeumen : SchlafSymptom(NOT_IMPLEMENTED)
     object VieleTraeume : SchlafSymptom(NOT_IMPLEMENTED)
-    object Schlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED) // MINOR hat untertypen
+    object Schlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED) // leitsymptom // MINOR hat untertypen
     object StarkeSchlafstoerungen : SchlafSymptom(NOT_IMPLEMENTED)
     object EinschlafStoerungen : SchlafSymptom(NOT_IMPLEMENTED)
     object Schlaflosigkeit : SchlafSymptom(NOT_IMPLEMENTED)
@@ -330,15 +353,18 @@ sealed class Symptom(
 
     // farbe
     object WeisserSchleim : SchleimSymptom(NOT_IMPLEMENTED)
+
     object GelberSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object KlarerSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object TrueberSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     // menge
     object KeinSchleim : SchleimSymptom(NOT_IMPLEMENTED)
+
     object WenigSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object VielSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     // konsistenz
     object WaessrigerSchleim : SchleimSymptom(NOT_IMPLEMENTED)
+
     object KlebrigerSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object ZaeherSchleim : SchleimSymptom(NOT_IMPLEMENTED)
     object DuennerSchleim : SchleimSymptom(NOT_IMPLEMENTED)
@@ -390,6 +416,7 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class SprechenSymptom(source: SymptomSource) : Symptom(SymptomCategory.Sprechen, source)
 
+    object SpracheAllgemein : SprechenSymptom(NOT_IMPLEMENTED) // leitsymptom // MINOR should include all others
     object NichtReden : SprechenSymptom(NOT_IMPLEMENTED)
     object WenigLeiseSprechen : SprechenSymptom(NOT_IMPLEMENTED)
     object LeiseSprechen : SprechenSymptom(NOT_IMPLEMENTED)
@@ -407,6 +434,7 @@ sealed class Symptom(
 
     // konsistenz
     object WeicherStuhl : StuhlSymptom(NOT_IMPLEMENTED)
+
     object KlebrigerStuhl : StuhlSymptom(NOT_IMPLEMENTED)
     object BreiigerStuhl : StuhlSymptom(NOT_IMPLEMENTED)
     object Durchfall : StuhlSymptom(NOT_IMPLEMENTED) // "Obstipation"
@@ -415,6 +443,7 @@ sealed class Symptom(
     object HahnenschreiDiarrhoe : StuhlSymptom(NOT_IMPLEMENTED) // "Morgens gleich Durchfall"
     // misc
     object Verstopfung : StuhlSymptom(NOT_IMPLEMENTED)
+
     object UnregelmaessigerStuhl : StuhlSymptom(NOT_IMPLEMENTED)
     object UnverdauteNahrungInStuhl : StuhlSymptom(NOT_IMPLEMENTED)
     object BlutImStuhl : StuhlSymptom(NOT_IMPLEMENTED)  // "Melaena"
@@ -464,14 +493,17 @@ sealed class Symptom(
 
     // farbe
     object KlarerUrin : UrinSymptom(NOT_IMPLEMENTED)
+
     object HellerUrin : UrinSymptom(NOT_IMPLEMENTED)
     object TrueberUrin : UrinSymptom(NOT_IMPLEMENTED)
     object DunklerUrin : UrinSymptom(NOT_IMPLEMENTED)
     // menge
     object WenigUrin : UrinSymptom(NOT_IMPLEMENTED)
+
     object ReichlichUrin : UrinSymptom(NOT_IMPLEMENTED)
     // misc
     object KonzentrierterUrin : UrinSymptom(NOT_IMPLEMENTED)
+
     object HaeufigesUrinieren : UrinSymptom(NOT_IMPLEMENTED)
     object UrinierenBrennen : UrinSymptom(NOT_IMPLEMENTED)
     object BlutInUrin : UrinSymptom(NOT_IMPLEMENTED) // "Haematurie"
@@ -485,12 +517,14 @@ sealed class Symptom(
 
     // brechen
     object Uebelkeit : VerdauungSymptom(NOT_IMPLEMENTED)
+
     object MorgendlicheUebelkeit : VerdauungSymptom(NOT_IMPLEMENTED)
     object Brechreiz : VerdauungSymptom(NOT_IMPLEMENTED)
     object Erbrechen : VerdauungSymptom(NOT_IMPLEMENTED)
     object BlutErbrechen : VerdauungSymptom(NOT_IMPLEMENTED)
     // misc
-    object VerdauungsProbleme : VerdauungSymptom(NOT_IMPLEMENTED)
+    object VerdauungsProbleme : VerdauungSymptom(NOT_IMPLEMENTED) // leitsymptom // MINOR include others
+
     object Sodbrennen : VerdauungSymptom(NOT_IMPLEMENTED)
     object Aufstossen : VerdauungSymptom(NOT_IMPLEMENTED)
     object Blaehungen : VerdauungSymptom(NOT_IMPLEMENTED)
@@ -518,21 +552,25 @@ sealed class Symptom(
 
     // groesse
     object NormaleZunge : ZungeSymptom(NOT_IMPLEMENTED)
+
     object GeschwolleneZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object Zahneindruecke : ZungeSymptom(NOT_IMPLEMENTED)
     object VergroesserteZunge : ZungeSymptom(NOT_IMPLEMENTED)
     // misc
     object LaengsrissInZunge : ZungeSymptom(NOT_IMPLEMENTED)
+
     object Ulzerationen : ZungeSymptom(NOT_IMPLEMENTED) // rote dippeln (nicht rote puenktchen)
     object Zungenspalt : ZungeSymptom(NOT_IMPLEMENTED)
     object SteifeZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object Dornen : ZungeSymptom(NOT_IMPLEMENTED) // belag waechst in mittelriss rein
     // feuchte
     object NasseZunge : ZungeSymptom(NOT_IMPLEMENTED)
+
     object TrockeneZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object FeuchteZunge : ZungeSymptom(NOT_IMPLEMENTED)
     // farbe
     object BlasseZunge : ZungeSymptom(NOT_IMPLEMENTED)
+
     object RoteZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object ScharlachRoteZunge : ZungeSymptom(NOT_IMPLEMENTED)
     object LeichtBlaeulicheZunge : ZungeSymptom(NOT_IMPLEMENTED)
@@ -545,17 +583,20 @@ sealed class Symptom(
     object BlauVioletteZungenpunkte : ZungeSymptom(NOT_IMPLEMENTED)
     // belag - farbe
     object WeisserBelag : ZungeSymptom(NOT_IMPLEMENTED)
+
     object GelberBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object RoterBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object BraunerBelag : ZungeSymptom(NOT_IMPLEMENTED)
     // belag - menge
     object FehlenderBelag : ZungeSymptom(NOT_IMPLEMENTED)
+
     object WenigBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object DuennerBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object VermehrterBelag : ZungeSymptom(NOT_IMPLEMENTED) // synonym?!
     object DickerBelag : ZungeSymptom(NOT_IMPLEMENTED)
     // belag - misc
     object TrockenerBelag : ZungeSymptom(NOT_IMPLEMENTED)
+
     object FeuchterBelag : ZungeSymptom(NOT_IMPLEMENTED)
     object SchmierigerBelag : ZungeSymptom(NOT_IMPLEMENTED)
 
@@ -593,7 +634,13 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class NiereSymptom(source: SymptomSource) : Symptom(SymptomCategory.Niere, source)
 
+    object LendenBereichAllgemein : NiereSymptom(NOT_IMPLEMENTED) // leitsymptom
+    object KnieAllgemein : NiereSymptom(NOT_IMPLEMENTED) // leitsymptom
+    object FussknoechelAllgemein : NiereSymptom(NOT_IMPLEMENTED) // leitsymptom
+
+    // misc
     object Zahnausfall : NiereSymptom(NOT_IMPLEMENTED)
+
     object GestoerteZahnentwicklung : NiereSymptom(NOT_IMPLEMENTED)
     object ProblemeZaehne : NiereSymptom(NOT_IMPLEMENTED)
     object VerzoegerteGeistigeEntwicklung : NiereSymptom(NOT_IMPLEMENTED)
@@ -616,7 +663,13 @@ sealed class Symptom(
     // =================================================================================================================
     abstract class LeberSymptom(source: SymptomSource) : Symptom(SymptomCategory.Leber, source)
 
+    object WechselhaftAllgemein : LeberSymptom(NOT_IMPLEMENTED) // leitsymptom
+    object EmotionalAllgemein : LeberSymptom(NOT_IMPLEMENTED) // leitsymptom
+    object MenstruationAllgemein : LeberSymptom(NOT_IMPLEMENTED) // leitsymptom
+
+    // misc
     object SpannungZwerchfell : LeberSymptom(NOT_IMPLEMENTED)
+
     object DruckgefuehlBrustbein : LeberSymptom(NOT_IMPLEMENTED)
     object Kontraktionen : LeberSymptom(NOT_IMPLEMENTED)
     object KopfUnwillkuerlichBewegt : LeberSymptom(NOT_IMPLEMENTED)
