@@ -23,6 +23,7 @@ interface XPropsFinder {
 object XProps : XPropsFinder by XPropsFactory {
 
 
+    // TODO OrganSyndrome' symptoms still work in progress
     enum class NOT(override val opt: XPropEnumOpt) : IsEnumOption {
         IMPLEMENTED(opt("NOT_IMPLEMENTED", "NOT_IMPLEMENTED"))
     }

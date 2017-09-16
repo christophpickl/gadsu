@@ -13,6 +13,9 @@ object XPropsFactory : XPropsFinder {
     private val log = LoggerFactory.getLogger(javaClass)
 
     private val xpropByKey: HashMap<String, XProp> = HashMap()
+    private val allMutableXProps = mutableListOf<XProp>()
+    val allXProps: List<XProp> get() = allMutableXProps
+
     private val xpropEnumOptByKey: HashMap<String, XPropEnumOpt> = HashMap()
 
     private var collectedEnumOpts: LinkedList<XPropEnumOpt> = LinkedList()
@@ -42,6 +45,7 @@ object XPropsFactory : XPropsFinder {
         if (xpropByKey.containsKey(key)) {
             throw GadsuException("Duplicate xproperty key '$key'!")
         }
+        allMutableXProps += xprop
         xpropByKey.put(key, xprop)
         return xprop
     }
