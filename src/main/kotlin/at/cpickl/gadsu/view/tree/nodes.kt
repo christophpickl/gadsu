@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view.tree
 import com.google.common.base.MoreObjects
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.MutableTreeNode
+import javax.swing.tree.TreePath
 
 data class MyTreeNode<G, L>(
         val myNode: MyNode<G, L>,
@@ -22,6 +23,8 @@ sealed class MyNode<G, L> {
     abstract fun toTreeNode(): MutableTreeNode
 
     lateinit var treeNode: MyTreeNode<G, L>
+
+    fun toPath() = TreePath(treeNode.path)
 
     override fun toString() = MoreObjects.toStringHelper(this)
             .add("label", label)

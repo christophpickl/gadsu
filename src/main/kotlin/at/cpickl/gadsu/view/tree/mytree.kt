@@ -16,8 +16,6 @@ import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
 
-// TODO-s
-// enableHoverListener
 
 fun List<XPropEnum>.toTreeModel() = MyTreeModel(
         map { xpropCategory ->
@@ -27,7 +25,7 @@ fun List<XPropEnum>.toTreeModel() = MyTreeModel(
         }
 )
 
-class MyTree2<G, L>(myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
+class MyTree<G, L>(private val myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
     private val log = LOG {}
 
     private val transientSelections = mutableMapOf<TreePath, List<TreePath>>()
@@ -53,6 +51,27 @@ class MyTree2<G, L>(myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
         })
     }
 
+    fun initSelected(preselected: Set<L>) {
+        clearSelection()
+        allLeafNodes().forEach { node ->
+            if (preselected.contains(node.entity)) {
+                addSelectionNode(node)
+            }
+        }
+    }
+
+    fun readSelected(): List<L> = allLeafNodes().filter { it.isSelected() }.map { it.entity }
+
+    private fun allLeafNodes(): List<MyNode.MyLeafNode<G, L>> {
+        val nodes = mutableListOf<MyNode.MyLeafNode<G, L>>()
+        myModel.nodes.forEach { categoryNode ->
+            categoryNode.subNodes.map { it as MyNode.MyLeafNode<G, L> }.forEach { symptomNode ->
+                nodes.add(symptomNode)
+            }
+        }
+        return nodes
+    }
+
     private fun TreePath.toMyTreeNode() = lastPathComponent as MyTreeNode<G, L>
 
     private fun storeTransientSelections(treePath: TreePath) {
@@ -60,8 +79,8 @@ class MyTree2<G, L>(myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
         val groupNode = treeNode.myNode as MyNode.MyGroupNode<G, L>
 
         transientSelections[treePath] = groupNode.subNodes.filter { subNode ->
-            isPathSelected(TreePath(subNode.treeNode.path))
-        }.map { TreePath(it.treeNode.path) }
+            subNode.isSelected()
+        }.map { it.toPath() }
     }
 
     private fun restoreTransientSelection(path: TreePath) {
@@ -70,6 +89,12 @@ class MyTree2<G, L>(myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
             addSelectionPath(selectionPath)
         }
     }
+
+    private fun addSelectionNode(node: MyNode<G, L>) {
+        addSelectionPath(node.toPath())
+    }
+
+    private fun MyNode<G, L>.isSelected() = isPathSelected(toPath())
 
 }
 
