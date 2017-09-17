@@ -40,6 +40,8 @@ sealed class MyNode<G, L> {
                 add(subNode.toTreeNode())
             }
         }
+
+        fun copy(subNodes: List<MyLeafNode<G, L>>) = MyGroupNode(entity = entity, label = label, subNodes = subNodes)
     }
 
     class MyLeafNode<G, L>(

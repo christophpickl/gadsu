@@ -67,19 +67,23 @@ class LiveSearchField() {
     fun asComponent(): Component = field
 
 }
-
+// FIXME during search selection doesnt work
 class SearchableTree<G, L>(val tree: MyTree<G, L>) {
 
     private val originalData: MyTreeModel<G, L> = tree.myModel
 
     fun restoreOriginalData() {
-        tree.model = originalData.swingModel
+        tree.setModel2(originalData)
     }
 
     fun search(terms: List<String>) {
-        // FIXME do it for leaves!
-        val filtered: List<MyNode<G, L>> = originalData.nodes.filter { it.label.matchSearch(terms) }
-        tree.model = MyTreeModel<G, L>(filtered).swingModel
+        // MINOR or also search in group node itself for label?!
+        val filtered = originalData.nodes
+                .map { groupNode -> Pair(groupNode, groupNode.subNodes.filter { it.label.matchSearch(terms) }) }
+                .filter { (_, subs) -> subs.isNotEmpty() }
+                // FIXME => no, copy breaks the references... :(
+                .map { (it.first as MyNode.MyGroupNode<G, L>).copy(it.second as List<MyNode.MyLeafNode<G, L>>) }
+        tree.setModel2(MyTreeModel<G, L>(filtered))
     }
 
     private fun String.matchSearch(terms: List<String>): Boolean {

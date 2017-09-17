@@ -27,10 +27,15 @@ fun List<XPropEnum>.toTreeModel() = MyTreeModel(
         }
 )
 
-class MyTree<G, L>(val myModel: MyTreeModel<G, L>) : JTree(myModel.swingModel) {
+class MyTree<G, L>(var myModel: MyTreeModel<G, L>) : JTree(myModel.swingModel) {
     private val log = LOG {}
 
     private val transientSelections = mutableMapOf<TreePath, List<TreePath>>()
+
+    fun setModel2(newMyModel: MyTreeModel<G, L>) {
+        myModel = newMyModel
+        model = newMyModel.swingModel
+    }
 
     init {
         showsRootHandles = true
