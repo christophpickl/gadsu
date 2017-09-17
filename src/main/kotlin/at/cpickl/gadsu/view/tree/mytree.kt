@@ -16,6 +16,8 @@ import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
 
+fun buildTree(xpropCategories: List<XPropEnum>) =
+        MyTree<XPropEnum, XPropEnumOpt>(xpropCategories.toTreeModel())
 
 fun List<XPropEnum>.toTreeModel() = MyTreeModel(
         map { xpropCategory ->
@@ -25,7 +27,7 @@ fun List<XPropEnum>.toTreeModel() = MyTreeModel(
         }
 )
 
-class MyTree<G, L>(private val myModel: MyTreeModel<G, L>) : JTree(myModel.toSwingModel) {
+class MyTree<G, L>(val myModel: MyTreeModel<G, L>) : JTree(myModel.swingModel) {
     private val log = LOG {}
 
     private val transientSelections = mutableMapOf<TreePath, List<TreePath>>()
@@ -51,6 +53,7 @@ class MyTree<G, L>(private val myModel: MyTreeModel<G, L>) : JTree(myModel.toSwi
         })
     }
 
+    // can even pass leaf entities which are not contained as nodes, and won't complain :)
     fun initSelected(preselected: Set<L>) {
         clearSelection()
         allLeafNodes().forEach { node ->
@@ -61,6 +64,19 @@ class MyTree<G, L>(private val myModel: MyTreeModel<G, L>) : JTree(myModel.toSwi
     }
 
     fun readSelected(): List<L> = allLeafNodes().filter { it.isSelected() }.map { it.entity }
+
+    fun expandAll() {
+        myModel.nodes.forEach { categoryNode ->
+            // FIXME doesnt work
+            expandPath(categoryNode.toPath())
+        }
+    }
+
+    fun collapseAll() {
+        myModel.nodes.forEach { categoryNode ->
+            collapsePath(categoryNode.toPath())
+        }
+    }
 
     private fun allLeafNodes(): List<MyNode.MyLeafNode<G, L>> {
         val nodes = mutableListOf<MyNode.MyLeafNode<G, L>>()
@@ -99,7 +115,7 @@ class MyTree<G, L>(private val myModel: MyTreeModel<G, L>) : JTree(myModel.toSwi
 }
 
 class MyTreeModel<G, L>(val nodes: List<MyNode<G, L>>) {
-    val toSwingModel by lazy {
+    val swingModel by lazy {
         DefaultTreeModel(DefaultMutableTreeNode("root ignored").apply {
             nodes.forEach { node ->
                 add(node.toTreeNode())

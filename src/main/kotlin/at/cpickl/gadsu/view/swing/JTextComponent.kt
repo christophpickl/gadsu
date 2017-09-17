@@ -4,6 +4,8 @@ import com.github.christophpickl.kpotpourri.common.logging.LOG
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import javax.swing.JTextField
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 import javax.swing.text.JTextComponent
 
 private val log = LOG {}
@@ -46,4 +48,36 @@ fun <T : JTextField> T.rightAligned(): T {
 fun <T : JTextComponent> T.disableFocusable(): T {
     this.isFocusable = false
     return this
+}
+
+
+typealias TextChangeListener = (String) -> Unit
+
+class TextChangeDispatcher(private val field: JTextField) {
+
+    private val listeners = mutableListOf<TextChangeListener>()
+
+    init {
+        field.document.addDocumentListener(object : DocumentListener {
+            override fun changedUpdate(e: DocumentEvent) {
+                listeners.forEach { it(field.text) }
+            }
+
+            override fun insertUpdate(e: DocumentEvent) {
+                changedUpdate(e)
+            }
+
+            override fun removeUpdate(e: DocumentEvent) {
+                changedUpdate(e)
+            }
+        })
+    }
+
+    fun addListener(listener: TextChangeListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: TextChangeListener) {
+        listeners.remove(listener)
+    }
 }

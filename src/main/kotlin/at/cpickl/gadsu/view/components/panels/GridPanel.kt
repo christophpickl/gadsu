@@ -1,16 +1,26 @@
 package at.cpickl.gadsu.view.components.panels
 
-import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
-import java.awt.*
+import java.awt.Color
+import java.awt.Component
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import java.awt.Insets
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
 
+
+fun GridBagConstraints.fillAll() {
+    weightx = 1.0
+    weighty = 1.0
+    fill = GridBagConstraints.BOTH
+}
 
 open class GridPanel(
         viewName: String? = null,

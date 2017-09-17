@@ -25,7 +25,7 @@ interface ChangeAware {
     fun onChange(changeListener: () -> Unit)
 }
 
-class ModificationChecker(
+open class ModificationChecker(
         private val modificationAware: ModificationAware,
         private vararg val enableDisableComponents: Component
 ) {
