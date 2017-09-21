@@ -9,7 +9,6 @@ import at.cpickl.gadsu.treatment.dyn.treats.PulseProperty
 
 // @formatter:off
 // TODO write test to check for unused Symptoms (reflectively?)
-// TODO write test to check for duplicate symptoms in syndroms (change Set to List to retain duplicates)
 
 // TODO use to render tooltip in tab
 //val XPropEnumOpt.symptom: Symptom? by lazy {

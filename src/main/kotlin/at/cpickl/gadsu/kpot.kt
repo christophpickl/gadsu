@@ -28,6 +28,16 @@ fun firstNotEmpty(vararg strings: String) = strings.toList().firstOrNull { it.is
 
 annotation class KotlinNoArg
 
+fun <T> List<T>.duplicates(): List<T> {
+    val foundDuplicates = LinkedHashSet<T>()
+    val tmp = mutableSetOf<T>()
+    forEach {
+        if (!tmp.add(it)) {
+            foundDuplicates += it
+        }
+    }
+    return foundDuplicates.toList()
+}
 
 // ----- SWING4k
 
