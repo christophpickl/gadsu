@@ -1,4 +1,5 @@
 
+* in richtext, wenn markierung (akupunkt oder bold), wenn enter druecken, dann format wegnehmen
 * [10] recent mail liste fuehren (sowas wie templates); kann sie laden, speichern, loeschen (evtl benennen);
     - man sieht wen man was geschickt hat (achtung beim handeln von inzwischen deleted clients!)
 * [10] sich umschauen nach einem alternative doodle anbieter mit gscheiter API

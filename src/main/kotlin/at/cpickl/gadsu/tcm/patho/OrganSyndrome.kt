@@ -1,6 +1,9 @@
 package at.cpickl.gadsu.tcm.patho
 
+import at.cpickl.gadsu.tcm.model.Substances
+import at.cpickl.gadsu.tcm.model.YinYang
 
+// FIXME unbedingt die zunge+puls in eigenen datacontainer, damit diese nicht included werden koennen!
 /*
 TODOs:
 - manche symtpoms haben Qi/Blut/Yin/Yang bezug, manche starke Zang, manche typisch fuer element
@@ -35,48 +38,37 @@ enum class OrganSyndrome(
             sqlCode = "LeBlutXu",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
-                    // allgemein
-                    Symptom.Blaesse,
-                    Symptom.Konzentrationsstoerungen,
-                    Symptom.Schreckhaftigkeit,
-                    Symptom.Palpitationen,
-                    Symptom.Schlafstoerungen,
-                    Symptom.TaubheitsgefuehlExtremitaeten,
-                    // Le spezifisch
+            symptoms = GeneralSymptoms.BlutXu.symptoms + setOf(
+                    // augen
                     Symptom.UnscharfesSehen,
                     Symptom.VerschwommenesSehen,
                     Symptom.Nachtblindheit,
                     Symptom.MouchesVolantes,
                     Symptom.TrockeneAugen,
+                    // sehnen
                     Symptom.SteifeSehnen,
                     Symptom.Zittern,
-                    Symptom.AussetzerMenstruation, // Amenorrhoe
+                    // mens
+                    Symptom.AussetzerMenstruation,
                     Symptom.VerlaengerterZyklus,
-
+                    // zunge
                     Symptom.BlasseZunge,
+                    // puls
                     Symptom.DuennerPuls // fadenfoermig
             )
     ),
     LeYinXu(// wie Blutmangel, aber plus Mangel-Hitze
             label = "Leber Yin Mangel",
             sqlCode = "LeYinXu",
+            description = "Symptome ähnlich von Leber Feuer, da das Yin das Yang nicht halten kann und aufsteigt, aber da es ein Mangel ist schwächer ausgeprägt.",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
+            symptoms = LeBlutXu.symptoms + GeneralSymptoms.YinXu.symptoms + setOf(
+                    // augen
                     Symptom.TrockeneAugen,
                     Symptom.Nachtblindheit,
+                    // ohren
                     Symptom.Tinnitus,
-                    Symptom.Schlafstoerungen,
-                    // hitze
-                    Symptom.TrockenerHals,
-                    Symptom.Durst,
-                    Symptom.Durchfall,
-                    Symptom.Verstopfung,
-                    Symptom.Unruhe,
-                    Symptom.Nachtschweiss,
-                    Symptom.FuenfZentrenHitze,
-                    Symptom.HitzeGefuehlAbends,
                     // Le yang steigt auf
                     Symptom.Kopfschmerzen,
                     Symptom.Gereiztheit,
@@ -84,20 +76,54 @@ enum class OrganSyndrome(
                     Symptom.Laehmung,
                     Symptom.HalbseitigeLaehmung,
                     Symptom.Schlaganfall,
-
-                    Symptom.RoteZunge,
+                    // zunge
+                    Symptom.RoteZunge, // TODO should not contain BlasseZunge from LeBlutXu! maybe outsource tongue+pulse symptoms in own variable...
                     Symptom.WenigBelag,
+                    // puls
                     Symptom.BeschleunigterPuls,
                     Symptom.DuennerPuls,
                     Symptom.SchwacherPuls
             )
     ),
-    LeQiStau(
-            label = "Leber Qi Stau",
-            sqlCode = "xxx",
+    LeBlutStau(
+            label = "Leber Blut Stau",
+            sqlCode = "LeBlutStau",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
+                    // misc
+                    Symptom.Knoten,
+                    Symptom.Tumore,
+                    Symptom.LeberVergroesserung,
+                    Symptom.MilzVergroesserung,
+                    Symptom.DunkleGesichtsfarbe,
+                    Symptom.StumpfeGesichtsfarbe,
+                    // schmerz
+                    Symptom.StechenderSchmerz,
+                    Symptom.FixierterSchmerz,
+                    Symptom.SchmerzNachtsSchlimmer,
+                    // mens
+                    Symptom.DunklesMenstruationsblut,
+                    Symptom.ZaehesMenstruationsblut,
+                    Symptom.KlumpenInBlut,
+                    // zunge
+                    Symptom.VioletteZunge,
+                    Symptom.DunkleZunge,
+                    Symptom.BlauVioletteZungenpunkte,
+                    Symptom.GestauteVenen, // MINOR gestaute == unterzungenvenen??
+                    Symptom.GestauteUnterzungenvenen,
+                    // puls
+                    Symptom.RauherPuls
+            )
+    ),
+    LeQiStau(
+            label = "Leber Qi Stau",
+            description = "Greift MP an.",
+            sqlCode = "LeQiStau",
+            organ = ZangOrgan.Liver,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    // verdauung
                     Symptom.VielAppetit,
                     Symptom.WenigAppetit,
                     Symptom.VoelleGefuehl,
@@ -111,7 +137,7 @@ enum class OrganSyndrome(
                     Symptom.MorgendlicheUebelkeit,
                     Symptom.UnregelmaessigerStuhl,
                     Symptom.WechselhafteVerdauung,
-
+                    // meridian
                     Symptom.SpannungZwerchfell,
                     Symptom.SchmerzZwerchfell,
                     Symptom.Seufzen,
@@ -122,13 +148,13 @@ enum class OrganSyndrome(
                     Symptom.Nackenschmerzen,
                     Symptom.Kopfschmerzen,
                     Symptom.FroschImHals,
-
+                    // mens
                     Symptom.Zyklusunregelmaessigkeiten,
                     Symptom.PMS,
                     Symptom.Regelkraempfe,
                     Symptom.UnterbauchziehenPMS,
                     Symptom.EmotionaleSchwankungenMens,
-
+                    // emotionen
                     Symptom.Reizbarkeit,
                     Symptom.Aufbrausen,
                     Symptom.Zornesausbrueche,
@@ -136,42 +162,16 @@ enum class OrganSyndrome(
                     Symptom.Frustration,
                     Symptom.Depression,
                     Symptom.UnterdrueckteGefuehle,
-
+                    // zunge
                     Symptom.NormaleZunge,
                     Symptom.RoteZungenspitze,
                     Symptom.RoterZungenrand,
+                    // puls
                     Symptom.SaitenfoermigerPuls
             )
     ),
-    LeBlutStau(
-            label = "Leber Blut Stau",
-            sqlCode = "LeBlutStau",
-            organ = ZangOrgan.Liver,
-            tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
-                    Symptom.StechenderSchmerz,
-                    Symptom.FixierterSchmerz,
-                    Symptom.SchmerzNachtsSchlimmer,
-                    Symptom.DunklesMenstruationsblut,
-                    Symptom.ZaehesMenstruationsblut,
-                    Symptom.KlumpenInBlut,
-                    Symptom.Knoten,
-                    Symptom.Tumore,
-                    Symptom.LeberVergroesserung,
-                    Symptom.MilzVergroesserung,
-                    Symptom.DunkleGesichtsfarbe,
-                    Symptom.StumpfeGesichtsfarbe,
-                    Symptom.GestauteVenen,
-
-                    Symptom.VioletteZunge,
-                    Symptom.DunkleZunge,
-                    Symptom.BlauVioletteZungenpunkte,
-                    Symptom.GestauteUnterzungenvenen,
-                    Symptom.RauherPuls
-            )
-    ),
     LeFeuer(
-            label = "Leber Feuer",
+            label = "Leber Feuer (lodert nach oben)",
             sqlCode = "LeFeuer",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
@@ -189,12 +189,12 @@ enum class OrganSyndrome(
                     Symptom.Nasenbluten,
                     Symptom.BlutHusten,
                     Symptom.BlutErbrechen,
-
+                    // psycho
                     Symptom.Zornesausbrueche,
                     Symptom.Unruhe,
                     Symptom.Gereiztheit,
                     Symptom.Gewalttaetig,
-
+                    // verdauung
                     Symptom.Magenschmerzen,
                     Symptom.Sodbrennen,
                     Symptom.Brechreiz,
@@ -202,7 +202,7 @@ enum class OrganSyndrome(
                     Symptom.Verstopfung,
                     Symptom.BrennenderDurchfall,
 
-                    // allg. zeichen ueberfluss-hitze (He-Feuer, holz das feuer uebernaehrt)
+                    // allg. zeichen ueberfluss-hitze (He-Feuer, holz das feuer uebernaehrt); aehnlich dem LeBlutXu
                     Symptom.Unruhe,
                     Symptom.Schlaflosigkeit,
                     Symptom.Durst,
@@ -212,11 +212,12 @@ enum class OrganSyndrome(
                     Symptom.RotesGesicht,
                     Symptom.RoteAugen,
                     Symptom.Palpitationen,
-
+                    // zunge
                     Symptom.RoteZunge,
                     Symptom.RoteZungenspitze,
                     Symptom.RoterZungenrand,
                     Symptom.GelberBelag,
+                    // puls
                     Symptom.SaitenfoermigerPuls,
                     Symptom.BeschleunigterPuls,
                     Symptom.KraeftigerPuls
@@ -225,18 +226,20 @@ enum class OrganSyndrome(
     LeWindHitze(
             label = "Leber Wind (Extreme Hitze)",
             sqlCode = "LeWindHitze",
+            description = "Von sehr hohem Fieber. Fieberkrämpfe, Verkrampfungen, Augen nach oben rollen.",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = `Symptoms of general Le Wind` + setOf(// TODO + ueberfluss-hitze
+            symptoms = GeneralSymptoms.LeWind + setOf(// MINOR + ueberfluss-hitze
                     Symptom.Kraempfe,
                     Symptom.Koma,
                     Symptom.Delirium,
-
+                    // zunge
                     Symptom.RoteZunge,
                     Symptom.ScharlachRoteZunge,
                     Symptom.TrockenerBelag,
                     Symptom.GelberBelag,
                     Symptom.SteifeZunge,
+                    // puls
                     Symptom.SchnellerPuls,
                     Symptom.VollerPuls,
                     Symptom.SaitenfoermigerPuls
@@ -244,27 +247,31 @@ enum class OrganSyndrome(
     ),
     LeWindYangAuf(
             label = "Leber Wind (Aufsteigendes Leber Yang)",
+            description = "Ursache ist Le/Ni Yin-Mangel",
             sqlCode = "LeWindLeYang",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = LeYinXu.symptoms + LeBlutXu.symptoms + setOf(
+            symptoms = setOf(
                     Symptom.Schwindel,
                     Symptom.Schwanken,
                     Symptom.KopfUnwillkuerlichBewegt,
                     Symptom.Laehmung,
                     Symptom.HalbseitigeLaehmung,
+                    // psycho
                     Symptom.Desorientiertheit,
                     Symptom.Bewusstseinsverlust,
                     Symptom.Sprachstoerungen,
-
+                    // zunge
                     Symptom.RoteZunge,
                     Symptom.WenigBelag,
                     Symptom.FehlenderBelag,
+                    // puls
                     Symptom.BeschleunigterPuls
             )
     ),
     LeWindBlutXu(
             label = "Leber Wind (Blut Mangel)",
+            description = "Ursache ist Le/allgemeiner Blut-Mangel",
             sqlCode = "LeWindBlutXu",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
@@ -280,23 +287,19 @@ enum class OrganSyndrome(
                     Symptom.BlasseZunge,
                     Symptom.DuennerBelag,
                     Symptom.WeisserBelag,
+
                     Symptom.DuennerPuls
             )
     ),
     LeFeuchteHitze(
             label = "Feuchtigkeit und Hitze in Le und Gb",
+            description = "Ursache ist Le-Qi-Stau.",
             sqlCode = "LeFeuchteHitze",
             organ = ZangOrgan.Liver,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
                     Symptom.SchmerzBrustkorb,
                     Symptom.SchmerzZwerchfell,
-                    Symptom.WenigAppetit,
-                    Symptom.Brechreiz,
-                    Symptom.Erbrechen,
-                    Symptom.DurckgefuehlBauch,
-                    Symptom.Blaehungen,
-                    Symptom.BittererMundgeschmack,
                     Symptom.Durst,
                     Symptom.Unruhe,
                     Symptom.Gereiztheit,
@@ -304,7 +307,13 @@ enum class OrganSyndrome(
                     Symptom.DunklerUrin,
                     Symptom.Fieber, // niedrig, anhaltend
                     Symptom.Gelbsucht,
-
+                    // milz
+                    Symptom.WenigAppetit,
+                    Symptom.Brechreiz,
+                    Symptom.Erbrechen,
+                    Symptom.DurckgefuehlBauch,
+                    Symptom.Blaehungen,
+                    Symptom.BittererMundgeschmack,
                     // frauen
                     Symptom.GelberAusfluss,
                     Symptom.RiechenderAusfluss,
@@ -312,20 +321,20 @@ enum class OrganSyndrome(
                     Symptom.Entzuendungsherde, // bereich Le-/Gb-meridian
                     Symptom.Hautpilz,
                     Symptom.Herpes,
-
                     // maenner
                     Symptom.Hodenschmerzen,
                     Symptom.Hodenschwellungen,
                     Symptom.Ausfluss,
                     Symptom.Prostatitis,
                     Symptom.Hautausschlag, // bereich Le-/Gb-meridian
-
+                    // zunge
                     Symptom.RoteZunge,
                     Symptom.RoteZungenspitze,
                     Symptom.RoterZungenrand,
                     Symptom.DickerBelag,
                     Symptom.GelberBelag,
                     Symptom.SchmierigerBelag,
+                    // puls
                     Symptom.BeschleunigterPuls,
                     Symptom.SaitenfoermigerPuls,
                     Symptom.SchluepfrigerPuls
@@ -341,15 +350,18 @@ enum class OrganSyndrome(
                     Symptom.Kraempfe,
                     Symptom.Kontraktionen,
                     Symptom.WaermeErleichtert,
-                    Symptom.Ausfluss,
                     Symptom.Unfruchtbarkeit,
-                    Symptom.UntenZiehendeHoden,
-                    Symptom.Impotenz,
+                    // frau
                     Symptom.Menstruationskraempfe,
-
+                    Symptom.Ausfluss,
+                    // mann
+                    Symptom.Impotenz,
+                    Symptom.UntenZiehendeHoden,
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.WeisserBelag,
                     Symptom.FeuchterBelag,
+                    // puls
                     Symptom.VerlangsamterPuls,
                     Symptom.TieferPuls,
                     Symptom.SaitenfoermigerPuls
@@ -360,70 +372,19 @@ enum class OrganSyndrome(
     // HERZ
     // =================================================================================================================
 
-    HeQiXu(
-            label = "He-Qi-Mangel",
-            sqlCode = "HeQiXu",
-            organ = ZangOrgan.Heart,
-            tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
-                    Symptom.LeuchtendeBlaesse,
-                    Symptom.Muedigkeit,
-                    Symptom.Schwaeche,
-                    Symptom.Palpitationen,
-                    Symptom.Kurzatmigkeit,
-                    Symptom.StarkesSchwitzen, // va am tag
-                    Symptom.MentaleMuedigkeit,
-
-                    Symptom.SchwacherPuls,
-                    Symptom.LeererPuls,
-                    Symptom.UnregelmaessigerPuls,
-
-                    Symptom.BlasseZunge,
-                    Symptom.GeschwolleneZunge,
-                    Symptom.LaengsrissInZunge
-            )
-    ),
-    HeYangXu(
-            label = "He-Yang-Mangel",
-            sqlCode = "HeYangXu",
-            organ = ZangOrgan.Heart,
-            tendency = MangelUeberfluss.Mangel,
-            symptoms = HeQiXu.symptoms + setOf(
-                    Symptom.BlassesGesicht,
-                    Symptom.WeissesGesicht,
-                    Symptom.ThorakalesEngegefuehl,
-                    Symptom.KaelteGefuehl,
-                    Symptom.KalteHaende,
-                    Symptom.KalteFuesse,
-
-                    Symptom.SchwacherPuls,
-                    Symptom.LangsamerPuls,
-                    Symptom.UnregelmaessigerPuls,
-
-                    Symptom.BlasseZunge,
-                    Symptom.FeuchteZunge,
-                    Symptom.GeschwolleneZunge
-            )
-    ),
-    // He Yang Erschoepfung (ausgepraegter he yang xu) => hat noch 3 unterarten...
     HeBlutXu(
             label = "He-Blut-Mangel",
             sqlCode = "HeBlutXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(// plus(allgemeiner blut mangel symptoms)
-                    Symptom.StumpfeBlaesse,
+            symptoms = GeneralSymptoms.BlutXu.symptoms + setOf(
                     Symptom.Schwindel,
                     Symptom.Aengstlichkeit,
-                    Symptom.Schreckhaftigkeit,
-                    Symptom.Unruhe,
-                    Symptom.Schlafstoerungen,
                     Symptom.VieleTraeume,
-                    Symptom.Konzentrationsstoerungen,
                     Symptom.SchlechteMerkfaehigkeit,
-                    Symptom.Palpitationen,
 
                     Symptom.BlasseZunge,
+
                     Symptom.DuennerPuls
             )
     ),
@@ -432,110 +393,94 @@ enum class OrganSyndrome(
             sqlCode = "HeYinXu",
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(// plus(allgemeiner yin mangel = palpitationen, unruhe, gereiztheit)
-                    Symptom.FuenfZentrenHitze,
-                    Symptom.Nachtschweiss,
-                    Symptom.HitzeGefuehlAbends,
-                    Symptom.RoteWangenflecken,
-                    Symptom.TrockenerMund,
+            symptoms = HeBlutXu.symptoms + GeneralSymptoms.YinXu.symptoms + setOf(
                     Symptom.MehrDurstSpaeter,
-                    Symptom.Unruhe,
                     Symptom.Gereiztheit,
-                    Symptom.Schlafstoerungen,
-                    Symptom.VieleTraeume,
+
                     Symptom.RoteZunge,
                     Symptom.RoteZungenspitze,
                     Symptom.DuennerBelag,
                     Symptom.FehlenderBelag,
+
                     Symptom.BeschleunigterPuls,
                     Symptom.DuennerPuls
             )
     ),
-    HeFeuer(// staerkere variante von He-Yin-Xu
-            label = "Loderndes Herz Feuer",
-            sqlCode = "HeFeuer",
+    HeQiXu(
+            label = "He-Qi-Mangel",
+            sqlCode = "HeQiXu",
             organ = ZangOrgan.Heart,
-            tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
-                    Symptom.RotesGesicht,
-                    Symptom.Erosionen,
-                    Symptom.Ulzerationen,
-                    Symptom.MehrDurst,
-                    Symptom.BittererMundgeschmack,
-                    Symptom.UrinierenBrennen,
-                    Symptom.BlutInUrin,
-                    Symptom.Unruhe,
-                    Symptom.Gereiztheit,
-                    Symptom.Gewalttaetig,
-                    Symptom.StarkeSchlafstoerungen,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = GeneralSymptoms.QiXu.symptoms + setOf(
                     Symptom.Palpitationen,
-
-                    Symptom.RoteZunge,
-                    Symptom.RoteZungenspitze,
-                    Symptom.DuennerBelag,
-                    Symptom.GelberBelag,
-                    Symptom.Zungenspalt,
-
-                    Symptom.BeschleunigterPuls,
-                    Symptom.KraeftigerPuls,
-                    Symptom.UeberflutenderPuls,
-                    Symptom.JagenderPuls
-            )
-    ),
-    HeSchleimFeuerBeunruhigt(// psychisches bild
-            label = "Schleim-Feuer beunruhigt das Herz",
-            sqlCode = "HeSchleimFeuer",
-            organ = ZangOrgan.Heart,
-            tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
-                    Symptom.Unruhe,
-                    Symptom.Gereiztheit,
-                    Symptom.Verwirrung,
-                    Symptom.VerwirrtesSprechen,
-                    Symptom.GrundlosesLachen,
-                    Symptom.Weinen,
-                    Symptom.Schreien,
-                    Symptom.Gewalttaetig,
-                    Symptom.Extrovertiertheit,
-                    Symptom.Schlafstoerungen,
-                    Symptom.ThorakalesEngegefuehl,
-                    Symptom.BittererMundgeschmack,
-                    Symptom.Palpitationen,
-
-                    Symptom.RoteZunge,
-                    Symptom.RoteZungenspitze,
-                    Symptom.GelberBelag,
-                    Symptom.SchmierigerBelag,
-                    Symptom.Dornen,
-
-                    Symptom.BeschleunigterPuls,
-                    Symptom.SchluepfrigerPuls,
-                    Symptom.SaitenfoermigerPuls // Le einfluss
-            )
-    ),
-    HeSchleimKaelteVerstopft(
-            label = "Kalter Schleim verstopft die Herzöffnungen",
-            sqlCode = "HeSchleimKaelte",
-            organ = ZangOrgan.Heart,
-            tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = setOf(
-                    Symptom.Verwirrung,
-                    Symptom.GetruebteBewusstsein,
-                    Symptom.Lethargie,
-                    Symptom.Depression,
-                    Symptom.Selbstgespraeche,
-                    Symptom.DahinStarren,
-                    Symptom.NichtReden,
-                    Symptom.Bewusstseinsverlust,
-                    Symptom.RasselndeKehle, // beim einatmen
+                    Symptom.Kurzatmigkeit,
+                    Symptom.StarkesSchwitzen, // va am tag
+                    Symptom.MentaleMuedigkeit,
 
                     Symptom.BlasseZunge,
-                    Symptom.DickerBelag,
-                    Symptom.WeisserBelag,
-                    Symptom.SchmierigerBelag,
+                    Symptom.GeschwolleneZunge,
+                    Symptom.LaengsrissInZunge,
 
-                    Symptom.VerlangsamterPuls,
-                    Symptom.SchluepfrigerPuls
+                    Symptom.SchwacherPuls,
+                    Symptom.LeererPuls,
+                    Symptom.UnregelmaessigerPuls
+            )
+    ),
+    HeYangXu(
+            label = "He-Yang-Mangel",
+            sqlCode = "HeYangXu",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = HeQiXu.symptoms + GeneralSymptoms.YangXu.symptoms + setOf(
+                    Symptom.BlassesGesicht,
+                    Symptom.WeissesGesicht,
+                    Symptom.ThorakalesEngegefuehl,
+
+                    Symptom.BlasseZunge,
+                    Symptom.FeuchteZunge,
+                    Symptom.GeschwolleneZunge,
+
+                    Symptom.SchwacherPuls,
+                    Symptom.LangsamerPuls,
+                    Symptom.UnregelmaessigerPuls
+            )
+    ),
+    // MINOR 3 yang xu subtypes got symptoms of HeYangXu as well??
+    HeYangXuBlutBewegen(
+            label = "He-Yang-Mangel (Yang kann das Blut nicht ausreichend bewegen)",
+            sqlCode = "HeYangXuBlutBewegen",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = GeneralSymptoms.HeYangXuPulsTongue + setOf(
+                    Symptom.Zyanose,
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.MaessigeSchmerzen,
+                    Symptom.Atemnot // belastungs- / ruhedyspnoe
+            )
+    ),
+    HeYangXuUndNiYangErschopeft(
+            label = "He-Yang-Mangel (He/Ni Yang erschöpft)",
+            sqlCode = "HeYangXuUndNiYangErschopeft",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = GeneralSymptoms.HeYangXuPulsTongue + setOf(
+                    Symptom.UrinierenSchwierigkeiten,
+                    Symptom.Oedeme, // oft oben
+                    Symptom.Husten,
+                    Symptom.Wasserretention // ansammlung (in der lunge)
+            )
+    ),
+    HeYangXuKollaps(
+            label = "He-Yang-Mangel (Kollaps, Yang bricht zusammen)",
+            sqlCode = "HeYangXuKollaps",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Mangel,
+            symptoms = GeneralSymptoms.HeYangXuPulsTongue + setOf(
+                    Symptom.KaelteGefuehl, // extremes
+                    Symptom.Zittern,
+                    Symptom.Zyanose,
+                    Symptom.Bewusstseinsverlust,
+                    Symptom.SchweissAusbruch
             )
     ),
     HeBlutStau(
@@ -567,6 +512,97 @@ enum class OrganSyndrome(
                     Symptom.SaitenfoermigerPuls
             )
     ),
+    HeFeuer(
+            label = "Loderndes Herz Feuer",
+            sqlCode = "HeFeuer",
+            description = "Stärkere variante von He-Yin-Mangel",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.RotesGesicht,
+                    Symptom.Erosionen,
+                    Symptom.Ulzerationen,
+                    Symptom.BittererMundgeschmack,
+                    Symptom.UrinierenBrennen,
+                    Symptom.BlutInUrin,
+                    Symptom.Gewalttaetig,
+                    Symptom.StarkeSchlafstoerungen,
+
+                    Symptom.MehrDurst,
+                    Symptom.Unruhe,
+                    Symptom.Gereiztheit,
+                    Symptom.Palpitationen,
+
+                    Symptom.RoteZunge,
+                    Symptom.RoteZungenspitze,
+                    Symptom.DuennerBelag,
+                    Symptom.GelberBelag,
+                    Symptom.Zungenspalt,
+
+                    Symptom.BeschleunigterPuls,
+                    Symptom.KraeftigerPuls,
+                    Symptom.UeberflutenderPuls,
+                    Symptom.JagenderPuls
+            )
+    ),
+    HeSchleimFeuerVerstoert(
+            label = "Schleim-Feuer verstört das Herz",
+            description = "Psychisches Bild, extrovertiert",
+            sqlCode = "HeSchleimFeuer",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Unruhe,
+                    Symptom.Gereiztheit,
+                    Symptom.Verwirrung,
+                    Symptom.VerwirrtesSprechen,
+                    Symptom.GrundlosesLachen,
+                    Symptom.Weinen,
+                    Symptom.Schreien,
+                    Symptom.Gewalttaetig,
+                    Symptom.Extrovertiertheit,
+                    Symptom.Schlafstoerungen,
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.BittererMundgeschmack,
+                    Symptom.Palpitationen,
+
+                    Symptom.RoteZunge,
+                    Symptom.RoteZungenspitze,
+                    Symptom.GelberBelag,
+                    Symptom.SchmierigerBelag,
+                    Symptom.Dornen,
+
+                    Symptom.BeschleunigterPuls,
+                    Symptom.SchluepfrigerPuls,
+                    Symptom.SaitenfoermigerPuls // Le einfluss
+            )
+    ),
+    HeSchleimKaelteVerstopft(
+            label = "Kalter Schleim verstopft die Herzöffnungen",
+            description = "Psychisches Bild, extrovertiert",
+            sqlCode = "HeSchleimKaelte",
+            organ = ZangOrgan.Heart,
+            tendency = MangelUeberfluss.Ueberfluss,
+            symptoms = setOf(
+                    Symptom.Verwirrung,
+                    Symptom.GetruebteBewusstsein,
+                    Symptom.Lethargie,
+                    Symptom.Depression,
+                    Symptom.Selbstgespraeche,
+                    Symptom.DahinStarren,
+                    Symptom.NichtReden,
+                    Symptom.Bewusstseinsverlust,
+                    Symptom.RasselndeKehle, // beim einatmen
+
+                    Symptom.BlasseZunge,
+                    Symptom.DickerBelag,
+                    Symptom.WeisserBelag,
+                    Symptom.SchmierigerBelag,
+
+                    Symptom.VerlangsamterPuls,
+                    Symptom.SchluepfrigerPuls
+            )
+    ),
 
 
     // MILZ
@@ -577,7 +613,7 @@ enum class OrganSyndrome(
             sqlCode = "MPQiXu",
             organ = ZangOrgan.Spleen,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
+            symptoms = GeneralSymptoms.QiXu.symptoms + setOf(
                     Symptom.WenigAppetit,
                     Symptom.VoelleGefuehl,
                     Symptom.Blaehungen,
@@ -585,14 +621,11 @@ enum class OrganSyndrome(
                     Symptom.LeichteSchmerzenOberbauch,
                     Symptom.BreiigerStuhl,
 
-                    Symptom.Muedigkeit,
                     Symptom.EnergieMangel,
                     Symptom.Ausgezehrt,
-                    Symptom.AnstrengungSchnellErschoepft,
                     Symptom.KraftloseMuskeln,
-                    Symptom.Oedeme,
                     Symptom.OedemeBauch,
-                    Symptom.LeuchtendeBlaesse,
+
                     Symptom.Zwischenblutung,
                     Symptom.KurzeMensZyklen,
                     Symptom.HelleBlutung,
@@ -603,6 +636,7 @@ enum class OrganSyndrome(
                     Symptom.Zahneindruecke,
                     Symptom.DuennerBelag,
                     Symptom.WeisserBelag,
+
                     Symptom.SchwacherPuls,
                     Symptom.WeicherPuls,
                     Symptom.LeererPuls
@@ -613,10 +647,7 @@ enum class OrganSyndrome(
             sqlCode = "MPYangXu",
             organ = ZangOrgan.Spleen,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = MPQiXu.symptoms + setOf(
-                    Symptom.AversionKaelte,
-                    Symptom.KalteHaende,
-                    Symptom.KalteFuesse,
+            symptoms = MPQiXu.symptoms + GeneralSymptoms.YangXu.symptoms + setOf(
                     Symptom.KalterBauch,
                     Symptom.Unterbauchschmerzen,
                     Symptom.Kraempfe, // durch waerme gelindert
@@ -624,7 +655,7 @@ enum class OrganSyndrome(
                     Symptom.WaessrigerStuhl,
                     Symptom.UnverdauteNahrungInStuhl,
                     Symptom.Blaesse,
-                    Symptom.LeuchtendWeissesGesicht,
+
                     Symptom.Oedeme,
                     Symptom.HahnenschreiDiarrhoe,
 
@@ -635,6 +666,7 @@ enum class OrganSyndrome(
                     Symptom.NasseZunge,
                     Symptom.WeisserBelag,
                     Symptom.DuennerBelag,
+
                     Symptom.TieferPuls,
                     Symptom.SchwacherPuls,
                     Symptom.LangsamerPuls
@@ -647,8 +679,10 @@ enum class OrganSyndrome(
             tendency = MangelUeberfluss.Mangel,
             symptoms = MPYangXu.symptoms + setOf(
                     Symptom.UntenZiehendeBauchorgane,
+                    Symptom.Prolaps, // "Organsenkung" // von bauch- und unterleibsorgane: magen, darm, nieren, blase, uterus, scheide
                     Symptom.Schweregefuehl,
                     Symptom.Hernien,
+                    Symptom.Krampfadern,
                     Symptom.Haemorrhoiden
             )
     ),
@@ -743,14 +777,15 @@ enum class OrganSyndrome(
 
     // LUNGE
     // =================================================================================================================
-    LuQiMangel(
+
+    LuQiXu(
             label = "Lu-Qi-Mangel",
             sqlCode = "LuQiXu",
             description = "Hat etwas von einer Art Depression aber ohne der Trauer.",
             organ = ZangOrgan.Lung,
             part = SyndromePart.Qi,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
+            symptoms = GeneralSymptoms.QiXu.symptoms + setOf(
                     Symptom.Kurzatmigkeit,
                     Symptom.Husten,
                     Symptom.DuennerSchleim,
@@ -760,13 +795,11 @@ enum class OrganSyndrome(
 
                     Symptom.WenigLeiseSprechen,
                     Symptom.EnergieMangel,
-                    Symptom.Muedigkeit,
-                    Symptom.Blaesse,
                     Symptom.TrauererloseDepression,
 
                     Symptom.LeichtesSchwitzen,
                     Symptom.Erkaeltungen,
-                    Symptom.AversionKaelte,
+                    Symptom.AversionKaelte, // MINOR really? eigentlich erst bei YangXu...
 
                     Symptom.NormaleZunge,
                     Symptom.BlasseZunge,
@@ -776,38 +809,38 @@ enum class OrganSyndrome(
                     Symptom.WeicherPuls,
                     Symptom.LeererPuls
             )),
-    LuYinMangel(
+    LuYinXu(
             label = "Lu-Yin-Mangel",
             sqlCode = "LuYinXu",
             organ = ZangOrgan.Lung,
             part = SyndromePart.Yin,
             tendency = MangelUeberfluss.Mangel,
             // TODO allg-YinMangel-symptoms + allg-QiMangel-symptoms
-            symptoms = LuQiMangel.symptoms + setOf(
+            symptoms = LuQiXu.symptoms + setOf(
                     Symptom.Heiserkeit,
                     Symptom.TrockenerHals,
                     Symptom.TrockenerHusten,
                     Symptom.HitzeGefuehlAbends,
-
-                    Symptom.RoteZunge,
-                    Symptom.TrockeneZunge,
-                    Symptom.WenigBelag,
 
                     Symptom.KeinSchleim,
                     Symptom.WenigSchleim,
                     Symptom.KlebrigerSchleim,
                     Symptom.BlutInSchleim,
 
+                    Symptom.RoteZunge,
+                    Symptom.TrockeneZunge,
+                    Symptom.WenigBelag,
+
                     Symptom.BeschleunigterPuls,
                     Symptom.DuennerPuls,
                     Symptom.SchwacherPuls
             )),
     LuWindKaelteWind(
-            label = "Wind-Kälte attackiert Lu (mehr Wind)",
+            label = "Wind-Kälte attackiert Lu (Invasion äußerer Wind)",
             sqlCode = "LuWind",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = `Symptoms of LuWindKaelte` + setOf(
+            symptoms = GeneralSymptoms.LuWindKaelte + setOf(
                     Symptom.KratzenderHals,
                     Symptom.Kopfschmerzen,
                     Symptom.FroestelnMitEtwasFieber,
@@ -816,23 +849,25 @@ enum class OrganSyndrome(
             )
     ),
     LuWindKaelteKaelte(
-            label = "Wind-Kälte attackiert Lu (mehr Kälte)",
+            label = "Wind-Kälte attackiert Lu (Invasion äußere Kälte)",
             sqlCode = "LuKalt",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = `Symptoms of LuWindKaelte` + setOf(
+            symptoms = GeneralSymptoms.LuWindKaelte + setOf(
                     Symptom.FroestelnStarkerAlsFieber,
                     Symptom.AversionKaelte,
                     Symptom.KeinSchwitzen,
                     Symptom.WenigDurst,
                     Symptom.KeinDurst,
-                    Symptom.Muskelschmerzen,
-                    Symptom.Kopfschmerzen,
+
                     Symptom.Husten,
                     Symptom.Schnupfen,
                     Symptom.KlarerSchleim,
                     Symptom.WaessrigerSchleim,
-                    Symptom.VerstopfteNase
+                    Symptom.VerstopfteNase,
+
+                    Symptom.Muskelschmerzen,
+                    Symptom.Kopfschmerzen
             )
     ),
     LuWindHitze(
@@ -865,6 +900,7 @@ enum class OrganSyndrome(
     LuTrocken(
             label = "Trockenheit attackiert Lu",
             sqlCode = "LuTrocken",
+            description = "Keine wirklichen Hitze Symptome.",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = setOf(
@@ -898,14 +934,16 @@ enum class OrganSyndrome(
             sqlCode = "LuSchleimKalt",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = `Symptoms of general LuSchleim` + setOf(
+            symptoms = GeneralSymptoms.LuSchleim + setOf(
                     Symptom.WeisserSchleim,
                     Symptom.TrueberSchleim,
-                    Symptom.VielSchleim,
+
                     Symptom.Blaesse,
                     Symptom.Muedigkeit,
                     Symptom.KaelteGefuehl,
+
                     Symptom.WeisserBelag,
+
                     Symptom.LangsamerPuls
             )
     ),
@@ -914,13 +952,15 @@ enum class OrganSyndrome(
             sqlCode = "LuSchleimHeiss",
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
-            symptoms = `Symptoms of general LuSchleim` + setOf(
+            symptoms = GeneralSymptoms.LuSchleim + setOf(
                     Symptom.GelberSchleim,
-                    Symptom.VielSchleim,
+
                     Symptom.Fieber,
                     Symptom.HitzeZeichen,
+
                     Symptom.GelberBelag,
                     Symptom.BraunerBelag,
+
                     Symptom.BeschleunigterPuls
             )
     ),
@@ -933,25 +973,28 @@ enum class OrganSyndrome(
             sqlCode = "NiYinXu",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = `Symptoms of general Yin Xu` + setOf(
-                    // schmerzen unterer bereich
+            symptoms = GeneralSymptoms.YinXu.symptoms + setOf(
+                    // schmerzen unten
                     Symptom.SchmerzenLumbalregion,
                     Symptom.KnieSchmerzen,
                     Symptom.FersenSchmerzen,
+                    // sex
                     Symptom.VermehrteLibido,
                     Symptom.SexuelleTraeme,
                     Symptom.VerfruehteEjakulation,
                     Symptom.NaechtlicheEjakulation,
                     Symptom.MenstruationBeeinflusst,
-                    Symptom.GedaechtnisStoerungen,
-                    Symptom.Schwindel,
+                    // ohren
                     Symptom.Tinnitus,
                     Symptom.Hoerverlust,
-
+                    //misc
+                    Symptom.GedaechtnisStoerungen,
+                    Symptom.Schwindel,
+                    // zunge
                     Symptom.RoterBelag,
                     Symptom.DuennerBelag,
                     Symptom.FehlenderBelag,
-
+                    // puls
                     Symptom.DuennerPuls,
                     Symptom.BeschleunigterPuls
             )
@@ -961,93 +1004,102 @@ enum class OrganSyndrome(
             sqlCode = "NiYangXu",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = `Symptoms of general Yang Xu` + setOf(
-                    Symptom.KreuzSchmerzen,
+            symptoms = GeneralSymptoms.YangXu.symptoms + setOf(
+                    Symptom.GedaechtnisStoerungen,
+                    Symptom.Zahnausfall,
+                    Symptom.Oedeme,
+                    // schmerzen unten
+                    Symptom.SchmerzenLumbalregion,
                     Symptom.KnieSchmerzen,
                     Symptom.FersenSchmerzen,
+                    // sex
                     Symptom.VerminderteLibido,
                     Symptom.Unfruchtbarkeit,
                     Symptom.Impotenz,
                     Symptom.Spermatorrhoe,
                     Symptom.Ausfluss,
-                    Symptom.GedaechtnisStoerungen,
-                    Symptom.Zahnausfall,
+                    // ohren
                     Symptom.HoervermoegenVermindert,
                     Symptom.Tinnitus,
+                    // urin
                     Symptom.KlarerUrin,
                     Symptom.HellerUrin,
                     Symptom.ReichlichUrin,
                     Symptom.WenigUrin,
-                    Symptom.Oedeme,
                     // MP auch beeinflusst
-                    Symptom.VerdauungsProbleme,
+                    Symptom.VerdauungAllgemein,
                     Symptom.BreiigerStuhl,
                     Symptom.HahnenschreiDiarrhoe,
-
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.VergroesserteZunge,
                     Symptom.DuennerBelag,
                     Symptom.WeisserBelag,
+                    // puls
                     Symptom.TieferPuls,
                     Symptom.SchwacherPuls,
                     Symptom.VerlangsamterPuls
             )
     ),
-    NiYangUeberfliessenXu(
+    NiYangXuUeberfliessenWasser(
             label = "Nieren Yang Mangel mit Überfließen des Wassers",
             sqlCode = "NiYangXuUeber",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = NiYangXu.symptoms + setOf(
-                    Symptom.StarkeOedemeBeine,
-                    Symptom.Aszites,
-                    Symptom.LungenOedem,
+                    Symptom.Palpitationen,
+                    // Lu beeinflusst
                     Symptom.Husten,
                     Symptom.Atemnot,
-                    Symptom.Palpitationen,
-
+                    // wasser
+                    Symptom.StarkeOedemeBeine,
+                    Symptom.LungenOedem,
+                    Symptom.Wasserbauch,
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.GeschwolleneZunge,
                     Symptom.DuennerBelag,
                     Symptom.DickerBelag,
                     Symptom.WeisserBelag,
-
+                    // puls
                     Symptom.TieferPuls,
                     Symptom.SchwacherPuls,
                     Symptom.HaftenderPuls
             )
     ),
-    NiYangFestigkeitXu(
+    NiYangXuFestigkeitXu(
             label = "Mangelnde Festigkeit des Nieren Qi",
             sqlCode = "NiYangXuFest",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
+            symptoms = setOf(// MINOR why not include NiYang symptoms?
+                    // sex
                     Symptom.Spermatorrhoe,
                     Symptom.NaechtlicheEjakulation,
                     Symptom.SexuelleTraeume,
                     Symptom.VerfruehteEjakulation,
                     Symptom.Ausfluss,
                     Symptom.Unfruchtbarkeit,
-
+                    // urin
                     Symptom.HaeufigesUrinieren,
                     Symptom.ReichlichUrin,
                     Symptom.KlarerUrin,
                     Symptom.Nachttroepfeln,
                     Symptom.Harninkontinenz,
-
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.GeschwolleneZunge,
+                    // puls
                     Symptom.TieferPuls,
                     Symptom.SchwacherPuls
             )
     ),
-    NiYangEinfangenXu(
+    NiYangXuQiEinfangen(
             label = "Unfähigkeit der Nieren das Qi einzufangen",
             sqlCode = "NiYangXuFangen",
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
-            symptoms = setOf(
+            symptoms = setOf(// MINOR why not include NiYang symptoms?
                     Symptom.Atemnot,
                     Symptom.Kurzatmigkeit,
                     Symptom.Asthma,
@@ -1081,6 +1133,7 @@ enum class OrganSyndrome(
                     Symptom.VerzoegerteKnochenEntwicklung,
                     Symptom.VeroegertesWachstum,
                     Symptom.VerzoegerteReifung,
+
                     Symptom.GestoerteZahnentwicklung,
                     Symptom.Hoerstoerung
             )
@@ -1092,6 +1145,7 @@ enum class OrganSyndrome(
             tendency = MangelUeberfluss.Mangel,
             symptoms = setOf(
                     Symptom.VerfruehtesSenium,
+                    // MINOR rename Probleme to Allgemein
                     Symptom.ProblemeUntererRuecken,
                     Symptom.ProblemeKnie,
                     Symptom.ProblemeFussknoechel,
@@ -1105,71 +1159,128 @@ enum class OrganSyndrome(
     )
 }
 
-private val `Symptoms of general Le Wind` = setOf(
-        Symptom.PloetzlicheBewegungen,
-        Symptom.UnkoordinierteBewegungen,
-        Symptom.Zuckungen,
-        Symptom.Tics,
-        Symptom.Augenzucken,
-        Symptom.AllgemeineUnregelmaessigkeiten,
-        Symptom.OberkoerperStaerkerBetroffen,
-        Symptom.KopfStaerkerBetroffen,
-        Symptom.YangLokalisationenStaerkerBetroffen
+
+data class GeneralSymptom(
+        val yy: YinYang,
+        val substance: Substances? = null,
+        val symptoms: Set<Symptom>
+        // val mangel = MangelUeberfluss.Mangel
 )
 
-private val `Symptoms of general Yin Xu` = setOf(
-        Symptom.RoteWangenflecken,
-        Symptom.MehrDurst,
-        Symptom.FuenfZentrenHitze,
-        Symptom.Nachtschweiss,
-        Symptom.Durchfall,
-        Symptom.KonzentrierterUrin,
-        Symptom.DunklerUrin,
-        Symptom.HitzeGefuehlAbends,
-        Symptom.TrockenerMund,
-        Symptom.TrockenerHals,
-        Symptom.Halsschmerzen, // haeufig, leichte
-        Symptom.Schlafstoerungen,
-        Symptom.Unruhe,
-        Symptom.Nervoesitaet
-)
+object GeneralSymptoms {
 
-private val `Symptoms of general Yang Xu` = setOf(
-        Symptom.BlassesGesicht,
-        Symptom.LeuchtendWeissesGesicht,
-        Symptom.AversionKaelte,
-        Symptom.KalteHaende,
-        Symptom.KalteFuesse,
-        Symptom.Lethargie,
-        Symptom.Schwaeche,
-        Symptom.Antriebslosigkeit
-)
-private val `Symptoms of general LuSchleim` = setOf(
-        Symptom.ThorakalesEngegefuehl,
-        Symptom.VoelleGefuehl,
-        Symptom.Atemnot,
-        Symptom.Asthma,
-        Symptom.Husten,
-        Symptom.VielSchleim,
-        Symptom.RasselndeKehle,
-        Symptom.WenigAppetit,
-        Symptom.Breichreiz,
+    val BlutXu = GeneralSymptom(
+            yy = YinYang.Yin,
+            substance = Substances.Xue,
+            symptoms = setOf(
+                    Symptom.FahleBlaesse,
+                    Symptom.Palpitationen,
+                    Symptom.Konzentrationsstoerungen,
+                    Symptom.Schreckhaftigkeit,
+                    Symptom.Schlafstoerungen,
+                    Symptom.TaubheitsgefuehlExtremitaeten
 
-        Symptom.DickerBelag,
-        Symptom.FeuchterBelag,
-        Symptom.SchmierigerBelag,
+            )
+    )
+    val YinXu = GeneralSymptom(// hat HITZE
+            yy = YinYang.Yin,
+            symptoms = BlutXu.symptoms + setOf(
+                    // psycho
+                    Symptom.Unruhe,
+                    Symptom.Nervoesitaet,
+                    // hitze
+                    Symptom.RoteWangenflecken,
+                    Symptom.FuenfZentrenHitze,
+                    Symptom.Nachtschweiss,
+                    Symptom.HitzeGefuehlAbends,
+                    Symptom.TrockenerMund,
+                    Symptom.TrockenerHals,
+                    Symptom.Halsschmerzen, // haeufig, leichte
+                    Symptom.Durst, // mehr? MehrDurstSpaeter?
+                    // verdauung
+                    Symptom.DunklerUrin,
+                    Symptom.KonzentrierterUrin,
+                    Symptom.Verstopfung,
+                    Symptom.Durchfall
+            ))
 
-        Symptom.SchluepfrigerPuls,
-        Symptom.OberflaechlicherPuls
-)
+    val QiXu = GeneralSymptom(
+            yy = YinYang.Yin,
+            substance = Substances.Qi,
+            symptoms = setOf(
+                    Symptom.LeuchtendeBlaesse,
+                    Symptom.Muedigkeit,
+                    Symptom.Schwaeche,
+                    Symptom.AnstrengungSchnellErschoepft
+            ))
+    val YangXu = GeneralSymptom(
+            // looks cold, feels cold
+            yy = YinYang.Yin,
+            symptoms = QiXu.symptoms + setOf(
+                    Symptom.KalteHaende,
+                    Symptom.KalteFuesse,
+                    Symptom.KaelteGefuehl,
+                    Symptom.AversionKaelte,
+                    // MINOR engegefuehl (auch bei NiYangXu?)
+                    // MINOR schmerzen
+                    Symptom.Kontraktionen,
+                    Symptom.Lethargie,
+                    Symptom.Antriebslosigkeit
+            ))
 
-private val `Symptoms of LuWindKaelte` = setOf(
-        Symptom.NormaleZunge,
-        Symptom.WeisserBelag,
-        Symptom.VermehrterBelag,
-        Symptom.DuennerBelag,
 
-        Symptom.OberflaechlicherPuls,
-        Symptom.GespannterPuls,
-        Symptom.VerlangsamterPuls
-)
+    val LeWind = setOf(
+            Symptom.PloetzlicheBewegungen,
+            Symptom.UnkoordinierteBewegungen,
+            Symptom.Zuckungen,
+            Symptom.Tics,
+            Symptom.Augenzucken,
+            Symptom.AllgemeineUnregelmaessigkeiten,
+            Symptom.OberkoerperStaerkerBetroffen,
+            Symptom.KopfStaerkerBetroffen,
+            Symptom.YangLokalisationenStaerkerBetroffen
+    )
+
+    val LuSchleim = setOf(
+            Symptom.ThorakalesEngegefuehl,
+            Symptom.VoelleGefuehl,
+            Symptom.Atemnot,
+            Symptom.Asthma,
+            Symptom.Husten,
+            Symptom.VielSchleim,
+            Symptom.RasselndeKehle,
+            Symptom.WenigAppetit,
+            Symptom.Breichreiz,
+
+            Symptom.DickerBelag,
+            Symptom.FeuchterBelag,
+            Symptom.SchmierigerBelag,
+
+            Symptom.SchluepfrigerPuls,
+            Symptom.OberflaechlicherPuls
+    )
+
+    val LuWindKaelte = setOf(
+            Symptom.NormaleZunge,
+            Symptom.WeisserBelag,
+            Symptom.VermehrterBelag,
+            Symptom.DuennerBelag,
+
+            Symptom.OberflaechlicherPuls,
+            Symptom.GespannterPuls,
+            Symptom.VerlangsamterPuls
+    )
+
+    val HeYangXuPulsTongue = setOf(
+            Symptom.VersteckterPuls,
+            Symptom.SchwacherPuls,
+            Symptom.UnregelmaessigerPuls,
+            Symptom.RauherPuls,
+
+            Symptom.BlaeulicheZunge,
+            Symptom.GeschwolleneZunge,
+            Symptom.GestauteUnterzungenvenen // stark geschwollen
+    )
+
+}
+

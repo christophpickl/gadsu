@@ -41,7 +41,7 @@ class SyndromeGuesserTest {
 
         val report = guesser.guess(client, noTreatments)
 
-        report.assertHas(OrganSyndrome.LuQiMangel)
+        report.assertHas(OrganSyndrome.LuQiXu)
     }
 
     fun `When client has soft pulse property in a treatment, Then the report contains LuQiMangel syndrome`() {
@@ -50,7 +50,7 @@ class SyndromeGuesserTest {
 
         val report = guesser.guess(clientWithEmptyCProps, listOf(treatment))
 
-        report.assertHas(OrganSyndrome.LuQiMangel)
+        report.assertHas(OrganSyndrome.LuQiXu)
     }
 
 
@@ -61,7 +61,7 @@ class SyndromeGuesserTest {
             val xpropsForSyndrom = mutableListOf<Pair<XPropEnum, IsEnumOption>>()
             val pulsePropertiesForSyndrom = mutableListOf<PulseProperty>()
 
-            OrganSyndrome.LuQiMangel.symptoms.forEach {
+            OrganSyndrome.LuQiXu.symptoms.forEach {
                 when (it.source) {
                     is Symptom.SymptomSource.XPropSource -> {
                         val xsource = (it.source as Symptom.SymptomSource.XPropSource)
@@ -90,8 +90,8 @@ class SyndromeGuesserTest {
 
         val report = guesser.guess(client, noTreatments)
 
-        report.assertHas(OrganSyndrome.LuQiMangel)
-        report.possibleSyndromes.first { it.syndrome == OrganSyndrome.LuQiMangel }.apply {
+        report.assertHas(OrganSyndrome.LuQiXu)
+        report.possibleSyndromes.first { it.syndrome == OrganSyndrome.LuQiXu }.apply {
             assertThat(matchPercentage, greaterThan(0))
             assertThat(matchRation, greaterThan(0.0))
 //            assertThat(matchPercentage, equalTo(100))

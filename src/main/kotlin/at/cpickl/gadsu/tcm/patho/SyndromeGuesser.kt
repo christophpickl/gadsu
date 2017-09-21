@@ -28,7 +28,7 @@ data class SyndromeReport(
     companion object {
         val dummy = SyndromeReport(
                 possibleSyndromes = listOf(
-                        PossibleSyndrom(OrganSyndrome.LuQiMangel, 0.75, setOf(Symptom.FlacheAtmung, Symptom.LeichtesSchwitzen))
+                        PossibleSyndrom(OrganSyndrome.LuQiXu, 0.75, setOf(Symptom.FlacheAtmung, Symptom.LeichtesSchwitzen))
                 )
         )
         val empty = SyndromeReport(emptyList())

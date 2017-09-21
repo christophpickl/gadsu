@@ -51,7 +51,7 @@ enum class ZangOrgan(
                     ZangFunction("Haltefunktion (Blutgefäße, Organe)")
             ),
             leadSymptoms = listOf(
-                    Symptom.VerdauungsProbleme
+                    Symptom.VerdauungAllgemein
             )
     ),
     Lung(
