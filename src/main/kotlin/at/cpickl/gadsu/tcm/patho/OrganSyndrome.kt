@@ -403,8 +403,6 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Mangel,
             symptoms = SpecificSymptoms.HeQiXu + GeneralSymptoms.YangXu.symptoms + listOf(
-                    Symptom.BlassesGesicht,
-                    Symptom.WeissesGesicht,
                     Symptom.ThorakalesEngegefuehl,
                     // zunge
                     Symptom.FeuchteZunge,
@@ -446,8 +444,8 @@ enum class OrganSyndrome(
                     Symptom.KaelteGefuehl, // extremes
                     Symptom.Zittern,
                     Symptom.Zyanose,
-                    Symptom.Bewusstseinsverlust,
-                    Symptom.SchweissAusbruch
+                    Symptom.SchweissAusbruch,
+                    Symptom.Bewusstseinsverlust
             )
     ),
     HeBlutStau(
@@ -519,6 +517,7 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = listOf(
+                    Symptom.Extrovertiertheit,
                     Symptom.Unruhe,
                     Symptom.Gereiztheit,
                     Symptom.Verwirrung,
@@ -527,7 +526,6 @@ enum class OrganSyndrome(
                     Symptom.Weinen,
                     Symptom.Schreien,
                     Symptom.Gewalttaetig,
-                    Symptom.Extrovertiertheit,
                     Symptom.Schlafstoerungen,
                     Symptom.ThorakalesEngegefuehl,
                     Symptom.BittererMundgeschmack,
@@ -551,6 +549,7 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Heart,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = listOf(
+                    Symptom.Introvertiertheit,
                     Symptom.Verwirrung,
                     Symptom.GetruebteBewusstsein,
                     Symptom.Lethargie,
@@ -591,12 +590,11 @@ enum class OrganSyndrome(
                     Symptom.KalterBauch,
                     Symptom.Unterbauchschmerzen,
                     Symptom.Kraempfe, // durch waerme gelindert
+                    Symptom.Oedeme,
+                    // verdauung
                     Symptom.WeicherStuhl,
                     Symptom.WaessrigerStuhl,
                     Symptom.UnverdauteNahrungInStuhl,
-                    Symptom.Blaesse,
-
-                    Symptom.Oedeme,
                     Symptom.HahnenschreiDiarrhoe,
                     // zunge
                     Symptom.LeichtBlaeulicheZunge,
@@ -642,34 +640,39 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Spleen,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = listOf(
+                    // schwere
                     Symptom.Muedigkeit,
                     Symptom.Schlappheit,
                     Symptom.SchwererKopf,
                     Symptom.SchwereGliedmassen,
-                    Symptom.VoelleGefuehl,
-                    Symptom.ThorakalesEngegefuehl,
-                    Symptom.DurckgefuehlBauch,
+                    // trinken, essen
+                    Symptom.KeinDurst,
+                    Symptom.WenigDurst,
                     Symptom.KeinAppetit,
+                    Symptom.VerminderterGeschmackssinn,
+                    Symptom.FaderMundgeschmack,
+                    Symptom.BlanderMundgeschmack,
+                    // verdauung
+                    Symptom.VoelleGefuehl,
+                    Symptom.DurckgefuehlBauch,
                     Symptom.Uebelkeit,
                     Symptom.Brechreiz,
                     Symptom.Erbrechen,
                     Symptom.WeicherStuhl,
                     Symptom.KlebrigerStuhl,
-                    Symptom.Bauchschmerzen, // besser waerme
-                    Symptom.VerminderterGeschmackssinn,
-                    Symptom.FaderMundgeschmack,
-                    Symptom.BlanderMundgeschmack,
-                    Symptom.KaelteGefuehl,
-                    Symptom.KeinDurst,
-                    Symptom.WenigDurst,
-                    Symptom.Ausfluss,
                     Symptom.TrueberUrin,
+                    // misc
+                    Symptom.ThorakalesEngegefuehl,
+                    Symptom.Bauchschmerzen, // besser waerme
+                    Symptom.KaelteGefuehl,
+                    Symptom.Ausfluss,
                     Symptom.Gelbsucht,
-
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.GeschwolleneZunge,
                     Symptom.DickerBelag,
                     Symptom.WeisserBelag,
+                    // puls
                     Symptom.SchluepfrigerPuls,
                     Symptom.VerlangsamterPuls
             )
@@ -774,11 +777,11 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = GeneralSymptoms.LuWindKaelte + listOf(
+                    Symptom.AversionWind,
+                    Symptom.FroestelnStarkerAlsFieber,
                     Symptom.KratzenderHals,
                     Symptom.Kopfschmerzen,
-                    Symptom.FroestelnMitEtwasFieber,
-                    Symptom.Schwitzen,
-                    Symptom.AversionWind
+                    Symptom.Schwitzen
             )
     ),
     LuWindKaelteKaelte(
@@ -787,8 +790,8 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Lung,
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = GeneralSymptoms.LuWindKaelte + listOf(
-                    Symptom.FroestelnStarkerAlsFieber,
                     Symptom.AversionKaelte,
+                    Symptom.FroestelnStarkerAlsFieber,
                     Symptom.KeinSchwitzen,
                     Symptom.WenigDurst,
                     Symptom.KeinDurst,
@@ -841,14 +844,15 @@ enum class OrganSyndrome(
                     Symptom.TrockeneNase,
                     Symptom.TrockenerRachen,
                     Symptom.TrockenerHals,
+                    Symptom.TrockenerHusten,
                     Symptom.Nasenbluten,
                     Symptom.Heiserkeit,
-                    Symptom.TrockenerHusten,
+                    Symptom.LeichteKopfschmerzen,
+                    // schleim
                     Symptom.WenigSchleim,
                     Symptom.KeinSchleim,
                     Symptom.ZaeherSchleim,
                     Symptom.BlutInSchleim,
-                    Symptom.LeichteKopfschmerzen,
 
                     Symptom.RoteZungenspitze,
                     Symptom.GelberBelag,
@@ -980,7 +984,7 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = NiYangXu.symptoms + listOf(
-                    Symptom.Palpitationen, // MINOR hat palpitationen, obwohl das eher bei blut-xu vorkommt?!
+                    Symptom.Palpitationen, // MINOR hat fix palpitationen! obwohl das eher bei blut-xu vorkommt, vesteh ich nicht
                     // Lu beeinflusst
                     Symptom.Husten,
                     Symptom.Atemnot,
@@ -1028,6 +1032,7 @@ enum class OrganSyndrome(
             organ = ZangOrgan.Kidney,
             tendency = MangelUeberfluss.Mangel,
             symptoms = listOf(// MINOR why not include NiYang symptoms?
+                    // Lu
                     Symptom.Atemnot,
                     Symptom.Kurzatmigkeit,
                     Symptom.Asthma,
@@ -1035,14 +1040,16 @@ enum class OrganSyndrome(
                     Symptom.LeiseSprechen,
                     Symptom.SchwacheStimme,
                     Symptom.Infektanfaelligkeit,
+                    // misc
+                    Symptom.KreuzSchmerzen,
                     Symptom.ReichlichUrin,
                     Symptom.HellerUrin,
-                    Symptom.KreuzSchmerzen,
-
+                    // zunge
                     Symptom.BlasseZunge,
                     Symptom.GeschwolleneZunge,
                     Symptom.DuennerBelag,
                     Symptom.WeisserBelag,
+                    // puls
                     Symptom.TieferPuls,
                     Symptom.DuennerPuls,
                     Symptom.SchwacherPuls,
