@@ -81,11 +81,13 @@ class LiveSearchField(viewName: String) {
 
 
 // FIXME during search selection doesnt work
-class SearchableTree<G, L>(val tree: Tree<G, L>) : Tree<G, L> by tree {
+class SearchableTree<G, L>(private val tree: Tree<G, L>) : Tree<G, L> by tree {
 
+    private val log = LOG {}
     private val originalData: MyTreeModel<G, L> = tree.myModel
 
     fun restoreOriginalData() {
+        log.debug { "restoreOriginalData()" }
         tree.setModel2(originalData)
     }
 

@@ -38,7 +38,6 @@ class ClientTabTcm2(
 
     private val container = JPanel().apply {
         layout = BorderLayout()
-//        transparent()
     }
 
     private val xpropEnums = listOf(

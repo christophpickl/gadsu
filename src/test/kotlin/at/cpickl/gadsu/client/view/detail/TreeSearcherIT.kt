@@ -1,98 +1,183 @@
 package at.cpickl.gadsu.client.view.detail
 
-import at.cpickl.gadsu.testinfra.ui.BaseDriver
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
+import at.cpickl.gadsu.testinfra.ui.TestContainer
+import at.cpickl.gadsu.testinfra.ui.TestContainerStarter
 import at.cpickl.gadsu.view.tree.LiveSearchField
 import at.cpickl.gadsu.view.tree.MyNode
 import at.cpickl.gadsu.view.tree.MyTree
 import at.cpickl.gadsu.view.tree.MyTreeModel
+import at.cpickl.gadsu.view.tree.MyTreeNode
 import at.cpickl.gadsu.view.tree.TreeSearcher
-import com.github.christophpickl.kpotpourri.test4k.skip
-import non_test.Framed
+import com.natpryce.hamkrest.equalTo
 import org.testng.annotations.Test
+import org.uispec4j.Tree
 import org.uispec4j.Window
 import org.uispec4j.interception.MainClassAdapter
 import javax.swing.JPanel
+import javax.swing.tree.DefaultMutableTreeNode
 
 @Test
 class TreeSearcherUiTest : SimpleUiTest() {
 
-    private lateinit var driver: TreeDriver
-    private val tree get() = driver.tree
-    private val searchField get() = driver.searchField
+    private val viewNameSearchField = "viewNameSearchField"
+    private val viewNameTree = "viewNameTree"
 
-    override fun postInit(window: Window) {
-        driver = TreeDriver(this, window)
+    private val container get() = window!!.getPanel(TestContainer.viewName)!!.awtComponent as TestContainer
+    private val tree get() = window!!.getTree(viewNameTree)!!
+    private val searchField get() = window!!.getInputTextBox(viewNameSearchField)!!
+
+    override fun postInit(window: Window) {}
+    override fun newMainClassAdapter() = MainClassAdapter(TestContainerStarter::class.java)
+
+    //<editor-fold desc="Search">
+
+    fun `Given 'wal' and 'biene', When seach for 'a', Then content should only disply 'wal'`() {
+        initContainer(listOf(
+                createGroup("x", "wal", "biene")
+        ))
+
+        searchFor("a")
+
+        tree.assertContentEquals(listOf("wal"))
     }
 
-    override fun newMainClassAdapter() = MainClassAdapter(TreeSearchStarter::class.java)
+    fun `Given subnode 'kaelte', When search for 'kalt', Then display umlaut-insensitive 'kaelte'`() {
+        initContainer(singleTreeItem("kälte"))
 
+        searchFor("kalt")
 
-
-    fun `Given sub1-1 is selected, When search for 'a' and clear search again, Then sub1-1 should still be selected`() {
-        tree.select(Node.Sub11_Path)
-
-        searchField.appendText("a")
-        searchField.setText("", false)
-
-        assertTrue(tree.selectionEquals(Node.Sub11_Path))
+        tree.assertContentEquals(listOf("kälte"))
     }
 
-    //<editor-fold desc="Description">
-    fun `Given sub1-1 is selected, When search for 'a', Then sub1-1 should still be selected`() {
-        skip("WIP")
-        tree.select(Node.Sub11_Path)
+    fun `Given 'zunge kalt' and 'zunge heiss', When search for 'zu kalt', Then should only show 'zunge kalt'`() {
+        initContainer(listOf(
+                createGroup("x", "zunge kalt", "zunge heiss")
+        ))
 
-        searchField.appendText("a")
+        searchFor("zu kalt")
 
-        assertTrue(tree.selectionEquals(Node.Sub11_Path))
+        tree.assertContentEquals(listOf("zunge kalt"))
     }
+
     //</editor-fold>
 
-}
+    //<editor-fold desc="Expand/collapse">
 
+    fun `Given 'a' is expanded and 'a1' selected, When collapse and expand 'a', Then 'a1' is still selected`() {
+        initContainer(listOf(
+                createGroup("a", "a1")
+        ))
+        tree.expand("a")
+        tree.select("a/a1")
 
-object TreeSearchStarter {
+        tree.collapse("a")
+        tree.expand("a")
 
-    val viewNameSearchField = "viewNameSearchField"
-    val viewNameTree = "viewNameTree"
-
-    @JvmStatic
-    fun main(cliArgs: Array<String>) {
-        Framed.showWithContextDefaultSize {
-            // ClientTabTcm2(Client.REAL_DUMMY, NoopModificationChecker, it.bus)
-            JPanel().apply {
-                val searchField = LiveSearchField(viewNameSearchField)
-                val trees = listOf(MyTree(MyTreeModel(listOf(
-                        createGroup(Node.Group1, Node.Sub11, Node.Sub12),
-                        createGroup(Node.Group2, Node.Sub21)
-                )), viewNameTree))
-                TreeSearcher(searchField, trees)
-
-                add(searchField.asComponent())
-                trees.forEach { add(it) }
-            }
-        }
+        assertTrue(tree.selectionEquals("a/a1"))
     }
 
-    private fun createGroup(key: String, vararg subs: String) =
-            MyNode.MyGroupNode<String, String>(key, key, subs.map { MyNode.MyLeafNode<String, String>(it, it) })
+    //</editor-fold>
 
-}
+    //<editor-fold desc="Search and selection">
 
-class TreeDriver(test: TreeSearcherUiTest, window: Window) : BaseDriver<TreeSearcherUiTest>(test, window) {
-    val searchField = window.getInputTextBox(TreeSearchStarter.viewNameSearchField)!!
-    val tree = window.getTree(TreeSearchStarter.viewNameTree)!!
-}
+    fun `Given nothing selected, When search for 'a' and select 'a1' and clear search, Then 'a1' is still selected`() {
+        initContainer(listOf(
+                createGroup("a", "a1")
+        ))
 
-private object Node {
-    val Group1 = "group1"
-    val Sub11 = "sub1-1 aaa"
-    val Sub11_Path = "$Group1/$Sub11"
-    val Sub12 = "sub1-2 aaa"
-    val Sub12_Path = "$Group1/$Sub12"
+        searchFor("a")
+        tree.click("a")
+        tree.click("a/a1")
+        resetSearch()
 
-    val Group2 = "group2"
-    val Sub21 = "sub2-1 äöü"
-    val Sub21_Path = "$Group1/$Sub21"
+        assertTrue(tree.selectionEquals("a/a1"))
+    }
+
+
+    fun `Given 'a1' is selected, When search for 'a' and clear search again, Then 'a1' is still selected`() {
+        initContainer(listOf(
+                createGroup("a", "a1")
+        ))
+        tree.expand("a")
+        tree.select("a/a1")
+
+        searchFor("a")
+        resetSearch()
+
+        assertTrue(tree.selectionEquals("a/a1"))
+    }
+
+
+    fun `Given searched for 'a' and 'a1' selected, When reset search, Then 'a1' is still selected`() {
+        initContainer(listOf(
+                createGroup("a", "a1")
+        ))
+        searchFor("a")
+        tree.expand("a")
+        tree.select("a/a1")
+
+        resetSearch()
+
+        assertTrue(tree.selectionEquals("a/a1"))
+    }
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="Test infrastructure">
+
+
+    private fun searchFor(term: String) {
+        searchField.appendText(term)
+    }
+
+    private fun resetSearch() {
+        searchField.setText("", false)
+    }
+
+    private fun initContainer(nodes: List<MyNode<String, String>>) {
+        container.setView(
+                JPanel().apply {
+                    val searchField = LiveSearchField(viewNameSearchField)
+                    val trees = listOf(MyTree(MyTreeModel(nodes), viewNameTree))
+                    TreeSearcher(searchField, trees)
+
+                    add(searchField.asComponent())
+                    trees.forEach { add(it) }
+                }
+        )
+    }
+
+    private fun createGroup(groupLabel: String, vararg subLabels: String) =
+            MyNode.MyGroupNode<String, String>(groupLabel, groupLabel, subLabels.map { MyNode.MyLeafNode<String, String>(it, it) })
+
+    private fun singleTreeItem(label: String) = listOf(createGroup("ignore", label))
+
+    @Suppress("UNCHECKED_CAST")
+    private fun Tree.assertContentEquals(vararg expected: List<String>) {
+        val actual = mutableListOf<List<String>>()
+        val rootNode = jTree.model.root as DefaultMutableTreeNode
+        1.rangeTo(rootNode.childCount).forEach { i ->
+            val groupValues = mutableListOf<String>()
+            val groupNode = rootNode.getChildAt(i - 1) as MyTreeNode<String, String>
+//          groupValues += groupNode.label ... nope
+            1.rangeTo(groupNode.childCount).forEach { j ->
+                val subNode = groupNode.getChildAt(j - 1) as MyTreeNode<String, String>
+                groupValues += subNode.label
+            }
+            actual += groupValues
+        }
+        com.natpryce.hamkrest.assertion.assertThat("Tree content does not match!", actual, equalTo(expected.toList()))
+    }
+
+    private fun Tree.expand(path: String) {
+        expand(path, true)
+    }
+
+    private fun Tree.collapse(path: String) {
+        expand(path, false)
+    }
+
+    //</editor-fold>
 }

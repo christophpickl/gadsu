@@ -45,10 +45,7 @@ class MyTree<G, L>(
         viewName: String? = null
 ) : JTree(myModel.swingModel), Tree<G, L> {
 
-    override fun setModel2(newMyModel: MyTreeModel<G, L>) {
-        myModel = newMyModel
-        model = newMyModel.swingModel
-    }
+    private val log = LOG {}
 
     init {
         if (viewName != null) name = viewName
@@ -70,15 +67,25 @@ class MyTree<G, L>(
         }
     }
 
-    fun readSelected(): List<L> = allLeafNodes().filter { it.isSelected() }.map { it.entity }
+    override fun setModel2(newMyModel: MyTreeModel<G, L>) {
+        log.trace { "setModel2(model)" }
+        myModel = newMyModel
+        model = newMyModel.swingModel
+    }
+
+    override fun addSelectionPath(selectionPath: TreePath) {
+        log.trace { "addSelectionPath(path=$selectionPath)" }
+        super.addSelectionPath(selectionPath)
+    }
 
     override fun isExpanded(node: MyNode.MyGroupNode<G, L>) = isExpanded(node.toPath())
 
-    override fun expand(node: MyNode.MyGroupNode<G, L>) = expandPath(node.toPath())
+    override fun expand(node: MyNode.MyGroupNode<G, L>) = expandPath(node.toPath().apply { log.debug { "expand(node.path=$this)" } })
+
+    fun readSelected(): List<L> = allLeafNodes().filter { it.isSelected() }.map { it.entity }
 
     fun expandAll() {
         myModel.nodes.forEach { categoryNode ->
-            // FIXME doesnt work
             expandPath(categoryNode.toPath())
         }
     }
@@ -112,11 +119,15 @@ class MyTree<G, L>(
 
 class MyTreeModel<G, L>(val nodes: List<MyNode<G, L>>) {
 
+    companion object {
+        val rootContent = "ROOT"
+    }
+
     // expect the top nodes all to be group nodes (no leaves at lvl 1)
     val groupNodes = nodes.map { it as MyNode.MyGroupNode<G, L> }
 
     val swingModel by lazy {
-        DefaultTreeModel(DefaultMutableTreeNode("root ignored").apply {
+        DefaultTreeModel(DefaultMutableTreeNode(rootContent).apply {
             nodes.forEach { node ->
                 add(node.toTreeNode())
             }
@@ -128,63 +139,66 @@ class MyTreeModel<G, L>(val nodes: List<MyNode<G, L>>) {
 class RetainableSelectionsTree<G, L>(val tree: Tree<G, L>) : Tree<G, L> by tree {
 
     private val log = LOG {}
-    private val retainedSelections: MutableMap<L, Boolean> = HashMap()
-    private val transientSelections = mutableMapOf<TreePath, List<TreePath>>()
+    private val collapseSelections = mutableMapOf<TreePath, List<TreePath>>()
+    private val modelSelections: MutableMap<L, Boolean> = HashMap()
 
     init {
         addTreeWillExpandListener(object : TreeWillExpandListener {
             override fun treeWillCollapse(event: TreeExpansionEvent) {
-                log.trace { "treeWillCollapse(event)" }
-                storeTransientSelections(event.path)
+                storeCollapseSelections(event.path)
             }
 
             override fun treeWillExpand(event: TreeExpansionEvent) {
-                log.trace { "treeWillExpand(event)" }
-                restoreTransientSelection(event.path)
+                restoreCollapseSelection(event.path)
             }
         })
     }
 
     override fun setModel2(model: MyTreeModel<G, L>) {
-        storeAllSelections()
+        storeModelSelections()
         tree.setModel2(model)
-        restoreAllSelections()
+        restoreModelSelections()
     }
 
-    private fun storeAllSelections() {
-        myModel.groupNodes.forEach { group ->
-            retainedSelections.putAll(
-                    group.subNodes.associate {
-                        it.entity to it.isSelected()
-                    }
-            )
-        }
-    }
-
-    private fun restoreAllSelections() {
-        myModel.groupNodes.forEach {
-            it.subNodes
-                    .filter { retainedSelections[it.entity] == true }
-                    .forEach { addSelectionNode(it) }
-        }
-    }
-
-    private fun storeTransientSelections(treePath: TreePath) {
-        val treeNode = treePath.toMyTreeNode()
+    private fun storeCollapseSelections(path: TreePath) {
+        val treeNode = path.toMyTreeNode()
+        log.trace { "storeCollapseSelections(node=${treeNode.label})" }
         val groupNode = treeNode.myNode as MyNode.MyGroupNode<G, L>
 
-        transientSelections[treePath] = groupNode.subNodes.filter { subNode ->
+        collapseSelections[path] = groupNode.subNodes.filter { subNode ->
             subNode.isSelected()
-        }.map { it.toPath() }
+        }.map { it.toPath().apply { log.trace { "stored collapsed selection: ${it.label}" } } }
     }
 
-    private fun restoreTransientSelection(path: TreePath) {
-        val selections = transientSelections[path] ?: return
+    private fun restoreCollapseSelection(path: TreePath) {
+        log.trace { "restoreCollapseSelection(path=$path) because of expand: ${collapseSelections.values.joinToString("; ") {
+            it.joinToString(",") { it.toMyTreeNode().label }
+        }}}" }
+        val selections = collapseSelections[path] ?: return
         selections.forEach { selectionPath ->
             addSelectionPath(selectionPath)
         }
     }
 
+    private fun storeModelSelections() {
+        log.trace { "storeModelSelections()" }
+        myModel.groupNodes.forEach { group ->
+            modelSelections.putAll(
+                    group.subNodes.associate {
+                        Pair(it.entity, it.isSelected()).apply { if (second) log.trace { "store selection for: $first" } }
+                    }
+            )
+        }
+    }
+
+    private fun restoreModelSelections() {
+        log.trace { "restoreModelSelections(): selection count = ${modelSelections.values.count { it }}" }
+        myModel.groupNodes.forEach {
+            it.subNodes
+                    .filter { modelSelections[it.entity] == true }
+                    .forEach { addSelectionNode(it); log.trace { "restore model selection for: ${it.entity}" } }
+        }
+    }
 
     private fun MyNode<G, L>.isSelected() = isPathSelected(toPath())
     private fun TreePath.toMyTreeNode() = lastPathComponent as MyTreeNode<G, L>
@@ -193,21 +207,25 @@ class RetainableSelectionsTree<G, L>(val tree: Tree<G, L>) : Tree<G, L> by tree 
 
 class RetainableExpansionsTree<G, L>(val tree: Tree<G, L>) : Tree<G, L> by tree {
 
+    private val log = LOG {}
     private val retainedExpansions: MutableMap<G, Boolean> = HashMap()
 
     override fun setModel2(model: MyTreeModel<G, L>) {
+        log.trace { "setModel2(model)" }
         storeExpansions()
         tree.setModel2(model)
         resetRetainedExpansions()
     }
 
     private fun storeExpansions() {
+        log.trace { "storeExpansions()" }
         retainedExpansions.putAll(
                 myModel.groupNodes.associate { it.entity to tree.isExpanded(it) }
         )
     }
 
     private fun resetRetainedExpansions() {
+        log.trace { "storeExpansions()" }
         myModel.nodes
                 .map { it as MyNode.MyGroupNode<G, L> } // TODO rely on this data structure internally (copynpaste much)
                 .filter { retainedExpansions[it.entity] == true }
@@ -221,10 +239,11 @@ private class MyTreeSelectionModel<G, L>(private val oldModel: TreeSelectionMode
 
     // toggle selection on click
     override fun setSelectionPath(path: TreePath) {
-        log.trace { "setSelectionPath(path=$path)" }
         if (isPathSelected(path)) {
+            log.trace { "setSelectionPath(path=$path) ... removing" }
             removeSelectionPath(path)
         } else {
+            log.trace { "setSelectionPath(path=$path) ... adding" }
             addSelectionPath(path)
         }
     }

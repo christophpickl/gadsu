@@ -2,6 +2,7 @@ package non_test._main_.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.view.detail.ClientTabTcm2
+import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.tcm.model.XProps
@@ -20,8 +21,7 @@ import javax.swing.JScrollPane
 
 fun main(args: Array<String>) {
     Framed.showWithContextDefaultSize {
-        ClientTabTcm2(Client.REAL_DUMMY, NoopModificationChecker, it.bus)
-//        simpleTree()
+        ClientTabTcm2(Client.REAL_DUMMY.copy(cprops = CProps.empty), NoopModificationChecker, it.bus)
     }
 }
 

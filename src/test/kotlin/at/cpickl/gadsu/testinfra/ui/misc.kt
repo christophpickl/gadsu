@@ -8,6 +8,7 @@ import at.cpickl.gadsu.view.components.RichTextArea
 import at.cpickl.gadsu.view.datepicker.view.JDatePanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
 import at.cpickl.gadsu.view.logic.consumeBeep
+import non_test.Framed
 import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -27,7 +28,38 @@ import org.uispec4j.Window
 import org.uispec4j.interception.PopupMenuInterceptor
 import org.uispec4j.interception.WindowHandler
 import org.uispec4j.interception.WindowInterceptor
+import java.awt.BorderLayout
+import javax.swing.JPanel
 import javax.swing.JWindow
+
+class TestContainer : JPanel(BorderLayout()) {
+
+    companion object {
+        val viewName = "containerPanel"
+    }
+
+    init {
+        name = viewName
+    }
+
+    fun setView(subPanel: JPanel) {
+        removeAll()
+        add(subPanel, BorderLayout.CENTER)
+        revalidate()
+        repaint()
+    }
+}
+
+object TestContainerStarter {
+
+    @JvmStatic
+    fun main(cliArgs: Array<String>) {
+        Framed.showWithContextDefaultSize {
+            TestContainer()
+        }
+    }
+
+}
 
 
 @Test class TestUiSysPropertySetter {
