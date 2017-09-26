@@ -1,8 +1,8 @@
 package at.cpickl.gadsu.testinfra.ui
 
-import at.cpickl.gadsu.global.Event
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.global.Event
 import at.cpickl.gadsu.treatment.Treatment
 import at.cpickl.gadsu.treatment.TreatmentDriver
 import at.cpickl.gadsu.view.MenuBarDriver
@@ -25,7 +25,7 @@ class MainDriver(
         val menuBarDriver: MenuBarDriver,
         val clientDriver: ClientDriver,
         val treatmentDriver: TreatmentDriver
-        ) : BaseDriver(test, window) {
+        ) : BaseDriver<UiTest>(test, window) {
 
     val log = LoggerFactory.getLogger(javaClass)
 
@@ -46,7 +46,7 @@ class MainDriver(
     // and some via extension methods
 }
 
-abstract class BaseDriver(val test: UiTest, val window: Window) {
+abstract class BaseDriver<out T : SimpleUiTest>(val test: T, val window: Window) {
 
     fun triggerDialogAndClick(functionToOpenDialog: () -> Unit, buttonLabelToClick: String) {
         WindowInterceptor

@@ -16,7 +16,15 @@ class TreeSearcher<G, L>(
 ) {
 
     private val log = LOG {}
-    private val searchTrees: List<SearchableTree<G, L>> = simpleTrees.map { SearchableTree(it) }
+    private val searchTrees: List<SearchableTree<G, L>> = simpleTrees.map {
+        SearchableTree(
+                RetainableSelectionsTree(
+                        RetainableExpansionsTree(
+                                it
+                        )
+                )
+        )
+    }
 
     init {
         searchField.addListener { searchText ->
@@ -45,14 +53,17 @@ class TreeSearcher<G, L>(
 
 }
 
-class LiveSearchField() {
+class LiveSearchField(viewName: String) {
 
-    private val field = JTextField()
+    private val field = JTextField().apply {
+        name = viewName
+    }
     private val dispatcher = TextChangeDispatcher(field)
 
     init {
         field.addKeyListener(object : KeyAdapter() {
             override fun keyReleased(e: KeyEvent) {
+                // FIXME also consume escape if clicked in tree
                 if (e.isEscape) {
                     field.text = ""
                 }
@@ -67,8 +78,10 @@ class LiveSearchField() {
     fun asComponent(): Component = field
 
 }
+
+
 // FIXME during search selection doesnt work
-class SearchableTree<G, L>(val tree: MyTree<G, L>) {
+class SearchableTree<G, L>(val tree: Tree<G, L>) : Tree<G, L> by tree {
 
     private val originalData: MyTreeModel<G, L> = tree.myModel
 
@@ -81,15 +94,19 @@ class SearchableTree<G, L>(val tree: MyTree<G, L>) {
         val filtered = originalData.nodes
                 .map { groupNode -> Pair(groupNode, groupNode.subNodes.filter { it.label.matchSearch(terms) }) }
                 .filter { (_, subs) -> subs.isNotEmpty() }
-                // FIXME => no, copy breaks the references... :(
                 .map { (it.first as MyNode.MyGroupNode<G, L>).copy(it.second as List<MyNode.MyLeafNode<G, L>>) }
         tree.setModel2(MyTreeModel<G, L>(filtered))
     }
 
     private fun String.matchSearch(terms: List<String>): Boolean {
-        val lowerThis = this.toLowerCase()
-        return terms.any { term -> lowerThis.contains(term.toLowerCase()) }
+        val lowerThis = this.toLowerCase().replaceUmlauts()
+        return terms.all { term -> lowerThis.contains(term.toLowerCase()) }
     }
 
-
 }
+
+fun String.replaceUmlauts()
+        = replace("ä", "a").
+        replace("ö", "o").
+        replace("ü", "u")
+

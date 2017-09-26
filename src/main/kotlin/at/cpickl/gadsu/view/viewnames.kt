@@ -72,6 +72,9 @@ object ClientViewNames {
     val InputTextSymptoms = "Client.InputTextSymptoms"
     val InputTextFiveElements = "Client.InputTextFiveElements"
     val InputTextSyndrom = "Client.InputTextSyndrom"
+
+    val InputTcmSearchField = "Client.InputTcmSearchField"
+
 }
 
 object AppointmentViewNames {

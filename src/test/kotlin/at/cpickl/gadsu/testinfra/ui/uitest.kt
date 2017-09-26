@@ -1,9 +1,9 @@
 package at.cpickl.gadsu.testinfra.ui
 
 import at.cpickl.gadsu.Gadsu
-import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientDriver
+import at.cpickl.gadsu.global.GadsuSystemProperty
 import at.cpickl.gadsu.preferences.PreferencesDriver
 import at.cpickl.gadsu.testinfra.TestLogger
 import at.cpickl.gadsu.treatment.TreatmentDriver
@@ -80,6 +80,12 @@ abstract class SimpleUiTest : UISpecTestCase() {
         super.tearDown()
     }
 
+    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
+    fun assertPanelContainedInMainWindow(panelName: String) {
+        assertThat("$panelName expected to be contained in main window.",
+                window!!.containsUIComponent(Panel::class.java, panelName))
+    }
+
     private fun retrieveWindow(): Window {
         // increase timeout, as it seems as app startup needs more time than default timeout
         val oldTimeout = UISpec4J.getWindowInterceptionTimeLimit()
@@ -107,9 +113,8 @@ abstract class UiTest : SimpleUiTest() {
     protected val treatmentDriver: TreatmentDriver get() = _treatmentDriver!!
 
 
-    override final fun newMainClassAdapter(): MainClassAdapter {
-        return MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb")
-    }
+    override final fun newMainClassAdapter()
+            = MainClassAdapter(Gadsu::class.java, "--databaseUrl", "jdbc:hsqldb:mem:testDb")
 
     override final fun postInit(window: Window) {
 //        println("postInit() this: ${javaClass.simpleName}")
@@ -124,12 +129,6 @@ abstract class UiTest : SimpleUiTest() {
     @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
     fun openPreferencesDriver(): PreferencesDriver {
         return PreferencesDriver(this, mainDriver.openPreferencesWindow())
-    }
-
-    @Test(enabled = false) // must be public, so driver can acess it as well... hm... :-/
-    fun assertPanelContainedInMainWindow(panelName: String) {
-        assertThat("$panelName expected to be contained in main window.",
-                window!!.containsUIComponent(Panel::class.java, panelName))
     }
 
     protected fun saveClient(client: Client) {

@@ -10,7 +10,7 @@ import org.testng.annotations.Test
 import org.uispec4j.MenuItem
 import org.uispec4j.Window
 
-class MenuBarDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
+class MenuBarDriver(test: UiTest, window: Window) : BaseDriver<UiTest>(test, window) {
 
     private val menu = window.menuBar
     private val menuEdit = menu.getMenu("Bearbeiten")

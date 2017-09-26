@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.tcm.model.XProps
+import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.ExpandCollapseListener
 import at.cpickl.gadsu.view.components.ExpandCollapsePanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
@@ -115,7 +116,7 @@ private class TcmEditPanel(xPropEnums: XPropEnums) : GridPanel(), ExpandCollapse
 
     private val log = LOG {}
 
-    private val searchField = LiveSearchField()
+    private val searchField = LiveSearchField(ViewNames.Client.InputTcmSearchField)
     val btnFinishEdit = JButton("Fertig")
     private val trees = xPropEnums.map { buildTree(it) }
 

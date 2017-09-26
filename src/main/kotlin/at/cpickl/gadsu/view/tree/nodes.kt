@@ -35,6 +35,7 @@ sealed class MyNode<G, L> {
             override val label: String,
             override val subNodes: List<MyLeafNode<G, L>>
     ) : MyNode<G, L>() {
+
         override fun toTreeNode() = MyTreeNode(this, label).apply {
             subNodes.forEach { subNode ->
                 add(subNode.toTreeNode())

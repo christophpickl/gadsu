@@ -20,15 +20,13 @@ import javax.swing.JScrollPane
 
 fun main(args: Array<String>) {
     Framed.showWithContextDefaultSize {
+        ClientTabTcm2(Client.REAL_DUMMY, NoopModificationChecker, it.bus)
 //        simpleTree()
-        ClientTabTcm2(Client.REAL_DUMMY, NoopModificationChecker, it.bus).apply {
-
-        }
     }
 }
 
 private fun simpleTree(): JPanel {
-    val searchField = LiveSearchField()
+    val searchField = LiveSearchField("")
     val tree: MyTree<XPropEnum, XPropEnumOpt> = MyTree(listOf(XProps.ChiStatus, XProps.BodyConception, XProps.Hungry).toTreeModel())
     tree.initSelected(setOf(XProps.ChiStatusOpts.Inside.opt))
     TreeSearcher(searchField, listOf(tree)) // will work async

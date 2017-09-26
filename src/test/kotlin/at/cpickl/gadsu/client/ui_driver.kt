@@ -17,7 +17,7 @@ import org.uispec4j.Window
 import java.io.File
 
 
-class ClientDriver(test: UiTest, window: Window) : BaseDriver(test, window) {
+class ClientDriver(test: UiTest, window: Window) : BaseDriver<UiTest>(test, window) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

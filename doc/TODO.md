@@ -1,4 +1,10 @@
+! TCM tab: unten notiz feld minimum 3 zeilen anzeigen!
+! github issue schreiben: doodle integration (scan gcal, create doodle, invite clients... store everything in DB)
+- ad sammelprotokoll: beschreibungsfeld weg, seitennummer hinzu (PDF post proccess), nach deckblatt eine leere seite rein
+- akupunktur punkte eintragen
+- zungen symptome angleichen an neuesten stand; 1:1 das wording uebernehmen
 
+* Bei hover symptom, tooltip mit possible syndrom. 
 * in richtext, wenn markierung (akupunkt oder bold), wenn enter druecken, dann format wegnehmen
 * [10] recent mail liste fuehren (sowas wie templates); kann sie laden, speichern, loeschen (evtl benennen);
     - man sieht wen man was geschickt hat (achtung beim handeln von inzwischen deleted clients!)
