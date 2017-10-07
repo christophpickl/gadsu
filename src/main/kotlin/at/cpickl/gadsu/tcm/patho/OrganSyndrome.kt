@@ -124,7 +124,7 @@ enum class OrganSyndrome(
             tendency = MangelUeberfluss.Ueberfluss,
             symptoms = listOf(
                     // verdauung
-                    Symptom.VielAppetit,
+                    Symptom.VielAppettit,
                     Symptom.WenigAppetit,
                     Symptom.VoelleGefuehl,
                     Symptom.Blaehungen,

@@ -9,7 +9,7 @@ buildscript {
     println "[GADSU] IS_TRAVIS=" + IS_TRAVIS
 
     ext {
-        kotlin_version = '1.1.50'
+        kotlin_version = '1.1.51'
 
         spring_version = '4.3.10.RELEASE'
         logback_version = '1.2.3'

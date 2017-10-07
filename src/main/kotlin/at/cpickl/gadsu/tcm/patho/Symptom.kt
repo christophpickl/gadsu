@@ -188,7 +188,7 @@ sealed class Symptom(
 
     object KeinAppetit : EssenSymptom(NOT_IMPLEMENTED)
     object WenigAppetit : EssenSymptom(NOT_IMPLEMENTED)
-    object VielAppetit : EssenSymptom(NOT_IMPLEMENTED)
+    object VielAppettit : EssenSymptom(NOT_IMPLEMENTED)
     object VerminderterGeschmackssinn : EssenSymptom(NOT_IMPLEMENTED)
     object BittererMundgeschmack : EssenSymptom(NOT_IMPLEMENTED)
     object FaderMundgeschmack : EssenSymptom(NOT_IMPLEMENTED)

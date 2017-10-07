@@ -189,8 +189,8 @@ object XProps : XPropsFinder by XPropsFactory {
         DietVeggy(opt("Hungry_DietVeggy", "Vegetarier")),
         DietVegan(opt("Hungry_DietVegan", "Vegan")),
 
-        LittleHunger(opt("Hungry_LittleHunger", "kleiner Appetit")),
-        BigHunger(opt("Hungry_BigHunger", "gro\u00dfen Appetit")),
+        LittleHunger(opt("Hungry_LittleHunger", "kleiner Appettit")),
+        BigHunger(opt("Hungry_BigHunger", "gro\u00dfen Appettit")),
 
         EatCold(opt("Hungry_EatCold", "isst Kalt")),
         EatWarm(opt("Hungry_EatWarm", "isst Warm")),
