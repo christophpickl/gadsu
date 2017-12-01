@@ -59,6 +59,7 @@ object ClientViewNames {
     val InputCategory = "Client.InputCategory"
     val InputNote = "Client.InputNote"
     val InputYyTendency = "Client.InputYyTendency"
+    val InputElementTendency = "Client.InputElementTendency"
     val InputActive = "Client.InputActive"
 
     val InputTcmNote = "Client.InputTcmNote"

@@ -10,6 +10,7 @@ import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.ElementMaybe
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.YinYangMaybe
@@ -60,7 +61,8 @@ class ScreenshotDataInserter @Inject constructor(
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
 
-                        YinYangMaybe.YANG, "", "", "", "", "",
+                        YinYangMaybe.YANG, ElementMaybe.FIRE,
+                        "", "", "", "", "",
                         "Regelbeschwerden",
                         "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
                         "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",

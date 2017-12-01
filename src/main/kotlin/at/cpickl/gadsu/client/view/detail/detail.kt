@@ -178,6 +178,7 @@ open class SwingClientDetailView @Inject constructor(
                 note = tabMain.inpNote.toEnrichedText(),
 
                 yyTendency = tabMain.inpYyTendency.selectedItemTyped,
+                elementTendency = tabMain.inpElementTendency.selectedItemTyped,
                 textImpression = tabTexts.inpImpression.toEnrichedText(),
                 textMedical = tabTexts.inpMedical.toEnrichedText(),
                 textComplaints = tabTexts.inpComplaints.toEnrichedText(),

@@ -18,7 +18,7 @@ class ClientTest {
     private val client1 = Client(
             "1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", contact1, "1",
             true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
-            YinYangMaybe.UNKNOWN, "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
+            YinYangMaybe.UNKNOWN, ElementMaybe.UNKNOWN, "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
     fun changingClientProvider(): Array<Array<Any>> = arrayOf(
@@ -40,6 +40,7 @@ class ClientTest {
             arrayOf<Any>("hobbies",         { it: Client -> it.copy(hobbies = "2") }),
             arrayOf<Any>("note",            { it: Client -> it.copy(note = "2") }),
             arrayOf<Any>("yyTendency",      { it: Client -> it.copy(yyTendency = YinYangMaybe.YANG) }),
+            arrayOf<Any>("elementTendency",      { it: Client -> it.copy(elementTendency = ElementMaybe.EARTH) }),
             arrayOf<Any>("textImpression",  { it: Client -> it.copy(textImpression = "2") }),
             arrayOf<Any>("textMedical",     { it: Client -> it.copy(textMedical = "2") }),
             arrayOf<Any>("textComplaints",  { it: Client -> it.copy(textComplaints = "2") }),

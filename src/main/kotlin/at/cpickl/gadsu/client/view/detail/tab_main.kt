@@ -2,6 +2,7 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
+import at.cpickl.gadsu.client.ElementMaybe
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.YinYangMaybe
@@ -77,6 +78,7 @@ class ClientTabMain(
     val inpFiveElements = fields.newTextField("5 Elemente", { it.textFiveElements }, ViewNames.Client.InputTextFiveElements)
     val inpSyndrom = fields.newTextField("Syndrom", { it.textSyndrom }, ViewNames.Client.InputTextSyndrom)
     val inpYyTendency = fields.newComboBox(YinYangMaybe.Enum.orderedValues, initialClient.yyTendency, "Yin/Yang", { it.yyTendency }, ViewNames.Client.InputYyTendency)
+    val inpElementTendency = fields.newComboBox(ElementMaybe.Enum.orderedValues, initialClient.elementTendency, "Element", { it.elementTendency }, ViewNames.Client.InputElementTendency)
 
     init {
         debugColor = Color.ORANGE
@@ -130,6 +132,7 @@ class ClientTabMain(
             addFormInput(inpFiveElements)
             addFormInput(inpSyndrom)
             addFormInput(inpYyTendency)
+            addFormInput(inpElementTendency)
         }
         val additionalBottomForm = FormPanel().apply {
             addFormInput(inpKnownBy)

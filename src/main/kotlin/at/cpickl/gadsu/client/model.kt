@@ -1,19 +1,20 @@
 package at.cpickl.gadsu.client
 
+import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.firstNotEmpty
 import at.cpickl.gadsu.global.DUMMY_CREATED
 import at.cpickl.gadsu.global.EnumBase
 import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.global.Ordered
 import at.cpickl.gadsu.global.SqlEnum
-import at.cpickl.gadsu.client.xprops.model.CProps
-import at.cpickl.gadsu.firstNotEmpty
-import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.global.parseSqlCodeFor
+import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.HasId
+import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.tcm.model.YinYang
 import com.google.common.base.Objects
@@ -67,6 +68,7 @@ interface IClient : HasId, Persistable {
     val note: String
 
     val yyTendency: YinYangMaybe
+    val elementTendency: ElementMaybe
     val textImpression: String
     val textMedical: String
     val textComplaints: String
@@ -109,6 +111,7 @@ data class Client(
         override val note: String,
 
         override val yyTendency: YinYangMaybe,
+        override val elementTendency: ElementMaybe,
         /** "Texte" tab, textarea: Allgemeiner Eindruck */
         override val textImpression: String,
         /** "Texte" tab, textarea: Medizinisches */
@@ -161,6 +164,7 @@ data class Client(
                 hobbies = "",
                 note = "",
                 yyTendency = YinYangMaybe.UNKNOWN,
+                elementTendency = ElementMaybe.UNKNOWN,
                 textImpression = "",
                 textMedical = "",
                 textComplaints = "",
@@ -206,6 +210,7 @@ data class Client(
                 note = "Meine supi wuzi Anmerkung.",
 
                 yyTendency = YinYangMaybe.YANG,
+                elementTendency = ElementMaybe.UNKNOWN,
                 textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
                 textMedical = "er hatte ein gebrochenes bein",
                 textComplaints = "nacken; zuwenig selbstbewusstsein",
@@ -287,6 +292,7 @@ data class Client(
                 Objects.equal(this.hobbies, that.hobbies) &&
                 Objects.equal(this.note, that.note) &&
                 Objects.equal(this.yyTendency, that.yyTendency) &&
+                Objects.equal(this.elementTendency, that.elementTendency) &&
                 Objects.equal(this.textImpression, that.textImpression) &&
                 Objects.equal(this.textMedical, that.textMedical) &&
                 Objects.equal(this.textComplaints, that.textComplaints) &&
@@ -342,12 +348,24 @@ enum class ClientState(override val sqlCode: String, override val label: String)
 }
 
 enum class YinYangMaybe(override val order: Int, override val sqlCode: String, override val label: String, val yy: YinYang?) :
-        Ordered, SqlEnum, Labeled{
+        Ordered, SqlEnum, Labeled {
     YIN(1, "yin", YinYang.Yin.label, YinYang.Yin),
     YANG(2, "yang", YinYang.Yang.label, YinYang.Yang),
     UNKNOWN(99, "?", "?", null);
 
     object Enum : EnumBase<YinYangMaybe>(YinYangMaybe.values())
+}
+
+enum class ElementMaybe(override val order: Int, override val sqlCode: String, override val label: String, val element: Element?) :
+        Ordered, SqlEnum, Labeled {
+    WOOD(1, "wood", Element.Wood.label, Element.Wood),
+    FIRE(1, "fire", Element.Fire.label, Element.Fire),
+    EARTH(1, "earth", Element.Earth.label, Element.Earth),
+    METAL(1, "metal", Element.Metal.label, Element.Metal),
+    WATER(1, "water", Element.Water.label, Element.Water),
+    UNKNOWN(99, "?", "?", null);
+
+    object Enum : EnumBase<ElementMaybe>(ElementMaybe.values())
 }
 
 enum class Gender(override val order: Int, override val sqlCode: String, override val label: String) :

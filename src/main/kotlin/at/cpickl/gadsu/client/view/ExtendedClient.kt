@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.client.Contact
+import at.cpickl.gadsu.client.ElementMaybe
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.IClient
 import at.cpickl.gadsu.client.Relationship
@@ -59,6 +60,7 @@ data class ExtendedClient(
     override val note: String get() = client.note
 
     override val yyTendency: YinYangMaybe get() = client.yyTendency
+    override val elementTendency: ElementMaybe get() = client.elementTendency
     override val textImpression: String get() = client.textImpression
     override val textMedical: String get() = client.textMedical
     override val textComplaints: String get() = client.textComplaints
