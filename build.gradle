@@ -16,7 +16,7 @@ buildscript {
         guice_version = '4.1.0'
     }
 
-    ext.kpotDefaultVersion = '1.7'
+    ext.kpotDefaultVersion = '1.8'
     if (!IS_TRAVIS) {
         // override the kpot version locally
 //        kpotDefaultVersion = 'SNAPSHOT'
