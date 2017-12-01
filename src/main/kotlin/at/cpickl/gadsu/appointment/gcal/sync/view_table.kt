@@ -43,8 +43,9 @@ class SyncTable(
         }
         val confirmationEditor = MyEnableCheckboxTableCellEditor().apply {
             registerOnStopped {
-                // MINOR UI glitch: when deselecting, selectedRow could be -1
-                model.entityAt(selectedRow).sendConfirmation = currentState
+                if (selectedRow != -1) {
+                    model.entityAt(selectedRow).sendConfirmation = currentState
+                }
             }
         }
 
@@ -59,9 +60,11 @@ class SyncTable(
         val clientEditor = ImportAppointmentClientEditor(this).apply {
             registerOnStopped {
                 logg.trace("Selected client: {}", currentClient)
-                val importApp = model.entityAt(selectedRow)
-                importApp.selectedClient = currentClient
-                importApp.sendConfirmation = currentClient.hasMail
+                if (selectedRow != - 1) {
+                    val importApp = model.entityAt(selectedRow)
+                    importApp.selectedClient = currentClient
+                    importApp.sendConfirmation = currentClient.hasMail
+                }
             }
         }
         columnModel.getColumn(COL_CLIENT).cellEditor = clientEditor
