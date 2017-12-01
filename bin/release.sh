@@ -123,7 +123,8 @@ changeLatestVersion ${VERSION_RELEASE}
 echo
 myEcho "Verifying release build (TODOs, test)"
 myEcho "------------------------------------"
-./gradlew check checkTodo test testUi
+#./gradlew check checkTodo test testUi
+./gradlew check test testUi
 checkLastCommand
 
 
