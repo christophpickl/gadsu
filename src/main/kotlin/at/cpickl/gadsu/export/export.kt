@@ -14,6 +14,8 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext
 import com.thoughtworks.xstream.io.HierarchicalStreamReader
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter
 import com.thoughtworks.xstream.security.NoTypePermission
+import com.thoughtworks.xstream.security.NullPermission
+import com.thoughtworks.xstream.security.PrimitiveTypePermission
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 import org.slf4j.LoggerFactory
@@ -78,10 +80,14 @@ class ExportXstreamService : ExportService {
 
     private fun xstream(): XStream {
         val xstream = XStream()
+        XStream.setupDefaultSecurity(xstream)
 
         // http://x-stream.github.io/graphs.html
         xstream.setMode(XStream.XPATH_RELATIVE_REFERENCES)
+        xstream.addPermission(NullPermission.NULL)
+        xstream.addPermission(PrimitiveTypePermission.PRIMITIVES)
         xstream.addPermission(NoTypePermission.NONE)
+        xstream.allowTypesByWildcard(arrayOf("at.cpickl.gadsu.**"))
 
         xstream.registerConverter(MyImageConverter())
         xstream.registerConverter(JodaDateTimeConverter())
