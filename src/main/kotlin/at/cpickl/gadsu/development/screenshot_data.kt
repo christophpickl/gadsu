@@ -12,6 +12,7 @@ import at.cpickl.gadsu.client.ClientUpdatedEvent
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.client.view.ClientMasterView
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.global.DUMMY_CREATED
@@ -59,7 +60,7 @@ class ScreenshotDataInserter @Inject constructor(
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
 
-                        "", "", "", "", "",
+                        YinYangMaybe.YANG, "", "", "", "", "",
                         "Regelbeschwerden",
                         "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
                         "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
