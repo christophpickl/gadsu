@@ -18,7 +18,7 @@ class ClientTest {
     private val client1 = Client(
             "1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", contact1, "1",
             true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
-            "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
+            YinYangMaybe.UNKNOWN, "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
 
     @DataProvider
     fun changingClientProvider(): Array<Array<Any>> = arrayOf(
@@ -39,13 +39,14 @@ class ClientTest {
             arrayOf<Any>("children",        { it: Client -> it.copy(children = "2") }),
             arrayOf<Any>("hobbies",         { it: Client -> it.copy(hobbies = "2") }),
             arrayOf<Any>("note",            { it: Client -> it.copy(note = "2") }),
+            arrayOf<Any>("yyTendency",      { it: Client -> it.copy(yyTendency = YinYangMaybe.YANG) }),
             arrayOf<Any>("textImpression",  { it: Client -> it.copy(textImpression = "2") }),
             arrayOf<Any>("textMedical",     { it: Client -> it.copy(textMedical = "2") }),
             arrayOf<Any>("textComplaints",  { it: Client -> it.copy(textComplaints = "2") }),
             arrayOf<Any>("textPersonal",    { it: Client -> it.copy(textPersonal = "2") }),
             arrayOf<Any>("textObjective",   { it: Client -> it.copy(textObjective = "2") }),
-            arrayOf<Any>("category",         { it: Client -> it.copy(category = ClientCategory.C) }),
-            arrayOf<Any>("donation",         { it: Client -> it.copy(donation = ClientDonation.NONE) }),
+            arrayOf<Any>("category",        { it: Client -> it.copy(category = ClientCategory.C) }),
+            arrayOf<Any>("donation",        { it: Client -> it.copy(donation = ClientDonation.NONE) }),
             arrayOf<Any>("tcmNote",         { it: Client -> it.copy(tcmNote = "2") }),
             arrayOf<Any>("cprops",          { it: Client -> it.copy(cprops = CProps.builder().add(XProps.Hungry, XProps.HungryOpts.BigHunger).build()) })
     )

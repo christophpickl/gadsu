@@ -5,6 +5,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.SaveClientEvent
+import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
@@ -35,10 +36,12 @@ import javax.swing.JTabbedPane
 interface ClientDetailView {
 
     fun readClient(): Client
-//    fun changeClient(client: Client)
+    //    fun changeClient(client: Client)
     fun isModified(): Boolean
-//    fun changeImage(newImage: MyImage)
+
+    //    fun changeImage(newImage: MyImage)
     fun focusFirst()
+
     fun asComponent(): Component
     fun closePreparations()
 
@@ -92,7 +95,7 @@ open class SwingClientDetailView @Inject constructor(
     }
 
     override fun changeTab(tab: ClientTabType) {
-        val newTab = when(tab) {
+        val newTab = when (tab) {
             ClientTabType.MAIN -> tabMain
             ClientTabType.TEXTS -> tabTexts
             ClientTabType.TCM -> tabTcm
@@ -175,6 +178,7 @@ open class SwingClientDetailView @Inject constructor(
                 hobbies = tabMain.inpHobbies.text,
                 note = tabMain.inpNote.toEnrichedText(),
 
+                yyTendency = YinYangMaybe.UNKNOWN, // FIXME tabMain.inpYyTendency.?,
                 textImpression = tabTexts.inpImpression.toEnrichedText(),
                 textMedical = tabTexts.inpMedical.toEnrichedText(),
                 textComplaints = tabTexts.inpComplaints.toEnrichedText(),

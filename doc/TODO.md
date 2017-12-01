@@ -1,3 +1,5 @@
+* syndrom(s) - depends on #115
+! don't really delete clients, only mark the as deleted and persist forever (?)
 * wenn client wechseln, dann reset views; v.a. TCM multiproperties nach oben scrollen
 * search field mit tree auch fuer zunge/puls
 * die mit gar keinen behandlungen besonders behandeln: bei sort IMMER ganz oben; eigene filter aktion (dann brauchts das 001 nimmer)

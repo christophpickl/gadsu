@@ -15,6 +15,7 @@ import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.tcm.model.XProps
+import at.cpickl.gadsu.tcm.model.YinYang
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -34,9 +35,11 @@ fun CurrentEvent.forClient(function: (Client?) -> Unit) {
     if (this.id == CurrentClient.ID) function(this.newData as Client?)
 }
 
-// ATTENTION: dont forget to extend others as well when adding properties:
-// - Client.equals
-// - ClientTest.changingClientProvider
+// ATTENTION: IF ADD NEW PROPERTY ...
+// besides IClient and impl and prototypes etc indicated by compiler anyway:
+// - extend Client.equals
+// - extend ClientTest.changingClientProvider
+
 interface IClient : HasId, Persistable {
 
     val created: DateTime
@@ -63,6 +66,7 @@ interface IClient : HasId, Persistable {
     val hobbies: String
     val note: String
 
+    val yyTendency: YinYangMaybe
     val textImpression: String
     val textMedical: String
     val textComplaints: String
@@ -104,6 +108,7 @@ data class Client(
         override val hobbies: String,
         override val note: String,
 
+        override val yyTendency: YinYangMaybe,
         /** "Texte" tab, textarea: Allgemeiner Eindruck */
         override val textImpression: String,
         /** "Texte" tab, textarea: Medizinisches */
@@ -155,6 +160,7 @@ data class Client(
                 children = "",
                 hobbies = "",
                 note = "",
+                yyTendency = YinYangMaybe.UNKNOWN,
                 textImpression = "",
                 textMedical = "",
                 textComplaints = "",
@@ -199,6 +205,7 @@ data class Client(
                 hobbies = "Radfahren",
                 note = "Meine supi wuzi Anmerkung.",
 
+                yyTendency = YinYangMaybe.YANG,
                 textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
                 textMedical = "er hatte ein gebrochenes bein",
                 textComplaints = "nacken; zuwenig selbstbewusstsein",
@@ -279,6 +286,7 @@ data class Client(
                 Objects.equal(this.children, that.children) &&
                 Objects.equal(this.hobbies, that.hobbies) &&
                 Objects.equal(this.note, that.note) &&
+                Objects.equal(this.yyTendency, that.yyTendency) &&
                 Objects.equal(this.textImpression, that.textImpression) &&
                 Objects.equal(this.textMedical, that.textMedical) &&
                 Objects.equal(this.textComplaints, that.textComplaints) &&
@@ -331,6 +339,15 @@ enum class ClientState(override val sqlCode: String, override val label: String)
         //        val orderedValues:List<ClientState> = orderedValuesOf(ClientState.values())
         fun parseSqlCode(search: String) = parseSqlCodeFor(values(), search)
     }
+}
+
+enum class YinYangMaybe(override val order: Int, override val sqlCode: String, override val label: String, val yy: YinYang?) :
+        Ordered, SqlEnum, Labeled{
+    YIN(1, "yin", YinYang.Yin.label, YinYang.Yin),
+    YANG(2, "yang", YinYang.Yang.label, YinYang.Yang),
+    UNKNOWN(99, "?", "?", null);
+
+    object Enum : EnumBase<YinYangMaybe>(YinYangMaybe.values())
 }
 
 enum class Gender(override val order: Int, override val sqlCode: String, override val label: String) :

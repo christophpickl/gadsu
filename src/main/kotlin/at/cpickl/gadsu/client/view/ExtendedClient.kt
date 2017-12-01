@@ -8,6 +8,7 @@ import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.IClient
 import at.cpickl.gadsu.client.Relationship
+import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
 import org.joda.time.DateTime
@@ -57,6 +58,7 @@ data class ExtendedClient(
     override val hobbies: String get() = client.hobbies
     override val note: String get() = client.note
 
+    override val yyTendency: YinYangMaybe get() = client.yyTendency
     override val textImpression: String get() = client.textImpression
     override val textMedical: String get() = client.textMedical
     override val textComplaints: String get() = client.textComplaints
