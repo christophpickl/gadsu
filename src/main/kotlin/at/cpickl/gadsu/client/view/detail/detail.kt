@@ -5,7 +5,6 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.Contact
 import at.cpickl.gadsu.client.CurrentClient
 import at.cpickl.gadsu.client.SaveClientEvent
-import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.client.forClient
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.CurrentEvent
@@ -178,7 +177,7 @@ open class SwingClientDetailView @Inject constructor(
                 hobbies = tabMain.inpHobbies.text,
                 note = tabMain.inpNote.toEnrichedText(),
 
-                yyTendency = YinYangMaybe.UNKNOWN, // FIXME tabMain.inpYyTendency.?,
+                yyTendency = tabMain.inpYyTendency.selectedItemTyped,
                 textImpression = tabTexts.inpImpression.toEnrichedText(),
                 textMedical = tabTexts.inpMedical.toEnrichedText(),
                 textComplaints = tabTexts.inpComplaints.toEnrichedText(),
