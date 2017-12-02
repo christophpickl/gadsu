@@ -16,7 +16,6 @@ import org.hamcrest.Matchers.*
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.io.File
 
 @Test(groups = arrayOf("hsqldb"))
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
@@ -35,7 +34,7 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- insert
 
     fun `insertWithoutPicture should really just insert no picture`() {
-        val toBeSaved = Client.REAL_DUMMY.copy(id = null, gender = Gender.MALE, cprops = CProps.empty, picture = MyImage.byFile(File("src/main/resources/gadsu/images/profile_pic-real_dummy.jpg")))
+        val toBeSaved = Client.REAL_DUMMY.copy(id = null, gender = Gender.MALE, cprops = CProps.empty, picture = MyImage.byClasspath("/gadsu/images/profile_pic-real_dummy.jpg"))
         val expected = toBeSaved.copy(id = TEST_UUID1, picture = MyImage.DEFAULT_PROFILE_MAN)// ID returned by mock
 
         assertThat(testee.insertWithoutPicture(toBeSaved), equalTo(expected))

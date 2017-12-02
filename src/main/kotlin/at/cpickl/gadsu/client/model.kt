@@ -184,7 +184,7 @@ data class Client(
         val REAL_DUMMY = Client(
                 id = null,
                 created = DUMMY_CREATED/* will not be used anyway, hmpf ... */,
-                picture = MyImage.byFile(File("src/main/resources/gadsu/images/profile_pic-real_dummy.jpg")),
+                picture = MyImage.byClasspath("/gadsu/images/profile_pic-real_dummy.jpg"),
                 state = ClientState.ACTIVE,
                 firstName = "Maximilian",
                 lastName = "Mustermann",
