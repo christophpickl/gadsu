@@ -47,21 +47,28 @@ Enter next DEVELOPMENT Version: 1.5.0-SNAPSHOT
 Counting objects: 7, done.
 Delta compression using up to 4 threads.
 Compressing objects: 100% (4/4), done.
-Writing objects: 100% (7/7), 643 bytes | 0 bytes/s, done.
+Writing objects: 100% (7/7), 642 bytes | 214.00 KiB/s, done.
 Total 7 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 1 local object.
 To https://github.com/christophpickl/gadsu.git
-   c2cd588..ec52680  master -> master
+   d2dd7c41..d2a1c465  master -> master
+Total 0 (delta 0), reused 0 (delta 0)
+To https://github.com/christophpickl/gadsu.git
+ * [new tag]           1.13.0 -> 1.13.0
 
 
-[RELEASE] Release 1.4.0 SUCCESSFULL
+[RELEASE] Release 1.13.0 SUCCESSFULL
 [RELEASE] ====================================
 
-[RELEASE] Time needed: 283 seconds
-[RELEASE] Copy the contents of the artifacts directory: /Users/John/Dev/gadsu/../gadsu_release_build/release_artifacts
-total 327848
--rw-r--r--@ 1 John  staff  56525158 Jul 14 18:48 Gadsu-1.4.0.dmg
--rw-r--r--  1 John  staff  55629462 Jul 14 18:48 Gadsu-1.4.0.jar
--rwxr-xr-x  1 John  staff  55693462 Jul 14 18:48 Gadsu.exe
+[RELEASE] Time needed: 458 seconds
+[RELEASE] Contents of: /Users/foobar/gadsu_release_build/release_artifacts
+total 357432
+-rw-r--r--@ 1 Foo  staff  62793667 Dec  2 22:39 Gadsu-1.13.0.dmg
+-rw-r--r--  1 Foo  staff  60071457 Dec  2 22:39 Gadsu-1.13.0.jar
+-rwxr-xr-x  1 Foo  staff  60135457 Dec  2 22:39 Gadsu.exe
+[RELEASE] 
+[RELEASE] Now start the Post Release Kotlin script.
+[RELEASE] 
  
 $ 
 ```
