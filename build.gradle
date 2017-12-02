@@ -34,7 +34,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
-        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.1"
+        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.8"
         classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.12.0'
         classpath 'com.autoscout24.gradle:gradle-todo-plugin:1.0'
