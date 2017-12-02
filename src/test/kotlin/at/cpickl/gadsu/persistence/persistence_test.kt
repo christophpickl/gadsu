@@ -17,16 +17,29 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.sql.DataSource
 
 private data class XpropsDboV6(val idClient: String, val key: String, val rawVal: String, val note: String?)
+private data class ClientV9(val nicknameInt: String, val nicknameExt: String, val knownBy: String, val yyTendency: String, val elementTendency: String)
 
 private object XpropsDboV6Mapper : RowMapper<XpropsDboV6> {
     override fun mapRow(rs: ResultSet, rowNum: Int) =
             XpropsDboV6(rs.getString("id_client"), rs.getString("key"), rs.getString("val"), rs.getString("note"))
 }
 
+private object ClientV9Mapper : RowMapper<ClientV9> {
+    override fun mapRow(rs: ResultSet, rowNum: Int) =
+            ClientV9(
+                    nicknameInt = rs.getString("nicknameInt"),
+                    nicknameExt = rs.getString("nicknameExt"),
+                    knownBy = rs.getString("knownBy"),
+                    yyTendency = rs.getString("yyTendency"),
+                    elementTendency = rs.getString("elementTendency")
+            )
+}
+
 /** Got no 'note' field yet. */
 private data class SpropDboV5(val idClient: String, val key: String, val rawVal: String)
 
-@Test class FlywayMigrateTest {
+@Test
+class FlywayMigrateTest {
 
     private lateinit var dataSource: DataSource
     private lateinit var jdbcx: Jdbcx
@@ -36,17 +49,16 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     private val client = Client.unsavedValidInstance().copy(id = clientId)
     private var testCounter = AtomicInteger()
 
-    @BeforeMethod fun `setup db stuff`() {
+    @BeforeMethod
+    fun `setup db stuff`() {
         dataSource = newTestDataSource(javaClass.simpleName + testCounter.incrementAndGet())
         jdbcx = SpringJdbcx(dataSource)
         flyway = FlywayDatabaseManager(dataSource).buildFlyway()
-
-        _migrate("5", 5)
-        insertClient_V5(client)
     }
 
-
     fun `given taste xprop exists, when migrate, should be translated to hungry`() {
+        migrateDb("5", 5)
+        insertClient_V5(client)
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
         migrateToDbVersion6()
@@ -55,6 +67,8 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     }
 
     fun `given taste and hungry xprop exists, when migrate, taste and hungry should be merged`() {
+        migrateDb("5", 5)
+        insertClient_V5(client)
         insertXProp_V5(SpropDboV5(clientId, "Hungry", "Hungry_BigHunger"))
         insertXProp_V5(SpropDboV5(clientId, "Taste", "Taste_Sweet,Taste_Hot"))
 
@@ -67,6 +81,8 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
     private val hungryAllParts = hungryNonDigestParts.plus(hungryDigestParts)
 
     fun `given hungry exists, when migrate, move new digestion parts`() {
+        migrateDb("5", 5)
+        insertClient_V5(client)
         insertXProp_V5(SpropDboV5(clientId, "Hungry", hungryAllParts.map { "Hungry_$it" }.joinToString(",")))
 
         migrateToDbVersion6()
@@ -77,16 +93,36 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
         )
     }
 
+    fun `upgrade to V9 adds new client fields`() {
+        migrateDb("8")
+        val nickNameV8 = "testNickNameInt"
+        insertClient_V8(Client.REAL_DUMMY.copy(
+                id = "id",
+                nickNameInt = nickNameV8,
+                nickNameExt = "IGNORED IN SQL"
+        ))
+
+        migrateDb("9")
+
+        assertThat(jdbcx.query("SELECT * FROM client", ClientV9Mapper), equalTo(listOf(ClientV9(
+                nicknameInt = nickNameV8, // original nickname is altered to nickNameInt
+                nicknameExt = "",
+                knownBy = "",
+                yyTendency = "?",
+                elementTendency = "?"
+        ))))
+    }
 
     private fun assertXPropsTableContent_V6(vararg expected: XpropsDboV6) {
         assertThat(jdbcx.query("SELECT * FROM xprops", XpropsDboV6Mapper), equalTo(expected.toList()))
     }
 
     private fun migrateToDbVersion6() {
-        _migrate("6.1", 2)
+        migrateDb("6.1", 2)
     }
 
-    private fun _migrate(toVersion: String = "-1", expectedMigrations: Int? = null) {
+
+    private fun migrateDb(toVersion: String = "-1", expectedMigrations: Int? = null) {
         flyway.target = MigrationVersion.fromVersion(toVersion)
 
         val executedMigrations = flyway.migrate()
@@ -128,6 +164,36 @@ private data class SpropDboV5(val idClient: String, val key: String, val rawVal:
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.tcmNote
+        )
+    }
+
+    private fun insertClient_V8(client: Client) {
+        val sqlInsert = """
+        INSERT INTO ${ClientJdbcRepository.TABLE} (
+            id, created, firstName, lastName, nickName,
+            mail, phone, street, zipCode, city,
+            wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
+            relationship_enum, job, children, hobbies, note,
+            textImpression, textMedical, textComplaints, textPersonal, textObjective,
+            mainObjective, symptoms, elements, syndrom, tcmNote,
+            category, donation
+        ) VALUES (
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?
+        )"""
+        jdbcx.update(sqlInsert,
+                client.id, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, // only takes nickname internal as single global one
+                client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city,
+                client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                client.category.sqlCode, client.donation.sqlCode
         )
     }
 
