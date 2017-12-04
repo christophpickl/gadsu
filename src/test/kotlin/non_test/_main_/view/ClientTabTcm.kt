@@ -21,7 +21,7 @@ import javax.swing.JScrollPane
 
 fun main(args: Array<String>) {
     Framed.showWithContextDefaultSize {
-        ClientTabTcm2(Client.REAL_DUMMY.copy(cprops = CProps.empty), NoopModificationChecker, it.bus)
+        ClientTabTcm2(Client.REAL_DUMMY.copy(cprops = CProps.empty))
     }
 }
 

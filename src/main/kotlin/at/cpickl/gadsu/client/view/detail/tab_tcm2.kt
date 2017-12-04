@@ -10,13 +10,11 @@ import at.cpickl.gadsu.view.components.ExpandCollapsePanel
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.fillAll
 import at.cpickl.gadsu.view.language.Labels
-import at.cpickl.gadsu.view.logic.ModificationChecker
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.tree.LiveSearchField
 import at.cpickl.gadsu.view.tree.TreeSearcher
 import at.cpickl.gadsu.view.tree.buildTree
 import com.github.christophpickl.kpotpourri.common.logging.LOG
-import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -27,9 +25,7 @@ import javax.swing.JPanel
 
 
 class ClientTabTcm2(
-        initialClient: Client,
-        modificationChecker: ModificationChecker,
-        bus: EventBus
+        initialClient: Client
 ) : DefaultClientTab(
         tabTitle = Labels.Tabs.ClientTcm,
         type = ClientTabType.TCM,
@@ -104,7 +100,7 @@ private class TcmViewPanel(xpropEnums: List<List<XPropEnum>>) : GridPanel() {
     }
 
     fun initClient(client: Client) {
-
+        println("initClient(client=$client)")
     }
 
 }
