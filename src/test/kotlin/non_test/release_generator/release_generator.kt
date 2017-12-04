@@ -116,6 +116,7 @@ private class ReleaseGenerator(
     }
 
     private fun selectMilestone(): Milestone {
+        println("Select a milestone to be released:")
         milestones.forEachIndexed { i, (version) ->
             println("( ${i + 1} ) $version")
         }

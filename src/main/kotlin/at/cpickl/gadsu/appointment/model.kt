@@ -3,6 +3,7 @@ package at.cpickl.gadsu.appointment
 import at.cpickl.gadsu.persistence.Persistable
 import at.cpickl.gadsu.service.HasId
 import com.google.common.collect.ComparisonChain
+import com.google.common.collect.Ordering
 import org.joda.time.DateTime
 
 data class Appointment(
@@ -24,18 +25,17 @@ data class Appointment(
     }
 
     val idComparator: (Appointment) -> Boolean
-        get() = { that -> this.id.equals(that.id) }
+        get() = { that -> this.id == that.id }
+
+    override val yetPersisted: Boolean get() = id != null
 
     override fun compareTo(other: Appointment): Int {
         return ComparisonChain.start()
                 .compare(this.start, other.start)
                 .compare(this.end, other.end)
                 .compare(this.clientId, other.clientId)
-                .compare(this.id, other.id)
+                .compare(this.id, other.id, Ordering.natural<String>().nullsFirst())
                 .result()
     }
-
-
-    override val yetPersisted: Boolean get() = id != null
 
 }
