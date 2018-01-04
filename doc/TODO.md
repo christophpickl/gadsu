@@ -1,3 +1,14 @@
+* TCM selector doch (daweil) nur flat list
+
+GADSU GADSU GADSU GADSU 
+	! birthday reminder popup
+	- rechtsklick doesnt work!!! + mit backspace events loeschen
+	- auf 30min steps stellen (bisherige runden einfach ;)
+	- sort clients (bhdgl cnt.)
+	- search names / filter clients
+	- agenda: popup das die naechsten (+vorherigen paar) behandlungen anzeigt
+
+
 * syndrom(s) - depends on #115
 ! don't really delete clients, only mark the as deleted and persist forever (?)
 * wenn client wechseln, dann reset views; v.a. TCM multiproperties nach oben scrollen
