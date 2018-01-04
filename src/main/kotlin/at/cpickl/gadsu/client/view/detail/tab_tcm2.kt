@@ -4,6 +4,7 @@ import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.xprops.model.XPropEnum
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.tcm.model.XProps
+import at.cpickl.gadsu.view.LiveSearchField
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.ExpandCollapseListener
 import at.cpickl.gadsu.view.components.ExpandCollapsePanel
@@ -11,7 +12,6 @@ import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.components.panels.fillAll
 import at.cpickl.gadsu.view.language.Labels
 import at.cpickl.gadsu.view.swing.scrolled
-import at.cpickl.gadsu.view.tree.LiveSearchField
 import at.cpickl.gadsu.view.tree.TreeSearcher
 import at.cpickl.gadsu.view.tree.buildTree
 import com.github.christophpickl.kpotpourri.common.logging.LOG
@@ -72,7 +72,7 @@ class ClientTabTcm2(
     }
 
     private fun changeContentTo(panel: JPanel) {
-        container.removeAll() // actually deletes only the single one :)
+        container.removeAll()
         container.add(panel, BorderLayout.CENTER)
         container.revalidate()
         container.repaint()

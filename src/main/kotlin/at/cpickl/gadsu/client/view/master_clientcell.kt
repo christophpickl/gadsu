@@ -3,6 +3,7 @@ package at.cpickl.gadsu.client.view
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientDonation
 import at.cpickl.gadsu.client.ClientState
+import at.cpickl.gadsu.client.xprops.model.XPropEnumOpt
 import at.cpickl.gadsu.image.ImageSize
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.clearTime
@@ -15,6 +16,7 @@ import at.cpickl.gadsu.view.components.DefaultCellView
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.transparent
+import at.cpickl.gadsu.view.swing.weightxy
 import at.cpickl.gadsu.view.swing.withFont
 import at.cpickl.gadsu.view.swing.withFontSize
 import com.github.christophpickl.kpotpourri.common.numbers.isBetweenInclusive
@@ -43,7 +45,6 @@ enum class TreatCount(number: Int) {
 
     val icon = Images.loadFromClasspath("/gadsu/images/treatment_count_$number.png")
 }
-
 
 class ClientCell(
         // MINOR REFACTOR - too many dependencies in here!

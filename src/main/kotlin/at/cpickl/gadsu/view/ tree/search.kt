@@ -1,13 +1,7 @@
 package at.cpickl.gadsu.view.tree
 
-import at.cpickl.gadsu.isEscape
-import at.cpickl.gadsu.view.swing.TextChangeDispatcher
-import at.cpickl.gadsu.view.swing.TextChangeListener
+import at.cpickl.gadsu.view.LiveSearchField
 import com.github.christophpickl.kpotpourri.common.logging.LOG
-import java.awt.Component
-import java.awt.event.KeyAdapter
-import java.awt.event.KeyEvent
-import javax.swing.JTextField
 
 // controller logic
 class TreeSearcher<G, L>(
@@ -50,32 +44,6 @@ class TreeSearcher<G, L>(
             tree.restoreOriginalData()
         }
     }
-
-}
-
-class LiveSearchField(viewName: String) {
-
-    private val field = JTextField().apply {
-        name = viewName
-    }
-    private val dispatcher = TextChangeDispatcher(field)
-
-    init {
-        field.addKeyListener(object : KeyAdapter() {
-            override fun keyReleased(e: KeyEvent) {
-                // FIXME also consume escape if clicked in tree
-                if (e.isEscape) {
-                    field.text = ""
-                }
-            }
-        })
-    }
-
-    fun addListener(listener: TextChangeListener) {
-        dispatcher.addListener(listener)
-    }
-
-    fun asComponent(): Component = field
 
 }
 

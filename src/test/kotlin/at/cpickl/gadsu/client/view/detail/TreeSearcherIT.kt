@@ -3,7 +3,7 @@ package at.cpickl.gadsu.client.view.detail
 import at.cpickl.gadsu.testinfra.ui.SimpleUiTest
 import at.cpickl.gadsu.testinfra.ui.TestContainer
 import at.cpickl.gadsu.testinfra.ui.TestContainerStarter
-import at.cpickl.gadsu.view.tree.LiveSearchField
+import at.cpickl.gadsu.view.LiveSearchField
 import at.cpickl.gadsu.view.tree.MyNode
 import at.cpickl.gadsu.view.tree.MyTree
 import at.cpickl.gadsu.view.tree.MyTreeModel
