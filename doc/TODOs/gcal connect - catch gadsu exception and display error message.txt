@@ -1,0 +1,31 @@
+GCal synchronisation failed!
+com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
+{
+  "error" : "invalid_grant",
+  "error_description" : "Token has been expired or revoked."
+}
+	at com.google.api.client.auth.oauth2.TokenResponseException.from(TokenResponseException.java:105)
+	at com.google.api.client.auth.oauth2.TokenRequest.executeUnparsed(TokenRequest.java:287)
+	at com.google.api.client.auth.oauth2.TokenRequest.execute(TokenRequest.java:307)
+	at com.google.api.client.auth.oauth2.Credential.executeRefreshToken(Credential.java:570)
+	at com.google.api.client.auth.oauth2.Credential.refreshToken(Credential.java:489)
+	at com.google.api.client.auth.oauth2.Credential.intercept(Credential.java:217)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:868)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:419)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:352)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:469)
+	at at.cpickl.gadsu.appointment.gcal.ServiceKt.transformCalendarNameToId(service.kt:114)
+	at at.cpickl.gadsu.appointment.gcal.InternetConnectionAwareGCalService.connectRepo(service.kt:89)
+	at at.cpickl.gadsu.appointment.gcal.InternetConnectionAwareGCalService.initRepo(service.kt:97)
+	at at.cpickl.gadsu.appointment.gcal.InternetConnectionAwareGCalService.isOnline(service.kt:41)
+	at at.cpickl.gadsu.appointment.gcal.sync.GCalControllerImpl.doTheSync(controller.kt:108)
+	at at.cpickl.gadsu.appointment.gcal.sync.GCalControllerImpl.access$doTheSync(controller.kt:29)
+	at at.cpickl.gadsu.appointment.gcal.sync.GCalControllerImpl$onRequestGCalSyncEvent$1.invoke(controller.kt:52)
+	at at.cpickl.gadsu.appointment.gcal.sync.GCalControllerImpl$onRequestGCalSyncEvent$1.invoke(controller.kt:29)
+	at at.cpickl.gadsu.view.KotlinSwingWorker$executeAsync$worker$1.doInBackground(async.kt:91)
+	at javax.swing.SwingWorker$1.call(SwingWorker.java:295)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at javax.swing.SwingWorker.run(SwingWorker.java:334)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
