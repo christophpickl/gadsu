@@ -17,11 +17,11 @@ import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.tcm.model.YinYang
+import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
-import java.io.File
 import javax.inject.Inject
 
 class CurrentClient @Inject constructor(bus: EventBus) :
@@ -311,14 +311,13 @@ data class Client(
 
     override fun hashCode() = Objects.hashCode(id, created, firstName, lastName)
 
-//    override fun toString(): String {
-//        return MoreObjects.toStringHelper(javaClass)
-//                .add("id", id)
-//                .add("firstName", firstName)
-//                .add("nickNameInt", nickNameInt)
-//                .add("lastName", lastName)
-//                .toString()
-//    }
+    override fun toString() =
+            MoreObjects.toStringHelper(javaClass)
+                    .add("id", id)
+                    .add("firstName", firstName)
+                    .add("nickNameInt", nickNameInt)
+                    .add("lastName", lastName)
+                    .toString()
 
 }
 

@@ -12,6 +12,7 @@ import at.cpickl.gadsu.client.Relationship
 import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.client.xprops.model.CProps
 import at.cpickl.gadsu.image.MyImage
+import com.google.common.base.MoreObjects
 import org.joda.time.DateTime
 
 data class ExtendedClient(
@@ -21,17 +22,10 @@ data class ExtendedClient(
         var differenceDaysToRecentTreatment: Int?
 ) : IClient, Comparable<ExtendedClient> {
 
-    companion object {
-        // for extensions
-    }
+    companion object {}
 
-    override fun compareTo(other: ExtendedClient): Int {
-        return this.client.compareTo(other.client)
-    }
-
-    override fun toString(): String {
-        return "ExtendedClient(client=$client, countTreatments=$countTreatments, upcomingAppointment=$upcomingAppointment)"
-    }
+    override fun compareTo(other: ExtendedClient) =
+            this.client.compareTo(other.client)
 
     // by client delegation does not work for mutable var fields :-/
     override val id: String? get() = client.id
@@ -78,5 +72,15 @@ data class ExtendedClient(
     override val picture: MyImage get() = client.picture
     override val cprops: CProps get() = client.cprops
 
+    override fun toString() =
+            MoreObjects.toStringHelper(javaClass)
+                    .add("id", id)
+                    .add("firstName", firstName)
+                    .add("nickNameInt", nickNameInt)
+                    .add("lastName", lastName)
+                    .add("countTreatments", countTreatments)
+                    .add("upcomingAppointment", upcomingAppointment)
+                    .add("differenceDaysToRecentTreatment", differenceDaysToRecentTreatment)
+                    .toString()
 
 }
