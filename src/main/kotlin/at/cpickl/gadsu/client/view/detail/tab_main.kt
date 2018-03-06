@@ -55,7 +55,7 @@ class ClientTabMain(
     val inpGender = fields.newComboBox(Gender.Enum.orderedValues, initialClient.gender, "Geschlecht", { it.gender }, ViewNames.Client.InputGender)
     val inpBirthday = fields.newDatePicker(initialClient.birthday, "Geburtstag", { it.birthday }, ViewNames.Client.InputBirthdayPrefix)
     private val outNextToBirthday = JLabel().bold()
-    val inpCountryOfOrigin = fields.newTextField("Geburtsort", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
+    val inpCountryOfOrigin = fields.newTextField("Herkunft", { it.countryOfOrigin }, ViewNames.Client.InputCountryOfOrigin)
     val inpOrigin = fields.newTextField("Wohnort", { it.origin }, ViewNames.Client.InputOrigin)
     val inpRelationship = fields.newComboBox(Relationship.Enum.orderedValues, initialClient.relationship, "Beziehungsstatus", { it.relationship }, ViewNames.Client.InputRelationship)
     val inpJob = fields.newTextField("Beruf", { it.job }, ViewNames.Client.InputJob)

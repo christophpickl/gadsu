@@ -1,4 +1,15 @@
+
+!!! do NOT change title when gcal sync
+!!! search clients (name; +filter: no bhdlg, money only);
+!!! sort clients (erstell datum, last treatment),
+* AA klient kategorie einfuehren
 * TCM selector doch (daweil) nur flat list
+* fuer klienten automatisch 5E profil blatt generieren
+* von zungen fotos uploadbar machen ticket!
+    // - ad zungenbuecher: barbara kirschbaum gibts 2 gute buecher
+* @gcal sync:
+	- dont make it possible to send confirmation mail for PAST dates
+	- dont change title on sync
 
 GADSU GADSU GADSU GADSU 
 	! birthday reminder popup
@@ -8,7 +19,7 @@ GADSU GADSU GADSU GADSU
 	- search names / filter clients
 	- agenda: popup das die naechsten (+vorherigen paar) behandlungen anzeigt
 
-
+* konstitution VS kondition
 * syndrom(s) - depends on #115
 ! don't really delete clients, only mark the as deleted and persist forever (?)
 * wenn client wechseln, dann reset views; v.a. TCM multiproperties nach oben scrollen

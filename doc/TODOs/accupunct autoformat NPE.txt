@@ -1,0 +1,34 @@
+2018-02-03 09:54:51.983 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - checkAcupunct(e.type=INSERT, e.offset=24, e.length=1)
+2018-02-03 09:54:51.983 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - RichTextArea.text = [* Ma46 gegend schmerzhaft]
+2018-02-03 09:54:53.109 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - checkAcupunct(e.type=REMOVE, e.offset=4, e.length=1)
+2018-02-03 09:54:53.109 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - RichTextArea.text = [* Ma6 gegend schmerzhaft]
+2018-02-03 09:54:53.135 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - checkAcupunct(e.type=INSERT, e.offset=4, e.length=1)
+2018-02-03 09:54:53.135 [AWT-EventQueue-0]  [DEBUG] a.c.gadsu.view.components.RichTextArea - RichTextArea.text = [*Ma636 gegend schmerzhaft]
+2018-02-03 09:54:53.138 [AWT-EventQueue-0]  [ERROR] a.c.gadsu.global.GlobalExceptionHandler - Uncaught exception in thread 'AWT-EventQueue-0'!
+2018-02-03 09:54:53.143 [AWT-EventQueue-0]  [ERROR] a.c.gadsu.global.GlobalExceptionHandler - Uncaught exception, going to die!
+java.security.PrivilegedActionException: null
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:726)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+Caused by: javax.swing.text.BadLocationException: Invalid remove
+	at javax.swing.text.AbstractDocument.handleRemove(AbstractDocument.java:605)
+	at javax.swing.text.AbstractDocument.remove(AbstractDocument.java:590)
+	at javax.swing.text.AbstractDocument.replace(AbstractDocument.java:666)
+	at at.cpickl.gadsu.view.components.RichTextArea$clearAcupunctFormat$2.invoke(RichTextArea.kt:212)
+	at at.cpickl.gadsu.view.components.RichTextArea$clearAcupunctFormat$2.invoke(RichTextArea.kt:131)
+	at at.cpickl.gadsu.view.components.RichTextArea.replaceTextStyle(RichTextArea.kt:500)
+	at at.cpickl.gadsu.view.components.RichTextArea.clearAcupunctFormat(RichTextArea.kt:211)
+	at at.cpickl.gadsu.view.components.RichTextArea.access$clearAcupunctFormat(RichTextArea.kt:131)
+	at at.cpickl.gadsu.view.components.RichTextArea$enableAcupunctDetection$2$checkAcupunct$5.run(RichTextArea.kt:258)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:756)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	... 9 common frames omitted
