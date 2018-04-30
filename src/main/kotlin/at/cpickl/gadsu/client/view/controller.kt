@@ -68,29 +68,38 @@ open class ClientViewController @Inject constructor(
 ) {
 
     private val log = LOG {}
+    var searchFilter: (ExtendedClient) -> Boolean = { true }
 
     private val changesChecker = ChangesChecker(dialogs, object : ChangesCheckerCallback {
         override fun isModified() = view.detailView.isModified()
         override fun save() = saveClient(view.detailView.readClient())
     })
 
-    @Subscribe open fun onAppStartupEvent(event: AppStartupEvent) {
+    @Subscribe
+    open fun onAppStartupEvent(event: AppStartupEvent) {
         reinitClients(showInactives = false)
         bus.post(ChangeMainContentEvent(view))
         bus.post(CreateNewClientEvent()) // show initial client view for insert prototype (update ui fields)
+    }
+
+    fun researchClients() {
+        reinitClients(showInactives = false)
+        if (currentClient.data.yetPersisted) {
+            view.masterView.trySelectClient(currentClient.data)
+        }
     }
 
     private fun reinitClients(showInactives: Boolean) {
         val clients = clientService
                 .findAll(filterState = if (showInactives) null else ClientState.ACTIVE)
                 .map { extendClient(it) }
+                .filter(searchFilter)
                 .sortedBy { it.client.preferredName }
         view.masterView.initClients(clients)
-
-//        view.masterView.initClients(clientService.findAll(ClientState.ACTIVE).map({ extendClient(it) })) // initially only display actives
     }
 
-    @Subscribe open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
+    @Subscribe
+    open fun onCreateNewClientEvent(event: CreateNewClientEvent) {
         if (changesChecker.checkChanges() === ChangeBehaviour.ABORT) {
             return
         }
@@ -109,12 +118,14 @@ open class ClientViewController @Inject constructor(
     }
 
 
-    @Subscribe open fun onSaveClientEvent(event: SaveClientEvent) {
+    @Subscribe
+    open fun onSaveClientEvent(event: SaveClientEvent) {
         val client = view.detailView.readClient()
         saveClient(client)
     }
 
-    @Subscribe open fun onClientCreatedEvent(event: ClientCreatedEvent) {
+    @Subscribe
+    open fun onClientCreatedEvent(event: ClientCreatedEvent) {
         val xclient = extendClient(event.client)
         val index = view.masterView.model.calculateInsertIndex(xclient)
         currentClient.data = event.client
@@ -123,14 +134,16 @@ open class ClientViewController @Inject constructor(
         view.masterView.selectClient(event.client)
     }
 
-    @Subscribe open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
+    @Subscribe
+    open fun onClientUpdatedEvent(event: ClientUpdatedEvent) {
         view.masterView.changeClient(event.client)
 //        view.masterView.selectClient(event.client) ... nope, not needed
 
         currentClient.data = event.client
     }
 
-    @Subscribe open fun onClientSelectedEvent(event: ClientSelectedEvent) {
+    @Subscribe
+    open fun onClientSelectedEvent(event: ClientSelectedEvent) {
         if (changesChecker.checkChanges() == ChangeBehaviour.ABORT) {
             view.masterView.selectClient(event.previousSelected) // reset selection
             return
@@ -139,26 +152,31 @@ open class ClientViewController @Inject constructor(
         view.closePreparations()
     }
 
-    @Subscribe open fun onDeleteCurrentClientEvent(event: DeleteCurrentClientEvent) {
+    @Subscribe
+    open fun onDeleteCurrentClientEvent(event: DeleteCurrentClientEvent) {
         doDeleteClient(currentClient.data)
     }
 
-    @Subscribe open fun onDeleteClientEvent(event: DeleteClientEvent) {
+    @Subscribe
+    open fun onDeleteClientEvent(event: DeleteClientEvent) {
         doDeleteClient(event.client)
     }
 
-    @Subscribe open fun onRequestClientPictureSaveEvent(event: RequestClientPictureSaveEvent) {
+    @Subscribe
+    open fun onRequestClientPictureSaveEvent(event: RequestClientPictureSaveEvent) {
         if (changesChecker.checkChanges() == ChangeBehaviour.CONTINUE) {
             clientService.savePicture(event.client)
             currentClient.data = event.client
         }
     }
 
-    @Subscribe open fun onDeleteImageEvent(event: DeleteImageEvent) {
+    @Subscribe
+    open fun onDeleteImageEvent(event: DeleteImageEvent) {
         clientService.deletePicture(event.client)
     }
 
-    @Subscribe open fun onClientDeletedEvent(event: ClientDeletedEvent) {
+    @Subscribe
+    open fun onClientDeletedEvent(event: ClientDeletedEvent) {
         view.masterView.deleteClient(event.client)
 
         if (currentClient.data.id != null && currentClient.data.id.equals(event.client.id)) {
@@ -167,71 +185,87 @@ open class ClientViewController @Inject constructor(
         }
     }
 
-    @Subscribe open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {
+    @Subscribe
+    open fun onCurrentPropertiesChangedEvent(event: CurrentPropertiesChangedEvent) {
         event.forClient { if (it != null && it.yetPersisted) view.masterView.changeClient(it) }
     }
 
-    @Subscribe open fun onShowClientViewEvent(event: ShowClientViewEvent) {
+    @Subscribe
+    open fun onShowClientViewEvent(event: ShowClientViewEvent) {
         bus.post(ChangeMainContentEvent(view))
     }
 
-    @Subscribe open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
+    @Subscribe
+    open fun onMainContentChangedEvent(event: MainContentChangedEvent) {
         if (event.oldContent === view) { // navigate away
             view.closePreparations()
         }
     }
 
-    @Subscribe open fun onClientTabSelected(event: ClientTabSelected) {
+    @Subscribe
+    open fun onClientTabSelected(event: ClientTabSelected) {
         view.detailView.closePreparations()
     }
 
-    @Subscribe open fun onSelectClientTab(event: SelectClientTab) {
+    @Subscribe
+    open fun onSelectClientTab(event: SelectClientTab) {
         view.detailView.changeTab(event.tab)
     }
 
-    @Subscribe open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
+    @Subscribe
+    open fun onShowInClientsListEvent(event: ShowInClientsListEvent) {
         reinitClients(event.showInactives)
     }
 
-    @Subscribe open fun onClientNavigateUpEvent(event: ClientNavigateUpEvent) {
+    @Subscribe
+    open fun onClientNavigateUpEvent(event: ClientNavigateUpEvent) {
         view.masterView.selectPrevious()
     }
 
-    @Subscribe open fun onClientNavigateDownEvent(event: ClientNavigateDownEvent) {
+    @Subscribe
+    open fun onClientNavigateDownEvent(event: ClientNavigateDownEvent) {
         view.masterView.selectNext()
     }
 
-    @Subscribe open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
+    @Subscribe
+    open fun onTreatmentCreatedEvent(event: TreatmentCreatedEvent) {
         view.masterView.treatmentCountIncrease(event.treatment.clientId)
         recalcRecentTreatmentCount(event.treatment.clientId)
     }
 
-    @Subscribe open fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
+    @Subscribe
+    open fun onTreatmentChangedEvent(event: TreatmentChangedEvent) {
         recalcRecentTreatmentCount(event.treatment.clientId)
     }
 
-    @Subscribe open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
+    @Subscribe
+    open fun onTreatmentDeletedEvent(event: TreatmentDeletedEvent) {
         view.masterView.treatmentCountDecrease(event.treatment.clientId)
         recalcRecentTreatmentCount(event.treatment.clientId)
     }
 
-    @Subscribe open fun onAppointmentSavedEvent(event: AppointmentSavedEvent) {
+    @Subscribe
+    open fun onAppointmentSavedEvent(event: AppointmentSavedEvent) {
         recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
     }
 
-    @Subscribe open fun onAppointmentDeletedEvent(event: AppointmentDeletedEvent) {
+    @Subscribe
+    open fun onAppointmentDeletedEvent(event: AppointmentDeletedEvent) {
         recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
     }
 
-    @Subscribe open fun onAppointmentChangedEvent(event: AppointmentChangedEvent) {
+    @Subscribe
+    open fun onAppointmentChangedEvent(event: AppointmentChangedEvent) {
         recalcUpcomingAppointmentForExtendedClient(event.appointment.clientId)
     }
 
-    @Subscribe open fun onClientChangeDonation(event: ClientChangeDonation) {
+    @Subscribe
+    open fun onClientChangeDonation(event: ClientChangeDonation) {
         saveClient(view.detailView.readClient().copy(donation = event.newDonation))
     }
 
-    @Subscribe open fun onClientChangeCategory(event: ClientChangeCategory) {
+    @Subscribe
+    open fun onClientChangeCategory(event: ClientChangeCategory) {
         saveClient(view.detailView.readClient().copy(category = event.newCategory))
     }
 

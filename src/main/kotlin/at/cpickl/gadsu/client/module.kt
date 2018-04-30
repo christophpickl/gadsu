@@ -28,6 +28,7 @@ class ClientModule : AbstractModule() {
         bind(ThresholdCalculator::class.java).to(ThresholdCalculatorImpl::class.java).`in`(Scopes.SINGLETON)
 
         bind(ClientService::class.java).to(ClientServiceImpl::class.java)
+        bind(ClientSearchController::class.java).asEagerSingleton()
 
         install(XPropsModule())
     }

@@ -3,6 +3,7 @@ package at.cpickl.gadsu.view
 import at.cpickl.gadsu.isEscape
 import at.cpickl.gadsu.view.swing.TextChangeDispatcher
 import at.cpickl.gadsu.view.swing.TextChangeListener
+import at.cpickl.gadsu.view.swing.enableSearchVariant
 import java.awt.Component
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -31,5 +32,9 @@ class LiveSearchField(viewName: String) {
     }
 
     fun asComponent(): Component = field
+
+    fun enableSearchVariant() = apply {
+        field.enableSearchVariant()
+    }
 
 }

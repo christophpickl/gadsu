@@ -32,3 +32,7 @@ fun JTextField.enforceCharactersByRegexp(regexp: Pattern) {
         }
     }
 }
+
+fun JTextField.enableSearchVariant() {
+    putClientProperty("JTextField.variant", "search")
+}

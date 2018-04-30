@@ -1,18 +1,20 @@
 package at.cpickl.gadsu.client.view
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientCategory
 import at.cpickl.gadsu.client.ClientChangeCategory
 import at.cpickl.gadsu.client.ClientChangeDonation
 import at.cpickl.gadsu.client.ClientDonation
+import at.cpickl.gadsu.client.ClientSearchEvent
 import at.cpickl.gadsu.client.ClientSelectedEvent
 import at.cpickl.gadsu.client.CreateNewClientEvent
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.image.DeleteImageEvent
 import at.cpickl.gadsu.image.SelectImageEvent
 import at.cpickl.gadsu.service.Clock
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.view.LiveSearchField
 import at.cpickl.gadsu.view.SwingFactory
 import at.cpickl.gadsu.view.ViewNames
 import at.cpickl.gadsu.view.components.MyListCellRenderer
@@ -33,7 +35,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
-import java.util.HashMap
+import java.util.*
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -47,6 +49,9 @@ interface ClientMasterView {
      * @param client null to deselect any selected entry
      */
     fun selectClient(client: Client?)
+
+    fun trySelectClient(client: Client)
+    fun selectedClient(): ExtendedClient?
 
     fun changeClient(client: Client)
     fun deleteClient(client: Client)
@@ -89,6 +94,7 @@ class SwingClientMasterView @Inject constructor(
     override val model = MyListModel<ExtendedClient>()
 
     private val log = LOG(javaClass)
+    private val searchField = LiveSearchField("client_name_search").enableSearchVariant()
     private val list = ClientList(model, calc, clock)
     private var previousSelected: ExtendedClient? = null
     private val client2extended: MutableMap<String, ExtendedClient> = HashMap()
@@ -97,17 +103,19 @@ class SwingClientMasterView @Inject constructor(
         name = ViewNames.Client.MainPanel
         debugColor = Color.RED
         enforceWidth(222)
+        searchField.addListener {
+            bus.post(ClientSearchEvent(it))
+        }
         initList()
 
-//        c.fill = GridBagConstraints.HORIZONTAL
-//        c.weightx = 1.0
-//        c.weighty = 1.0
-//        val searchField = SearchTextField()
-//        add(searchField)
-//        c.gridy++
-
-        c.fill = GridBagConstraints.BOTH
+        c.fill = GridBagConstraints.HORIZONTAL
         c.weightx = 1.0
+        c.weighty = 0.0
+
+        add(searchField.asComponent())
+
+        c.gridy++
+        c.fill = GridBagConstraints.BOTH
         c.weighty = 1.0
         add(list.scrolled())
 
@@ -152,18 +160,18 @@ class SwingClientMasterView @Inject constructor(
     override fun asComponent() = this
 
     override fun initClients(clients: List<ExtendedClient>) {
-        log.trace("initClients(clients={})", clients)
+        log.trace("initClients(clients.size={})", clients.size)
 
         model.resetData(clients)
 
         client2extended.clear()
-        clients.forEach { client2extended.put(it.client.id!!, it) }
+        clients.forEach { client2extended[it.client.id!!] = it }
     }
 
     override fun insertClient(index: Int, client: ExtendedClient) {
         log.trace("insertClient(index={}, client={})", index, client)
         model.add(index, client)
-        client2extended.put(client.client.id!!, client)
+        client2extended[client.client.id!!] = client
     }
 
     override fun selectClient(client: Client?) {
@@ -174,6 +182,15 @@ class SwingClientMasterView @Inject constructor(
         } else {
             list.setSelectedValue(client.toExtended(), true)
         }
+    }
+
+    override fun trySelectClient(client: Client) {
+        val extended = client.tryToExtended() ?: return // was previously selected, now it's gone ;)
+        list.setSelectedValue(extended, true)
+    }
+
+    override fun selectedClient(): ExtendedClient? {
+        return list.selectedValue
     }
 
     override fun hasPrevNextNeighbour(client: Client): Pair<Client?, Client?> {
@@ -234,10 +251,16 @@ class SwingClientMasterView @Inject constructor(
     }
 
     private fun xclientById(clientId: String) =
-            client2extended.values.firstOrNull { it.id == clientId } ?: throw GadsuException("Not found client by ID: '$clientId'! (available: ${client2extended.values}")
+            client2extended.values.firstOrNull { it.id == clientId }
+                    ?: throw GadsuException("Not found client by ID: '$clientId'! (available: ${client2extended.values}")
 
     private fun Client.toExtended(): ExtendedClient {
-        return client2extended[this.id!!] ?: throw GadsuException("Internal state error! Could not find extended client by: $this (map: $client2extended)")
+        return client2extended[this.id!!]
+                ?: throw GadsuException("Internal state error! Could not find extended client by: $this (map: $client2extended)")
+    }
+
+    private fun Client.tryToExtended(): ExtendedClient? {
+        return client2extended[this.id!!]
     }
 
     private val ExtendedClient.idXComparator: (ExtendedClient) -> Boolean
