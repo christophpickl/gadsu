@@ -6,7 +6,7 @@ import at.cpickl.gadsu.service.ensureNoSeconds
 import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.equalsHoursAndMinute
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.timesLabeledList
+import at.cpickl.gadsu.service.timesLabeledListQuarter
 import org.joda.time.DateTime
 
 
@@ -29,7 +29,7 @@ class LabeledDateTime(val delegate: DateTime) : Labeled {
 
 }
 
-class MyTimePicker(initValue: DateTime, viewName: String) : MyComboBox<LabeledDateTime>(timesLabeledList(), LabeledDateTime(initValue)) {
+class MyTimePicker(initValue: DateTime, viewName: String) : MyComboBox<LabeledDateTime>(timesLabeledListQuarter, LabeledDateTime(initValue)) {
     init {
         name = viewName
         maximumRowCount = 20

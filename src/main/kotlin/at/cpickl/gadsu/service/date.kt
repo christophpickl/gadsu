@@ -8,8 +8,7 @@ import org.joda.time.Days
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 val ZERO = DateTime(0L).withHourOfDay(0)!! // get rid of +1 timezone thingy
 
@@ -51,18 +50,14 @@ fun DateTime.ensureQuarterMinute() {
  * Return a list of 00:00, 00:15, ... 23:45 values.
  * Cache it, as list and DateTime is immutable :)
  */
-private val cached_timesList = 0.rangeTo(24 * 4 - 1).map { ZERO.plusMinutes(it * 15) }
+val timesListQuarter: List<DateTime> = (0 until 24 * 4).map { ZERO.plusMinutes(it * 15) }
+val timesListHalf: List<DateTime> = (0 until 24 * 2).map { ZERO.plusMinutes(it * 30) }
 
-fun timesList(): List<DateTime> = cached_timesList
+val timesLabeledListQuarter: List<LabeledDateTime> = timesListQuarter.map { LabeledDateTime(it) }.toList()
+val timesLabeledListHalf: List<LabeledDateTime> = timesListHalf.map { LabeledDateTime(it) }.toList()
 
-private val cached_timesLabeledList = timesList().map { LabeledDateTime(it) }.toList()
-fun timesLabeledList(): List<LabeledDateTime> = cached_timesLabeledList
-
-fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean {
-    return this.hourOfDay == that.hourOfDay &&
-            this.minuteOfHour == that.minuteOfHour
-
-}
+fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean =
+        this.hourOfDay == that.hourOfDay && this.minuteOfHour == that.minuteOfHour
 
 // --------------------------------------------------------------------------- extension methods
 

@@ -2,11 +2,13 @@ package at.cpickl.gadsu.service
 
 import at.cpickl.gadsu.global.GadsuException
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.hasSize
 import org.joda.time.DateTime
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
-import java.util.Locale
+import java.util.*
 
 @Test
 class DateFormatsTest {
@@ -148,23 +150,37 @@ class DateTimeExtensionTest {
         now.withMinuteOfHour(12).ensureQuarterMinute()
     }
 
-    fun `timesList ok`() {
-        val actual = timesList()
+    fun `timesListQuarter ok`() {
+        val actual = timesListQuarter
         assertThat(actual, hasSize(96))
         assertThat(actual, hasItem(zero))
         assertThat(actual, hasItem(zero.plusMinutes(15)))
         assertThat(actual, hasItem(zero.plusHours(22).plusMinutes(45)))
     }
 
-    fun `timesLabeledList ok`() {
-        val actual = timesLabeledList()
-        println(actual.map { it.label }.joinToString("\n"))
+    fun `timesLabeledListQuarter ok`() {
+        val actual = timesLabeledListQuarter
         assertThat(actual, hasSize(96))
         assertThat(actual[0].label, equalTo("00:00"))
         assertThat(actual[95].label, equalTo("23:45"))
     }
 
-    fun `equalsHoursAndMinute`() {
+    fun `timesListHalf ok`() {
+        val actual = timesListHalf
+        assertThat(actual, hasSize(48))
+        assertThat(actual, hasItem(zero))
+        assertThat(actual, hasItem(zero.plusMinutes(30)))
+        assertThat(actual, hasItem(zero.plusHours(22).plusMinutes(30)))
+    }
+
+    fun `timesLabeledListHalf ok`() {
+        val actual = timesLabeledListHalf
+        assertThat(actual, hasSize(48))
+        assertThat(actual[0].label, equalTo("00:00"))
+        assertThat(actual[47].label, equalTo("23:30"))
+    }
+
+    fun `equalsHoursAndMinute ok`() {
         assertThat(now.equalsHoursAndMinute(now.plusYears(1).plusMonths(1).plusDays(1).plusSeconds(1).plusMillis(1)), equalTo(true))
         assertThat(now.equalsHoursAndMinute(now.plusHours(1)), equalTo(false))
         assertThat(now.equalsHoursAndMinute(now.plusMinutes(1)), equalTo(false))
