@@ -2,11 +2,11 @@ package at.cpickl.gadsu.view.components.inputs
 
 import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.global.Labeled
+import at.cpickl.gadsu.service.TimeSequence
 import at.cpickl.gadsu.service.ensureNoSeconds
 import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.equalsHoursAndMinute
 import at.cpickl.gadsu.service.formatTimeWithoutSeconds
-import at.cpickl.gadsu.service.timesLabeledListQuarter
 import org.joda.time.DateTime
 
 
@@ -29,7 +29,11 @@ class LabeledDateTime(val delegate: DateTime) : Labeled {
 
 }
 
-class MyTimePicker(initValue: DateTime, viewName: String) : MyComboBox<LabeledDateTime>(timesLabeledListQuarter, LabeledDateTime(initValue)) {
+class MyTimePicker(
+        initValue: DateTime,
+        viewName: String,
+        private val timeSequence: TimeSequence = TimeSequence.QUARTER
+) : MyComboBox<LabeledDateTime>(timeSequence.timesLabeled, LabeledDateTime(initValue)) {
     init {
         name = viewName
         maximumRowCount = 20
@@ -43,10 +47,9 @@ class MyTimePicker(initValue: DateTime, viewName: String) : MyComboBox<LabeledDa
             selectedItem = null
             return
         }
-        value.ensureQuarterMinute()
-        value.ensureNoSeconds()
+        timeSequence.ensureCompatible(value)
 
-        0.rangeTo(model.size - 1).forEach {
+        (0 until model.size).forEach {
             val currentDate = model.getElementAt(it)
             if (currentDate.delegate.equalsHoursAndMinute(value)) {
                 selectedItem = currentDate

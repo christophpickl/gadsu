@@ -39,6 +39,7 @@ fun DateTime.ensureNoSeconds() {
 }
 
 fun Int.isQuarterMinute(): Boolean = this == 0 || this == 15 || this == 30 || this == 45
+fun Int.isHalfMinute(): Boolean = this == 0 || this == 30
 
 fun DateTime.ensureQuarterMinute() {
     if (!minuteOfHour.isQuarterMinute()) {
@@ -46,15 +47,36 @@ fun DateTime.ensureQuarterMinute() {
     }
 }
 
-/**
- * Return a list of 00:00, 00:15, ... 23:45 values.
- * Cache it, as list and DateTime is immutable :)
- */
-val timesListQuarter: List<DateTime> = (0 until 24 * 4).map { ZERO.plusMinutes(it * 15) }
-val timesListHalf: List<DateTime> = (0 until 24 * 2).map { ZERO.plusMinutes(it * 30) }
+fun DateTime.ensureHalfMinute() {
+    if (!minuteOfHour.isHalfMinute()) {
+        throw GadsuException("Illegal date: expected minute to be a half part but was: $this")
+    }
+}
 
-val timesLabeledListQuarter: List<LabeledDateTime> = timesListQuarter.map { LabeledDateTime(it) }.toList()
-val timesLabeledListHalf: List<LabeledDateTime> = timesListHalf.map { LabeledDateTime(it) }.toList()
+
+enum class TimeSequence(
+        val times: List<DateTime>
+) {
+    QUARTER(
+            (0 until 24 * 4).map { ZERO.plusMinutes(it * 15) }
+    ) {
+        override internal fun internalEnsureCompatible(value: DateTime) = value.ensureQuarterMinute()
+    },
+    HALF(
+            (0 until 24 * 2).map { ZERO.plusMinutes(it * 30) }
+    ) {
+        override internal fun internalEnsureCompatible(value: DateTime) = value.ensureHalfMinute()
+    };
+
+    val timesLabeled = times.map { LabeledDateTime(it) }.toList()
+
+    fun ensureCompatible(value: DateTime) {
+        internalEnsureCompatible(value)
+        value.ensureNoSeconds()
+    }
+
+    internal abstract fun internalEnsureCompatible(value: DateTime)
+}
 
 fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean =
         this.hourOfDay == that.hourOfDay && this.minuteOfHour == that.minuteOfHour
@@ -63,8 +85,10 @@ fun DateTime.equalsHoursAndMinute(that: DateTime): Boolean =
 
 /** HH:mm */
 fun DateTime.formatTimeWithoutSeconds(): String = DateFormats.TIME_WITHOUT_SECONDS.print(this)
+
 /** d.M. */
 fun DateTime.formatDateNoYear(): String = DateFormats.DATE_NO_YEAR.print(this)
+
 fun DateTime.formatDate(): String = DateFormats.DATE.print(this)
 fun DateTime.formatDateWithDayNoYear(locale: Locale = Languages.locale): String = DateFormats.DATE_WITH_DAY_NO_YEAR.withLocale(locale).print(this)
 fun DateTime.formatDateLong(locale: Locale = Languages.locale): String = DateFormats.DATE_LONG.withLocale(locale).print(this)
@@ -88,8 +112,10 @@ fun String.parseDate(): DateTime {
     }
     return DateFormats.DATE.parseDateTime(this)
 }
+
 /** dd.MM.yyyy HH:mm:ss **/
 fun String.parseDateTime(): DateTime = DateFormats.DATE_TIME.parseDateTime(this)
+
 fun String.parseDateTimeFile(): DateTime = DateFormats.DATE_TIME_FILE.parseDateTime(this)
 
 

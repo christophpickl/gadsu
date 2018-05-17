@@ -151,7 +151,7 @@ class DateTimeExtensionTest {
     }
 
     fun `timesListQuarter ok`() {
-        val actual = timesListQuarter
+        val actual = TimeSequence.QUARTER.times
         assertThat(actual, hasSize(96))
         assertThat(actual, hasItem(zero))
         assertThat(actual, hasItem(zero.plusMinutes(15)))
@@ -159,14 +159,14 @@ class DateTimeExtensionTest {
     }
 
     fun `timesLabeledListQuarter ok`() {
-        val actual = timesLabeledListQuarter
+        val actual = TimeSequence.QUARTER.timesLabeled
         assertThat(actual, hasSize(96))
         assertThat(actual[0].label, equalTo("00:00"))
         assertThat(actual[95].label, equalTo("23:45"))
     }
 
     fun `timesListHalf ok`() {
-        val actual = timesListHalf
+        val actual = TimeSequence.HALF.times
         assertThat(actual, hasSize(48))
         assertThat(actual, hasItem(zero))
         assertThat(actual, hasItem(zero.plusMinutes(30)))
@@ -174,7 +174,7 @@ class DateTimeExtensionTest {
     }
 
     fun `timesLabeledListHalf ok`() {
-        val actual = timesLabeledListHalf
+        val actual = TimeSequence.HALF.timesLabeled
         assertThat(actual, hasSize(48))
         assertThat(actual[0].label, equalTo("00:00"))
         assertThat(actual[47].label, equalTo("23:30"))

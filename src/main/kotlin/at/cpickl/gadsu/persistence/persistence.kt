@@ -6,7 +6,7 @@ import at.cpickl.gadsu.image.readBufferedImage
 import at.cpickl.gadsu.service.DateFormats
 import at.cpickl.gadsu.service.LOG
 import at.cpickl.gadsu.service.Logged
-import ch.qos.logback.classic.LoggerContext
+import at.cpickl.gadsu.service.toDateTime
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.Subscribe
 import org.flywaydb.core.Flyway
@@ -19,10 +19,10 @@ import org.hsqldb.error.ErrorCode
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.sql.Blob
 import java.sql.Connection
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Timestamp
 import javax.inject.Inject
@@ -207,3 +207,5 @@ fun Blob?.toByteArray(): ByteArray? {
 fun Blob.toBufferedImage(): BufferedImage? {
     return toByteArray()?.readBufferedImage()
 }
+
+fun ResultSet.getDateTime(column: String) = getTimestamp(column).toDateTime()

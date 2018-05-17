@@ -7,7 +7,6 @@ import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.clearMinutes
 import at.cpickl.gadsu.service.ensureNoSeconds
-import at.cpickl.gadsu.service.ensureQuarterMinute
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.tcm.model.Meridian
 import at.cpickl.gadsu.treatment.dyn.DynTreatment
@@ -67,7 +66,7 @@ data class Treatment(
 
     init {
         date.ensureNoSeconds()
-        date.ensureQuarterMinute()
+//        date.ensureHalfMinute()
     }
 
     companion object {
