@@ -38,7 +38,7 @@ class MyTimePicker(
         name = viewName
         maximumRowCount = 20
 
-        initValue.ensureQuarterMinute()
+        timeSequence.ensureCompatible(initValue)
         initValue.ensureNoSeconds()
     }
 

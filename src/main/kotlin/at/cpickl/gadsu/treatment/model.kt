@@ -6,6 +6,7 @@ import at.cpickl.gadsu.service.Current
 import at.cpickl.gadsu.service.CurrentEvent
 import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.service.clearMinutes
+import at.cpickl.gadsu.service.ensureHalfMinute
 import at.cpickl.gadsu.service.ensureNoSeconds
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.tcm.model.Meridian
@@ -66,7 +67,7 @@ data class Treatment(
 
     init {
         date.ensureNoSeconds()
-//        date.ensureHalfMinute()
+        date.ensureHalfMinute()
     }
 
     companion object {
@@ -77,7 +78,7 @@ data class Treatment(
                             number: Int,
                             date: DateTime,
                             duration: Duration = DEFAULT_DURATION,
-                            created: DateTime = DUMMY_CREATED, // created will be overridden anyway
+                            created: DateTime = DUMMY_CREATED, // will be overridden anyway
                             aboutDiscomfort: String = "",
                             aboutDiagnosis: String = "",
                             aboutContent: String = "",
@@ -87,25 +88,23 @@ data class Treatment(
                             note: String = "",
                             dynTreatments: List<DynTreatment> = listOf(HaraDiagnosis.insertPrototype()),
                             treatedMeridians: List<Meridian> = emptyList()
-        ): Treatment {
-            // created will be overridden anyway, so its ok to use no Clock here ;)
-            return Treatment(
-                    null, // id not yet set
-                    clientId,
-                    created,
-                    number,
-                    date.clearMinutes(),
-                    duration,
-                    aboutDiscomfort,
-                    aboutDiagnosis,
-                    aboutContent,
-                    aboutFeedback,
-                    aboutHomework,
-                    aboutUpcoming,
-                    note,
-                    dynTreatments,
-                    treatedMeridians)
-        }
+        ) = Treatment(
+                null, // id not yet set
+                clientId,
+                created,
+                number,
+                date.clearMinutes(),
+                duration,
+                aboutDiscomfort,
+                aboutDiagnosis,
+                aboutContent,
+                aboutFeedback,
+                aboutHomework,
+                aboutUpcoming,
+                note,
+                dynTreatments,
+                treatedMeridians)
+
     }
 
     val idComparator: (Treatment) -> Boolean

@@ -1,5 +1,6 @@
 package at.cpickl.gadsu.view.components.inputs
 
+import at.cpickl.gadsu.service.TimeSequence
 import at.cpickl.gadsu.service.clearSeconds
 import at.cpickl.gadsu.view.components.panels.GridPanel
 import at.cpickl.gadsu.view.datepicker.view.MyDatePicker
@@ -14,11 +15,12 @@ import javax.swing.JTextField
 class DateAndTimePicker(
         initialDate: DateTime,
         viewNamePrefix: String,
-        textFieldAlignment: Int = JTextField.LEFT
+        textFieldAlignment: Int = JTextField.LEFT,
+        timeSequence: TimeSequence = TimeSequence.QUARTER
 ) : GridPanel() {
 
     val inpDate = MyDatePicker.build(initialDate, viewNamePrefix, textFieldAlignment)
-    val inpTime = MyTimePicker(initialDate, "$viewNamePrefix.Time")
+    val inpTime = MyTimePicker(initialDate, "$viewNamePrefix.Time", timeSequence)
 
     init {
         inpTime.selectedItemTyped = LabeledDateTime(initialDate)

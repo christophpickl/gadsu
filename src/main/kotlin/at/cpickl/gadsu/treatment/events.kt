@@ -7,7 +7,7 @@ import org.joda.time.DateTime
 
 data class PrefillByAppointmentTreatment(val start: DateTime, val duration: Int)
 
-class PrepareNewTreatmentEvent(val prefillByAppointment: PrefillByAppointmentTreatment? = null) : UserEvent()
+data class PrepareNewTreatmentEvent(val prefillByAppointment: PrefillByAppointmentTreatment? = null) : UserEvent()
 
 class OpenTreatmentEvent(val treatment: Treatment) : UserEvent() {
     override fun toString(): String{

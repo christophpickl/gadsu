@@ -193,14 +193,13 @@ open class TreatmentController @Inject constructor(
 
         treatmentView?.closePreparations()
 
-        val nullSafeTreatment: Treatment
-        if (treatment != null) {
-            nullSafeTreatment = treatment
+        val nullSafeTreatment = if (treatment != null) {
+            treatment
         } else {
             val number = treatmentService.calculateNextNumber(client)
             val startDate = prefillByAppointment?.start ?: clock.now()
             val duration = if (prefillByAppointment == null) Treatment.DEFAULT_DURATION else minutes(prefillByAppointment.duration)
-            nullSafeTreatment = Treatment.insertPrototype(
+            Treatment.insertPrototype(
                     clientId = client.id!!,
                     number = number,
                     date = startDate,

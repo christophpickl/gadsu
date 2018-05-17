@@ -2,6 +2,7 @@ package at.cpickl.gadsu.treatment.view
 
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.development.debugColor
+import at.cpickl.gadsu.service.TimeSequence.HALF
 import at.cpickl.gadsu.service.minutes
 import at.cpickl.gadsu.service.toMinutes
 import at.cpickl.gadsu.treatment.NextTreatmentEvent
@@ -94,7 +95,7 @@ class SwingTreatmentView @Inject constructor(
     private val modificationChecker = ModificationChecker(this, btnSave, menuBar.treatmentSave)
 
     private val fields = Fields<Treatment>(modificationChecker)
-    private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT)
+    private val inpDateAndTime = fields.newDateAndTimePicker("Datum", treatment.date, { it.date }, ViewNames.Treatment.InputDatePrefix, JTextField.RIGHT, HALF)
 
     private val inpDuration = fields.newMinutesField("Dauer", { it.duration.toMinutes() }, ViewNames.Treatment.InputDuration, 2)
     private val inpAboutDiscomfort = fields.newTextArea("Zustand", { it.aboutDiscomfort }, ViewNames.Treatment.InputAboutDiscomfort, bus)

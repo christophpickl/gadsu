@@ -1,7 +1,8 @@
 package at.cpickl.gadsu.view
 
-import at.cpickl.gadsu.global.Labeled
 import at.cpickl.gadsu.client.xprops.view.ElFieldForProps
+import at.cpickl.gadsu.global.Labeled
+import at.cpickl.gadsu.service.TimeSequence
 import at.cpickl.gadsu.service.withAllButHourAndMinute
 import at.cpickl.gadsu.view.components.MyTextArea
 import at.cpickl.gadsu.view.components.RichTextArea
@@ -21,8 +22,7 @@ import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.awt.Component
-import java.util.LinkedList
-import java.util.Objects
+import java.util.*
 import javax.swing.JTextField
 
 
@@ -57,14 +57,17 @@ class ElTextField<V>(
     }
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
-//    override fun isModified(value: V): Boolean {
+    //    override fun isModified(value: V): Boolean {
 //        val mod = _isModified(text, extractValue, value)
 //        if (mod) {
 //            println("Change detected")
 //        }
 //        return mod
 //    }
-    override fun updateValue(value: V) { text = extractValue(value) }
+    override fun updateValue(value: V) {
+        text = extractValue(value)
+    }
+
     override fun toComponent() = this
 
     override fun toString() = MoreObjects.toStringHelper(this)
@@ -81,11 +84,14 @@ class ElTextArea<in V>(
 ) : MyTextArea(viewName, visibleRows), ElField<V> {
 
     override fun isModified(value: V) = _isModified(text, extractValue, value)
-    override fun updateValue(value: V) { text = extractValue(value) }
+    override fun updateValue(value: V) {
+        text = extractValue(value)
+    }
+
     override fun toComponent() = this.scrolled()
 }
 
-class ElRichTextArea<in V> (
+class ElRichTextArea<in V>(
         override val formLabel: String,
         private val extractValue: (V) -> String,
         viewName: String,
@@ -96,6 +102,7 @@ class ElRichTextArea<in V> (
     override fun updateValue(value: V) {
         readEnrichedText(extractValue(value))
     }
+
     override fun toComponent() = this.scrolled()
 }
 
@@ -108,10 +115,12 @@ class ElNumberField<V>(
     init {
         name = viewName
     }
+
     override fun isModified(value: V) = _isModified(numberValue, extractValue, value)
     override fun updateValue(value: V) {
         numberValue = extractValue(value)
     }
+
     override fun toComponent() = this
 }
 
@@ -122,7 +131,10 @@ class ElCheckBox<in V>(
 ) : ElField<V> {
 
     override fun isModified(value: V) = _isModified(delegate.isSelected, extractValue, value)
-    override fun updateValue(value: V) { delegate.isSelected = extractValue(value) }
+    override fun updateValue(value: V) {
+        delegate.isSelected = extractValue(value)
+    }
+
     override fun toComponent() = delegate
 }
 
@@ -139,7 +151,10 @@ class ElComboBox<in V, T : Labeled>(
         }
 
     override fun isModified(value: V) = _isModified(selectedItemTyped, extractValue, value)
-    override fun updateValue(value: V) { selectedItemTyped = extractValue(value) }
+    override fun updateValue(value: V) {
+        selectedItemTyped = extractValue(value)
+    }
+
     override fun toComponent() = delegate
 }
 
@@ -153,7 +168,10 @@ class ElDatePicker<in V>(
         set(value) = delegate.changeDate(value)
 
     override fun isModified(value: V) = _isModified(selectedDate, extractValue, value)
-    override fun updateValue(value: V) { selectedDate = extractValue(value) }
+    override fun updateValue(value: V) {
+        selectedDate = extractValue(value)
+    }
+
     override fun toComponent() = delegate
     fun hidePopup() {
         delegate.hidePopup()
@@ -170,7 +188,10 @@ class ElTimePicker<in V>(
         set(value) = delegate.changeSelectedByDateTime(value)
 
     override fun isModified(value: V) = _isModified(selectedTime.withAllButHourAndMinute(extractValue(value)), extractValue, value)
-    override fun updateValue(value: V) { selectedTime = extractValue(value) }
+    override fun updateValue(value: V) {
+        selectedTime = extractValue(value)
+    }
+
     override fun toComponent() = delegate
 }
 
@@ -184,7 +205,10 @@ class ElDateAndTimePicker<in V>(
         set(value) = delegate.writeDateTime(value)
 
     override fun isModified(value: V) = _isModified(selectedDate, extractValue, value)
-    override fun updateValue(value: V) { selectedDate = extractValue(value) }
+    override fun updateValue(value: V) {
+        selectedDate = extractValue(value)
+    }
+
     override fun toComponent() = delegate
     fun hidePopup() {
         delegate.inpDate.hidePopup()
@@ -231,7 +255,7 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun <T: Labeled> newComboBox(values: List<T>, initValue: T, label: String, extractValue: (V) -> T, viewName: String): ElComboBox<V, T> {
+    fun <T : Labeled> newComboBox(values: List<T>, initValue: T, label: String, extractValue: (V) -> T, viewName: String): ElComboBox<V, T> {
         val realField = MyComboBox(values, initValue)
         val field = ElComboBox(realField, label, extractValue)
         realField.name = viewName
@@ -256,9 +280,15 @@ class Fields<V>(private val modifications: ModificationChecker) {
         return field
     }
 
-    fun newDateAndTimePicker(label: String, initDate: DateTime, extractValue: (V) -> DateTime, viewNamePrefix: String,
-                             dateFieldAlignment: Int = JTextField.LEFT): ElDateAndTimePicker<V> {
-        val realField = DateAndTimePicker(initDate, viewNamePrefix, dateFieldAlignment)
+    fun newDateAndTimePicker(
+            label: String,
+            initDate: DateTime,
+            extractValue: (V) -> DateTime,
+            viewNamePrefix: String,
+            dateFieldAlignment: Int = JTextField.LEFT,
+            timeSequence: TimeSequence = TimeSequence.QUARTER
+    ): ElDateAndTimePicker<V> {
+        val realField = DateAndTimePicker(initDate, viewNamePrefix, dateFieldAlignment, timeSequence)
         val field = ElDateAndTimePicker(realField, label, extractValue)
         modifications.enableChangeListener(realField.inpDate)
         modifications.enableChangeListener(realField.inpTime)
@@ -271,7 +301,7 @@ class Fields<V>(private val modifications: ModificationChecker) {
         fields.add(field)
     }
 
-    fun isAnyModified(value : V): Boolean {
+    fun isAnyModified(value: V): Boolean {
         return fields.any {
             val modified = it.isModified(value)
             if (modified && log.isTraceEnabled) {
