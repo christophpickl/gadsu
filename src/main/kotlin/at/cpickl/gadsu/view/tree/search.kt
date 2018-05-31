@@ -61,6 +61,7 @@ class SearchableTree<G, L>(private val tree: Tree<G, L>) : Tree<G, L> by tree {
 
     fun search(terms: List<String>) {
         // MINOR or also search in group node itself for label?!
+        @Suppress("UNCHECKED_CAST")
         val filtered = originalData.nodes
                 .map { groupNode -> Pair(groupNode, groupNode.subNodes.filter { it.label.matchSearch(terms) }) }
                 .filter { (_, subs) -> subs.isNotEmpty() }

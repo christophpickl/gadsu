@@ -17,7 +17,6 @@ import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.tcm.model.YinYang
-import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -32,8 +31,10 @@ class CurrentClient @Inject constructor(bus: EventBus) :
     }
 }
 
-fun CurrentEvent.forClient(function: (Client?) -> Unit) {
-    if (this.id == CurrentClient.ID) function(this.newData as Client?)
+inline fun CurrentEvent.forClient(function: (Client?) -> Unit) {
+    if (this.id == CurrentClient.ID) {
+        function(this.newData as Client?)
+    }
 }
 
 // ATTENTION: IF ADD NEW PROPERTY ...
@@ -357,13 +358,14 @@ data class Client(
 
     override fun hashCode() = Objects.hashCode(id, created, firstName, lastName)
 
-    override fun toString() =
-            MoreObjects.toStringHelper(javaClass)
-                    .add("id", id)
-                    .add("firstName", firstName)
-                    .add("nickNameInt", nickNameInt)
-                    .add("lastName", lastName)
-                    .toString()
+//    override fun toString() =
+//            MoreObjects.toStringHelper(javaClass)
+//                    .add("id", id)
+//                    .add("firstName", firstName)
+//                    .add("nickNameInt", nickNameInt)
+//                    .add("lastName", lastName)
+//                    .toString()
+
 
 }
 

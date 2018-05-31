@@ -7,24 +7,24 @@ import at.cpickl.gadsu.persistence.toByteArray
 import at.cpickl.gadsu.testinfra.Expects
 import at.cpickl.gadsu.testinfra.HsqldbTest
 import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC1
-import at.cpickl.gadsu.testinfra.TEST_CLIENT_PIC2
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.savedValidInstance
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
-@Test(groups = arrayOf("hsqldb"))
+@Test(groups = ["hsqldb"])
 class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private val unsavedClient = Client.unsavedValidInstance()
     private lateinit var testee: ClientJdbcRepository
 
     private val testPicture1 = MyImage.TEST_CLIENT_PIC1
-    private val testPicture2 = MyImage.TEST_CLIENT_PIC2
 
     @BeforeMethod
     fun setUp() {
@@ -64,14 +64,15 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
     // --------------------------------------------------------------------------- update
 
     fun updateWithoutPicture_sunshine() {
-        val savedClient = testee.insertWithoutPicture(unsavedClient.copy(gender = Gender.MALE))
-        val changedClient = savedClient.copy(lastName = "something else", picture = testPicture1)
+        val savedClient = testee.insertWithoutPicture(Client.testInstance1.copy(id = null, gender = Gender.MALE))
+
+        val changedClient = Client.testInstance2.copy(id = savedClient.id, cprops = savedClient.cprops)
         testee.updateWithoutPicture(changedClient)
 
         assertSingleFindAll(changedClient.copy(picture = MyImage.DEFAULT_PROFILE_MAN))
     }
 
-    @Test(expectedExceptions = arrayOf(PersistenceException::class))
+    @Test(expectedExceptions = [(PersistenceException::class)])
     fun update_notExisting_shouldFail() {
         testee.updateWithoutPicture(Client.savedValidInstance())
     }
@@ -135,9 +136,8 @@ class ClientSpringJdbcRepositoryTest : HsqldbTest() {
 
     private fun assertSingleFindAll(expected: Client) {
         val found = testee.findAll()
-//        val f = found[0]
-//        val r = f.equals(expected)
-        assertThat(found, contains(expected))
+        assertThat(found, hasSize(1))
+        assertThat(found[0], equalTo(expected))
     }
 
 }

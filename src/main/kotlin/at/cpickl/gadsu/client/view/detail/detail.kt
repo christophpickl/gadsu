@@ -72,9 +72,10 @@ open class SwingClientDetailView @Inject constructor(
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, bus)
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
+    private val tab5e = ClientTab5e(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-    private val allTabs = listOf(tabMain, tabTexts, tabTcm, tabAssist)
+    private val allTabs = listOf(tabMain, tabTexts, tabTcm, tab5e, tabAssist)
 
     init {
         modificationChecker.disableAll()
@@ -98,6 +99,7 @@ open class SwingClientDetailView @Inject constructor(
             ClientTabType.MAIN -> tabMain
             ClientTabType.TEXTS -> tabTexts
             ClientTabType.TCM -> tabTcm
+            ClientTabType.FIVEE -> tab5e
             ClientTabType.ASSIST -> tabAssist
         }
         if (newTab != tabbedPane.selectedComponent) {
@@ -190,15 +192,15 @@ open class SwingClientDetailView @Inject constructor(
                 category = currentClient.data.category, // not changeable via client detail view, but via popup
                 donation = currentClient.data.donation, // not changeable via client detail view, but via popup
 
-                yyTendency = tabMain.inpYyTendency.selectedItemTyped,
-                textYinYang = "", // FIXME implement view part of #133
-                elementTendency = tabMain.inpElementTendency.selectedItemTyped,
-                textFiveElements = tabMain.inpFiveElements.text,
-                textWood = "",
-                textFire = "",
-                textEarth = "",
-                textMetal = "",
-                textWater = "",
+                yyTendency = tab5e.inpYyTendency.selectedItemTyped,
+                textYinYang = tab5e.inpTextYinYang.text,
+                elementTendency = tab5e.inpElementTendency.selectedItemTyped,
+                textFiveElements = tab5e.inpFiveElements.text,
+                textWood = tab5e.inpTextWood.text,
+                textFire = tab5e.inpTextFire.text,
+                textEarth = tab5e.inpTextEarth.text,
+                textMetal = tab5e.inpTextMetal.text,
+                textWater = tab5e.inpTextWater.text,
 
                 tcmNote = tabTcm.inpTcmNote.toEnrichedText(),
                 picture = currentClient.data.picture,

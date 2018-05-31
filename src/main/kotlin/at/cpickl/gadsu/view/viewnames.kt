@@ -59,6 +59,7 @@ object ClientViewNames {
     val InputRelationship = "Client.InputRelationship"
     val InputCategory = "Client.InputCategory"
     val InputNote = "Client.InputNote"
+    val InputTextYinYang = "Client.InputTextYinYang"
     val InputYyTendency = "Client.InputYyTendency"
     val InputElementTendency = "Client.InputElementTendency"
     val InputActive = "Client.InputActive"

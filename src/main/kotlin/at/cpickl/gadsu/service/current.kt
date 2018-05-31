@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.service
 
-import at.cpickl.gadsu.global.AppEvent
 import at.cpickl.gadsu.client.CurrentClient
+import at.cpickl.gadsu.global.AppEvent
 import at.cpickl.gadsu.treatment.CurrentTreatment
 import com.google.common.base.Objects
 import com.google.common.eventbus.EventBus
@@ -23,8 +23,11 @@ interface CurrentEvent {
     val newData: Any?
 }
 
-abstract class AbstractChangedEvent(override val id: String, override val oldData: Any?, override val newData: Any?) :
-        AppEvent(), CurrentEvent {
+abstract class AbstractChangedEvent(
+        override val id: String,
+        override val oldData: Any?,
+        override val newData: Any?
+) : AppEvent(), CurrentEvent {
 
     override fun equals(other: Any?): Boolean{
         if (this === other) return true
@@ -36,6 +39,7 @@ abstract class AbstractChangedEvent(override val id: String, override val oldDat
 
         return true
     }
+
     override fun hashCode(): Int{
         var result = id.hashCode()
         result += 31 * result + (oldData?.hashCode() ?: 0)

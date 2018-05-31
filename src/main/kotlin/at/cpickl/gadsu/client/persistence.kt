@@ -86,27 +86,30 @@ class ClientJdbcRepository @Inject constructor(
             mail, phone, street, zipCode, city, knownBy,
             dsgvoAccepted, wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
-            yyTendency, elementTendency, textImpression, textMedical, textComplaints, textPersonal, textObjective,
-            mainObjective, symptoms, elements, syndrom, tcmNote,
-            category, donation
+            textImpression, textMedical, textComplaints, textPersonal, textObjective,
+            mainObjective, symptoms, syndrom, tcmNote,
+            category, donation,
+            yyTendency, textYinYang, elementTendency, elements, textWood, textFire, textEarth, textMetal, textWater
         ) VALUES (
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
-            ?, ?
+            ?, ?, ?, ?,
+            ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
         )"""
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
                 client.dsgvoAccepted, client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
-                client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
-                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
-                client.category.sqlCode, client.donation.sqlCode
-        )
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textSyndrom, client.tcmNote,
+                client.category.sqlCode, client.donation.sqlCode,
+                client.yyTendency.sqlCode, client.textYinYang, client.elementTendency.sqlCode, client.textFiveElements, client.textWood, client.textFire, client.textEarth, client.textMetal, client.textWater
+                )
         return client.copy(
                 id = newId,
                 picture = client.gender.defaultImage
@@ -122,17 +125,19 @@ class ClientJdbcRepository @Inject constructor(
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?, knownBy = ?,
                     dsgvoAccepted = ?, wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
-                    yyTendency = ?, elementTendency = ?, textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
-                    mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
-                    category = ?, donation = ?
+                    textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
+                    mainObjective = ?, symptoms = ?, syndrom = ?, tcmNote = ?,
+                    category = ?, donation = ?,
+                    yyTendency = ?, textYinYang = ?, elementTendency = ?, elements = ?, textWood = ?, textFire = ?, textEarth = ?, textMetal = ?, textWater = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
                 client.dsgvoAccepted, client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
-                client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
-                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textSyndrom, client.tcmNote,
                 client.category.sqlCode, client.donation.sqlCode,
+                client.yyTendency.sqlCode, client.textYinYang, client.elementTendency.sqlCode, client.textFiveElements, client.textWood, client.textFire, client.textEarth, client.textMetal, client.textWater,
                 // no picture or cprops
                 client.id!!)
     }
