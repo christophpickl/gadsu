@@ -178,8 +178,6 @@ open class SwingClientDetailView @Inject constructor(
                 hobbies = tabMain.inpHobbies.text,
                 note = tabMain.inpNote.toEnrichedText(),
 
-                yyTendency = tabMain.inpYyTendency.selectedItemTyped,
-                elementTendency = tabMain.inpElementTendency.selectedItemTyped,
                 textImpression = tabTexts.inpImpression.toEnrichedText(),
                 textMedical = tabTexts.inpMedical.toEnrichedText(),
                 textComplaints = tabTexts.inpComplaints.toEnrichedText(),
@@ -188,10 +186,19 @@ open class SwingClientDetailView @Inject constructor(
 
                 textMainObjective = tabMain.inpMainObjective.text,
                 textSymptoms = tabMain.inpSymptoms.text,
-                textFiveElements = tabMain.inpFiveElements.text,
                 textSyndrom = tabMain.inpSyndrom.text,
                 category = currentClient.data.category, // not changeable via client detail view, but via popup
                 donation = currentClient.data.donation, // not changeable via client detail view, but via popup
+
+                yyTendency = tabMain.inpYyTendency.selectedItemTyped,
+                textYinYang = "", // FIXME implement view part of #133
+                elementTendency = tabMain.inpElementTendency.selectedItemTyped,
+                textFiveElements = tabMain.inpFiveElements.text,
+                textWood = "",
+                textFire = "",
+                textEarth = "",
+                textMetal = "",
+                textWater = "",
 
                 tcmNote = tabTcm.inpTcmNote.toEnrichedText(),
                 picture = currentClient.data.picture,

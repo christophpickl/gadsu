@@ -176,7 +176,6 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 wantReceiveMails = rs.getBoolean("wantReceiveMails"),
                 dsgvoAccepted = rs.getBoolean("dsgvoAccepted"),
                 birthday = rs.getTimestamp("birthday")?.run { DateTime(this) },
-//                rs.getTimestamp("birthday").nullOrWith(::DateTime),
                 gender = gender,
                 countryOfOrigin = rs.getString("countryOfOrigin"),
                 origin = rs.getString("origin"),
@@ -186,8 +185,6 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 hobbies = rs.getString("hobbies"),
                 note = rs.getString("note"),
 
-                yyTendency = YinYangMaybe.Enum.parseSqlCode(rs.getString("yyTendency")),
-                elementTendency = ElementMaybe.Enum.parseSqlCode(rs.getString("elementTendency")),
                 textImpression = rs.getString("textImpression"),
                 textMedical = rs.getString("textMedical"),
                 textComplaints = rs.getString("textComplaints"),
@@ -196,8 +193,17 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
 
                 textMainObjective = rs.getString("mainObjective"),
                 textSymptoms = rs.getString("symptoms"),
-                textFiveElements = rs.getString("elements"),
                 textSyndrom = rs.getString("syndrom"),
+
+                yyTendency = YinYangMaybe.Enum.parseSqlCode(rs.getString("yyTendency")),
+                textYinYang = rs.getString("textYinYang"),
+                elementTendency = ElementMaybe.Enum.parseSqlCode(rs.getString("elementTendency")),
+                textFiveElements = rs.getString("elements"),
+                textWood = rs.getString("textWood"),
+                textFire = rs.getString("textFire"),
+                textEarth = rs.getString("textEarth"),
+                textMetal = rs.getString("textMetal"),
+                textWater = rs.getString("textWater"),
 
                 category = ClientCategory.Enum.parseSqlCode(rs.getString("category")),
                 donation = ClientDonation.Enum.parseSqlCode(rs.getString("donation")),

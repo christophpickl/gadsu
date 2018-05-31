@@ -18,7 +18,10 @@ class ClientTest {
     private val client1 = Client(
             "1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", contact1, "1",
             true, true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
-            YinYangMaybe.UNKNOWN, ElementMaybe.UNKNOWN, "1", "1", "1", "1", "1", "1", "1", "1", "1", ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1)
+            "1", "1", "1", "1", "1", "1", "1", "1",
+            YinYangMaybe.UNKNOWN, "yy1", ElementMaybe.UNKNOWN, "5e1", "w1", "f1", "e1", "m1", "w1",
+            ClientCategory.A, ClientDonation.PRESENT,"1", MyImage.DEFAULT_PROFILE_ALIEN, cprops1
+    )
 
     @DataProvider
     fun changingClientProvider(): Array<Array<Any>> = arrayOf(
@@ -41,8 +44,17 @@ class ClientTest {
             arrayOf<Any>("children",        { it: Client -> it.copy(children = "2") }),
             arrayOf<Any>("hobbies",         { it: Client -> it.copy(hobbies = "2") }),
             arrayOf<Any>("note",            { it: Client -> it.copy(note = "2") }),
+
             arrayOf<Any>("yyTendency",      { it: Client -> it.copy(yyTendency = YinYangMaybe.YANG) }),
+            arrayOf<Any>("textYinYang",     { it: Client -> it.copy(textYinYang = "2") }),
             arrayOf<Any>("elementTendency", { it: Client -> it.copy(elementTendency = ElementMaybe.EARTH) }),
+            arrayOf<Any>("textFiveElements",{ it: Client -> it.copy(textFiveElements = "2") }),
+            arrayOf<Any>("textWood",        { it: Client -> it.copy(textWood = "2") }),
+            arrayOf<Any>("textFire",        { it: Client -> it.copy(textFire = "2") }),
+            arrayOf<Any>("textEarth",       { it: Client -> it.copy(textEarth = "2") }),
+            arrayOf<Any>("textMetal",       { it: Client -> it.copy(textMetal = "2") }),
+            arrayOf<Any>("textWater",       { it: Client -> it.copy(textWater = "2") }),
+
             arrayOf<Any>("textImpression",  { it: Client -> it.copy(textImpression = "2") }),
             arrayOf<Any>("textMedical",     { it: Client -> it.copy(textMedical = "2") }),
             arrayOf<Any>("textComplaints",  { it: Client -> it.copy(textComplaints = "2") }),
