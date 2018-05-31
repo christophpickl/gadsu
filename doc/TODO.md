@@ -1,3 +1,12 @@
+* ad gadsu: checkbox, ob klient DSGVO bestimmung unterschrieben
+* anzeigen, wenn er meint es gehoert was geloescht -> option es in gadsu einzutragen
+* gcal mailer => Disablen when event in past
+! alte MyShiatsu props durcharbeiten
+* rueckendiagnose ad gadsu
+* behandlungsstrategie
+	- wo schwerpunkt? zielsetung, um was gehts, ohne fachausdruecke
+	- wie auf matte umsetzen? was machen? warum? welches ziel?
+* nicht nur 5E tablle in gadsu sondern auch yin/yang spalten
 
 !!! do NOT change title when gcal sync
 !!! search clients (name; +filter: no bhdlg, money only);
@@ -19,6 +28,9 @@ GADSU GADSU GADSU GADSU
 	- search names / filter clients
 	- agenda: popup das die naechsten (+vorherigen paar) behandlungen anzeigt
 
+* client kann "hat nachgefragt" bekommen; beziehen sich auf einen tag (kann also mehrere haben)
+    - wirkt sich stark auf wertung fuers naechstes doodle poll aus
+    - wirkt sich weniger stark durchgehend immer aus
 * konstitution VS kondition
 * syndrom(s) - depends on #115
 ! don't really delete clients, only mark the as deleted and persist forever (?)
