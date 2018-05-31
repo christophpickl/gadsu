@@ -67,10 +67,10 @@ class MyTree<G, L>(
         }
     }
 
-    override fun setModel2(newMyModel: MyTreeModel<G, L>) {
+    override fun setModel2(model: MyTreeModel<G, L>) {
         log.trace { "setModel2(model)" }
-        myModel = newMyModel
-        model = newMyModel.swingModel
+        myModel = model
+        this.model = model.swingModel
     }
 
     override fun addSelectionPath(selectionPath: TreePath) {
@@ -78,9 +78,9 @@ class MyTree<G, L>(
         super.addSelectionPath(selectionPath)
     }
 
-    override fun isExpanded(node: MyNode.MyGroupNode<G, L>) = isExpanded(node.toPath())
+    override fun isExpanded(it: MyNode.MyGroupNode<G, L>) = isExpanded(it.toPath())
 
-    override fun expand(node: MyNode.MyGroupNode<G, L>) = expandPath(node.toPath().apply { log.debug { "expand(node.path=$this)" } })
+    override fun expand(it: MyNode.MyGroupNode<G, L>) = expandPath(it.toPath().apply { log.debug { "expand(node.path=$this)" } })
 
     fun readSelected(): List<L> = allLeafNodes().filter { it.isSelected() }.map { it.entity }
 

@@ -87,7 +87,7 @@ private class TcmViewPanel3() : GridPanel() {
         add(btnStartEdit)
     }
 
-    fun initClient(client: Client) {
+    fun initClient(@Suppress("UNUSED_PARAMETER") client: Client) {
         log.trace { "initClient(client)" }
         // only render values from client cprops
     }
@@ -125,7 +125,7 @@ private class TcmEditPanel3(private val xpropGroups: XPropsGroup, bus: EventBus)
         )
     }
 
-    fun initClient(client: Client) {
+    fun initClient(@Suppress("UNUSED_PARAMETER") client: Client) {
         log.trace { "initClient(client)" }
     }
 

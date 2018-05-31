@@ -120,7 +120,7 @@ class FlywayMigrateTest {
         testService.insertClient_V9(clientId)
         testService.insertTreamtent_V9(initDate, clientId)
 
-        testService.migrateDb("10")
+        testService.migrateDb("10_1")
 
         val actual = jdbcx.query("SELECT * FROM treatment", TreatmentV9Mapper)
         assertThat(actual, hasSize(1))

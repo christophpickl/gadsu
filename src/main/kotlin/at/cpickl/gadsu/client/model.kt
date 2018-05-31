@@ -17,7 +17,6 @@ import at.cpickl.gadsu.service.HasId
 import at.cpickl.gadsu.tcm.model.Element
 import at.cpickl.gadsu.tcm.model.XProps
 import at.cpickl.gadsu.tcm.model.YinYang
-import com.google.common.base.MoreObjects
 import com.google.common.base.Objects
 import com.google.common.collect.ComparisonChain
 import com.google.common.eventbus.EventBus
@@ -32,8 +31,10 @@ class CurrentClient @Inject constructor(bus: EventBus) :
     }
 }
 
-fun CurrentEvent.forClient(function: (Client?) -> Unit) {
-    if (this.id == CurrentClient.ID) function(this.newData as Client?)
+inline fun CurrentEvent.forClient(function: (Client?) -> Unit) {
+    if (this.id == CurrentClient.ID) {
+        function(this.newData as Client?)
+    }
 }
 
 // ATTENTION: IF ADD NEW PROPERTY ...
@@ -56,6 +57,7 @@ interface IClient : HasId, Persistable {
     val hasMail: Boolean // inferred
     val hasMailAndWantsMail: Boolean
     val wantReceiveMails: Boolean
+    val dsgvoAccepted: Boolean
     val birthday: DateTime?
     val gender: Gender
     /** birth location */
@@ -67,8 +69,6 @@ interface IClient : HasId, Persistable {
     val hobbies: String
     val note: String
 
-    val yyTendency: YinYangMaybe
-    val elementTendency: ElementMaybe
     val textImpression: String
     val textMedical: String
     val textComplaints: String
@@ -76,8 +76,18 @@ interface IClient : HasId, Persistable {
     val textObjective: String
     val textMainObjective: String
     val textSymptoms: String
-    val textFiveElements: String
     val textSyndrom: String
+
+    val yyTendency: YinYangMaybe
+    val textYinYang: String
+    val elementTendency: ElementMaybe
+    val textFiveElements: String
+    val textWood: String
+    val textFire: String
+    val textEarth: String
+    val textMetal: String
+    val textWater: String
+
     val category: ClientCategory
     val donation: ClientDonation
 
@@ -97,6 +107,7 @@ data class Client(
         override val nickNameInt: String,
         override val contact: Contact,
         override val knownBy: String,
+        override val dsgvoAccepted: Boolean,
         override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
         override val gender: Gender,
@@ -110,8 +121,6 @@ data class Client(
         override val hobbies: String,
         override val note: String,
 
-        override val yyTendency: YinYangMaybe,
-        override val elementTendency: ElementMaybe,
         /** "Texte" tab, textarea: Allgemeiner Eindruck */
         override val textImpression: String,
         /** "Texte" tab, textarea: Medizinisches */
@@ -127,10 +136,19 @@ data class Client(
         override val textMainObjective: String,
         /** "Allgemein" tab, textfield: symptome */
         override val textSymptoms: String,
-        /** "Allgemein" tab, textfield: 5 Elemente */
-        override val textFiveElements: String,
         /** "Allgemein" tab, textfield: Syndrom */
         override val textSyndrom: String,
+
+        override val yyTendency: YinYangMaybe,
+        override val textYinYang: String,
+        override val elementTendency: ElementMaybe,
+        override val textFiveElements: String,
+        override val textWood: String,
+        override val textFire: String,
+        override val textEarth: String,
+        override val textMetal: String,
+        override val textWater: String,
+
         override val category: ClientCategory,
         override val donation: ClientDonation,
 
@@ -153,7 +171,8 @@ data class Client(
                 nickNameExt = "",
                 contact = Contact.EMPTY,
                 knownBy = "",
-                wantReceiveMails = true,
+                wantReceiveMails = false,
+                dsgvoAccepted = false,
                 birthday = null,
                 gender = Gender.UNKNOWN,
                 countryOfOrigin = "",
@@ -163,8 +182,6 @@ data class Client(
                 children = "",
                 hobbies = "",
                 note = "",
-                yyTendency = YinYangMaybe.UNKNOWN,
-                elementTendency = ElementMaybe.UNKNOWN,
                 textImpression = "",
                 textMedical = "",
                 textComplaints = "",
@@ -172,8 +189,18 @@ data class Client(
                 textObjective = "",
                 textMainObjective = "",
                 textSymptoms = "",
-                textFiveElements = "",
                 textSyndrom = "",
+
+                yyTendency = YinYangMaybe.UNKNOWN,
+                textYinYang = "",
+                elementTendency = ElementMaybe.UNKNOWN,
+                textFiveElements = "",
+                textWood = "",
+                textFire = "",
+                textEarth = "",
+                textMetal = "",
+                textWater = "",
+
                 category = ClientCategory.B,
                 donation = ClientDonation.UNKNOWN,
                 tcmNote = "",
@@ -201,6 +228,7 @@ data class Client(
                 ),
                 knownBy = "von Maria",
                 wantReceiveMails = true,
+                dsgvoAccepted = true,
                 countryOfOrigin = "\u00d6sterreich",
                 origin = "Eisenstadt, Bgld",
                 relationship = Relationship.MARRIED,
@@ -209,18 +237,25 @@ data class Client(
                 hobbies = "Radfahren",
                 note = "Meine supi wuzi Anmerkung.",
 
-                yyTendency = YinYangMaybe.YANG,
-                elementTendency = ElementMaybe.UNKNOWN,
                 textImpression = "mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub; mein eindruck ist blub;",
                 textMedical = "er hatte ein gebrochenes bein",
                 textComplaints = "nacken; zuwenig selbstbewusstsein",
                 textPersonal = "perfektionist; schlangen phobie; single",
                 textObjective = "mag mehr selbstbewusstein",
-
                 textMainObjective = "Regelbeschwerden",
                 textSymptoms = "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
-                textFiveElements = "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
                 textSyndrom = "Le-Qi-Stau",
+
+                yyTendency = YinYangMaybe.YANG,
+                textYinYang = "Mehr yin denn yang.",
+                elementTendency = ElementMaybe.UNKNOWN,
+                textFiveElements = "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
+                textWood = "gut sehen",
+                textEarth = "guter appetit",
+                textFire = "lacht viel",
+                textMetal = "trockene haut",
+                textWater = "hat urvertrauen",
+
 
                 tcmNote = "zyklus 24T-6T; drahtiger puls",
                 category = ClientCategory.A,
@@ -282,6 +317,8 @@ data class Client(
                 Objects.equal(this.nickNameInt, that.nickNameInt) &&
                 Objects.equal(this.contact, that.contact) &&
                 Objects.equal(this.knownBy, that.knownBy) &&
+                Objects.equal(this.dsgvoAccepted, that.dsgvoAccepted) &&
+                Objects.equal(this.wantReceiveMails, that.wantReceiveMails) &&
                 Objects.equal(this.birthday, that.birthday) &&
                 Objects.equal(this.gender, that.gender) &&
                 Objects.equal(this.countryOfOrigin, that.countryOfOrigin) &&
@@ -291,8 +328,7 @@ data class Client(
                 Objects.equal(this.children, that.children) &&
                 Objects.equal(this.hobbies, that.hobbies) &&
                 Objects.equal(this.note, that.note) &&
-                Objects.equal(this.yyTendency, that.yyTendency) &&
-                Objects.equal(this.elementTendency, that.elementTendency) &&
+
                 Objects.equal(this.textImpression, that.textImpression) &&
                 Objects.equal(this.textMedical, that.textMedical) &&
                 Objects.equal(this.textComplaints, that.textComplaints) &&
@@ -300,7 +336,18 @@ data class Client(
                 Objects.equal(this.textObjective, that.textObjective) &&
                 Objects.equal(this.textMainObjective, that.textMainObjective) &&
                 Objects.equal(this.textSymptoms, that.textSymptoms) &&
+
+                Objects.equal(this.yyTendency, that.yyTendency) &&
+                Objects.equal(this.textYinYang, that.textYinYang) &&
+
+                Objects.equal(this.elementTendency, that.elementTendency) &&
                 Objects.equal(this.textFiveElements, that.textFiveElements) &&
+                Objects.equal(this.textWood, that.textWood) &&
+                Objects.equal(this.textFire, that.textFire) &&
+                Objects.equal(this.textEarth, that.textEarth) &&
+                Objects.equal(this.textMetal, that.textMetal) &&
+                Objects.equal(this.textWater, that.textWater) &&
+
                 Objects.equal(this.textSyndrom, that.textSyndrom) &&
                 Objects.equal(this.category, that.category) &&
                 Objects.equal(this.donation, that.donation) &&
@@ -311,13 +358,14 @@ data class Client(
 
     override fun hashCode() = Objects.hashCode(id, created, firstName, lastName)
 
-    override fun toString() =
-            MoreObjects.toStringHelper(javaClass)
-                    .add("id", id)
-                    .add("firstName", firstName)
-                    .add("nickNameInt", nickNameInt)
-                    .add("lastName", lastName)
-                    .toString()
+//    override fun toString() =
+//            MoreObjects.toStringHelper(javaClass)
+//                    .add("id", id)
+//                    .add("firstName", firstName)
+//                    .add("nickNameInt", nickNameInt)
+//                    .add("lastName", lastName)
+//                    .toString()
+
 
 }
 

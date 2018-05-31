@@ -89,6 +89,9 @@ class ElTextArea<in V>(
     }
 
     override fun toComponent() = this.scrolled()
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElRichTextArea<in V>(
@@ -104,6 +107,9 @@ class ElRichTextArea<in V>(
     }
 
     override fun toComponent() = this.scrolled()
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElNumberField<V>(
@@ -122,6 +128,9 @@ class ElNumberField<V>(
     }
 
     override fun toComponent() = this
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElCheckBox<in V>(
@@ -136,6 +145,9 @@ class ElCheckBox<in V>(
     }
 
     override fun toComponent() = delegate
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElComboBox<in V, T : Labeled>(
@@ -156,6 +168,9 @@ class ElComboBox<in V, T : Labeled>(
     }
 
     override fun toComponent() = delegate
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElDatePicker<in V>(
@@ -176,6 +191,9 @@ class ElDatePicker<in V>(
     fun hidePopup() {
         delegate.hidePopup()
     }
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElTimePicker<in V>(
@@ -193,6 +211,9 @@ class ElTimePicker<in V>(
     }
 
     override fun toComponent() = delegate
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 class ElDateAndTimePicker<in V>(
@@ -213,6 +234,9 @@ class ElDateAndTimePicker<in V>(
     fun hidePopup() {
         delegate.inpDate.hidePopup()
     }
+    override fun toString() = MoreObjects.toStringHelper(this)
+            .add("formLabel", formLabel)
+            .toString()
 }
 
 

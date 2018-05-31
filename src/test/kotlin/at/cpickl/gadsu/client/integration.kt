@@ -4,12 +4,15 @@ import at.cpickl.gadsu.client.view.ClientView
 import at.cpickl.gadsu.testinfra.GuiceIntegrationTest
 import at.cpickl.gadsu.testinfra.TEST_UUID1
 import at.cpickl.gadsu.testinfra.unsavedValidInstance
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.slf4j.LoggerFactory
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("integration", "guice"))
+@Test(groups = ["integration", "guice"])
 class ClientIntegrationTest : GuiceIntegrationTest() {
 
     private val log = LoggerFactory.getLogger(javaClass)

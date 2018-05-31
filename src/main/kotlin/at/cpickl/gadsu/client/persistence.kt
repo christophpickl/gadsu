@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
@@ -84,29 +84,32 @@ class ClientJdbcRepository @Inject constructor(
         INSERT INTO $TABLE (
             id, created, firstName, lastName, nickNameInt, nickNameExt,
             mail, phone, street, zipCode, city, knownBy,
-            wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
+            dsgvoAccepted, wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
-            yyTendency, elementTendency, textImpression, textMedical, textComplaints, textPersonal, textObjective,
-            mainObjective, symptoms, elements, syndrom, tcmNote,
-            category, donation
+            textImpression, textMedical, textComplaints, textPersonal, textObjective,
+            mainObjective, symptoms, syndrom, tcmNote,
+            category, donation,
+            yyTendency, textYinYang, elementTendency, elements, textWood, textFire, textEarth, textMetal, textWater
         ) VALUES (
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?,
-            ?, ?
+            ?, ?, ?, ?,
+            ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
         )"""
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
-                client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.dsgvoAccepted, client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
-                client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
-                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
-                client.category.sqlCode, client.donation.sqlCode
-        )
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textSyndrom, client.tcmNote,
+                client.category.sqlCode, client.donation.sqlCode,
+                client.yyTendency.sqlCode, client.textYinYang, client.elementTendency.sqlCode, client.textFiveElements, client.textWood, client.textFire, client.textEarth, client.textMetal, client.textWater
+                )
         return client.copy(
                 id = newId,
                 picture = client.gender.defaultImage
@@ -120,19 +123,21 @@ class ClientJdbcRepository @Inject constructor(
                 UPDATE $TABLE SET
                     state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameExt = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?, knownBy = ?,
-                    wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
+                    dsgvoAccepted = ?, wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
-                    yyTendency = ?, elementTendency = ?, textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
-                    mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
-                    category = ?, donation = ?
+                    textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
+                    mainObjective = ?, symptoms = ?, syndrom = ?, tcmNote = ?,
+                    category = ?, donation = ?,
+                    yyTendency = ?, textYinYang = ?, elementTendency = ?, elements = ?, textWood = ?, textFire = ?, textEarth = ?, textMetal = ?, textWater = ?
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
-                client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.dsgvoAccepted, client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
-                client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
-                client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
+                client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
+                client.textMainObjective, client.textSymptoms, client.textSyndrom, client.tcmNote,
                 client.category.sqlCode, client.donation.sqlCode,
+                client.yyTendency.sqlCode, client.textYinYang, client.elementTendency.sqlCode, client.textFiveElements, client.textWood, client.textFire, client.textEarth, client.textMetal, client.textWater,
                 // no picture or cprops
                 client.id!!)
     }
@@ -174,8 +179,8 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 ),
                 knownBy = rs.getString("knownBy"),
                 wantReceiveMails = rs.getBoolean("wantReceiveMails"),
+                dsgvoAccepted = rs.getBoolean("dsgvoAccepted"),
                 birthday = rs.getTimestamp("birthday")?.run { DateTime(this) },
-//                rs.getTimestamp("birthday").nullOrWith(::DateTime),
                 gender = gender,
                 countryOfOrigin = rs.getString("countryOfOrigin"),
                 origin = rs.getString("origin"),
@@ -185,8 +190,6 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 hobbies = rs.getString("hobbies"),
                 note = rs.getString("note"),
 
-                yyTendency = YinYangMaybe.Enum.parseSqlCode(rs.getString("yyTendency")),
-                elementTendency = ElementMaybe.Enum.parseSqlCode(rs.getString("elementTendency")),
                 textImpression = rs.getString("textImpression"),
                 textMedical = rs.getString("textMedical"),
                 textComplaints = rs.getString("textComplaints"),
@@ -195,8 +198,17 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
 
                 textMainObjective = rs.getString("mainObjective"),
                 textSymptoms = rs.getString("symptoms"),
-                textFiveElements = rs.getString("elements"),
                 textSyndrom = rs.getString("syndrom"),
+
+                yyTendency = YinYangMaybe.Enum.parseSqlCode(rs.getString("yyTendency")),
+                textYinYang = rs.getString("textYinYang"),
+                elementTendency = ElementMaybe.Enum.parseSqlCode(rs.getString("elementTendency")),
+                textFiveElements = rs.getString("elements"),
+                textWood = rs.getString("textWood"),
+                textFire = rs.getString("textFire"),
+                textEarth = rs.getString("textEarth"),
+                textMetal = rs.getString("textMetal"),
+                textWater = rs.getString("textWater"),
 
                 category = ClientCategory.Enum.parseSqlCode(rs.getString("category")),
                 donation = ClientDonation.Enum.parseSqlCode(rs.getString("donation")),

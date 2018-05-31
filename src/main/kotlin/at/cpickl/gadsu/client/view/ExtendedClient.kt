@@ -40,6 +40,7 @@ data class ExtendedClient(
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
     override val knownBy: String get() = client.knownBy
+    override val dsgvoAccepted: Boolean get() = client.dsgvoAccepted
     override val hasMail: Boolean get() = client.hasMail
     override val hasMailAndWantsMail: Boolean get() = client.hasMailAndWantsMail
     override val wantReceiveMails = client.wantReceiveMails
@@ -54,7 +55,15 @@ data class ExtendedClient(
     override val note: String get() = client.note
 
     override val yyTendency: YinYangMaybe get() = client.yyTendency
+    override val textYinYang: String get() = client.textYinYang
     override val elementTendency: ElementMaybe get() = client.elementTendency
+    override val textFiveElements: String get() = client.textFiveElements
+    override val textWood: String get() = client.textWood
+    override val textFire: String get() = client.textFire
+    override val textEarth: String get() = client.textEarth
+    override val textMetal: String get() = client.textMetal
+    override val textWater: String get() = client.textWater
+
     override val textImpression: String get() = client.textImpression
     override val textMedical: String get() = client.textMedical
     override val textComplaints: String get() = client.textComplaints
@@ -63,7 +72,6 @@ data class ExtendedClient(
 
     override val textMainObjective: String get() = client.textMainObjective
     override val textSymptoms: String get() = client.textSymptoms
-    override val textFiveElements: String get() = client.textFiveElements
     override val textSyndrom: String get() = client.textSyndrom
     override val category: ClientCategory get() = client.category
     override val donation: ClientDonation get() = client.donation

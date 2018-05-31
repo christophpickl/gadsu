@@ -10,6 +10,7 @@ enum class ClientTabType(val label: String) {
     MAIN(Labels.Tabs.ClientMain),
     TEXTS(Labels.Tabs.ClientTexts),
     TCM(Labels.Tabs.ClientTcm),
+    FIVEE(Labels.Tabs.Client5e),
     ASSIST(Labels.Tabs.ClientAssist);
 }
 

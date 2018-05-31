@@ -27,7 +27,7 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import com.github.christophpickl.kpotpourri.common.numbers.forEach
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 import javax.swing.SwingUtilities
 
@@ -51,6 +51,7 @@ class ScreenshotDataInserter @Inject constructor(
                         ),
                         "von Anna",
                         true,
+                        true,
                         DateFormats.DATE.parseDateTime("26.10.1986"),
                         Gender.MALE,
                         "\u00d6sterreich",
@@ -61,12 +62,15 @@ class ScreenshotDataInserter @Inject constructor(
                         "Radfahren",
                         "Meine supi wuzi Anmerkung.",
 
-                        YinYangMaybe.YANG, ElementMaybe.FIRE,
-                        "", "", "", "", "",
+                        "", "", "", "",
                         "Regelbeschwerden",
                         "Emotionaler rollercoaster, stechende Schmerzen im Unterleib, seitliche Kopfschmerzen, überarbeitet, viel Stress",
                         "Starker Holztyp, macht gerne neues, ärgert sich recht viel (Le), Kopfschmerzen (Gb)",
                         "Le-Qi-Stau",
+                        YinYangMaybe.YANG,
+                        "eher yang",
+                        ElementMaybe.FIRE,
+                        "", "", "", "", "", "",
                         ClientCategory.A,
                         ClientDonation.PRESENT,
                         "",

@@ -72,9 +72,10 @@ open class SwingClientDetailView @Inject constructor(
     private val tabMain = ClientTabMain(currentClient.data, modificationChecker, appointmentsSubView, treatmentSubview, bus)
     private val tabTexts = ClientTabTexts(modificationChecker, bus)
     private val tabTcm = ClientTabTcm(currentClient.data, modificationChecker, bus)
+    private val tab5e = ClientTab5e(currentClient.data, modificationChecker, bus)
 
     private val tabbedPane = JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT)
-    private val allTabs = listOf(tabMain, tabTexts, tabTcm, tabAssist)
+    private val allTabs = listOf(tabMain, tabTexts, tabTcm, tab5e, tabAssist)
 
     init {
         modificationChecker.disableAll()
@@ -98,6 +99,7 @@ open class SwingClientDetailView @Inject constructor(
             ClientTabType.MAIN -> tabMain
             ClientTabType.TEXTS -> tabTexts
             ClientTabType.TCM -> tabTcm
+            ClientTabType.FIVEE -> tab5e
             ClientTabType.ASSIST -> tabAssist
         }
         if (newTab != tabbedPane.selectedComponent) {
@@ -166,6 +168,7 @@ open class SwingClientDetailView @Inject constructor(
                         city = tabMain.inpCity.text
                 ),
                 knownBy = tabMain.inpKnownBy.text,
+                dsgvoAccepted = tabMain.inpDsgvoAccepted.delegate.isSelected,
                 wantReceiveMails = tabMain.inpWantReceiveMails.delegate.isSelected,
                 birthday = tabMain.inpBirthday.selectedDate,
                 gender = tabMain.inpGender.selectedItemTyped,
@@ -177,8 +180,6 @@ open class SwingClientDetailView @Inject constructor(
                 hobbies = tabMain.inpHobbies.text,
                 note = tabMain.inpNote.toEnrichedText(),
 
-                yyTendency = tabMain.inpYyTendency.selectedItemTyped,
-                elementTendency = tabMain.inpElementTendency.selectedItemTyped,
                 textImpression = tabTexts.inpImpression.toEnrichedText(),
                 textMedical = tabTexts.inpMedical.toEnrichedText(),
                 textComplaints = tabTexts.inpComplaints.toEnrichedText(),
@@ -187,10 +188,19 @@ open class SwingClientDetailView @Inject constructor(
 
                 textMainObjective = tabMain.inpMainObjective.text,
                 textSymptoms = tabMain.inpSymptoms.text,
-                textFiveElements = tabMain.inpFiveElements.text,
                 textSyndrom = tabMain.inpSyndrom.text,
                 category = currentClient.data.category, // not changeable via client detail view, but via popup
                 donation = currentClient.data.donation, // not changeable via client detail view, but via popup
+
+                yyTendency = tab5e.inpYyTendency.selectedItemTyped,
+                textYinYang = tab5e.inpTextYinYang.text,
+                elementTendency = tab5e.inpElementTendency.selectedItemTyped,
+                textFiveElements = tab5e.inpFiveElements.text,
+                textWood = tab5e.inpTextWood.text,
+                textFire = tab5e.inpTextFire.text,
+                textEarth = tab5e.inpTextEarth.text,
+                textMetal = tab5e.inpTextMetal.text,
+                textWater = tab5e.inpTextWater.text,
 
                 tcmNote = tabTcm.inpTcmNote.toEnrichedText(),
                 picture = currentClient.data.picture,

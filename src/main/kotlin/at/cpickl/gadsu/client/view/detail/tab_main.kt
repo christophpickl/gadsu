@@ -2,10 +2,8 @@ package at.cpickl.gadsu.client.view.detail
 
 import at.cpickl.gadsu.appointment.view.AppoinmentsInClientView
 import at.cpickl.gadsu.client.Client
-import at.cpickl.gadsu.client.ElementMaybe
 import at.cpickl.gadsu.client.Gender
 import at.cpickl.gadsu.client.Relationship
-import at.cpickl.gadsu.client.YinYangMaybe
 import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.service.StarSignCalculator
 import at.cpickl.gadsu.treatment.inclient.TreatmentsInClientView
@@ -69,16 +67,14 @@ class ClientTabMain(
     val inpStreet = fields.newTextField("Strasse", { it.contact.street }, ViewNames.Client.InputStreet)
     val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", { it.contact.city }, ViewNames.Client.InputCity)
-    val inpWantReceiveMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveMails }, ViewNames.Client.InputReceiveMails, true)
+    val inpDsgvoAccepted = fields.newCheckBox("DSGVO", "Akzeptiert", { it.dsgvoAccepted }, ViewNames.Client.InputDsgvoAccepted, preSelected = false)
+    val inpWantReceiveMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveMails }, ViewNames.Client.InputReceiveMails, preSelected = false)
     val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote, bus)
 
     // zusatz stuff
     val inpMainObjective = fields.newTextField("Hauptanliegen", { it.textMainObjective }, ViewNames.Client.InputTextMainObjective)
     val inpSymptoms = fields.newTextField("Symptome", { it.textSymptoms }, ViewNames.Client.InputTextSymptoms)
-    val inpFiveElements = fields.newTextField("5 Elemente", { it.textFiveElements }, ViewNames.Client.InputTextFiveElements)
     val inpSyndrom = fields.newTextField("Syndrom", { it.textSyndrom }, ViewNames.Client.InputTextSyndrom)
-    val inpYyTendency = fields.newComboBox(YinYangMaybe.Enum.orderedValues, initialClient.yyTendency, "Yin/Yang", { it.yyTendency }, ViewNames.Client.InputYyTendency)
-    val inpElementTendency = fields.newComboBox(ElementMaybe.Enum.orderedValues, initialClient.elementTendency, "Element", { it.elementTendency }, ViewNames.Client.InputElementTendency)
 
     init {
         debugColor = Color.ORANGE
@@ -124,15 +120,13 @@ class ClientTabMain(
             addFormInput(inpStreet)
             addFormInput(inpZipCode)
             addFormInput(inpCity)
+            addFormInput(inpDsgvoAccepted)
             addFormInput(inpWantReceiveMails)
         }
         val additionalTopForm = FormPanel().apply {
             addFormInput(inpMainObjective)
             addFormInput(inpSymptoms)
-            addFormInput(inpFiveElements)
             addFormInput(inpSyndrom)
-            addFormInput(inpYyTendency)
-            addFormInput(inpElementTendency)
         }
         val additionalBottomForm = FormPanel().apply {
             addFormInput(inpKnownBy)
