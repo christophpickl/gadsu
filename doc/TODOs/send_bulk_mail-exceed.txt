@@ -1,0 +1,32 @@
+2018-03-31 21:48:09.576 [AWT-EventQueue-0]  [ERROR] a.c.gadsu.mail.bulkmail.BulkMailController - Failed to send mail!
+com.google.api.client.googleapis.json.GoogleJsonResponseException: 403 Forbidden
+{
+  "code" : 403,
+  "errors" : [ {
+    "domain" : "usageLimits",
+    "message" : "User Rate Limit Exceeded",
+    "reason" : "userRateLimitExceeded"
+  } ],
+  "message" : "User Rate Limit Exceeded"
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:146)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:113)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:40)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:321)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1065)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:419)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:352)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:469)
+	at at.cpickl.gadsu.mail.GMailApiImpl.send(GMailApi.kt:35)
+	at at.cpickl.gadsu.mail.MailSenderImpl.send(MailSender.kt:32)
+	at at.cpickl.gadsu.mail.bulkmail.BulkMailController$onRequestSendBulkMailEvent$1.invoke(controller.kt:55)
+	at at.cpickl.gadsu.mail.bulkmail.BulkMailController$onRequestSendBulkMailEvent$1.invoke(controller.kt:22)
+	at at.cpickl.gadsu.view.KotlinSwingWorker$executeAsync$worker$1.doInBackground(async.kt:91)
+	at javax.swing.SwingWorker$1.call(SwingWorker.java:295)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at javax.swing.SwingWorker.run(SwingWorker.java:334)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2018-03-31 21:48:09.579 [AWT-EventQueue-0]  [DEBUG] at.cpickl.gadsu.view.components.Dialogs - ERROR dialog showing: Mail versendet - Beim Versenden der Mail ist ein Fehler aufgetreten!
+(code: 403, message: Forbidden)
