@@ -69,7 +69,8 @@ class ClientTabMain(
     val inpStreet = fields.newTextField("Strasse", { it.contact.street }, ViewNames.Client.InputStreet)
     val inpZipCode = fields.newTextField("PLZ", { it.contact.zipCode }, ViewNames.Client.InputZipCode)
     val inpCity = fields.newTextField("Stadt", { it.contact.city }, ViewNames.Client.InputCity)
-    val inpWantReceiveMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveMails }, ViewNames.Client.InputReceiveMails, true)
+    val inpDsgvoAccepted = fields.newCheckBox("DSGVO", "Akzeptiert", { it.dsgvoAccepted }, ViewNames.Client.InputDsgvoAccepted, preSelected = false)
+    val inpWantReceiveMails = fields.newCheckBox("Mails", "Empfangen", { it.wantReceiveMails }, ViewNames.Client.InputReceiveMails, preSelected = true)
     val inpNote = fields.newTextArea("Notiz", { it.note }, ViewNames.Client.InputNote, bus)
 
     // zusatz stuff
@@ -124,6 +125,7 @@ class ClientTabMain(
             addFormInput(inpStreet)
             addFormInput(inpZipCode)
             addFormInput(inpCity)
+            addFormInput(inpDsgvoAccepted)
             addFormInput(inpWantReceiveMails)
         }
         val additionalTopForm = FormPanel().apply {

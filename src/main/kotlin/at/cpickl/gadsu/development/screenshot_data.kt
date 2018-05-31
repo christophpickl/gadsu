@@ -27,7 +27,7 @@ import at.cpickl.gadsu.treatment.TreatmentService
 import com.github.christophpickl.kpotpourri.common.numbers.forEach
 import com.google.common.eventbus.EventBus
 import org.joda.time.DateTime
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 import javax.swing.SwingUtilities
 
@@ -50,6 +50,7 @@ class ScreenshotDataInserter @Inject constructor(
                                 city = "Wien"
                         ),
                         "von Anna",
+                        true,
                         true,
                         DateFormats.DATE.parseDateTime("26.10.1986"),
                         Gender.MALE,

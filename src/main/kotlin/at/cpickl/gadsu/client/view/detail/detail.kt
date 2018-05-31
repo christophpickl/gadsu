@@ -166,6 +166,7 @@ open class SwingClientDetailView @Inject constructor(
                         city = tabMain.inpCity.text
                 ),
                 knownBy = tabMain.inpKnownBy.text,
+                dsgvoAccepted = tabMain.inpDsgvoAccepted.delegate.isSelected,
                 wantReceiveMails = tabMain.inpWantReceiveMails.delegate.isSelected,
                 birthday = tabMain.inpBirthday.selectedDate,
                 gender = tabMain.inpGender.selectedItemTyped,

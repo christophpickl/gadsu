@@ -53,6 +53,7 @@ object ClientViewNames {
     val InputStreet = "Client.InputStreet"
     val InputZipCode = "Client.InputZipCode"
     val InputCity = "Client.InputCity"
+    val InputDsgvoAccepted = "Client.InputDsgvoAccepted"
     val InputReceiveMails = "Client.InputReceiveMails"
     val InputGender = "Client.InputGender"
     val InputRelationship = "Client.InputRelationship"

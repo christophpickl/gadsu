@@ -1,7 +1,7 @@
 package at.cpickl.gadsu.client
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.client.xprops.model.CProps
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.image.MyImage
 import at.cpickl.gadsu.image.defaultImage
 import at.cpickl.gadsu.image.toMyImage
@@ -84,7 +84,7 @@ class ClientJdbcRepository @Inject constructor(
         INSERT INTO $TABLE (
             id, created, firstName, lastName, nickNameInt, nickNameExt,
             mail, phone, street, zipCode, city, knownBy,
-            wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
+            dsgvoAccepted, wantReceiveMails, birthday, gender_enum, countryOfOrigin, origin,
             relationship_enum, job, children, hobbies, note,
             yyTendency, elementTendency, textImpression, textMedical, textComplaints, textPersonal, textObjective,
             mainObjective, symptoms, elements, syndrom, tcmNote,
@@ -92,7 +92,7 @@ class ClientJdbcRepository @Inject constructor(
         ) VALUES (
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?,
@@ -101,7 +101,7 @@ class ClientJdbcRepository @Inject constructor(
         jdbcx.update(sqlInsert,
                 newId, client.created.toSqlTimestamp(), client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
-                client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.dsgvoAccepted, client.wantReceiveMails, client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
@@ -120,7 +120,7 @@ class ClientJdbcRepository @Inject constructor(
                 UPDATE $TABLE SET
                     state = ?, firstName = ?, lastName = ?, nickNameInt = ?, nickNameExt = ?,
                     mail = ?, phone = ?, street = ?, zipCode = ?, city = ?, knownBy = ?,
-                    wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
+                    dsgvoAccepted = ?, wantReceiveMails = ?, birthday = ?, gender_enum = ?, countryOfOrigin = ?, origin = ?,
                     relationship_enum = ?, job = ?, children = ?, hobbies = ?, note = ?,
                     yyTendency = ?, elementTendency = ?, textImpression = ?, textMedical = ?, textComplaints = ?, textPersonal = ?, textObjective = ?,
                     mainObjective = ?, symptoms = ?, elements = ?, syndrom = ?, tcmNote = ?,
@@ -128,7 +128,7 @@ class ClientJdbcRepository @Inject constructor(
                 WHERE id = ?""",
                 client.state.sqlCode, client.firstName, client.lastName, client.nickNameInt, client.nickNameExt,
                 client.contact.mail, client.contact.phone, client.contact.street, client.contact.zipCode, client.contact.city, client.knownBy,
-                client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
+                client.dsgvoAccepted, client.wantReceiveMails,client.birthday?.toSqlTimestamp(), client.gender.sqlCode, client.countryOfOrigin, client.origin,
                 client.relationship.sqlCode, client.job, client.children, client.hobbies, client.note,
                 client.yyTendency.sqlCode, client.elementTendency.sqlCode, client.textImpression, client.textMedical, client.textComplaints, client.textPersonal, client.textObjective,
                 client.textMainObjective, client.textSymptoms, client.textFiveElements, client.textSyndrom, client.tcmNote,
@@ -174,6 +174,7 @@ val Client.Companion.ROW_MAPPER: RowMapper<Client>
                 ),
                 knownBy = rs.getString("knownBy"),
                 wantReceiveMails = rs.getBoolean("wantReceiveMails"),
+                dsgvoAccepted = rs.getBoolean("dsgvoAccepted"),
                 birthday = rs.getTimestamp("birthday")?.run { DateTime(this) },
 //                rs.getTimestamp("birthday").nullOrWith(::DateTime),
                 gender = gender,

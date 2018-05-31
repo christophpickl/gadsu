@@ -7,7 +7,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration
 import java.sql.Connection
 
 
-class V10__treatment_dates : JdbcMigration {
+class V10_1__treatment_dates : JdbcMigration {
 
     private val log = LOG(javaClass)
 

@@ -56,6 +56,7 @@ interface IClient : HasId, Persistable {
     val hasMail: Boolean // inferred
     val hasMailAndWantsMail: Boolean
     val wantReceiveMails: Boolean
+    val dsgvoAccepted: Boolean
     val birthday: DateTime?
     val gender: Gender
     /** birth location */
@@ -97,6 +98,7 @@ data class Client(
         override val nickNameInt: String,
         override val contact: Contact,
         override val knownBy: String,
+        override val dsgvoAccepted: Boolean,
         override val wantReceiveMails: Boolean,
         override val birthday: DateTime?,
         override val gender: Gender,
@@ -153,7 +155,8 @@ data class Client(
                 nickNameExt = "",
                 contact = Contact.EMPTY,
                 knownBy = "",
-                wantReceiveMails = true,
+                wantReceiveMails = false,
+                dsgvoAccepted = false,
                 birthday = null,
                 gender = Gender.UNKNOWN,
                 countryOfOrigin = "",
@@ -201,6 +204,7 @@ data class Client(
                 ),
                 knownBy = "von Maria",
                 wantReceiveMails = true,
+                dsgvoAccepted = true,
                 countryOfOrigin = "\u00d6sterreich",
                 origin = "Eisenstadt, Bgld",
                 relationship = Relationship.MARRIED,

@@ -40,6 +40,7 @@ data class ExtendedClient(
     override val state: ClientState get() = client.state
     override val contact: Contact get() = client.contact
     override val knownBy: String get() = client.knownBy
+    override val dsgvoAccepted: Boolean get() = client.dsgvoAccepted
     override val hasMail: Boolean get() = client.hasMail
     override val hasMailAndWantsMail: Boolean get() = client.hasMailAndWantsMail
     override val wantReceiveMails = client.wantReceiveMails
