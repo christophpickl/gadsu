@@ -3,7 +3,7 @@ package at.cpickl.gadsu.tcm.patho
 import at.cpickl.gadsu.tcm.model.Substances
 import at.cpickl.gadsu.tcm.model.YinYang
 
-// FIXME unbedingt die zunge+puls in eigenen datacontainer, damit diese nicht included werden koennen!
+// TODO unbedingt die zunge+puls in eigenen datacontainer, damit diese nicht included werden koennen!
 /*
 TODOs:
 - manche symtpoms haben Qi/Blut/Yin/Yang bezug, manche starke Zang, manche typisch fuer element

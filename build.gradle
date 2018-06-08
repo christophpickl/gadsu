@@ -353,7 +353,8 @@ compileJava {
 }
 
 todo {
-    todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
+    todoPattern = "//[\\t\\s]*(FIXME) (.*)"
+    // todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
     failIfFound = true
     fileExtensions = ["kt"]
 }
