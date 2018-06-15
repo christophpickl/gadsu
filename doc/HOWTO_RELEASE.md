@@ -67,7 +67,7 @@ total 357432
 -rw-r--r--  1 Foo  staff  60071457 Dec  2 22:39 Gadsu-1.13.0.jar
 -rwxr-xr-x  1 Foo  staff  60135457 Dec  2 22:39 Gadsu.exe
 [RELEASE] 
-[RELEASE] Now start the Post Release Kotlin script.
+[RELEASE] Now start the Post Release Kotlin script (release_generator.kt).
 [RELEASE] 
  
 $ 

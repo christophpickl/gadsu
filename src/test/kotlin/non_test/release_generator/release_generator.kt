@@ -27,7 +27,7 @@ private val TEST_REPO_CONFIG = REPO_CONFIG.copy(repositoryName = "gadsu_release_
 
 private val RELEASE_CONFIG = ReleaseConfig(
         sourceReleaseBuildFolder = File("/Users/wu/Dev/shiatsu/gadsu_release_build/release_artifacts"),
-        targetReleaseArtifactsFolder = File("/Users/wu/Kampfkunst/Shiatsu/___GADSU/Releases") // add "vX.X.X" folder
+        targetReleaseArtifactsFolder = File("/Users/wu/Kampfkunst/Shiatsu/_GADSU/Releases") // add "vX.X.X" folder
 )
 
 fun main(args: Array<String>) {

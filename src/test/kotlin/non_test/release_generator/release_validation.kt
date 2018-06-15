@@ -88,7 +88,7 @@ class ReleaseValidator(
             },
             {
                 if (!config.targetReleaseArtifactsFolder.exists()) {
-                    fail("Target release folder does not exist at: ${config.sourceReleaseBuildFolder.absolutePath}")
+                    fail("Target release folder does not exist at: ${config.targetReleaseArtifactsFolder.absolutePath}")
                 }
             },
             {
