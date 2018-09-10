@@ -1,12 +1,10 @@
-* ad gadsu: checkbox, ob klient DSGVO bestimmung unterschrieben
+* wenn letzte behandlung 10 jahre her => popup dass klientendaten loeschen
 * anzeigen, wenn er meint es gehoert was geloescht -> option es in gadsu einzutragen
-* gcal mailer => Disablen when event in past
 ! alte MyShiatsu props durcharbeiten
 * rueckendiagnose ad gadsu
 * behandlungsstrategie
 	- wo schwerpunkt? zielsetung, um was gehts, ohne fachausdruecke
 	- wie auf matte umsetzen? was machen? warum? welches ziel?
-* nicht nur 5E tablle in gadsu sondern auch yin/yang spalten
 
 !!! do NOT change title when gcal sync
 !!! filter clients (no bhdlg, money only)
@@ -16,17 +14,13 @@
 * fuer klienten automatisch 5E profil blatt generieren
 * von zungen fotos uploadbar machen ticket!
     // - ad zungenbuecher: barbara kirschbaum gibts 2 gute buecher
-* @gcal sync:
-	- dont make it possible to send confirmation mail for PAST dates
-	- dont change title on sync
 
-GADSU GADSU GADSU GADSU 
-	! birthday reminder popup
-	- rechtsklick doesnt work!!! + mit backspace events loeschen
-	- auf 30min steps stellen (bisherige runden einfach ;)
-	- sort clients (bhdgl cnt.)
-	- search names / filter clients
-	- agenda: popup das die naechsten (+vorherigen paar) behandlungen anzeigt
+! birthday reminder popup
+- rechtsklick doesnt work!!! + mit backspace events loeschen
+- auf 30min steps stellen (bisherige runden einfach ;)
+- sort clients (bhdgl cnt.)
+- search names / filter clients
+- agenda: popup das die naechsten (+vorherigen paar) behandlungen anzeigt
 
 * client kann "hat nachgefragt" bekommen; beziehen sich auf einen tag (kann also mehrere haben)
     - wirkt sich stark auf wertung fuers naechstes doodle poll aus

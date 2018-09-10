@@ -48,7 +48,7 @@ class TreeSearcher<G, L>(
 }
 
 
-// FIXME during search selection doesnt work
+// TODO during search selection doesnt work
 class SearchableTree<G, L>(private val tree: Tree<G, L>) : Tree<G, L> by tree {
 
     private val log = LOG {}

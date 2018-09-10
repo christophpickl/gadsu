@@ -184,7 +184,7 @@ myEcho "Time needed: $ELAPSED seconds"
 myEcho "Contents of: $ARTIFACTS_DIR"
 ls -l ${ARTIFACTS_DIR}
 myEcho
-myEcho "Now start the Post Release Kotlin script."
+myEcho "Now start the Post Release Kotlin script (release_generator.kt)."
 myEcho
 echo
 

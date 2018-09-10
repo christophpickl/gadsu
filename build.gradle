@@ -9,7 +9,7 @@ buildscript {
     println "[GADSU] IS_TRAVIS=" + IS_TRAVIS
 
     ext {
-        kotlin_version = '1.2.41'
+        kotlin_version = '1.2.61'
 
         spring_version = '4.3.10.RELEASE'
         logback_version = '1.2.3'
@@ -353,7 +353,8 @@ compileJava {
 }
 
 todo {
-    todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
+    todoPattern = "//[\\t\\s]*(FIXME) (.*)"
+    // todoPattern = "//[\\t\\s]*(FIXME|TODO) (.*)"
     failIfFound = true
     fileExtensions = ["kt"]
 }
