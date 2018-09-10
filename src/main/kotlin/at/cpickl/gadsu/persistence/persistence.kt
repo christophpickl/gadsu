@@ -121,8 +121,7 @@ open class FlywayDatabaseManager @Inject constructor(
     }
 
     @VisibleForTesting fun buildFlyway() = Flyway().apply {
-        // "/at/cpickl/gadsu/persistence/migration"
-        setLocations(*arrayOf(MIGRATION_LOCATION))
+        setLocations(MIGRATION_LOCATION)
         dataSource = ds
 
         val myCallback = object : BaseFlywayCallback() {

@@ -67,9 +67,7 @@ class ClientJdbcRepository @Inject constructor(
         return clients
     }
 
-    override fun findById(id: String): Client {
-        return jdbcx.querySingle(Client.ROW_MAPPER, "SELECT * FROM $TABLE WHERE id = ?", id)
-    }
+    override fun findById(id: String) = jdbcx.querySingle(Client.ROW_MAPPER, "SELECT * FROM $TABLE WHERE id = ?", id)
 
     override fun insertWithoutPicture(client: Client): Client {
         log.debug("insert(client={})", client)
