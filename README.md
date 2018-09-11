@@ -19,8 +19,8 @@ It was initially created because of the need to automatically generate protocols
 [Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years 
 but grew continuously while being in active use.
 
-![screenshot-main.png](https://github.com/christophpickl/gadsu/wiki/screenshot-main.png "Gadsu Screenshot")
-![screenshot-treat.png](https://github.com/christophpickl/gadsu/wiki/screenshot-treat.png "Gadsu Screenshot")
+![screenshot-main.png](https://github.com/christophpickl/gadsu/wiki/screenshots/screenshot-v1.14-main.png "Gadsu Screenshot")
+![screenshot-treat.png](https://github.com/christophpickl/gadsu/wiki/screenshots/screenshot-v1.14-treat.png "Gadsu Screenshot")
 
 For more some more notes have a look at the [Wiki](https://github.com/christophpickl/gadsu/wiki).
 
