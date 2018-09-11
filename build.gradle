@@ -171,9 +171,10 @@ apply plugin: 'eu.appsatori.fatjar'
 
 task loadProjectVersionNumber {
     Properties props = new Properties()
-    File propsFile = new File("version.properties")
+    File propsFile = new File(rootDir, "version.properties")
     props.load(propsFile.newDataInputStream())
     version = props['version']
+    println "[GADSU] version=" + version
 }
 
 processResources.dependsOn loadProjectVersionNumber
@@ -309,7 +310,7 @@ site.dependsOn dependencyUpdates
 if (!IS_TRAVIS) {
 
     task launch4jConfig {
-        String config = new File('src/main/buildWin/launch4j.template.xml').getText('UTF-8')
+        String config = new File(rootDir, 'src/main/buildWin/launch4j.template.xml').getText('UTF-8')
         String winVersion = version
         if (winVersion.contains("-SNAPSHOT")) { // cut off "-SNAPSHOT" from version and add ".0"
             winVersion = winVersion.substring(0, winVersion.length() - "-SNAPSHOT".length()) + ".0"
