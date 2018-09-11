@@ -1,9 +1,8 @@
 package at.cpickl.gadsu.view
 
+import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.global.AppEvent
 import at.cpickl.gadsu.global.QuitAskEvent
-import at.cpickl.gadsu.development.Development
-import at.cpickl.gadsu.development.debugColor
 import at.cpickl.gadsu.preferences.WindowDescriptor
 import at.cpickl.gadsu.service.Logged
 import at.cpickl.gadsu.view.components.MyFrame
@@ -55,7 +54,8 @@ interface MainFrame {
 open class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         gadsuMenuBar: GadsuMenuBar
-        ) : MainFrame, MyFrame("Gadsu" + (if (Development.ENABLED) " - DEVELOPMENT" else "")) {
+//) : MainFrame, MyFrame("Gadsu" + (if (Development.ENABLED) " - DEVELOPMENT" else "")) {
+    ) : MainFrame, MyFrame("Gadsu") {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val defaultSize = Dimension(1000, 600)

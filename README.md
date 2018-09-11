@@ -13,20 +13,24 @@
 
 [**Download**](https://github.com/christophpickl/gadsu/releases/latest) the latest release of Gadsu!
 
-Gadsu is a Shiatsu tool which helps you in your daily life as a practitioner, mainly keeping track of appointments and treatments for your clients.
-It was initially created because of the need to automatically generate protocols for my [Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years, but growed continuously while being in active use.
+Gadsu is a Shiatsu tool which helps you in your daily life as a practitioner, 
+mainly keeping track of clients and their (medical) data, appointments and treatments.
+It was initially created because of the need to automatically generate protocols for my 
+[Shiatsu school](http://www.shiatsu-schule.at/shiatsu-start.html) while being in the first training years 
+but grew continuously while being in active use.
 
 ![screenshot-main.png](https://github.com/christophpickl/gadsu/wiki/screenshot-main.png "Gadsu Screenshot")
+![screenshot-treat.png](https://github.com/christophpickl/gadsu/wiki/screenshot-treat.png "Gadsu Screenshot")
 
-For more detailed information visit the [Wiki](https://github.com/christophpickl/gadsu/wiki).
+For more some more notes have a look at the [Wiki](https://github.com/christophpickl/gadsu/wiki).
 
 ## FEATURES
 
-* Manage client data (contact, medical, pictures)
+* Manage client data (contact, medical, picture)
 * Manage appointments and treatments
-* Define diagnosis (tongue, pulse, blood), meridians for each treatment
+* Define diagnosis (tongue, pulse, blood) and meridians for each treatment
 * Protocol generation of treatments ("Sammelprotokoll")
-* Define a goal for number of treatments to reach
+* Define a goal for number of treatments to reach (e.g. 20 in your first year's education)
 * Proper anamnesis and treatment forms provided
 * Synchronize with Google calendar
 * Auto-update the application version
@@ -39,4 +43,4 @@ For more detailed information visit the [Wiki](https://github.com/christophpickl
 * Doodle Integration
 * Invoicing
 * Finance Office Communication
-* English support
+* English/Internationalization support
