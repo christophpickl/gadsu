@@ -2,12 +2,12 @@
 <!---
 [![Travis CI Status](https://travis-ci.org/christophpickl/gadsu.svg?branch=master)](https://travis-ci.org/christophpickl/gadsu) 
 [![Coverage](https://img.shields.io/codecov/c/github/christophpickl/gadsu/master.svg)](https://codecov.io/github/christophpickl/gadsu?branch=master)
+[![Dependency Versions](https://www.versioneye.com/user/projects/572880644a0faa000b782062/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 -->
 
-[![Kotlin](https://img.shields.io/badge/kotlin-1.2.41-blue.svg)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.2.61-blue.svg)](http://kotlinlang.org)
 [![Travis](https://img.shields.io/travis/christophpickl/gadsu.svg)](https://travis-ci.org/christophpickl/gadsu)
 [![codecov.io](https://codecov.io/github/christophpickl/gadsu/coverage.svg?branch=master)](https://codecov.io/github/christophpickl/gadsu?branch=master)
-[![Dependency Versions](https://www.versioneye.com/user/projects/572880644a0faa000b782062/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572880644a0faa000b782062)
 [![Issues](https://img.shields.io/github/issues/christophpickl/gadsu.svg)](https://github.com/christophpickl/gadsu/issues?q=is%3Aopen) 
 
 
