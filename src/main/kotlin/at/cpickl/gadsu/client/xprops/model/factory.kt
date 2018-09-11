@@ -38,7 +38,6 @@ object XPropsFactory : XPropsFinder {
 
 
     fun enum(key: String, label: String): XPropEnum {
-        log.trace("newEnum(key={})", key)
 //        val label = Labels.XProps.labelFor(key) disable for the moment...
         val xprop = XPropEnum(key, label, collectedEnumOpts.sorted())
         collectedEnumOpts = LinkedList()
@@ -51,7 +50,6 @@ object XPropsFactory : XPropsFinder {
     }
 
     fun opt(key: String, staticLabel: String? = null): XPropEnumOpt {
-        log.trace("newEnumOpt(key={})", key)
         val keyPrefix = (key.substring(0, key.indexOf("_")))
         if (!keyPrefix.equals(previousEnumOptKeyPrefix)) {
             currentEnumOrder = 1

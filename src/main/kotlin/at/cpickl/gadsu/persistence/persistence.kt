@@ -100,13 +100,15 @@ open class FlywayDatabaseManager @Inject constructor(
         try {
             flyway.migrate()
         } catch(e: FlywayException) {
-            if (e.message?.contains("validate failed", true) ?: false) {
-                log.warn("Migration failed due to validation error, going to repair the database first and try migrating then.", e)
+            if (e.message?.contains("validate failed", true) == true) {
+                log.warn("Migration failed due to validation error! " +
+                    "Going to repair the database first and retry migrating then again.", e)
                 flyway.repair()
                 log.info("DB repair done, going to migrate now again.")
                 flyway.migrate()
             } else {
                 val dbLockException = DatabaseLockedException.buildByCause(e)
+                log.warn("Migration failed even after trying to repair it :'-(")
                 throw dbLockException ?: e
             }
         }

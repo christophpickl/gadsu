@@ -27,7 +27,6 @@ class BackupModule : AbstractModule() {
         bind(BackupAssist::class.java).toInstance(BackupAssist(GADSU_DATABASE_DIRECTORY, GADSU_BACKUPS_DIRECTORY))
         bind(BackupController::class.java).to(BackupControllerImpl::class.java).asEagerSingleton()
     }
-
 }
 
 data class BackupAssist(val databaseDirectory: File, val backupDirectory: File)

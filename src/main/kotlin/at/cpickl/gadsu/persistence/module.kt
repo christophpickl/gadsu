@@ -18,6 +18,8 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun configure() {
+        install(BackupModule())
+
         val databaseUrl = databaseUrl ?: DEFAULT_DB_URL
         log.debug("configure() ... using database URL; '{}'", databaseUrl)
 
@@ -31,7 +33,5 @@ class PersistenceModule(private val databaseUrl: String?) : AbstractModule() {
         bind(DatabaseManager::class.java).toInstance(dbManager)
         dbManager.migrateDatabase() // do it here, in order it happen first before all other stuff happens
         // or get the prefs data lazily... val memoizedFoo by lazy { foo(bar) }
-
-        install(BackupModule())
     }
 }

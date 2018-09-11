@@ -4,10 +4,13 @@ import at.cpickl.gadsu.global.GADSU_DIRECTORY
 import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.persistence.BackupController
 import at.cpickl.gadsu.preferences.view.PreferencesWindow
-import at.cpickl.gadsu.service.*
+import at.cpickl.gadsu.service.InternetConnectionEstablishedEvent
+import at.cpickl.gadsu.service.InternetConnectionLostEvent
+import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.Logged
+import at.cpickl.gadsu.service.formatDateTimeLong
 import com.google.common.eventbus.Subscribe
 import javax.inject.Inject
-
 
 @Logged
 open class PreferencesController @Inject constructor(
