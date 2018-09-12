@@ -54,8 +54,7 @@ interface MainFrame {
 open class SwingMainFrame @Inject constructor(
         val bus: EventBus, // make it visible for directy UI test hack ;)
         gadsuMenuBar: GadsuMenuBar
-//) : MainFrame, MyFrame("Gadsu" + (if (Development.ENABLED) " - DEVELOPMENT" else "")) {
-    ) : MainFrame, MyFrame("Gadsu") {
+) : MainFrame, MyFrame("Gadsu" + (if (Development.ENABLED) " - DEVELOPMENT" else "")) {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val defaultSize = Dimension(1000, 600)
