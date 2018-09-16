@@ -190,6 +190,7 @@ open class TreatmentController @Inject constructor(
     private fun changeToTreatmentView(treatment: Treatment?, prefillByAppointment: PrefillByAppointmentTreatment?) {
         log.debug("changeToTreatmentView(treatment={}, prefilled={})", treatment, prefillByAppointment)
         val client = currentClient.data
+        val selectedDynTreatment = treatmentView?.selectedDynTreatmentType()
 
         treatmentView?.closePreparations()
 
@@ -208,6 +209,7 @@ open class TreatmentController @Inject constructor(
 
         currentTreatment.data = nullSafeTreatment
         treatmentView = treatmentViewFactory.create(client, nullSafeTreatment)
+        selectedDynTreatment?.also { treatmentView!!.trySelectDynTreatment(selectedDynTreatment) }
 
         if (!nullSafeTreatment.yetPersisted) {
             updatePrevNextState(false, false)

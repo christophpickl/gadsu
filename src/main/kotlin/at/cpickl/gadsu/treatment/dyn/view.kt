@@ -92,6 +92,20 @@ class DynTreatmentTabbedPane(
         return renderers.values.map { it.originalDynTreatment.javaClass }
     }
 
+    fun selectedDynTreatmentType(): Class<DynTreatment>? {
+        if (selectedIndex == -1) {
+            return null
+        }
+        return getDynTreatmentAt(selectedIndex).javaClass
+    }
+
+    fun trySelectDynTreatment(dynTreatment: Class<DynTreatment>) {
+        renderers.values.firstOrNull { it.originalDynTreatment.javaClass == dynTreatment }?.also { renderer ->
+            selectedComponent = renderer.view
+        }
+
+    }
+
     fun removeDynTreatmentAt(tabIndex: Int) {
         log.trace("removeDynTreatmentAt(tabIndex=$tabIndex)")
         removeTabAt(tabIndex)
@@ -125,7 +139,7 @@ class DynTreatmentTabbedPane(
             val key = if (entry.key >= addIndex) entry.key + 1 else entry.key
             newIndex.put(key, entry.value)
         }
-        newIndex.put(addIndex, renderer)
+        newIndex[addIndex] = renderer
         renderers = newIndex
     }
 

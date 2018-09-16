@@ -65,6 +65,8 @@ interface TreatmentView : ModificationAware, MainContent {
     fun removeDynTreatmentAt(tabIndex: Int)
     fun getDynTreatmentAt(tabIndex: Int): DynTreatment
     fun getAllDynTreatmentClasses(): List<Class<DynTreatment>>
+    fun selectedDynTreatmentType(): Class<DynTreatment>?
+    fun trySelectDynTreatment(dynTreatment: Class<DynTreatment>)
 }
 
 
@@ -147,6 +149,8 @@ class SwingTreatmentView @Inject constructor(
 
     override fun getDynTreatmentAt(tabIndex: Int) = subTreatmentView.getDynTreatmentAt(tabIndex)
     override fun getAllDynTreatmentClasses() = subTreatmentView.getAllDynTreatmentClasses()
+    override fun selectedDynTreatmentType() = subTreatmentView.selectedDynTreatmentType()
+    override fun trySelectDynTreatment(dynTreatment: Class<DynTreatment>) = subTreatmentView.trySelectDynTreatment(dynTreatment)
 
     private fun initComponents() {
         c.weightx = 0.0
