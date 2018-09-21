@@ -1,14 +1,19 @@
 package at.cpickl.gadsu.view.components.panels
 
-import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
+import at.cpickl.gadsu.global.IS_OS_WIN
 import at.cpickl.gadsu.view.components.inputs.HtmlEditorPane
-import at.cpickl.gadsu.view.swing.*
+import at.cpickl.gadsu.view.swing.Pad
+import at.cpickl.gadsu.view.swing.addLeft
+import at.cpickl.gadsu.view.swing.addTop
+import at.cpickl.gadsu.view.swing.bold
+import at.cpickl.gadsu.view.swing.disableFocusable
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.Insets
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
+import javax.swing.JComponent
 import javax.swing.JLabel
 
 
@@ -32,9 +37,10 @@ open class FormPanel(
             fillType: GridBagFill = GridBagFill.Horizontal,
             icon: ImageIcon? = null,
             addTopInset: Int = 0,
-            inputWeighty: Double = 0.0
+            inputWeighty: Double = 0.0,
+            toolTip: String? = null
     ) {
-        addFormInput(label, input, fillType, icon, addTopInset, inputWeighty)
+        addFormInput(label, input, fillType, icon, addTopInset, inputWeighty, toolTip)
         val txtDescription = HtmlEditorPane(description)
                 .changeLabelFontSize(11.0F)
                 .disableFocusable()
@@ -49,7 +55,8 @@ open class FormPanel(
             fillType: GridBagFill = GridBagFill.Horizontal,
             icon: ImageIcon? = null,
             addTopInset: Int = 0,
-            inputWeighty: Double = 0.0
+            inputWeighty: Double = 0.0,
+            toolTip: String? = null
     ) {
         c.gridheight = 1
 
@@ -73,6 +80,11 @@ open class FormPanel(
             c.insets = insetsCol2
         }
         c.insets = c.insets.addPaddingForWindows().addTop(addTopInset)
+
+        if (toolTip != null && input is JComponent) {
+            input.toolTipText = toolTip
+        }
+
         add(input)
 
         c.gridy++
@@ -129,7 +141,8 @@ class VFillFormPanel : FormPanel() {
             fillType: GridBagFill,
             icon: ImageIcon?,
             addTopInset: Int,
-            inputWeighty: Double // not used
+            inputWeighty: Double, // not used
+            toolTip: String?
     ) {
         c.weightx = 0.0
         c.weighty = 0.0
@@ -145,6 +158,9 @@ class VFillFormPanel : FormPanel() {
         c.weightx = 1.0
         c.weighty = 0.3 // dont know exactly...
         c.insets = Pad.NONE
+        if (toolTip != null && input is JComponent) {
+            input.toolTipText = toolTip
+        }
         add(input)
 
         c.gridy++

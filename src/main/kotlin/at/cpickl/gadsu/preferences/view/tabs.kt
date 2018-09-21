@@ -3,6 +3,7 @@ package at.cpickl.gadsu.preferences.view
 import at.cpickl.gadsu.client.view.ThresholdResult
 import at.cpickl.gadsu.client.xprops.view.GridBagFill
 import at.cpickl.gadsu.color
+import at.cpickl.gadsu.mail.AppointmentConfirmationTemplateDeclaration
 import at.cpickl.gadsu.preferences.PreferencesData
 import at.cpickl.gadsu.version.CheckForUpdatesEvent
 import at.cpickl.gadsu.view.KTab
@@ -115,8 +116,8 @@ class PrefsTabConnectivity : PrefsTab("Netzwerk") {
     val inpGmailAddress = JTextField()
     val inpGapiClientId = JTextField()
     val inpGapiClientSecret = JTextField()
-    val inpConfirmMailSubject = JTextField()
-    val inpConfirmMailBody = MyTextArea("", visibleRows = 6)
+    val inpConfirmMailSubject = JTextField().apply { toolTipText = AppointmentConfirmationTemplateDeclaration.toolTipText }
+    val inpConfirmMailBody = MyTextArea("", visibleRows = 6).apply { toolTipText = AppointmentConfirmationTemplateDeclaration.toolTipText }
 
     override fun asComponent() = FormPanel(
             fillCellsGridy = false,
@@ -132,12 +133,12 @@ class PrefsTabConnectivity : PrefsTab("Netzwerk") {
                 "Bsp.: <tt>123456789012-aaaabbbbccccddddeeeefffffaaaabb.apps.googleusercontent.com</tt>")
         addDescriptiveFormInput("Google API Secret", inpGapiClientSecret, "Das zugehörige Passwort.<br/>" +
                 "Bsp.: <tt>AABBCCDDDaabbccdd12345678</tt>")
-        addDescriptiveFormInput("Mail Betreff", inpConfirmMailSubject, "Bestätigungsmail Freemarker Template für den Betreff. Mögliche Variablen: name, gender, dateStart, dateEnd")
+        addDescriptiveFormInput("Mail Betreff", inpConfirmMailSubject, "Bestätigungsmail Freemarker Template für den Mail Betreff.")
         // for available variables see: AppointmentConfirmationerImpl
         addDescriptiveFormInput(
                 label = "Mail Text",
                 input = inpConfirmMailBody.scrolled(),
-                description = "Bestätigungsmail Freemarker Template für den Text, welcher die selben Variablen nutzen kann wie die Betreff Vorlage.",
+                description = "Bestätigungsmail Freemarker Template für den Mail Inhalt.",
                 fillType = GridBagFill.Both,
                 inputWeighty = 1.0
         )

@@ -18,7 +18,7 @@ val CProps.Companion.testInstance2 get() = CProps.builder().add(XProps.Hungry, X
 
 val Client.Companion.testInstance1
     get() = Client(
-            "1", DUMMY_CREATED, ClientState.ACTIVE, "1", "1", "1", "1", Contact.testInstance1, "1",
+            "1", DUMMY_CREATED, ClientState.ACTIVE, "first1", "last1", "1", "1", Contact.testInstance1, "1",
             true, true, DUMMY_CREATED, Gender.UNKNOWN, "1", "1", Relationship.UNKNOWN, "1", "1", "1", "1",
             "1", "1", "1", "1", "1", "1", "1", "1",
             YinYangMaybe.UNKNOWN, "yy1", ElementMaybe.UNKNOWN, "5e1", "w1", "f1", "e1", "m1", "w1",
@@ -27,7 +27,7 @@ val Client.Companion.testInstance1
 
 val Client.Companion.testInstance2
     get() = Client(
-            "2", DUMMY_CREATED, ClientState.INACTIVE, "2", "2", "2", "2", Contact.testInstance2, "2",
+            "2", DUMMY_CREATED, ClientState.INACTIVE, "heinrich 2", "supernachname 2", "2", "2", Contact.testInstance2, "2",
             false, false, DUMMY_CREATED, Gender.MALE, "2", "2", Relationship.COMPLICATED, "2", "2", "2", "2",
             "2", "2", "2", "2", "2", "2", "2", "2",
             YinYangMaybe.YIN, "yy2", ElementMaybe.WOOD, "5e2", "w2", "f2", "e2", "m2", "w2",

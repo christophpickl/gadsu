@@ -1,10 +1,12 @@
 package at.cpickl.gadsu.mail
 
-import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.appointment.Appointment
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.firstNotEmpty
+import at.cpickl.gadsu.global.GadsuException
 import at.cpickl.gadsu.preferences.Prefs
+import at.cpickl.gadsu.service.TemplateData
+import at.cpickl.gadsu.service.TemplateDeclaration
 import at.cpickl.gadsu.service.TemplatingEngine
 import com.google.common.annotations.VisibleForTesting
 import javax.inject.Inject
@@ -32,12 +34,7 @@ class AppointmentConfirmationerImpl @Inject constructor(
     }
 
     @VisibleForTesting fun buildMail(subjectTemplate: String, bodyTemplate: String, client: Client, appointment: Appointment): Mail {
-        val data = mapOf(
-                "name" to firstNotEmpty(client.nickNameExt, client.firstName),
-                "dateStart" to appointment.start.toDate(),
-                "dateEnd" to appointment.end.toDate(),
-                "gender" to client.gender.sqlCode
-        )
+        val data = AppointmentConfirmationTemplateDeclaration.process(client to appointment)
         val subject = templating.process(subjectTemplate, data)
         val body = templating.process(bodyTemplate, data)
         return Mail(client.contact.mail, subject, body, recipientsAsBcc = false)
@@ -55,3 +52,20 @@ class AppointmentConfirmationerImpl @Inject constructor(
 }
 
 class AppointmentConfirmationException(message: String, cause: Exception? = null) : GadsuException(message, cause)
+
+object AppointmentConfirmationTemplateDeclaration : TemplateDeclaration<Pair<Client, Appointment>> {
+    override val data = listOf(
+            TemplateData<Pair<Client, Appointment>>("name", "Der externe Spitzname bzw. Vorname falls nicht vorhanden, zB: \${name?lower_case}") {
+                firstNotEmpty(it.first.nickNameExt, it.first.firstName)
+            },
+            TemplateData("dateStart", "Z.B.: termin am \${dateStart?string[\"EEEE 'der' d. MMMMM\"]?lower_case} von \${dateStart?string[\"HH:mm\"]}") {
+                it.second.start.toDate()
+            },
+            TemplateData("dateEnd", "Z.B.: bis \${dateEnd?string[\"HH:mm\"]} uhr") {
+                it.second.end.toDate()
+            },
+            TemplateData("dateStart", "Z.B.: hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>") {
+                it.first.gender.sqlCode
+            }
+    )
+}

@@ -1,15 +1,17 @@
 package at.cpickl.gadsu.mail.bulkmail
 
-import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.client.Client
 import at.cpickl.gadsu.client.ClientService
 import at.cpickl.gadsu.client.ClientState
 import at.cpickl.gadsu.firstNotEmpty
+import at.cpickl.gadsu.global.QuitEvent
 import at.cpickl.gadsu.mail.Mail
 import at.cpickl.gadsu.mail.MailPreferencesData
 import at.cpickl.gadsu.mail.MailSender
 import at.cpickl.gadsu.preferences.Prefs
 import at.cpickl.gadsu.service.LOG
+import at.cpickl.gadsu.service.TemplateData
+import at.cpickl.gadsu.service.TemplateDeclaration
 import at.cpickl.gadsu.service.TemplatingEngine
 import at.cpickl.gadsu.view.AsyncDialogSettings
 import at.cpickl.gadsu.view.AsyncWorker
@@ -31,7 +33,8 @@ open class BulkMailController @Inject constructor(
 
     private val log = LOG(javaClass)
 
-    @Subscribe open fun onRequestOpenBulkMailEvent(event: RequestPrepareBulkMailEvent) {
+    @Subscribe
+    open fun onRequestOpenBulkMailEvent(event: RequestPrepareBulkMailEvent) {
         if (!ensurePreferencesSet()) {
             return
         }
@@ -46,7 +49,8 @@ open class BulkMailController @Inject constructor(
         view.start()
     }
 
-    @Subscribe open fun onRequestSendBulkMailEvent(event: RequestSendBulkMailEvent) {
+    @Subscribe
+    open fun onRequestSendBulkMailEvent(event: RequestSendBulkMailEvent) {
         val mails = readMailsFromView() ?: return
 
         asyncWorker.doInBackground(AsyncDialogSettings("Versende Mail", "Verbindung zu GMail wird aufgebaut und Mails versendet ..."),
@@ -77,7 +81,8 @@ open class BulkMailController @Inject constructor(
         )
     }
 
-    @Subscribe open fun onMailWindowClosedEvent(event: BulkMailWindowClosedEvent) {
+    @Subscribe
+    open fun onMailWindowClosedEvent(event: BulkMailWindowClosedEvent) {
         if (!event.shouldPersistState) {
             return
         }
@@ -87,7 +92,8 @@ open class BulkMailController @Inject constructor(
         prefs.mailPreferencesData = MailPreferencesData(subject, body)
     }
 
-    @Subscribe open fun onQuitEvent(event: QuitEvent) {
+    @Subscribe
+    open fun onQuitEvent(event: QuitEvent) {
         view.destroy()
     }
 
@@ -118,7 +124,7 @@ open class BulkMailController @Inject constructor(
         }
 
         return recipients.map {
-            val data = mapOf("name" to firstNotEmpty(it.nickNameExt, it.firstName))
+            val data = BulkMailTemplateDeclaration.process(it)
             val processedSubject = templating.process(subject, data)
             val processedBody = templating.process(body, data)
             Mail(it.contact.mail, processedSubject, processedBody)
@@ -141,4 +147,12 @@ open class BulkMailController @Inject constructor(
         return findAll(ClientState.ACTIVE).filter { it.wantReceiveMails && it.contact.mail.isNotBlank() }
     }
 
+}
+
+object BulkMailTemplateDeclaration : TemplateDeclaration<Client> {
+    override val data = listOf(
+            TemplateData<Client>("name", "Der externe Spitzname bzw Vorname falls nicht vorhanden, zB: \${name?lower_case}") {
+                firstNotEmpty(it.nickNameExt, it.firstName)
+            }
+    )
 }

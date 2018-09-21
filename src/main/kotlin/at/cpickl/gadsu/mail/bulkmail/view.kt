@@ -15,11 +15,13 @@ import at.cpickl.gadsu.view.swing.Pad
 import at.cpickl.gadsu.view.swing.addCloseListener
 import at.cpickl.gadsu.view.swing.bold
 import at.cpickl.gadsu.view.swing.emptyBorderForDialogs
+import at.cpickl.gadsu.view.swing.noBorder
 import at.cpickl.gadsu.view.swing.registerCloseOnEscapeOrShortcutW
 import at.cpickl.gadsu.view.swing.scrolled
 import at.cpickl.gadsu.view.swing.transparent
 import com.google.common.eventbus.EventBus
 import java.awt.BorderLayout
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 import javax.inject.Inject
 import javax.swing.JButton
@@ -27,6 +29,7 @@ import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JSplitPane
 import javax.swing.JTextField
 import javax.swing.ListSelectionModel
 
@@ -52,7 +55,7 @@ class BulkMailSwingView @Inject constructor(
     private val log = LOG(javaClass)
 
     private val clientsModel = MyListModel<Client>()
-    private val inpClients = MyList<Client>("MailView.clients", clientsModel, bus, object : MyListCellRenderer<Client>() {
+    private val inpClients = MyList("MailView.clients", clientsModel, bus, object : MyListCellRenderer<Client>() {
         override fun newCell(value: Client) = MailClientCell(value)
     })
 
@@ -64,51 +67,28 @@ class BulkMailSwingView @Inject constructor(
     init {
         registerCloseOnEscapeOrShortcutW()
         addCloseListener { doClose(true) }
+        inpBody.toolTipText = BulkMailTemplateDeclaration.toolTipText
 
-        // see ClientList
         inpClients.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         inpClients.enableToggleSelectionMode()
+        inpClients.minimumSize = Dimension(200, inpClients.minimumSize.height)
 
         val rootPanel = GridPanel()
         rootPanel.emptyBorderForDialogs()
 
-        rootPanel.c.weightx = 0.0
-        rootPanel.c.weighty = 1.0
-        rootPanel.c.fill = GridBagConstraints.VERTICAL
-        rootPanel.c.insets = Pad.RIGHT
-        rootPanel.add(inpClients.scrolled())
-
-        rootPanel.c.gridx++
         rootPanel.c.weightx = 1.0
         rootPanel.c.weighty = 1.0
         rootPanel.c.fill = GridBagConstraints.BOTH
-        rootPanel.c.insets = Pad.ZERO
-        rootPanel.add(GridPanel().apply {
-            c.weightx = 0.0
-            c.weighty = 0.0
-            c.fill = GridBagConstraints.NONE
-            add(JLabel("Betreff: "))
-
-            c.gridx++
-            c.weightx = 1.0
-            c.fill = GridBagConstraints.HORIZONTAL
-            add(inpSubject)
-
-            c.gridx = 0
-            c.gridy++
-            c.gridwidth = 2
-            c.weighty = 1.0
-            c.fill = GridBagConstraints.BOTH
-            add(inpBody.scrolled())
+        rootPanel.add(JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inpClients.scrolled(), buildCenterPanel()).apply {
+            isOneTouchExpandable = false
+            dividerLocation = 250
+            noBorder()
         })
 
-        rootPanel.c.gridx = 0
-        rootPanel.c.gridy++
-        rootPanel.c.gridwidth = 2
-        rootPanel.c.weightx = 1.0
+        rootPanel.c.weightx = 0.0
         rootPanel.c.weighty = 0.0
         rootPanel.c.fill = GridBagConstraints.HORIZONTAL
-        rootPanel.c.anchor = GridBagConstraints.CENTER
+        rootPanel.c.gridy++
         rootPanel.add(GridPanel().apply {
             add(JButton("Senden").apply {
                 addActionListener { bus.post(RequestSendBulkMailEvent()) }
@@ -117,11 +97,29 @@ class BulkMailSwingView @Inject constructor(
             add(JButton("Abbrechen").apply {
                 addActionListener { doClose(false) }
             })
-
         })
 
         contentPane.layout = BorderLayout()
         contentPane.add(rootPanel, BorderLayout.CENTER)
+    }
+
+    private fun buildCenterPanel() = GridPanel().apply {
+        c.weightx = 0.0
+        c.weighty = 0.0
+        c.fill = GridBagConstraints.NONE
+        add(JLabel("Betreff: "))
+
+        c.gridx++
+        c.weightx = 1.0
+        c.fill = GridBagConstraints.HORIZONTAL
+        add(inpSubject)
+
+        c.gridx = 0
+        c.gridy++
+        c.gridwidth = 2
+        c.weighty = 1.0
+        c.fill = GridBagConstraints.BOTH
+        add(inpBody.scrolled())
     }
 
     override fun start() {

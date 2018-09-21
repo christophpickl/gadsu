@@ -8,7 +8,7 @@ import freemarker.template.Template
 import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
-import java.util.Locale
+import java.util.*
 
 interface TemplatingEngine {
 
@@ -67,3 +67,24 @@ open class FreemarkerException(detailMessage: String, template: Template, data: 
 
 class FreemarkerInvalidReferenceException(detailMessage: String, template: Template, data: Map<String, Any>, cause: InvalidReferenceException? = null)
     : FreemarkerException(detailMessage, template, data, cause)
+
+/*
+termin am ${dateStart?string["d.M."]}
+hallo <#if gender == "M">lieber <#elseif gender == "F">liebe </#if>${name?lower_case},
+termin am ${dateStart?string["EEEE 'der' d. MMMMM"]?lower_case} von ${dateStart?string["HH:mm"]} bis ${dateEnd?string["HH:mm"]} uhr
+ */
+data class TemplateData<T>(
+        val name: String,
+        val description: String,
+        val extractor: (T) -> Any
+)
+
+interface TemplateDeclaration<T> {
+    val data: List<TemplateData<T>>
+
+    fun process(t: T): Map<String, Any> =
+            data.map { it.name to it.extractor(t) }.toMap()
+
+    val toolTipText get() =
+            "<html>" + data.joinToString("<br/>") { "<tt>${it.name}</tt> ... ${it.description}" } + "</html>"
+}
