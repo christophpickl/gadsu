@@ -64,7 +64,7 @@ object AppointmentConfirmationTemplateDeclaration : TemplateDeclaration<Pair<Cli
             TemplateData("dateEnd", "Z.B.: bis \${dateEnd?string[\"HH:mm\"]} uhr") {
                 it.second.end.toDate()
             },
-            TemplateData("dateStart", "Z.B.: hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>") {
+            TemplateData("gender", "Z.B.: hallo <#if gender == \"M\">lieber <#elseif gender == \"F\">liebe </#if>") {
                 it.first.gender.sqlCode
             }
     )
